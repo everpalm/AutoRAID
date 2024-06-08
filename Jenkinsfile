@@ -22,6 +22,16 @@ pipeline {
             description: 'My Test Suite',
             name: 'MY_SUITE'
         )
+        choice(
+            choices: [
+                'all',
+                'system_under_testing',
+                'win10_interface',
+                'device_under_testing'
+                ],
+            description: 'Functional Test',
+            name: 'FUNCTIONAL'
+        )
     }
     stages {
         stage ("Init") {
