@@ -24,7 +24,8 @@ WIN10_CMD_TABLE = ({"Command": "cd",
 class TestWin10Interface(object):
     @pytest.fixture(scope="session", autouse=True)
     def my_win10(self, cmdopt):
-        logger.info('====================Setup Win10====================')
+        # logger.info('====================Setup Win10====================')
+        print('====================Setup Win10====================')
         return win10(cmdopt.get('mode'), cmdopt.get('if_name'), cmdopt.get('config_file'))
     
     @pytest.mark.parametrize("win_cmd", WIN10_CMD_TABLE)
