@@ -49,14 +49,13 @@ pipeline {
                 script {
                     gv.testApp()
                 }
-                sh "cd /home/pi/Projects/AutoRAID/tests && python -m pytest test_${params.MY_SUITE}.py"
+                sh "cd /home/pi/Projects/AutoRAID/tests && pipenv run python -m pytest test_${params.MY_SUITE}.py"
             }
         }
     }
     post {
         always {
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@gmail.com'
-            sh "exit"
         }
         success {
             echo 'todo - 1'
