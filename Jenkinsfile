@@ -44,24 +44,18 @@ pipeline {
             }
         }
         stage('Test') {
-            // when {
-            //     expression {
-            //         BRANCH_NAME == 'ZenNevo'
-            //     }
-            // }
             steps {
                 // echo 'Start testing - 2'
                 script {
                     gv.testApp()
                 }
-                // sh 'cd /home/pi/NVME_ACCELERATOR/workspace/NVME_ACCELERATOR/demo/tests && python3 -m pytest -s -v -x test_system_under_testing.py'
                 sh "cd /home/pi/Projects/AutoRAID/tests && python -m pytest test_${params.MY_SUITE}.py"
             }
         }
     }
     post {
         always {
-            emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'ctingjung@marvell.com'
+            emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@gmail.com'
         }
         success {
             echo 'todo - 1'
