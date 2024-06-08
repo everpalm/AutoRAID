@@ -9,6 +9,8 @@ pytest = "*"
 pytest-cov = "*"
 pytest-testmon = "*"
 pytest-repeat = "*"
+numpy = "==1.21.4"
+pandas = "*"
 
 [dev-packages]
 
