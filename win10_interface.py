@@ -4,14 +4,7 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from application_interface import ApplicationInterface
 from application_interface import dict_format
 import logging
-# import subprocess
-# import socket
-# import fcntl
-# import os
-# import struct
-# import json
-# import paramiko
-# import re
+
 
 ''' Define Win10 interface '''
 logging.basicConfig(level=logging.DEBUG)

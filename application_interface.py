@@ -188,31 +188,31 @@ class ApplicationInterface(object):
             raise ValueError('Unknown mode setting in command_line')
         return self.__my_command(str_command_line)
 
-class Win10Interface(ApplicationInterface):
-    @dict_format
-    def command_line(self, str_cli_cmd: str) -> list[str]:
-        logger.debug('str_cli_cmd = %s', str_cli_cmd)
-        logger.debug('self.mode = %s', self.mode)
-        logger.debug('self.account = %s', self.account)
-        logger.debug('self.password = %s', self.password)
-        logger.debug('self.local_dir = %s', self.local_dir)
-        logger.debug('self.remote_dir = %s', self.remote_dir)
-        if self.mode == 'remote':
-            logger.info('===Remote access mode===')
-            logger.debug('self.remote_ip = %s', self.remote_ip)
-            str_sshpass = f'sshpass -p \"{self.password}\"'\
-                ' ssh -o \"StrictHostKeyChecking=no\"'
-            logger.debug('str_sshpass = %s', str_sshpass)
-            str_command_line = f'{str_sshpass}'\
-                f' {self.account}@{self.remote_ip}'\
-                f' \"cd {self.remote_dir}&&{str_cli_cmd}\"'
-            logger.debug('str_command_line = %s', str_command_line)
-        elif self.mode == 'local':
-            logger.info('===Local access mode===')
-            str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
-        else:
-            raise ValueError('Unknown mode setting in command_line')
-        return self.my_command(str_command_line)
+# class Win10Interface(ApplicationInterface):
+#     @dict_format
+#     def command_line(self, str_cli_cmd: str) -> list[str]:
+#         logger.debug('str_cli_cmd = %s', str_cli_cmd)
+#         logger.debug('self.mode = %s', self.mode)
+#         logger.debug('self.account = %s', self.account)
+#         logger.debug('self.password = %s', self.password)
+#         logger.debug('self.local_dir = %s', self.local_dir)
+#         logger.debug('self.remote_dir = %s', self.remote_dir)
+#         if self.mode == 'remote':
+#             logger.info('===Remote access mode===')
+#             logger.debug('self.remote_ip = %s', self.remote_ip)
+#             str_sshpass = f'sshpass -p \"{self.password}\"'\
+#                 ' ssh -o \"StrictHostKeyChecking=no\"'
+#             logger.debug('str_sshpass = %s', str_sshpass)
+#             str_command_line = f'{str_sshpass}'\
+#                 f' {self.account}@{self.remote_ip}'\
+#                 f' \"cd {self.remote_dir}&&{str_cli_cmd}\"'
+#             logger.debug('str_command_line = %s', str_command_line)
+#         elif self.mode == 'local':
+#             logger.info('===Local access mode===')
+#             str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
+#         else:
+#             raise ValueError('Unknown mode setting in command_line')
+#         return self.my_command(str_command_line)
     
 
 '''To verify logging in pytest'''
