@@ -15,6 +15,7 @@ import paramiko
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
 def dict_format(callback):
     def wrapper(*args, **kwargs):
@@ -54,7 +55,7 @@ class ApplicationInterface(object):
 
     def __import_config(self) -> dict[str, str]:
         try:
-            with open(f'./config/{self.config_file}', 'r') as f:
+            with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
                 dict_config_list = json.load(f)
                 return dict_config_list
         except IOError:
