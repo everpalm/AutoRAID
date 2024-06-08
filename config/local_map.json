@@ -1,0 +1,18 @@
+[
+    {
+        "Client": "10.18.136.110",
+        "Host": "10.18.136.114",
+        "Account": "pi",
+        "Password": "123456",
+        "Local Directory": "/home/pi",
+        "Remote Directory": "/home/test/FW_Generic"
+    },
+    {
+        "Client": "10.18.136.114",
+        "Host": "10.18.136.110",
+        "Account": "root",
+        "Password": "marvell",
+        "Local Directory": "/home/pi",
+        "Remote Directory": "/home/test/FW_Generic"
+    }
+]

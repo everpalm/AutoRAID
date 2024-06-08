@@ -1,0 +1,21 @@
+[
+    {
+        "PCIE Configuration": 
+        {
+            "Manufacturer":"Marvell",
+            "SDID":"2241", 
+            "BDF": "01:00.0", 
+            "Vendor ID": "1414",
+            "Serial Number": "1234-5678-abcd-ef"
+        },
+        "NVME List": 
+        {
+            "Node": "nvme0n1",
+            "SN": "00000000000000000000",
+            "Model": "Marvell_NVMe_Controller",
+            "Namespace ID": "1",
+            "Namespace Usage": "1.02 TB",
+            "FW Rev": "10001053"
+        }
+    }
+]
