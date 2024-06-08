@@ -14,6 +14,7 @@ pipeline {
         // booleanParam(name: 'executeTest', defaultValue: true, description: '')
         choice(
             choices: [
+                'all',
                 'system_under_testing',
                 'win10_interface',
                 'device_under_testing'
@@ -37,25 +38,29 @@ pipeline {
             //     }
             // }
             steps {
-                // echo 'Build - 1'
                 script {
                     gv.buildApp()
                 }
             }
         }
-        stage('Test') {
+        stage('Staging') {
+            when {
+                expression {
+                    params.MY_SUITE == 'win10_interface' || 'all'
+                }
+            }
             steps {
                 // echo 'Start testing - 2'
                 script {
                     gv.testApp()
                 }
-                sh "cd /home/pi/Projects/AutoRAID/tests && pipenv run python -m pytest test_${params.MY_SUITE}.py"
+                // sh "cd /home/pi/Projects/AutoRAID/tests && pipenv run python -m pytest test_${params.MY_SUITE}.py"
             }
         }
     }
     post {
         always {
-            emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@gmail.com'
+            emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@ms58.url.com.tw'
         }
         success {
             echo 'todo - 1'
