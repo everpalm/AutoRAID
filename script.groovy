@@ -1,5 +1,6 @@
 def buildApp() {
     echo 'Build - 1'
+    sh "pipenv shell"
 }
 
 def testApp() {

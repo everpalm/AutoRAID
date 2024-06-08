@@ -56,6 +56,7 @@ pipeline {
     post {
         always {
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@gmail.com'
+            sh "exit"
         }
         success {
             echo 'todo - 1'
