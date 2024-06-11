@@ -5,7 +5,7 @@ import os
 import pandas as pd
 # from system_under_testing import SystemUnderTasting as sut
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 

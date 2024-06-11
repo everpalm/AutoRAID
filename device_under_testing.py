@@ -5,7 +5,7 @@ import logging
 import json
 from system_under_testing import SystemUnderTasting as sut
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 

@@ -10,9 +10,10 @@ import struct
 import json
 import paramiko
 # import re
+PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
 ''' Define NevoX application interface '''
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -45,7 +46,7 @@ class ApplicationInterface(object):
     '''
 
     def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
-        self.os = self._get_os()
+        self.os = self.get_os()
         self.mode = str_mode
         self.config_file = str_config_file
         self.local_ip = self.__get_local_ip(str_if_name)
@@ -54,7 +55,8 @@ class ApplicationInterface(object):
 
     def __import_config(self) -> dict[str, str]:
         try:
-            with open(f'./config/{self.config_file}', 'r') as f:
+            # with open(f'./config/{self.config_file}', 'r') as f:
+            with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
                 dict_config_list = json.load(f)
                 return dict_config_list
         except IOError:
@@ -91,7 +93,7 @@ class ApplicationInterface(object):
                 str_password = dict_element.get('Password')
                 str_local_dir = dict_element.get('Local Directory')
                 str_remote_dir = dict_element.get('Remote Directory')
-                logger.info('host_ip = %s', remote_ip)
+                logger.info('remote_ip = %s', remote_ip)
                 break
             else:
                 logger.debug('Not target dict_element = %s', dict_element)
@@ -129,21 +131,53 @@ class ApplicationInterface(object):
                 __list_msg.append(response_msg.replace('\x08', ''))
         return __list_msg
 
-    @staticmethod
-    def _get_os() -> str:
+    # @staticmethod
+    def get_os(self) -> str:
         ''' Get OS version
             Args: None
             Returns: OS type
             Raises: None
         '''
-        if os.name == 'nt':
-            str_msg = 'Windows'
-        elif os.name == 'posix':
-            str_msg = 'Linux'
-        else:
-            str_msg = 'Unknown'
-        logger.debug('str_msg = %s', str_msg)
-        return str_msg
+        # if os.name == 'nt':
+        #     str_msg = 'Windows'
+        # elif os.name == 'posix':
+        #     str_msg = 'Linux'
+        # else:
+        #     str_msg = 'Unknown'
+        # logger.debug('str_msg = %s', str_msg)
+        # return str_msg
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    
+        try:
+        # 連線到遠端主機，使用預設的 SSH 端口（22）
+            ssh.connect(self.remote_ip, '22', self.account, self.password)
+        
+            os_info = ""
+
+            # 尝试 Linux 常用的 uname 命令
+            stdin, stdout, stderr = ssh.exec_command("uname -s")
+            uname_output = stdout.read().decode('utf-8').strip()
+            if uname_output:
+                # os_info = f"Linux/Unix: {uname_output}"
+                os_info = "Linux"
+            else:
+                # 尝试 Windows 常用的 systeminfo 命令
+                stdin, stdout, stderr = ssh.exec_command("systeminfo")
+                systeminfo_output = stdout.read().decode('utf-8').strip()
+                if systeminfo_output:
+                    # os_info = "Windows: " + "\n".join(systeminfo_output.split("\n")[:10])  # 只取前几行作为示例
+                    os_info = "Windows"
+            if not os_info:
+                raise Exception("Failed to retrieve OS information")
+            logger.debug('os_info = %s', os_info)
+            return os_info
+            
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+        finally:
+            ssh.close()
     
     def io_command(self, str_ssh_command: str) -> bool:
         client = paramiko.SSHClient()
@@ -186,7 +220,7 @@ class ApplicationInterface(object):
             str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
         else:
             raise ValueError('Unknown mode setting in command_line')
-        return self.__my_command(str_command_line)
+        return self.my_command(str_command_line)
 
 # class Win10Interface(ApplicationInterface):
 #     @dict_format
