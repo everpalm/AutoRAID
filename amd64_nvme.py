@@ -41,7 +41,8 @@ class AMD64NMMe(object):
         # self.os = self.get_os()
         self.os = self.api.get_os()
         self.manufacturer = str_manufacturer
-        self.bdf, self.sdid = self._get_pcie_info().values()
+        # self.bdf, self.sdid = self._get_pcie_info().values()
+        self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
         self.node, self.sn, self.model, self.namespace_id, \
             self.namespace_usage, self.fw_rev = \
             self._get_nvme_device().values()
@@ -98,17 +99,33 @@ class AMD64NMMe(object):
             str_return = self.api.command_line(
                 f"wmic path win32_pnpentity get deviceid, name|findstr {self.manufacturer}")
             logger.debug('__dict_return = %s', str_return)
-            str_bdf = str_return.get(0).split(' ')[0]
-            str_sdid = str_return.get(1).split(' ')[-1]
+            
+            # Check if str_return is None
+            if str_return is None:
+                raise ValueError("Received None from command_line")
+            
+           
+            # str_bdf = str_return.get(0).split('_')[0]
+            # str_sdid = str_return.get(1).split(' ')[-1]
+            # logger.debug(
+            #         'self.manufacturer = %s, str_bdf = %s, self.bdf = %s',
+            #         self.manufacturer,
+            #         str_bdf, str_sdid)
+            pattern = r"VEN_(\w+)&DEV_(\w+)&SUBSYS_(\w+)&REV_(\w+)"
+            match = re.search(pattern, str_return.get(1))
+            if match:
+                str_vid, str_did, str_sdid, str_rev = match.groups()
             logger.debug(
-                    'self.manufacturer = %s, str_bdf = %s, self.bdf = %s',
-                    self.manufacturer,
-                    str_bdf, str_sdid)
+                    'self.manufacturer = %s, str_vid = %s, str_did = %s',
+                    self.manufacturer, str_vid, str_did)
+            logger.debug('str_sdid = %s, str_rev = %s', str_sdid, str_rev)
+                   
         except Exception as e:
             logger.error('Error occurred in _get_pcie_info: %s', e)
             raise
         finally:
-            return {"BDF": str_bdf, "SDID": str_sdid}
+            # return {"BDF": str_bdf, "SDID": str_sdid}
+            return {"VID": str_vid, "DID": str_sdid, "SDID": str_sdid, "Rev": str_rev}
 
     # @staticmethod
     # def get_os() -> str:

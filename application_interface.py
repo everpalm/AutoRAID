@@ -11,6 +11,7 @@ import json
 import paramiko
 # import re
 PROJECT_PATH = "/home/pi/Projects/AutoRAID"
+SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
 # logging.basicConfig(level=logging.DEBUG)
@@ -151,18 +152,17 @@ class ApplicationInterface(object):
     
         try:
         # 連線到遠端主機，使用預設的 SSH 端口（22）
-            ssh.connect(self.remote_ip, '22', self.account, self.password)
-        
+            ssh.connect(self.remote_ip, SSH_PORT, self.account, self.password)
             os_info = ""
 
-            # 尝试 Linux 常用的 uname 命令
+            # Try Linux uname command
             stdin, stdout, stderr = ssh.exec_command("uname -s")
             uname_output = stdout.read().decode('utf-8').strip()
             if uname_output:
                 # os_info = f"Linux/Unix: {uname_output}"
                 os_info = "Linux"
             else:
-                # 尝试 Windows 常用的 systeminfo 命令
+                # Try Windows systeminfo command
                 stdin, stdout, stderr = ssh.exec_command("systeminfo")
                 systeminfo_output = stdout.read().decode('utf-8').strip()
                 if systeminfo_output:

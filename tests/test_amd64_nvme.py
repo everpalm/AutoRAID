@@ -25,10 +25,11 @@ GENERIC_X86 = [
                 },
                 "PCIE Configuration":
                 {
-                    "Manufacturer": "Marvell",
-                    "SDID": "2241",
-                    "BDF": '01:00.0',
-                    'Vendor ID': '1414',
+                    "Manufacturer": "NVM",
+                    "DID": "2241",
+                    'VID': '1B4B',
+                    "SDID": "22411B4B",
+                    "Rev": "20",
                     'Serial Number': '1234-5678-abcd-ef'
                 },
                 "NVME List":
@@ -115,7 +116,7 @@ class TestAMD64NVMe(object):
     @pytest.fixture(scope="session", autouse=True)
     def target_system(self):
         print('\n\033[32m================ Setup AMD64 ===============\033[0m')
-        return amd64('Marvell')
+        return amd64('NVM')
 
     @pytest.fixture(scope="session", autouse=True)
     def drone(self):
