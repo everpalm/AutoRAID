@@ -16,8 +16,9 @@ GENERIC_X86 = [
             {
                 "CPU Information":
                 {
-                    "CPU(s)": "4",
-                    "Model Name": "Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz"
+                    "CPU(s)": "12-Core",
+                    # "Model Name": "Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz"
+                    "Model Name": "AMD Ryzen 9"
                 },
                 "Desktop Information":
                 {

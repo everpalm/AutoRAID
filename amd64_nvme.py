@@ -43,14 +43,14 @@ class AMD64NMMe(object):
         self.manufacturer = str_manufacturer
         # self.bdf, self.sdid = self._get_pcie_info().values()
         self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
-        self.node, self.sn, self.model, self.namespace_id, \
-            self.namespace_usage, self.fw_rev = \
-            self._get_nvme_device().values()
-        self.critical_warning, self.temperature, self.power_cycles, \
-            self.unsafe_shutdowns = self._get_nvme_smart_log().values()
+        # self.node, self.sn, self.model, self.namespace_id, \
+            # self.namespace_usage, self.fw_rev = \
+            # self._get_nvme_device().values()
+        # self.critical_warning, self.temperature, self.power_cycles, \
+            # self.unsafe_shutdowns = self._get_nvme_smart_log().values()
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.version, self.serial = self._get_desktop_info().values()
-        self.disk_num = self._get_disk_num()
+        self.disk_num, self.serial_num = self._get_disk_num()
 
     def _get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
@@ -62,8 +62,8 @@ class AMD64NMMe(object):
         str_return = str_cpu_num = str_cpu_name = None
         try:
             str_return = self.api.command_line('wmic cpu get name')
-            str_cpu_num = str_return.get(1).split(' ')[1]
-            str_cpu_name = str_return.get(4).split(':')[1].lstrip()
+            str_cpu_num = str_return.get(1).split(' ')[4]
+            str_cpu_name = ' '.join(str_return.get(1).split(' ')[0:3])
             logger.debug('str_cpu_num = %s, str_cpu_name = %s',
                          str_cpu_num, str_cpu_name)
         except Exception as e:
@@ -78,19 +78,21 @@ class AMD64NMMe(object):
                 f'powershell Get-PhysicalDisk|findstr {self.manufacturer}')
             logger.debug('str_return = %s', str_return)
             
-        # Check if str_return is None
+            # Check if str_return is None
             if str_return is None:
                 raise ValueError("Received None from command_line")
             
             str_disk_num = str_return.get(0).split(' ')[0].lstrip()
-
+            str_serial_num = str_return.get(0).split(' ')[4].lstrip()
             logger.debug('str_disk_num = %s', str_disk_num)
+            logger.debug('str_serial_num = %s', str_serial_num)
             
         except Exception as e:
             logger.error('Error occurred in _get_disk_num: %s', e)
             raise
         finally:
-            return int(str_disk_num)
+            # return int(str_disk_num)
+            return {"Number": str_disk_num, "SerialNumber": str_serial_num}
 
     def _get_desktop_info(self) -> dict[str, str]:
         ''' Get Desktop Computer information
@@ -142,62 +144,46 @@ class AMD64NMMe(object):
             # return {"BDF": str_bdf, "SDID": str_sdid}
             return {"VID": str_vid, "DID": str_sdid, "SDID": str_sdid, "Rev": str_rev}
 
-    # @staticmethod
-    # def get_os() -> str:
-    #     ''' Get OS version
-    #         Args: None
-    #         Returns: OS type
-    #         Raises: None
+    # def _get_nvme_device(self) -> dict[str, str]:
+    #     ''' Get NVMe device name
+    #         Args:
+    #         Returns:
+    #         Raises:
     #     '''
-    #     if os.name == 'nt':
-    #         str_msg = 'Windows'
-    #     elif os.name == 'posix':
-    #         str_msg = 'Linux'
-    #     else:
-    #         str_msg = 'Unknown'
-    #     logger.debug('str_msg = %s', str_msg)
-    #     return str_msg
-
-    def _get_nvme_device(self) -> dict[str, str]:
-        ''' Get NVMe device name
-            Args:
-            Returns:
-            Raises:
-        '''
-        str_node = str_sn = str_model = str_namespace_id = str_namespace_usage\
-            = str_fw_rev = None
-        try:
-            str_return = self.api.command_line("nvme list|grep /dev/nvme")
-            logger.debug('str_return = %s', str_return)
-            str_node = str_return.get(0).split(' ')[0].split('/')[2]
-            str_sn = str_return.get(0).split(' ')[1]
-            str_model = str_return.get(0).split(' ')[2]
-            str_namespace_id = str_return.get(0).split(' ')[3]
-            str_namespace_usage = str_return.get(0).split(' ')[4] + ' ' + \
-                str_return.get(0).split(' ')[5]
-            str_fw_rev = str_return.get(0).split(' ')[-1]
-            logger.debug(
-                    'str_node = %s, str_sn = %s, str_model = %s, \
-                        str_namespace_id = %s, str_namespace_usage = %s,\
-                            str_fw_rev = %s',
-                    str_node,
-                    str_sn,
-                    str_model,
-                    str_namespace_id,
-                    str_namespace_usage,
-                    str_fw_rev)
-        except Exception as e:
-            logger.error(f"Error occurred in _get_nvme_device: {e}")
-            raise
-        finally:
-            return {
-                    "Node": str_node,
-                    "SN": str_sn,
-                    "Model": str_model,
-                    "Namespace ID": str_namespace_id,
-                    "Namespace Usage": str_namespace_usage,
-                    "FW Rev": str_fw_rev
-                    }
+    #     str_node = str_sn = str_model = str_namespace_id = str_namespace_usage\
+    #         = str_fw_rev = None
+    #     try:
+    #         str_return = self.api.command_line("nvme list|grep /dev/nvme")
+    #         logger.debug('str_return = %s', str_return)
+    #         str_node = str_return.get(0).split(' ')[0].split('/')[2]
+    #         str_sn = str_return.get(0).split(' ')[1]
+    #         str_model = str_return.get(0).split(' ')[2]
+    #         str_namespace_id = str_return.get(0).split(' ')[3]
+    #         str_namespace_usage = str_return.get(0).split(' ')[4] + ' ' + \
+    #             str_return.get(0).split(' ')[5]
+    #         str_fw_rev = str_return.get(0).split(' ')[-1]
+    #         logger.debug(
+    #                 'str_node = %s, str_sn = %s, str_model = %s, \
+    #                     str_namespace_id = %s, str_namespace_usage = %s,\
+    #                         str_fw_rev = %s',
+    #                 str_node,
+    #                 str_sn,
+    #                 str_model,
+    #                 str_namespace_id,
+    #                 str_namespace_usage,
+    #                 str_fw_rev)
+    #     except Exception as e:
+    #         logger.error(f"Error occurred in _get_nvme_device: {e}")
+    #         raise
+    #     finally:
+    #         return {
+    #                 "Node": str_node,
+    #                 "SN": str_sn,
+    #                 "Model": str_model,
+    #                 "Namespace ID": str_namespace_id,
+    #                 "Namespace Usage": str_namespace_usage,
+    #                 "FW Rev": str_fw_rev
+    #                 }
 
     def _get_nvme_smart_log(self) -> dict[str, int]:
         ''' Get NVMe SMART log
@@ -209,27 +195,28 @@ class AMD64NMMe(object):
             int_power_cycles = int_unsafe_shutdowns = None
         try:
             dict_return = self.api.command_line(
-                    f'nvme smart-log /dev/{self.node}')
-            int_critical_warning = int(dict_return.get(1).split(':')[1])
-            int_temperature = int(dict_return.get(2).split(' ')[2])
-            int_power_cycles = int(dict_return.get(11).split(':')[1])
-            int_unsafe_shutdowns = int(dict_return.get(13).split(':')[1])
+                    # f'nvme smart-log /dev/{self.node}')
+                    r'powershell -Command \\"Get-PhysicalDisk | Where-Object { \'$_.DeviceID -eq 1\' } | Get-StorageReliabilityCounter\\""')
+            int_temperature = int(dict_return.get(3).split(' ')[1])
+            int_read_error_unc = int(dict_return.get(11).split(' ')[2])
+            int_wear = int(dict_return.get(13).split(' ')[3])
+            int_power_on_hour = int(dict_return.get(3).split(' ')[1])
             logger.debug(
-                    'int_critical_warning = %s , int_temperature = %s,\
-                        int_power_cycles = %s, int_unsafe_shutdowns = %s',
-                    int_critical_warning,
+                    'int_temperature = %s , int_read_error_unc = %s,\
+                        int_power_cycles = %s, int_power_on_hour = %s',
                     int_temperature,
-                    int_power_cycles,
-                    int_unsafe_shutdowns)
+                    int_read_error_unc,
+                    int_wear,
+                    int_power_on_hour)
         except Exception as e:
             logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
             raise
         finally:
             return {
-                    "critical_warning": int_critical_warning,
                     "temperature": int_temperature,
-                    "power_cycles": int_power_cycles,
-                    "unsafe_shutdowns": int_unsafe_shutdowns
+                    "read_error_unc": int_read_error_unc,
+                    "wear": int_wear,
+                    "power_on_hour": int_power_on_hour
                     }
 
     @dict_to_dataframe
