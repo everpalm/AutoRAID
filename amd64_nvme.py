@@ -50,6 +50,7 @@ class AMD64NMMe(object):
             self.unsafe_shutdowns = self._get_nvme_smart_log().values()
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.version, self.serial = self._get_desktop_info().values()
+        self.disk_num = self._get_disk_num()
 
     def _get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
@@ -69,6 +70,27 @@ class AMD64NMMe(object):
             logger.error('error occurred in _get_cpu_info: %s', e)
         finally:
             return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
+
+    def _get_disk_num(self) -> int:
+        try:
+            str_return = str_disk_num = None
+            str_return = self.api.command_line(
+                f'powershell Get-PhysicalDisk|findstr {self.manufacturer}')
+            logger.debug('str_return = %s', str_return)
+            
+        # Check if str_return is None
+            if str_return is None:
+                raise ValueError("Received None from command_line")
+            
+            str_disk_num = str_return.get(0).split(' ')[0].lstrip()
+
+            logger.debug('str_disk_num = %s', str_disk_num)
+            
+        except Exception as e:
+            logger.error('Error occurred in _get_disk_num: %s', e)
+            raise
+        finally:
+            return int(str_disk_num)
 
     def _get_desktop_info(self) -> dict[str, str]:
         ''' Get Desktop Computer information
@@ -104,13 +126,6 @@ class AMD64NMMe(object):
             if str_return is None:
                 raise ValueError("Received None from command_line")
             
-           
-            # str_bdf = str_return.get(0).split('_')[0]
-            # str_sdid = str_return.get(1).split(' ')[-1]
-            # logger.debug(
-            #         'self.manufacturer = %s, str_bdf = %s, self.bdf = %s',
-            #         self.manufacturer,
-            #         str_bdf, str_sdid)
             pattern = r"VEN_(\w+)&DEV_(\w+)&SUBSYS_(\w+)&REV_(\w+)"
             match = re.search(pattern, str_return.get(1))
             if match:
