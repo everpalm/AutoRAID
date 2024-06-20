@@ -49,7 +49,7 @@ class AMD64NMMe(object):
         # self.critical_warning, self.temperature, self.power_cycles, \
             # self.unsafe_shutdowns = self._get_nvme_smart_log().values()
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
-        self.version, self.serial = self._get_desktop_info().values()
+        self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num()
 
     def _get_cpu_info(self) -> dict[str, str]:
@@ -103,13 +103,22 @@ class AMD64NMMe(object):
         '''
         str_return = str_version = str_serial = None
         try:
-            str_return = self.api.command_line('lshw|grep "Desktop" -A 4')
-            str_version = str_return.get(3).split(':')[1].lstrip()
-            str_serial = str_return.get(4).split(':')[1].lstrip()
+            # str_return = self.api.command_line('lshw|grep "Desktop" -A 4')
+            str_return = self.api.command_line(
+                'wmic computersystem get Name, Manufacturer, Model')
+            str_vendor = ' '.join(str_return.get(1).split(' ')[0:1])
+            str_model = ' '.join(str_return.get(1).split(' ')[2:4])
+            str_name = str_return.get(1).split(' ')[5].lstrip()
+            logger.debug('str_vendor = %s', str_vendor)
+            logger.debug('str_model = %s', str_model)
+            logger.debug('str_name = %s', str_name)
+    
         except Exception as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
         finally:
-            return {"Version": str_version, "Serial": str_serial}
+            return {"Manufacturer": str_vendor,
+                    "Model": str_model,
+                    "Name": str_name}
 
     def _get_pcie_info(self) -> dict[str, str]:
         ''' Get PCIe information
@@ -185,39 +194,39 @@ class AMD64NMMe(object):
     #                 "FW Rev": str_fw_rev
     #                 }
 
-    def _get_nvme_smart_log(self) -> dict[str, int]:
-        ''' Get NVMe SMART log
-            Args:
-            Returns:
-            Raises:
-        '''
-        dict_return = int_critical_warning = int_temperature = \
-            int_power_cycles = int_unsafe_shutdowns = None
-        try:
-            dict_return = self.api.command_line(
-                    # f'nvme smart-log /dev/{self.node}')
-                    r'powershell -Command \\"Get-PhysicalDisk | Where-Object { \'$_.DeviceID -eq 1\' } | Get-StorageReliabilityCounter\\""')
-            int_temperature = int(dict_return.get(3).split(' ')[1])
-            int_read_error_unc = int(dict_return.get(11).split(' ')[2])
-            int_wear = int(dict_return.get(13).split(' ')[3])
-            int_power_on_hour = int(dict_return.get(3).split(' ')[1])
-            logger.debug(
-                    'int_temperature = %s , int_read_error_unc = %s,\
-                        int_power_cycles = %s, int_power_on_hour = %s',
-                    int_temperature,
-                    int_read_error_unc,
-                    int_wear,
-                    int_power_on_hour)
-        except Exception as e:
-            logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
-            raise
-        finally:
-            return {
-                    "temperature": int_temperature,
-                    "read_error_unc": int_read_error_unc,
-                    "wear": int_wear,
-                    "power_on_hour": int_power_on_hour
-                    }
+    # def _get_nvme_smart_log(self) -> dict[str, int]:
+    #     ''' Get NVMe SMART log
+    #         Args:
+    #         Returns:
+    #         Raises:
+    #     '''
+    #     dict_return = int_critical_warning = int_temperature = \
+    #         int_power_cycles = int_unsafe_shutdowns = None
+    #     try:
+    #         dict_return = self.api.command_line(
+    #                 # f'nvme smart-log /dev/{self.node}')
+    #                 r'powershell -Command \\"Get-PhysicalDisk | Where-Object { \'$_.DeviceID -eq 1\' } | Get-StorageReliabilityCounter\\""')
+    #         int_temperature = int(dict_return.get(3).split(' ')[1])
+    #         int_read_error_unc = int(dict_return.get(11).split(' ')[2])
+    #         int_wear = int(dict_return.get(13).split(' ')[3])
+    #         int_power_on_hour = int(dict_return.get(3).split(' ')[1])
+    #         logger.debug(
+    #                 'int_temperature = %s , int_read_error_unc = %s,\
+    #                     int_power_cycles = %s, int_power_on_hour = %s',
+    #                 int_temperature,
+    #                 int_read_error_unc,
+    #                 int_wear,
+    #                 int_power_on_hour)
+    #     except Exception as e:
+    #         logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
+    #         raise
+    #     finally:
+    #         return {
+    #                 "temperature": int_temperature,
+    #                 "read_error_unc": int_read_error_unc,
+    #                 "wear": int_wear,
+    #                 "power_on_hour": int_power_on_hour
+    #                 }
 
     @dict_to_dataframe
     @convert_size
