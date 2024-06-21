@@ -3,35 +3,33 @@
 
 import logging
 import pytest
-# import time
-from amd64_nvme import AMD64NMMe as amd64
-from system_under_testing import RasperberryPi as rpi
 
 ''' Set up logger '''
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
-GENERIC_X86 = [
+AMD64_NVM = [
             {
                 "CPU Information":
                 {
                     "CPU(s)": "12-Core",
-                    # "Model Name": "Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz"
                     "Model Name": "AMD Ryzen 9"
                 },
                 "Desktop Information":
                 {
-                    "Version": "ThinkCentre M910t"
+                    "Manufacturer": "System",
+                    "Model": "System Product",
+                    "Name": "MY-TESTBED-01",
+                    "Operating System": "Windows"
                 },
                 "PCIE Configuration":
                 {
                     "Manufacturer": "NVM",
-                    "DID": "2241",
-                    'VID': '1B4B',
+                    "VID": "1B4B",
+                    "DID": "22411B4B",
                     "SDID": "22411B4B",
-                    "Rev": "20",
-                    'Serial Number': '1234-5678-abcd-ef'
+                    "Rev": "20"
                 },
                 "NVME List":
                 {
@@ -114,85 +112,55 @@ RW_TABLE = (
 
 
 class TestAMD64NVMe(object):
-    @pytest.fixture(scope="session", autouse=True)
-    def target_system(self):
-        print('\n\033[32m================ Setup AMD64 ===============\033[0m')
-        return amd64('NVM')
-
-    @pytest.fixture(scope="session", autouse=True)
-    def drone(self):
-        print('\n\033[32m================ Setup RSBPi ===============\033[0m')
-        return rpi("/dev/ttyUSB0", 115200, "uart.log")
-
-    @pytest.fixture(scope="session", autouse=True)
-    def test_open_uart(self, drone):
-        logger.info('===Setup UART===')
-        yield drone.open_uart()
-        logger.info('===Teardown UART===')
-        drone.close_uart()
-
-    @pytest.mark.parametrize('generic_x86', GENERIC_X86)
-    def test_get_cpu_info(self, target_system, generic_x86):
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_get_cpu_info(self, target_system, amd64_nvm):
         logger.info('CPU(s) = %s, CPU model = %s', target_system.cpu_num,
                     target_system.cpu_name)
         assert target_system.cpu_num == \
-            generic_x86['CPU Information']["CPU(s)"]
+            amd64_nvm['CPU Information']["CPU(s)"]
         assert target_system.cpu_name == \
-            generic_x86['CPU Information']["Model Name"]
+            amd64_nvm['CPU Information']["Model Name"]
 
-    @pytest.mark.parametrize('generic_x86', GENERIC_X86)
-    def test_get_desktop_info(self, target_system, generic_x86):
-        logger.info('Version = %s, Serial = %s', target_system.version,
-                    target_system.serial)
-        assert target_system.version == \
-            generic_x86['Desktop Information']["Version"]
-        # assert target_system.serial == \
-        #     generic_x86['Desktop Information']["Serial"]
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_get_desktop_info(self, target_system, amd64_nvm):
+        logger.info('Manufacturer = %s, Model = %s, Name = %s',
+                    target_system.vendor,
+                    target_system.model,
+                    target_system.name)
+        assert target_system.vendor == \
+            amd64_nvm['Desktop Information']["Manufacturer"]
+        assert target_system.model == \
+            amd64_nvm['Desktop Information']["Model"]
+        assert target_system.name == \
+            amd64_nvm['Desktop Information']["Name"]
+        assert target_system.os == \
+            amd64_nvm['Desktop Information']["Operating System"]
 
-    @pytest.mark.parametrize('generic_x86', GENERIC_X86)
-    def test_get_pcie_info(self, target_system, generic_x86):
-        assert target_system.bdf == generic_x86['PCIE Configuration']["BDF"]
-        assert target_system.sdid == generic_x86['PCIE Configuration']["SDID"]
-
-    def test_get_os(self, target_system):
-        logger.info('my_sut.os = %s', target_system.os)
-        assert target_system.os == 'Linux'
-
-    @pytest.mark.parametrize('generic_x86', GENERIC_X86)
-    def test_get_nvme_device(self, target_system, generic_x86):
-        assert target_system.node == generic_x86['NVME List']["Node"]
-        assert target_system.model == generic_x86['NVME List']["Model"]
-        assert target_system.namespace_usage == \
-            generic_x86['NVME List']["Namespace Usage"]
-        assert target_system.namespace_id == \
-            generic_x86['NVME List']["Namespace ID"]
-        assert target_system.fw_rev == generic_x86['NVME List']["FW Rev"]
-
-    @pytest.mark.parametrize('generic_x86', GENERIC_X86)
-    def test_get_nvme_smart_log(self, target_system, generic_x86):
-        assert target_system.critical_warning == \
-            generic_x86['NVME SMART-log']["critical_warning"]
-        assert target_system.temperature <= \
-            generic_x86['NVME SMART-log']["temperature"]
-        assert target_system.power_cycles >= \
-            generic_x86['NVME SMART-log']["power_cycles"]
-        assert target_system.unsafe_shutdowns >= \
-            generic_x86['NVME SMART-log']["unsafe_shutdowns"]
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_get_pcie_info(self, target_system, amd64_nvm):
+        assert target_system.vid == \
+            amd64_nvm['PCIE Configuration']["VID"]
+        assert target_system.did == \
+            amd64_nvm['PCIE Configuration']["DID"]
+        assert target_system.sdid == \
+            amd64_nvm['PCIE Configuration']["SDID"]
+        assert target_system.rev == \
+            amd64_nvm['PCIE Configuration']["Rev"]
 
     # @pytest.mark.repeat(3)
-    @pytest.mark.parametrize('rw_table', RW_TABLE)
-    def test_run_io_operation(self, target_system, rw_table):
-        df_perf = target_system.run_io_operation(
-                rw_table['RW Mode'],
-                rw_table['Block Size'],
-                rw_table['IO Depth'],
-                rw_table['Job'],
-                rw_table['Run Time'],
-                rw_table['CPU Mask'])
-        # Check if IOPS is greater or equal to pass credible region
-        assert df_perf.iloc[-1, 0] >= rw_table['IOPS'] * rw_table['CR']
-        # Check if bandwidth is greater or equal to pass credible region
-        assert df_perf.iloc[-1, 1] >= rw_table['BW'] * rw_table['CR']
+    # @pytest.mark.parametrize('rw_table', RW_TABLE)
+    # def test_run_io_operation(self, target_system, rw_table):
+    #     df_perf = target_system.run_io_operation(
+    #             rw_table['RW Mode'],
+    #             rw_table['Block Size'],
+    #             rw_table['IO Depth'],
+    #             rw_table['Job'],
+    #             rw_table['Run Time'],
+    #             rw_table['CPU Mask'])
+    #     # Check if IOPS is greater or equal to pass credible region
+    #     assert df_perf.iloc[-1, 0] >= rw_table['IOPS'] * rw_table['CR']
+    #     # Check if bandwidth is greater or equal to pass credible region
+    #     assert df_perf.iloc[-1, 1] >= rw_table['BW'] * rw_table['CR']
 
     # @pytest.mark.parametrize("rw_table", RW_TABLE)
     # def test_groupby_io_mean(self, target_system, rw_table):

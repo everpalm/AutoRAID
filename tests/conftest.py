@@ -2,7 +2,12 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import pytest
+import logging
+from amd64_nvme import AMD64NMMe as amd64
+from system_under_testing import RasperberryPi as rpi
+from win10_interface import Win10Interface as win10
 
+logger = logging.getLogger(__name__)
 
 def pytest_addoption(parser):
     # For switching local/remote command
@@ -37,3 +42,26 @@ def cmdopt(request):
     cmdopt_dic.update({'if_name': request.config.getoption("--if_name")})
     cmdopt_dic.update({'config_file': request.config.getoption("--config_file")})
     return cmdopt_dic
+
+@pytest.fixture(scope="session", autouse=True)
+def target_system():
+    print('\n\033[32m================ Setup AMD64 ===============\033[0m')
+    return amd64('NVM')
+
+@pytest.fixture(scope="session", autouse=True)
+def drone():
+    print('\n\033[32m================ Setup RSBPi ===============\033[0m')
+    return rpi("/dev/ttyUSB0", 115200, "uart.log")
+
+@pytest.fixture(scope="session", autouse=True)
+def test_open_uart(drone):
+    print('\n\033[32m================ Setup UART ===============\033[0m')
+    yield drone.open_uart()
+    print('\n\033[32m================ Teardown UART ===============\033[0m')
+    drone.close_uart()
+
+@pytest.fixture(scope="session", autouse=True)
+def my_win10(cmdopt):
+    print('\n\033[32m================ Setup Win10 ===============\033[0m')
+    return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
+    cmdopt.get('config_file'))
