@@ -83,7 +83,7 @@ class AMD64NMMe(object):
                 raise ValueError("Received None from command_line")
             
             str_disk_num = str_return.get(0).split(' ')[0].lstrip()
-            str_serial_num = str_return.get(0).split(' ')[4].lstrip()
+            str_serial_num = str_return.get(0).split(' ')[2].lstrip()
             logger.debug('str_disk_num = %s', str_disk_num)
             logger.debug('str_serial_num = %s', str_serial_num)
             
@@ -151,7 +151,8 @@ class AMD64NMMe(object):
             raise
         finally:
             # return {"BDF": str_bdf, "SDID": str_sdid}
-            return {"VID": str_vid, "DID": str_sdid, "SDID": str_sdid, "Rev": str_rev}
+            return {"VID": str_vid, "DID": str_sdid,
+                    "SDID": str_sdid, "Rev": str_rev}
 
     # def _get_nvme_device(self) -> dict[str, str]:
     #     ''' Get NVMe device name
