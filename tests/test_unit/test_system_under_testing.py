@@ -4,8 +4,8 @@
 import logging
 import pytest
 # import time
-from system_under_testing import SystemUnderTesting as sut
-from system_under_testing import RasperberryPi as rp
+from unit.system_under_testing import SystemUnderTesting as sut
+from unit.system_under_testing import RasperberryPi as rp
 
 ''' Set up logger '''
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',

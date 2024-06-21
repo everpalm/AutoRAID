@@ -3,9 +3,9 @@
 
 import pytest
 import logging
-from amd64_nvme import AMD64NMMe as amd64
-from system_under_testing import RasperberryPi as rpi
-from win10_interface import Win10Interface as win10
+from amd_desktop.amd64_nvme import AMD64NMMe as amd64
+from unit.system_under_testing import RasperberryPi as rpi
+from amd_desktop.win10_interface import Win10Interface as win10
 
 logger = logging.getLogger(__name__)
 

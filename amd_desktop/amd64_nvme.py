@@ -7,10 +7,10 @@ import os
 import re
 import pandas as pd
 # import time
-from win10_interface import Win10Interface as win10
-from system_under_testing import convert_size
-from system_under_testing import dict_to_dataframe
-from system_under_testing import RasperberryPi as rpi
+from amd_desktop.win10_interface import Win10Interface as win10
+from unit.system_under_testing import convert_size
+from unit.system_under_testing import dict_to_dataframe
+from unit.system_under_testing import RasperberryPi as rpi
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
