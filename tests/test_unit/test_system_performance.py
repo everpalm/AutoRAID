@@ -3,8 +3,8 @@
 
 import logging
 import pytest
-from system_performance import SystemPerformance as perf
-from system_under_testing import SystemUnderTesting as sut
+from unit.system_performance import SystemPerformance as perf
+from unit.system_under_testing import SystemUnderTesting as sut
 
 ''' Set up logger '''
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',

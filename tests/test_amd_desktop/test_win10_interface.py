@@ -18,7 +18,7 @@ WIN10_CMD_TABLE = ({"Command": "cd",
                     },
                    {"Command": "ver",
                    "Return": {"remote": {0: '',
-                            1: 'Microsoft Windows [Version 10.0.19045.4412]'},
+                            1: 'Microsoft Windows [Version 10.0.19045.4529]'},
                             "local": {0: '6.1.21-v8+'}}
                     })
 

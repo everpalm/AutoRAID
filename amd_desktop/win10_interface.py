@@ -1,8 +1,8 @@
 # Contents of win10_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
-from application_interface import ApplicationInterface
-from application_interface import dict_format
+from unit.application_interface import ApplicationInterface
+from unit.application_interface import dict_format
 import logging
 
 
