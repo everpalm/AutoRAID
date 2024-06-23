@@ -4,7 +4,7 @@ def buildApp() {
 
 def testApp() {
     echo 'Start testing - 2'
-    sh "cd /home/pi/Projects/AutoRAID/tests && pipenv run python -m pytest --testmon"
+    sh "cd /home/pi/Projects/AutoRAID && pipenv run python -m pytest --testmon"
 }
 
 return this
