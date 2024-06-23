@@ -12,8 +12,8 @@ pipeline {
         // Add parameters for test suite selection
         choice(
             choices: [
-                'test_amd_desktop'
-                'test_unit',
+                'test_amd_desktop',
+                'test_unit'
             ],
             description: 'Select the test environment',
             name: 'TEST_ENVIRONMENT'
