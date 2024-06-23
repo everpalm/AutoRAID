@@ -71,6 +71,8 @@ pipeline {
     post {
         always {
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@ms58.url.com.tw'
+            sh "pipenv run python -m pytest --cache-clear
+"
         }
         success {
             echo 'todo - 1'
