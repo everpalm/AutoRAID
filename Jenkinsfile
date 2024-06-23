@@ -1,5 +1,4 @@
 def gv
-// CODE_CHANGES = GetGitChanges()
 pipeline {
     triggers {
         // Trigger hook every 5 minutes
@@ -10,15 +9,22 @@ pipeline {
         label 'test_my_node'
     }
     parameters {
-        // Add parameters for any test suite
-        // booleanParam(name: 'executeTest', defaultValue: true, description: '')
+        // Add parameters for test suite selection
+        choice(
+            choices: [
+                'test_amd_desktop'
+                'test_unit',
+            ],
+            description: 'Select the test environment',
+            name: 'TEST_ENVIRONMENT'
+        )
         choice(
             choices: [
                 'all',
                 'system_under_testing',
                 'win10_interface',
                 'device_under_testing'
-                ],
+            ],
             description: 'My Test Suite',
             name: 'MY_SUITE'
         )
@@ -28,13 +34,13 @@ pipeline {
                 'system_under_testing',
                 'win10_interface',
                 'device_under_testing'
-                ],
+            ],
             description: 'Functional Test',
             name: 'FUNCTIONAL'
         )
     }
     stages {
-        stage ("Init") {
+        stage("Init") {
             steps {
                 script {
                     gv = load "script.groovy"
@@ -42,37 +48,40 @@ pipeline {
             }
         }
         stage('Build') {
-            // when {
-            //     expression {
-            //         CODE_CHANGES == true
-            //     }
-            // }
             steps {
                 script {
                     gv.buildApp()
                 }
             }
         }
+        stage('Testing') {
+            steps {
+                script {
+                    if (params.TEST_ENVIRONMENT == 'test_unit') {
+                        sh "cd /home/pi/Projects/AutoRAID/tests/test_unit && pipenv run python -m pytest --testmon"
+                    } else if (params.TEST_ENVIRONMENT == 'test_amd_desktop') {
+                        sh "cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run python -m pytest --testmon"
+                    }
+                }
+            }
+        }
         stage('Staging') {
             when {
                 expression {
-                    params.MY_SUITE == 'win10_interface' || 'all'
+                    params.MY_SUITE == 'win10_interface' || params.MY_SUITE == 'all'
                 }
             }
             steps {
-                // echo 'Start testing - 2'
                 script {
                     gv.testApp()
                 }
-                // sh "cd /home/pi/Projects/AutoRAID/tests && pipenv run python -m pytest test_${params.MY_SUITE}.py"
             }
         }
     }
     post {
         always {
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@ms58.url.com.tw'
-            sh "pipenv run python -m pytest --cache-clear
-"
+            sh "pipenv run python -m pytest --cache-clear"
         }
         success {
             echo 'todo - 1'
