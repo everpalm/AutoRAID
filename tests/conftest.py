@@ -43,13 +43,6 @@ def cmdopt(request):
     cmdopt_dic.update({'config_file': request.config.getoption("--config_file")})
     return cmdopt_dic
 
-# @pytest.fixture(scope="session", autouse=True)
-# def my_app(cmdopt):
-#     print('\n\033====================Setup API====================\033[0m')
-#     return api(cmdopt.get('mode'),
-#                 cmdopt.get('if_name'),
-#                 cmdopt.get('config_file'))
-
 @pytest.fixture(scope="session", autouse=True)
 def drone():
     print('\n\033[32m================ Setup RSBPi ===============\033[0m')

@@ -11,6 +11,7 @@ pytest-testmon = "*"
 pytest-repeat = "*"
 numpy = "==1.21.4"
 pandas = "*"
+pymongo = "*"
 
 [dev-packages]
 
