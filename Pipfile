@@ -12,6 +12,7 @@ pytest-repeat = "*"
 numpy = "==1.21.4"
 pandas = "*"
 pymongo = "*"
+pytest-json-report = "*"
 
 [dev-packages]
 

@@ -10,8 +10,6 @@ import logging
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# PROJECT_PATH = "/home/pi/Projects/AutoRAID"
-
 
 class Win10Interface(ApplicationInterface):
     @dict_format

@@ -1,6 +1,7 @@
 # Contents of application_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
+from typing import Tuple, List
 import logging
 import subprocess
 import socket
@@ -83,7 +84,7 @@ class ApplicationInterface(object):
             my_socket.close()
         return local_ip
 
-    def __get_remote_ip(self) -> list[str]:
+    def __get_remote_ip(self) -> Tuple[str, str, str, str, str]:
         # for dict_element in CONFIG_TABLE:
         for dict_element in self.__import_config():
             remote_ip = None
@@ -114,7 +115,7 @@ class ApplicationInterface(object):
 
     @staticmethod
     # def __my_command(str_ssh_command: str) -> list[str]:
-    def my_command(str_ssh_command: str) -> list[str]:
+    def my_command(str_ssh_command: str) -> List[str]:
         __list_msg = []
         # __list_err = []
         messages = subprocess.Popen(

@@ -1,4 +1,4 @@
-# Contents of test_application_interface.py
+# Contents of test_win10_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import logging
