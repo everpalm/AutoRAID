@@ -7,6 +7,7 @@ import logging
 # import os
 # from amd64_nvme import AMD64NMMe as amd64
 from unit.system_under_testing import RasperberryPi as rpi
+from unit.gitlab import GitLabAPI as glapi
 # from unit.application_interface import ApplicationInterface as api
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,12 @@ def pytest_addoption(parser):
         default="app_map.json",
         help="Default config file: app_map.json"
     )
+    # parser.addoption(
+    #     "--private_token",
+    #     action="store",
+    #     default="dummy",
+    #     help="Please check your Gitlab PAT"
+    # )
 
 # def pytest_configure(config):
 #     # 确保日志目录存在
@@ -53,9 +60,8 @@ def pytest_addoption(parser):
 #         level=logging.INFO,
 #         format='%(asctime)s %(levelname)s %(message)s',
 #     )
-
-    # 打印日志文件路径，便于确认
-    print(f"Logging to file: {log_file_path}")
+#     # 打印日志文件路径，便于确认
+#     print(f"Logging to file: {log_file_path}")
 
 # @pytest.fixture(scope="function")
 # @pytest.fixture(scope="module")
@@ -64,9 +70,9 @@ def cmdopt(request):
     # return request.config.getoption("--myopt")
     cmdopt_dic = {}
     cmdopt_dic.update({'mode': request.config.getoption("--mode")})
-    ''' Apply generate_report.py of lib '''
     cmdopt_dic.update({'if_name': request.config.getoption("--if_name")})
     cmdopt_dic.update({'config_file': request.config.getoption("--config_file")})
+    # cmdopt_dic.update({'private_token': request.config.getoption("--private_token")})
     return cmdopt_dic
 
 @pytest.fixture(scope="session", autouse=True)
@@ -80,3 +86,9 @@ def test_open_uart(drone):
     yield drone.open_uart()
     print('\n\033[32m================ Teardown UART ===============\033[0m')
     drone.close_uart()
+
+@pytest.fixture
+def gitlab_api():
+    return glapi(
+        private_token='fake_token',
+        project_id='storage7301426/AutoRAID')

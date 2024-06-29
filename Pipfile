@@ -15,6 +15,7 @@ pymongo = "*"
 pytest-json-report = "*"
 pytest-timeout = "*"
 python-gitlab = "*"
+mock = "*"
 
 [dev-packages]
 
