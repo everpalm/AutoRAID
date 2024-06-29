@@ -3,6 +3,8 @@
 
 import pytest
 import logging
+# import datetime
+# import os
 # from amd64_nvme import AMD64NMMe as amd64
 from unit.system_under_testing import RasperberryPi as rpi
 # from unit.application_interface import ApplicationInterface as api
@@ -11,6 +13,11 @@ logger = logging.getLogger(__name__)
 
 def pytest_addoption(parser):
     # For switching local/remote command
+    # parser.addini(
+    #     "log_dir",
+    #     help="log directory",
+    #     default="tests/logs"
+    # )
     parser.addoption(
         "--mode",
         action="store",
@@ -30,6 +37,25 @@ def pytest_addoption(parser):
         help="Default config file: app_map.json"
     )
 
+# def pytest_configure(config):
+#     # 确保日志目录存在
+#     log_dir = os.path.join(config.rootdir, "tests", "logs")
+#     if not os.path.exists(log_dir):
+#         os.makedirs(log_dir)
+    
+#     # 生成包含执行日期的日志文件名
+#     log_file_name = f"log_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+#     log_file_path = os.path.join(log_dir, log_file_name)
+    
+#     # 配置日志文件
+#     logging.basicConfig(
+#         filename=log_file_path,
+#         level=logging.INFO,
+#         format='%(asctime)s %(levelname)s %(message)s',
+#     )
+
+    # 打印日志文件路径，便于确认
+    print(f"Logging to file: {log_file_path}")
 
 # @pytest.fixture(scope="function")
 # @pytest.fixture(scope="module")

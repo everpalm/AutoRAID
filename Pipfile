@@ -13,6 +13,8 @@ numpy = "==1.21.4"
 pandas = "*"
 pymongo = "*"
 pytest-json-report = "*"
+pytest-timeout = "*"
+python-gitlab = "*"
 
 [dev-packages]
 
