@@ -1,4 +1,4 @@
-import pytest
+# import pytest
 from unittest.mock import MagicMock, patch
 
 
@@ -93,3 +93,26 @@ class TestGitLabAPI:
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.get.assert_called_once_with(1)
             mock_issue.delete.assert_called_once()
+
+    def test_get_test_case_id(self, gitlab_api):
+        with patch.object(gitlab_api.gl.projects, 'get') as mock_get:
+            mock_project = MagicMock()
+            mock_issue_1 = MagicMock()
+            mock_issue_2 = MagicMock()
+            mock_issue_1.title = "test_case_1"
+            mock_issue_1.iid = 1
+            mock_issue_2.title = "test_case_2"
+            mock_issue_2.iid = 2
+            mock_project.issues.list.return_value = [mock_issue_1, mock_issue_2]
+            mock_get.return_value = mock_project
+
+            test_case_id = gitlab_api.get_test_case_id("test_case_2")
+            assert test_case_id == 2
+            mock_get.assert_called_once_with('storage7301426/AutoRAID')
+            mock_project.issues.list.assert_called_once_with(all=True)
+    
+    def test_get_case1(self):
+        assert 1 == 1
+
+    def test_get_case2(self):
+        assert 1 == 2

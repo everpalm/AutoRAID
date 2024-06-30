@@ -1,9 +1,7 @@
 # Contents of test_win10_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
-
 import logging
 import pytest
-# from win10_interface import Win10Interface as win10
 
 ''' Set up logger '''
 logging.basicConfig(
@@ -24,12 +22,6 @@ WIN10_CMD_TABLE = ({"Command": "cd",
 
 
 class TestWin10Interface(object):
-    # @pytest.fixture(scope="session", autouse=True)
-    # def my_win10(self, cmdopt):
-    #     print('\n\033[32m================ Setup Win10 ===============\033[0m')
-    #     return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
-    #     cmdopt.get('config_file'))
-    
     @pytest.mark.parametrize("win_cmd", WIN10_CMD_TABLE)
     def test_command_line(self, my_win10, win_cmd):
         list_executed = my_win10.command_line(win_cmd["Command"])
