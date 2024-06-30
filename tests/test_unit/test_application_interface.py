@@ -26,7 +26,7 @@ class TestApplicationInterface(object):
     #     return api(cmdopt.get('mode'),
     #                cmdopt.get('if_name'),
     #                cmdopt.get('config_file'))
-
+    @pytest.mark.skip(reason="Current SUT is Windows")
     @pytest.mark.parametrize("linux_cmd", LINUX_CMD_TABLE)
     def test_command_line(self, my_app, linux_cmd):
         list_executed = my_app.command_line(linux_cmd["Command"])

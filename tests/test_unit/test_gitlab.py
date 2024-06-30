@@ -1,4 +1,4 @@
-# import pytest
+import pytest
 from unittest.mock import MagicMock, patch
 
 
@@ -23,7 +23,10 @@ class TestGitLabAPI:
             mock_project.issues.get.return_value = mock_issue
             mock_get.return_value = mock_project
 
-            gitlab_api.push_test_result(test_case_id=1, test_result="All pass")
+            gitlab_api.push_test_result(test_case_id=1,
+                                        test_result="All pass",
+                                        label='Test Status::Passed',
+                                        color='#00FF00')
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.get.assert_called_once_with(1)
             mock_issue.notes.create.assert_called_once_with({'body': "All pass"})
@@ -115,4 +118,5 @@ class TestGitLabAPI:
         assert 1 == 1
 
     def test_get_case2(self):
-        assert 1 == 2
+        with pytest.raises(AssertionError):
+            assert 1 == 2

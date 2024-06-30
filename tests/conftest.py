@@ -66,15 +66,15 @@ def pytest_runtest_makereport(item, call):
 
         test_case_name = item.name
         test_case_id = gitlab_api.get_test_case_id(test_case_name)
-        logger.debug(f'Test case name = {test_case_name}, ID = {test_case_id}')
+        logger.info(f'Test case name = {test_case_name}, ID = {test_case_id}')
         if test_case_id:
             if report.failed:
                 test_result = f"Test {test_case_name} failed:\n{report.longrepr}"
-                label = 'test status::failed'
+                label = 'Test Status::Failed'
                 color = '#FF0000'  # Red
             else:
                 test_result = f"Test {test_case_name} passed."
-                label = 'test status::passed'
+                label = 'Test Status::Passed'
                 color = '#00FF00'  # Green
             note = gitlab_api.push_test_result(test_case_id, test_result, label, color)
             if note:
@@ -88,3 +88,8 @@ def pytest_runtest_makereport(item, call):
                     logger.error(f'Failed to verify test result in GitLab for test case {test_case_name}')
             else:
                 logger.error(f'Failed to push test result to GitLab for test case {test_case_name}')
+    
+# @pytest.fixture(scope="session", autouse=True)
+# def my_mdb():
+#     print('\n\033[32m================ Setup MongoDB ===============\033[0m')
+#     return mdb('192.168.0.128', 27017, 'AutoRAID', 'amd_desktop')
