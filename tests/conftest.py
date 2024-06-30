@@ -26,13 +26,19 @@ def pytest_addoption(parser):
         default="app_map.json",
         help="Default config file: app_map.json"
     )
-
+    parser.addoption(
+        "--private_token",
+        action="store",
+        default="xxxxx-xxxx",
+        help="Check your GitLab Private Token"
+    )
 @pytest.fixture(scope="session")
 def cmdopt(request):
     cmdopt_dic = {}
     cmdopt_dic.update({'mode': request.config.getoption("--mode")})
     cmdopt_dic.update({'if_name': request.config.getoption("--if_name")})
     cmdopt_dic.update({'config_file': request.config.getoption("--config_file")})
+    cmdopt_dic.update({'private_token': request.config.getoption("--private_token")})
     return cmdopt_dic
 
 @pytest.fixture(scope="session", autouse=True)
@@ -48,10 +54,11 @@ def test_open_uart(drone):
     drone.close_uart()
 
 @pytest.fixture(scope="session", autouse=True)
-def store_gitlab_api_in_config(request):
-    gitlab_api = glapi(private_token='glpat-Mk9a-KSfyufsT1yhPmyz', project_id='storage7301426/AutoRAID')
+def store_gitlab_api_in_config(cmdopt, request):
+    gitlab_api = glapi(private_token=cmdopt.get('private_token'), project_id='storage7301426/AutoRAID')
     request.config._store['gitlab_api'] = gitlab_api
-    return gitlab_api
+    # request.config.cache.set('gitlab_api', gitlab_api)
+    # return gitlab_api
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -72,6 +79,10 @@ def pytest_runtest_makereport(item, call):
                 test_result = f"Test {test_case_name} failed:\n{report.longrepr}"
                 label = 'Test Status::Failed'
                 color = '#FF0000'  # Red
+            if report.skipped:
+                test_result = f"Test {test_case_name} skippeed:\n{report.longrepr}"
+                label = 'Test Status::Skipped'
+                color = '#F0AD4E'  # Yellow
             else:
                 test_result = f"Test {test_case_name} passed."
                 label = 'Test Status::Passed'

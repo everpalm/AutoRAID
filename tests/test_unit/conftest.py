@@ -39,6 +39,6 @@ def mongo_db():
 #     request.config._store['gitlab_api'] = gitlab_api
 #     return gitlab_api
 
-# @pytest.fixture(scope="session", autouse=True)
-# def gitlab_api():
-#     return glapi(private_token='glpat-Mk9a-KSfyufsT1yhPmyz', project_id='storage7301426/AutoRAID')
+@pytest.fixture(scope="session", autouse=True)
+def gitlab_api(request):
+    return request.config._store.get('gitlab_api', None) 
