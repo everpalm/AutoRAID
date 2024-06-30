@@ -15,10 +15,6 @@ class GitLabAPI:
         return test_case.description  # 或其他需要的字段
 
     def push_test_result(self, test_case_id, test_result, label, color):
-        # project = self.gl.projects.get(self.project_id)
-        # # logger.debug(f'project = f{project}')
-        # test_case = project.issues.get(test_case_id)
-        # test_case.notes.create({'body': test_result})
         project = self.gl.projects.get(self.project_id)
         test_case = project.issues.get(test_case_id)
         
@@ -30,11 +26,7 @@ class GitLabAPI:
         labels = test_case.labels
         if label not in labels:
             labels.append(label)
-        # test_case.labels = labels
-        # test_case.save()
         
-        # logger.debug(f'Updated labels for test case: {test_case.labels}')
-        # return note
         # 創建或更新標籤
         try:
             project.labels.create({'name': label, 'color': color})

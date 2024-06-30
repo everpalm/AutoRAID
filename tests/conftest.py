@@ -58,20 +58,7 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
     print('\n\033[32m================ Hook! ===============\033[0m')
-    # if report.when == 'call':
-    #     gitlab_api = item.config._store.get('gitlab_api', None)
-    #     if gitlab_api is None:
-    #         return
-        
-    #     test_case_name = item.name
-    #     test_case_id = gitlab_api.get_test_case_id(test_case_name)
-    #     logger.debug(f'Test case name = {test_case_name}, ID = {test_case_id}')
-    #     if test_case_id:
-    #         if report.failed:
-    #             test_result = f"Test {test_case_name} failed:\n{report.longrepr}"
-    #         else:
-    #             test_result = f"Test {test_case_name} passed."
-    #         gitlab_api.push_test_result(test_case_id, test_result)
+
     if report.when == 'call':
         gitlab_api = item.config._store.get('gitlab_api', None)
         if gitlab_api is None:
@@ -83,11 +70,11 @@ def pytest_runtest_makereport(item, call):
         if test_case_id:
             if report.failed:
                 test_result = f"Test {test_case_name} failed:\n{report.longrepr}"
-                label = 'FAIL'
+                label = 'test status::failed'
                 color = '#FF0000'  # Red
             else:
                 test_result = f"Test {test_case_name} passed."
-                label = 'PASS'
+                label = 'test status::passed'
                 color = '#00FF00'  # Green
             note = gitlab_api.push_test_result(test_case_id, test_result, label, color)
             if note:
