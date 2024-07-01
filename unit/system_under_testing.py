@@ -292,6 +292,9 @@ class SystemUnderTesting(api):
                     int_temperature,
                     int_power_cycles,
                     int_unsafe_shutdowns)
+        except ValueError as ve:
+            logger.error(f"Value error occurred in _get_nvme_smart_log: {ve}")
+            raise
         except Exception as e:
             logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
             raise
