@@ -33,24 +33,13 @@ class AMD64NMMe(object):
             serial: Used for indentifying system
     '''
     def __init__(self, str_manufacturer: str):
-        # super().__init__(
-        #         str_mode='remote',
-        #         str_if_name='eth0',
-        #         str_config_file='app_map.json')
         self.api = win10('remote', 'eth0', 'app_map.json')
-        # self.os = self.get_os()
         self.os = self.api.get_os()
         self.manufacturer = str_manufacturer
-        # self.bdf, self.sdid = self._get_pcie_info().values()
         self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
-        # self.node, self.sn, self.model, self.namespace_id, \
-            # self.namespace_usage, self.fw_rev = \
-            # self._get_nvme_device().values()
-        # self.critical_warning, self.temperature, self.power_cycles, \
-            # self.unsafe_shutdowns = self._get_nvme_smart_log().values()
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
-        self.disk_num, self.serial_num = self._get_disk_num()
+        self.disk_num, self.serial_num = self._get_disk_num().values()
 
     def _get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
@@ -71,9 +60,9 @@ class AMD64NMMe(object):
         finally:
             return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
 
-    def _get_disk_num(self) -> int:
+    def _get_disk_num(self):
         try:
-            str_return = str_disk_num = None
+            str_return = int_disk_num = None
             str_return = self.api.command_line(
                 f'powershell Get-PhysicalDisk|findstr {self.manufacturer}')
             logger.debug('str_return = %s', str_return)
@@ -82,9 +71,9 @@ class AMD64NMMe(object):
             if str_return is None:
                 raise ValueError("Received None from command_line")
             
-            str_disk_num = str_return.get(0).split(' ')[0].lstrip()
+            int_disk_num = int(str_return.get(0).split(' ')[0].lstrip())
             str_serial_num = str_return.get(0).split(' ')[2].lstrip()
-            logger.debug('str_disk_num = %s', str_disk_num)
+            logger.debug('int_disk_num = %d', int_disk_num)
             logger.debug('str_serial_num = %s', str_serial_num)
             
         except Exception as e:
@@ -92,7 +81,8 @@ class AMD64NMMe(object):
             raise
         finally:
             # return int(str_disk_num)
-            return {"Number": str_disk_num, "SerialNumber": str_serial_num}
+            return {"Number": int_disk_num, "SerialNumber": str_serial_num}
+            
 
     def _get_desktop_info(self) -> dict[str, str]:
         ''' Get Desktop Computer information
@@ -246,7 +236,7 @@ class AMD64NMMe(object):
         '''
         bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
         try:
-            bool_return = self.api.io_command(f'fio --filename=/dev/{self.node} \
+            bool_return = self.api.io_command(f'diskspd --filename=/dev/{self.node} \
                     --direct=1 --rw={str_rw} --bs={str_bs} --ioengine=libaio \
                     --iodepth={str_iodepth} --runtime={str_runtime} \
                     --numjobs={str_numjobs} --time_based --group_reporting \

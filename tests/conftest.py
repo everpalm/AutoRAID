@@ -2,8 +2,15 @@
 
 import pytest
 import logging
+import os
 from unit.system_under_testing import RasperberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
+from unit.mongodb import MongoDB
+
+MDB_ATTR = [{
+    "Log Path": '/home/pi/uart.log',
+    "Report Path": ".report.json"
+}]
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +107,22 @@ def pytest_runtest_makereport(item, call):
             else:
                 logger.error(f'Failed to push test result to GitLab for test case {test_case_name}')
     
-# @pytest.fixture(scope="session", autouse=True)
-# def my_mdb():
-#     print('\n\033[32m================ Setup MongoDB ===============\033[0m')
-#     return mdb('192.168.0.128', 27017, 'AutoRAID', 'amd_desktop')
+# def pytest_runtest_makereport(item, call):
+#     if call.when == "call" and call.excinfo is not None:
+#         test_folder = os.path.basename(os.path.dirname(item.fspath))
+#         collection_name = test_folder.replace('test_', '')
+#         mongo = MongoDB('192.168.0.128', 27017, 'AutoRAID', collection_name)
+#         for attr in MDB_ATTR:
+#             log_path = attr["Log Path"]
+#             report_path = attr["Report Path"]
+#             mongo.write_log_and_report(log_path, report_path)
+
+def pytest_sessionfinish(session, exitstatus):
+    for item in session.items:
+        test_folder = os.path.basename(os.path.dirname(item.fspath))
+        collection_name = test_folder.replace('test_', '')
+        mongo = MongoDB('192.168.0.128', 27017, 'AutoRAID', collection_name)
+        for attr in MDB_ATTR:
+            log_path = attr["Log Path"]
+            report_path = attr["Report Path"]
+            mongo.write_log_and_report(log_path, report_path)

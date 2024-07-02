@@ -46,6 +46,11 @@ AMD64_NVM = [
                     "temperature": 80,
                     "power_cycles": 625,
                     "unsafe_shutdowns": 624
+                },
+                "Disk Information":
+                {
+                    "Number": 1,
+                    "SerialNumber": '0050_43C5_0E00_0001.'
                 }
             }
 ]
@@ -146,6 +151,14 @@ class TestAMD64NVMe(object):
             amd64_nvm['PCIE Configuration']["SDID"]
         assert target_system.rev == \
             amd64_nvm['PCIE Configuration']["Rev"]
+
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_get_disk_num(self, target_system, amd64_nvm):
+        print('target_system.disk_num = ', target_system.disk_num)
+        assert target_system.disk_num == \
+            amd64_nvm['Disk Information']["Number"]
+        assert target_system.serial_num == \
+            amd64_nvm['Disk Information']["SerialNumber"]
 
     # @pytest.mark.repeat(3)
     # @pytest.mark.parametrize('rw_table', RW_TABLE)
