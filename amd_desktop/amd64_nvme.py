@@ -11,6 +11,7 @@ from amd_desktop.win10_interface import Win10Interface as win10
 from unit.system_under_testing import convert_size
 from unit.system_under_testing import dict_to_dataframe
 # from unit.system_under_testing import RasperberryPi as rpi
+# import psutil
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ class AMD64NMMe(object):
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
+        self.volume, self.size = self._get_volume().values()
 
     def _get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
@@ -93,7 +95,7 @@ class AMD64NMMe(object):
         '''
         str_return = str_version = str_serial = None
         try:
-            # str_return = self.api.command_line('lshw|grep "Desktop" -A 4')
+            # str_return = self.api.command_line('lshw|grep "Desktop" -A 4CA')
             str_return = self.api.command_line(
                 'wmic computersystem get Name, Manufacturer, Model')
             str_vendor = ' '.join(str_return.get(1).split(' ')[0:1])
@@ -143,81 +145,6 @@ class AMD64NMMe(object):
             # return {"BDF": str_bdf, "SDID": str_sdid}
             return {"VID": str_vid, "DID": str_sdid,
                     "SDID": str_sdid, "Rev": str_rev}
-
-    # def _get_nvme_device(self) -> dict[str, str]:
-    #     ''' Get NVMe device name
-    #         Args:
-    #         Returns:
-    #         Raises:
-    #     '''
-    #     str_node = str_sn = str_model = str_namespace_id = str_namespace_usage\
-    #         = str_fw_rev = None
-    #     try:
-    #         str_return = self.api.command_line("nvme list|grep /dev/nvme")
-    #         logger.debug('str_return = %s', str_return)
-    #         str_node = str_return.get(0).split(' ')[0].split('/')[2]
-    #         str_sn = str_return.get(0).split(' ')[1]
-    #         str_model = str_return.get(0).split(' ')[2]
-    #         str_namespace_id = str_return.get(0).split(' ')[3]
-    #         str_namespace_usage = str_return.get(0).split(' ')[4] + ' ' + \
-    #             str_return.get(0).split(' ')[5]
-    #         str_fw_rev = str_return.get(0).split(' ')[-1]
-    #         logger.debug(
-    #                 'str_node = %s, str_sn = %s, str_model = %s, \
-    #                     str_namespace_id = %s, str_namespace_usage = %s,\
-    #                         str_fw_rev = %s',
-    #                 str_node,
-    #                 str_sn,
-    #                 str_model,
-    #                 str_namespace_id,
-    #                 str_namespace_usage,
-    #                 str_fw_rev)
-    #     except Exception as e:
-    #         logger.error(f"Error occurred in _get_nvme_device: {e}")
-    #         raise
-    #     finally:
-    #         return {
-    #                 "Node": str_node,
-    #                 "SN": str_sn,
-    #                 "Model": str_model,
-    #                 "Namespace ID": str_namespace_id,
-    #                 "Namespace Usage": str_namespace_usage,
-    #                 "FW Rev": str_fw_rev
-    #                 }
-
-    # def _get_nvme_smart_log(self) -> dict[str, int]:
-    #     ''' Get NVMe SMART log
-    #         Args:
-    #         Returns:
-    #         Raises:
-    #     '''
-    #     dict_return = int_critical_warning = int_temperature = \
-    #         int_power_cycles = int_unsafe_shutdowns = None
-    #     try:
-    #         dict_return = self.api.command_line(
-    #                 # f'nvme smart-log /dev/{self.node}')
-    #                 r'powershell -Command \\"Get-PhysicalDisk | Where-Object { \'$_.DeviceID -eq 1\' } | Get-StorageReliabilityCounter\\""')
-    #         int_temperature = int(dict_return.get(3).split(' ')[1])
-    #         int_read_error_unc = int(dict_return.get(11).split(' ')[2])
-    #         int_wear = int(dict_return.get(13).split(' ')[3])
-    #         int_power_on_hour = int(dict_return.get(3).split(' ')[1])
-    #         logger.debug(
-    #                 'int_temperature = %s , int_read_error_unc = %s,\
-    #                     int_power_cycles = %s, int_power_on_hour = %s',
-    #                 int_temperature,
-    #                 int_read_error_unc,
-    #                 int_wear,
-    #                 int_power_on_hour)
-    #     except Exception as e:
-    #         logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
-    #         raise
-    #     finally:
-    #         return {
-    #                 "temperature": int_temperature,
-    #                 "read_error_unc": int_read_error_unc,
-    #                 "wear": int_wear,
-    #                 "power_on_hour": int_power_on_hour
-    #                 }
 
     @dict_to_dataframe
     @convert_size
@@ -273,31 +200,40 @@ class AMD64NMMe(object):
                     "CPU Mask": int_cpumask
                     }
 
-    # def groupby_io_mean(self, file_path, str_group_key, str_key, str_group):
-    #     ''' Groupby IO data and return its mean value
-    #         Args: Group key, data key, and data value
-    #         Returns: data mean
-    #         Raises:FileNotFoundError
-    #     '''
-    #     if os.path.exists(file_path):
-    #         df_perf = pd.read_json(file_path, orient='records',
-    #                                lines=True)
-    #         df_grouped = \
-    #           df_perf.groupby(str_group_key).mean(numeric_only=True)
-    #     else:
-    #         raise FileNotFoundError("File not found")
-    #     return df_grouped.loc[str_key][str_group]
+    def _get_volume(self):
+        str_return = self.api.command_line(
+                f"powershell Get-Partition -DiskNumber {self.disk_num}")
+        str_volume = str_return.get(7).split(' ')[1]
+        str_size = ' '.join(str_return.get(7).split(' ')[3:5])
+        logger.debug('str_volume = %s', str_volume)
+        logger.debug('str_size = %s', str_size)
+        return {
+                "Volume": str_volume,
+                "Type": str_size
+                }
+                
+        # disk_partitions = psutil.disk_partitions(all=True)
+        # result = {}
 
-    # def kill_process(self, str_process):
-    #     ''' Kill process
-    #         Args:
-    #         Returns:
-    #         Raises:
-    #     '''
-    #     try:
-    #         _dict_return = self.command_line(f'killall {str_process}')
-    #         logger.debug('kill_process = %s', _dict_return)
-    #     except:
-    #         pass
-    #     finally:
-    #         return _dict_return
+        # for partition in disk_partitions:
+        #     print(f"partition.device = {partition.device}")
+        #     try:
+        #         disk_usage = psutil.disk_usage(partition.mountpoint)
+        #         # 检查设备名称是否包含物理磁盘编号
+        #         # if f"PhysicalDrive{self.disk_num}" in partition.device:
+        #         if f"PhysicalDrive0" in partition.device:
+        #             print('Bingo!!!!!!!!!!!!!!!!')
+        #             result[partition.device] = {
+        #                 "Mountpoint": partition.mountpoint,
+        #                 "File system type": partition.fstype,
+        #                 "Total size": disk_usage.total,
+        #                 "Used": disk_usage.used,
+        #                 "Free": disk_usage.free,
+        #                 "Percentage": disk_usage.percent
+        #             }
+        #             print(f"partition.mountpoint = {partition.mountpoint}")
+        #     except PermissionError:
+        #         # 处理无访问权限的分区
+        #         continue
+        
+        # return result

@@ -50,7 +50,9 @@ AMD64_NVM = [
                 "Disk Information":
                 {
                     "Number": 1,
-                    "SerialNumber": '0050_43C5_0E00_0001.'
+                    "SerialNumber": '0050_43C5_0E00_0001.',
+                    "Volume": "D",
+                    "Size": "931.43 GB"
                 }
             }
 ]
@@ -154,12 +156,21 @@ class TestAMD64NVMe(object):
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_disk_num(self, target_system, amd64_nvm):
-        print('target_system.disk_num = ', target_system.disk_num)
+        # logger.debug('target_system.disk_num = ', target_system.disk_num)
         assert target_system.disk_num == \
             amd64_nvm['Disk Information']["Number"]
         assert target_system.serial_num == \
             amd64_nvm['Disk Information']["SerialNumber"]
 
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_get_volume(self, target_system, amd64_nvm):
+        # logger.debug('target_system.node = ', target_system.node)
+        # logger.debug('target_system.size = ', target_system.size)
+        assert target_system.volume == \
+            amd64_nvm['Disk Information']["Volume"]
+        assert target_system.size == \
+            amd64_nvm['Disk Information']["Size"]
+ 
     # @pytest.mark.repeat(3)
     # @pytest.mark.parametrize('rw_table', RW_TABLE)
     # def test_run_io_operation(self, target_system, rw_table):
