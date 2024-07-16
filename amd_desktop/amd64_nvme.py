@@ -146,6 +146,28 @@ class AMD64NMMe(object):
             return {"VID": str_vid, "DID": str_sdid,
                     "SDID": str_sdid, "Rev": str_rev}
 
+    def _get_volume(self):
+        ''' Get Volume
+            Args: None
+            Returns: Volume, Size
+            Raises: Any errors
+        '''
+        try:
+            str_return = self.api.command_line(
+                    f"powershell Get-Partition -DiskNumber {self.disk_num}")
+            str_volume = str_return.get(7).split(' ')[1]
+            str_size = ' '.join(str_return.get(7).split(' ')[3:5])
+            logger.debug('str_volume = %s', str_volume)
+            logger.debug('str_size = %s', str_size)
+        except Exception as e:
+            logger.error('Error occurred in _get_volume: %s', e)
+            raise
+        finally:
+            return {
+                    "Volume": str_volume,
+                    "Type": str_size
+                    }
+
     @dict_to_dataframe
     @convert_size
     def run_io_operation(
@@ -156,19 +178,19 @@ class AMD64NMMe(object):
                 str_numjobs: str,
                 str_runtime: str,
                 int_cpumask: int) -> dict[str, str | int]:
-        ''' Run FIO
+        ''' Run DISKSPD
             Args:
             Returns:
             Raises:
         '''
         bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
         try:
-            bool_return = self.api.io_command(f'diskspd --filename=/dev/{self.node} \
+            bool_return = self.api.io_command(f'diskspd --filename=/dev/{self.volume} \
                     --direct=1 --rw={str_rw} --bs={str_bs} --ioengine=libaio \
                     --iodepth={str_iodepth} --runtime={str_runtime} \
                     --numjobs={str_numjobs} --time_based --group_reporting \
                     --name=iops-test-job --eta-newline=1 \
-                    --cpumask={int_cpumask} | tee iops.log')
+                    --cpumask={int_cpumask} > iops.log')
             logger.debug('_bool_return = %s', bool_return)
             if str_rw == 'randread' or str_rw == 'read':
                 dict_return = \
@@ -200,17 +222,7 @@ class AMD64NMMe(object):
                     "CPU Mask": int_cpumask
                     }
 
-    def _get_volume(self):
-        str_return = self.api.command_line(
-                f"powershell Get-Partition -DiskNumber {self.disk_num}")
-        str_volume = str_return.get(7).split(' ')[1]
-        str_size = ' '.join(str_return.get(7).split(' ')[3:5])
-        logger.debug('str_volume = %s', str_volume)
-        logger.debug('str_size = %s', str_size)
-        return {
-                "Volume": str_volume,
-                "Type": str_size
-                }
+    
                 
         # disk_partitions = psutil.disk_partitions(all=True)
         # result = {}

@@ -4,7 +4,7 @@ def buildApp() {
 
 def testApp() {
     echo 'Start testing - 2'
-    sh "cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run python -m pytest --testmon --private_token=${MY_PRIVATE_TOKEN}"
+    sh 'cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run python -m pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
 }
 
 return this
