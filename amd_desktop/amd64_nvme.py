@@ -14,8 +14,9 @@ from unit.system_under_testing import dict_to_dataframe
 # import psutil
 
 # logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(filename='C:\paramiko.log')
 logger = logging.getLogger(__name__)
-
+# logger = logging.getLogger("paramiko")
 
 class AMD64NMMe(object):
     ''' AMD 64 NVMe System
@@ -34,7 +35,7 @@ class AMD64NMMe(object):
             serial: Used for indentifying system
     '''
     def __init__(self, str_manufacturer: str):
-        self.api = win10('remote', 'eth0', 'app_map.json')
+        self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
         self.os = self.api.get_os()
         self.manufacturer = str_manufacturer
         self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
@@ -168,59 +169,197 @@ class AMD64NMMe(object):
                     "Type": str_size
                     }
 
-    @dict_to_dataframe
-    @convert_size
-    def run_io_operation(
-                self,
-                str_rw: str,
-                str_bs: str,
-                str_iodepth: str,
-                str_numjobs: str,
-                str_runtime: str,
-                int_cpumask: int) -> dict[str, str | int]:
+    def run_io_operation(self, thread: int, iodepth: int, block_size: str, random_size: str, write_pattern: int, duration: int, io_file: str) -> dict[str, str | int]:
         ''' Run DISKSPD
             Args:
+                thread 2 -t2
+                iodepth 32 -o32
+                blocksize 4k -b4k
+                random 4k -r4k
+                write 0% -w0
+                duration 120 seconds -d120
+                writethrough -Sh
+                data ms -D
+                5GB test file -c5g
             Returns:
             Raises:
         '''
-        bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
+        read_iops = read_bw = write_iops = write_bw = None
         try:
-            bool_return = self.api.io_command(f'diskspd --filename=/dev/{self.volume} \
-                    --direct=1 --rw={str_rw} --bs={str_bs} --ioengine=libaio \
-                    --iodepth={str_iodepth} --runtime={str_runtime} \
-                    --numjobs={str_numjobs} --time_based --group_reporting \
-                    --name=iops-test-job --eta-newline=1 \
-                    --cpumask={int_cpumask} > iops.log')
-            logger.debug('_bool_return = %s', bool_return)
-            if str_rw == 'randread' or str_rw == 'read':
-                dict_return = \
-                    self.api.command_line("cat ~/iops.log | grep 'read:'")
-            if str_rw == 'randwrite' or str_rw == 'write':
-                dict_return = \
-                    self.api.command_line('cat ~/iops.log | grep "write:"')
-            if str_rw == 'randrw':
-                dict_return = \
-                    self.api.command_line('cat ~/iops.log | grep "write:"')
-            str_iops_temp = dict_return.get(0).split(':')[1]
-            str_iops = str_iops_temp.split('=')[1].split(',')[0]
-            str_bw_temp = dict_return.get(0).split(':')[1].split('=')[2]
-            str_bw = str_bw_temp.split(',')[0].split(' ')[0]
-            logger.debug('str_iops = %s, str_bw = %s', str_iops, str_bw)
+            if random_size:
+                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
+            else:
+                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
+            
+            str_output = self.api.io_command(str_command)
+            logger.debug('str_output = %s', str_output)
+            
+            read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
+            write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
+            logger.debug(f'write_io_section = {write_io_section.group(1)}')
+
+            if read_io_section:
+                read_io_text = read_io_section.group(1)
+
+                # Extract total and I/O per s values
+                read_pattern = re.compile(r'total:\s*([\d\s|.]+)')
+                read_match = read_pattern.search(read_io_text)
+
+                if read_match:
+                    read_values = read_match.group(1).split('|')
+                    read_iops = read_values[3].strip()
+                    read_bw = read_values[2].strip()
+                    logger.debug('read_iops = %s', read_iops)
+                    logger.debug('read_bw = %s', read_bw)
+
+            if write_io_section:
+                write_io_text = write_io_section.group(1)
+
+                # Extract total and I/O per s value
+                write_pattern = re.compile(r'total:\s*([\d\s|.]+)')
+                write_match = write_pattern.search(write_io_text)
+                if write_match:
+                    write_values = write_match.group(1).split('|')
+                    write_iops = write_values[3].strip()
+                    write_bw = write_values[2].strip()
+                    logger.debug('write_iops = %s', write_iops)
+                    logger.debug('write_bw = %s', write_bw)
+
         except Exception as e:
-            logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
+            logger.error(f"Error occurred in run_io_operation: {e}")
             raise
         finally:
             return {
-                    "IOPS": str_iops,
-                    "BW": str_bw,
-                    "File Name": self.node,
-                    "RW Mode": str_rw,
-                    "Block Size": str_bs,
-                    "IO Depth": str_iodepth,
-                    "Job": str_numjobs,
-                    "Run Time": str_runtime,
-                    "CPU Mask": int_cpumask
-                    }
+                "Read IO": {
+                    "BW": read_bw,
+                    "IOPS": read_iops
+                },
+                "Write IO": {
+                    "BW": write_bw,
+                    "IOPS": write_iops
+                }
+            }
+
+    # @dict_to_dataframe
+    # @convert_size
+    # def run_io_operation(
+    #             self,
+    #             thread: int,
+    #             iodepth: int,
+    #             block_size: str,
+    #             random_size: str,
+    #             write_pattern: int,
+    #             duration: int,
+    #             io_file: str) -> dict[str, str | int]:
+    #     ''' Run DISKSPD
+    #         Args:
+    #             thread 2 -t2
+    #             iodepth 32 -o32
+    #             blocksize 4k -b4k
+    #             random 4k -r4k
+    #             write 0% -w0
+    #             duration 120 seconds -d120
+    #             writethrough -Sh
+    #             data ms -D
+    #             5GB test file -c5g
+    #         Returns:
+    #         Raises:
+    #     '''
+    #     bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
+    #     try:
+    #         if random_size:
+    #             str_command = f'diskspd -t{thread} \
+    #                     -o{iodepth} -b{block_size} -r{random_size} \
+    #                     -w{write_pattern} -d{duration} -Sh -D \
+    #                     -c5g {io_file}'
+    #         else:
+    #             str_command = f'diskspd -t{thread} \
+    #                     -o{iodepth} -b{block_size} -w{write_pattern} \
+    #                     -d{duration} -Sh -D -c5g {io_file}'
+                
+    #         str_output = self.api.io_command(str_command)
+    #         # logger.debug('str_output = %s', str_output)
+    #         read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
+    #                                      re.S)
+    #         write_io_section = re.search(r'Write IO(.*?)Total latency',
+    #                                       str_output, re.S)
+    #         # logger.debug(f'write_io_section = {write_io_section.group(1)}')
+
+    #         if read_io_section:
+    #             read_io_text = read_io_section.group(1)
+
+    #             # Extract total and I/O per s values
+    #             read_pattern = re.compile(r'total:\s*([\d\s|.]+)')
+    #             read_match = read_pattern.search(read_io_text)
+
+    #             # if total_match and iops_match:
+    #             read_iops = read_bw = 0
+    #             if read_match:
+    #                 read_iops = read_match.group(1).split('|')[3]
+    #                 read_bw = read_match.group(1).split('|')[2]
+    #                 logger.debug('read_iops = %s', read_iops)
+    #                 logger.debug('read_bw = %s', read_bw)
+
+    #         if write_io_section:
+    #             write_io_text =write_io_section.group(1)
+
+    #             # Extract total and I/O per s value
+    #             write_pattern = re.compile(r'total:\s*([\d\s|.]+)')
+    #             write_match = write_pattern.search(write_io_text)
+    #             if write_match:
+    #                 write_iops = write_match.group(1).split('|')[3]
+    #                 write_bw = write_match.group(1).split('|')[2]
+    #                 logger.debug('write_iops = %s', write_iops)
+    #                 logger.debug('write_bw = %s', write_bw)
+    #                 # return {
+    #                 #         "total": total_value,
+    #                 #         "iops": iops_value
+    #                 #         }
+    #                 # return {
+    #                 #         "BW": read_bw,
+    #                 #         "IOPS": read_iops
+    #                 #         }
+
+    #         # self.api.command_line("type iops.log")
+    #         # if str_rw == 'randread' or sctr_rw == 'read':
+    #         #     dict_return = \
+    #         #         self.api.command_line("cat ~/iops.log | grep 'read:'")
+    #         # if str_rw == 'randwrite' or str_rw == 'write':
+    #         #     dict_return = \
+    #         #         self.api.command_line('cat ~/iops.log | grep "write:"')
+    #         # if str_rw == 'randrw':
+    #         #     dict_return = \
+    #         #         self.api.command_line('cat ~/iops.log | grep "write:"')
+    #         # str_iops_temp = dict_return.get(0).split(':')[1]
+    #         # str_iops = str_iops_temp.split('=')[1].split(',')[0]
+    #         # str_bw_temp = dict_return.get(0).split(':')[1].split('=')[2]
+    #         # str_bw = str_bw_temp.split(',')[0].split(' ')[0]
+    #         # logger.debug('str_iops = %s, str_bw = %s', str_iops, str_bw)
+    #     except Exception as e:
+    #         logger.error(f"Error occurred in run_io_operation: {e}")
+    #         raise
+    #     finally:
+    #         return {
+    #                 "Read IO": {
+    #                     "BW": read_bw,
+    #                     "IOPS": read_iops
+    #                 },
+    #                 "Write IO": {
+    #                     "BW": write_bw,
+    #                     "IOPS": write_iops
+    #                 }
+    #             }
+        #     return {
+        #             "IOPS": str_iops,
+        #             "BW": str_bw,
+        #             "File Name": self.node,
+        #             "RW Mode": str_rw,
+        #             "Block Size": str_bs,
+        #             "IO Depth": str_iodepth,
+        #             "Job": str_numjobs,
+        #             "Run Time": str_runtime,
+        #             "CPU Mask": int_cpumask
+        #             }
 
     
                 

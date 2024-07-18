@@ -2,11 +2,11 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import pytest
-import logging
+# import logging
 from amd_desktop.amd64_nvme import AMD64NMMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="session", autouse=True)
 def target_system():

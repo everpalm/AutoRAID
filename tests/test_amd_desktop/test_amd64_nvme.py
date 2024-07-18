@@ -5,8 +5,8 @@ import logging
 import pytest
 
 ''' Set up logger '''
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+# logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                    # datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
 AMD64_NVM = [
@@ -174,6 +174,14 @@ class TestAMD64NVMe(object):
     # @pytest.mark.repeat(3)
     # @pytest.mark.parametrize('rw_table', RW_TABLE)
     # def test_run_io_operation(self, target_system, rw_table):
+    def test_run_io_operation(self, target_system):
+        df_perf = target_system.run_io_operation(
+                # 1, 32, '4k', '4k', 50, 10, 'D:\IO.dat')
+                1, 32, '4k', None, 50, 10, 'D:\IO.dat')
+        # logger.debug(f'Read IO BW = {df_perf["Read IO"]["BW"]}')
+        # logger.debug(f'Read IO PS = {df_perf["Read IO"]["IOPS"]}')
+        # logger.debug(f'Write IO BW = {df_perf["Write IO"]["BW"]}')
+        # logger.debug(f'Write IO PS = {df_perf["Write IO"]["IOPS"]}')
     #     df_perf = target_system.run_io_operation(
     #             rw_table['RW Mode'],
     #             rw_table['Block Size'],
