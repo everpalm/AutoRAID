@@ -58,7 +58,7 @@ AMD64_NVM = (
 )
 
 
-RW_TABLE = (
+TEST_PATTERN = (
                 {
                     "Thread": 1,
                     "IO Depth": 32,
@@ -134,25 +134,25 @@ class TestAMD64NVMe(object):
             amd64_nvm['Disk Information']["Size"]
  
     # @pytest.mark.repeat(3)
-    @pytest.mark.parametrize('rw_table', RW_TABLE)
-    def test_run_io_operation(self, target_system, rw_table):
+    @pytest.mark.parametrize('test_pattern', TEST_PATTERN)
+    def test_run_io_operation(self, target_system, test_pattern):
         dic_perf = target_system.run_io_operation(
-            rw_table["Thread"],
-            rw_table["IO Depth"],
-            rw_table["Block Size"],
-            rw_table["Random Size"],
-            rw_table["Write Pattern"],
-            rw_table["Duration"],
-            rw_table["Test File"]
+            test_pattern["Thread"],
+            test_pattern["IO Depth"],
+            test_pattern["Block Size"],
+            test_pattern["Random Size"],
+            test_pattern["Write Pattern"],
+            test_pattern["Duration"],
+            test_pattern["Test File"]
         )
         assert dic_perf["Read IO"]["BW"] >= \
-            rw_table["Read IO"]["BW"] * rw_table["CR"]
+            test_pattern["Read IO"]["BW"] * test_pattern["CR"]
         assert dic_perf["Read IO"]["IOPS"] >= \
-            rw_table["Read IO"]["IOPS"] * rw_table["CR"]
+            test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
         assert dic_perf["Write IO"]["BW"] >= \
-            rw_table["Write IO"]["BW"] * rw_table["CR"]
+            test_pattern["Write IO"]["BW"] * test_pattern["CR"]
         assert dic_perf["Write IO"]["IOPS"] >= \
-            rw_table["Write IO"]["IOPS"] * rw_table["CR"]
+            test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
         # logger.debug(f'Read IO BW = {df_perf["Read IO"]["BW"]}')
         # logger.debug(f'Read IO PS = {df_perf["Read IO"]["IOPS"]}')
         # logger.debug(f'Write IO BW = {df_perf["Write IO"]["BW"]}')
