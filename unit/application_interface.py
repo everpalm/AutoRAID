@@ -16,8 +16,9 @@ SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
 # logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(filename='C:\paramiko.log')
 logger = logging.getLogger(__name__)
-
+# logger = logging.getLogger("paramiko")
 
 def dict_format(callback):
     def wrapper(*args, **kwargs):
@@ -180,6 +181,7 @@ class ApplicationInterface(object):
         finally:
             ssh.close()
     
+    # @dict_format
     def io_command(self, str_ssh_command: str) -> bool:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -187,11 +189,15 @@ class ApplicationInterface(object):
                        password=self.password)
         stdin, stdout, stderr = client.exec_command(str_ssh_command,
                                                     get_pty=True)
-        for line in iter(stdout.readline, ""):
-            logger.debug("line.strip() = %s", line.strip())
-        bool_status = stdout.channel.recv_exit_status()
-        client.close()
-        return bool_status
+        # for line in iter(stdout.readline, ""):
+        #     logger.debug("line.strip() = %s", line.strip())
+        output = stdout.read().decode()
+        # bool_status = stdout.channel.recv_exit_status()
+        if not stdout.channel.recv_exit_status():
+                client.close()
+        # client.close()
+        # return bool_status
+        return output
 
     def set_access_mode(self, str_mode: str):
         self.mode = str_mode

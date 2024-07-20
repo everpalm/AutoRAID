@@ -62,10 +62,10 @@ pipeline {
                 script {
                     if (params.TEST_ENVIRONMENT == 'test_unit') {
                         // sh "cd /home/pi/Projects/AutoRAID/tests/test_unit && pipenv run python -m pytest --testmon --private_token=${MY_PRIVATE_TOKEN}"
-                        sh 'cd /home/pi/Projects/AutoRAID/tests/test_unit && pipenv run python -m pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
+                        sh 'cd /home/pi/Projects/AutoRAID/tests/test_unit && pipenv run pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
                     } else if (params.TEST_ENVIRONMENT == 'test_amd_desktop') {
                         // sh "cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run python -m pytest --testmon --private_token=${MY_PRIVATE_TOKEN}"
-                        sh 'cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run python -m pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
+                        sh 'cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
                     }
                 }
             }

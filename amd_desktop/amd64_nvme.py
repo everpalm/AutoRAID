@@ -192,11 +192,11 @@ class AMD64NMMe(object):
                 str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
             
             str_output = self.api.io_command(str_command)
-            logger.debug('str_output = %s', str_output)
+            # logger.debug('str_output = %s', str_output)
             
             read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
             write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
-            logger.debug(f'write_io_section = {write_io_section.group(1)}')
+            # logger.debug(f'write_io_section = {write_io_section.group(1)}')
 
             if read_io_section:
                 read_io_text = read_io_section.group(1)
@@ -231,160 +231,12 @@ class AMD64NMMe(object):
         finally:
             return {
                 "Read IO": {
-                    "BW": read_bw,
-                    "IOPS": read_iops
+                    "BW": float(read_bw),
+                    "IOPS": float(read_iops)
                 },
                 "Write IO": {
-                    "BW": write_bw,
-                    "IOPS": write_iops
+                    "BW": float(write_bw),
+                    "IOPS": float(write_iops)
                 }
             }
 
-    # @dict_to_dataframe
-    # @convert_size
-    # def run_io_operation(
-    #             self,
-    #             thread: int,
-    #             iodepth: int,
-    #             block_size: str,
-    #             random_size: str,
-    #             write_pattern: int,
-    #             duration: int,
-    #             io_file: str) -> dict[str, str | int]:
-    #     ''' Run DISKSPD
-    #         Args:
-    #             thread 2 -t2
-    #             iodepth 32 -o32
-    #             blocksize 4k -b4k
-    #             random 4k -r4k
-    #             write 0% -w0
-    #             duration 120 seconds -d120
-    #             writethrough -Sh
-    #             data ms -D
-    #             5GB test file -c5g
-    #         Returns:
-    #         Raises:
-    #     '''
-    #     bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
-    #     try:
-    #         if random_size:
-    #             str_command = f'diskspd -t{thread} \
-    #                     -o{iodepth} -b{block_size} -r{random_size} \
-    #                     -w{write_pattern} -d{duration} -Sh -D \
-    #                     -c5g {io_file}'
-    #         else:
-    #             str_command = f'diskspd -t{thread} \
-    #                     -o{iodepth} -b{block_size} -w{write_pattern} \
-    #                     -d{duration} -Sh -D -c5g {io_file}'
-                
-    #         str_output = self.api.io_command(str_command)
-    #         # logger.debug('str_output = %s', str_output)
-    #         read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
-    #                                      re.S)
-    #         write_io_section = re.search(r'Write IO(.*?)Total latency',
-    #                                       str_output, re.S)
-    #         # logger.debug(f'write_io_section = {write_io_section.group(1)}')
-
-    #         if read_io_section:
-    #             read_io_text = read_io_section.group(1)
-
-    #             # Extract total and I/O per s values
-    #             read_pattern = re.compile(r'total:\s*([\d\s|.]+)')
-    #             read_match = read_pattern.search(read_io_text)
-
-    #             # if total_match and iops_match:
-    #             read_iops = read_bw = 0
-    #             if read_match:
-    #                 read_iops = read_match.group(1).split('|')[3]
-    #                 read_bw = read_match.group(1).split('|')[2]
-    #                 logger.debug('read_iops = %s', read_iops)
-    #                 logger.debug('read_bw = %s', read_bw)
-
-    #         if write_io_section:
-    #             write_io_text =write_io_section.group(1)
-
-    #             # Extract total and I/O per s value
-    #             write_pattern = re.compile(r'total:\s*([\d\s|.]+)')
-    #             write_match = write_pattern.search(write_io_text)
-    #             if write_match:
-    #                 write_iops = write_match.group(1).split('|')[3]
-    #                 write_bw = write_match.group(1).split('|')[2]
-    #                 logger.debug('write_iops = %s', write_iops)
-    #                 logger.debug('write_bw = %s', write_bw)
-    #                 # return {
-    #                 #         "total": total_value,
-    #                 #         "iops": iops_value
-    #                 #         }
-    #                 # return {
-    #                 #         "BW": read_bw,
-    #                 #         "IOPS": read_iops
-    #                 #         }
-
-    #         # self.api.command_line("type iops.log")
-    #         # if str_rw == 'randread' or sctr_rw == 'read':
-    #         #     dict_return = \
-    #         #         self.api.command_line("cat ~/iops.log | grep 'read:'")
-    #         # if str_rw == 'randwrite' or str_rw == 'write':
-    #         #     dict_return = \
-    #         #         self.api.command_line('cat ~/iops.log | grep "write:"')
-    #         # if str_rw == 'randrw':
-    #         #     dict_return = \
-    #         #         self.api.command_line('cat ~/iops.log | grep "write:"')
-    #         # str_iops_temp = dict_return.get(0).split(':')[1]
-    #         # str_iops = str_iops_temp.split('=')[1].split(',')[0]
-    #         # str_bw_temp = dict_return.get(0).split(':')[1].split('=')[2]
-    #         # str_bw = str_bw_temp.split(',')[0].split(' ')[0]
-    #         # logger.debug('str_iops = %s, str_bw = %s', str_iops, str_bw)
-    #     except Exception as e:
-    #         logger.error(f"Error occurred in run_io_operation: {e}")
-    #         raise
-    #     finally:
-    #         return {
-    #                 "Read IO": {
-    #                     "BW": read_bw,
-    #                     "IOPS": read_iops
-    #                 },
-    #                 "Write IO": {
-    #                     "BW": write_bw,
-    #                     "IOPS": write_iops
-    #                 }
-    #             }
-        #     return {
-        #             "IOPS": str_iops,
-        #             "BW": str_bw,
-        #             "File Name": self.node,
-        #             "RW Mode": str_rw,
-        #             "Block Size": str_bs,
-        #             "IO Depth": str_iodepth,
-        #             "Job": str_numjobs,
-        #             "Run Time": str_runtime,
-        #             "CPU Mask": int_cpumask
-        #             }
-
-    
-                
-        # disk_partitions = psutil.disk_partitions(all=True)
-        # result = {}
-
-        # for partition in disk_partitions:
-        #     print(f"partition.device = {partition.device}")
-        #     try:
-        #         disk_usage = psutil.disk_usage(partition.mountpoint)
-        #         # 检查设备名称是否包含物理磁盘编号
-        #         # if f"PhysicalDrive{self.disk_num}" in partition.device:
-        #         if f"PhysicalDrive0" in partition.device:
-        #             print('Bingo!!!!!!!!!!!!!!!!')
-        #             result[partition.device] = {
-        #                 "Mountpoint": partition.mountpoint,
-        #                 "File system type": partition.fstype,
-        #                 "Total size": disk_usage.total,
-        #                 "Used": disk_usage.used,
-        #                 "Free": disk_usage.free,
-        #                 "Percentage": disk_usage.percent
-        #             }
-        #             print(f"partition.mountpoint = {partition.mountpoint}")
-        #     except PermissionError:
-        #         # 处理无访问权限的分区
-        #         continue
-        
-        # return result

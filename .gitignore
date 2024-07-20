@@ -1,0 +1,10 @@
+*.jar
+*.log*
+*.pyc
+logs/
+remoting/
+worksapce/
+.testmondata
+.coverage
+.report.json
+caches/

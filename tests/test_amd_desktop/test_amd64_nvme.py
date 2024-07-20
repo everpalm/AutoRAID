@@ -9,7 +9,7 @@ import pytest
                     # datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
-AMD64_NVM = [
+AMD64_NVM = (
             {
                 "CPU Information":
                 {
@@ -54,68 +54,30 @@ AMD64_NVM = [
                     "Volume": "D",
                     "Size": "931.43 GB"
                 }
-            }
-]
+            },
+)
 
 
 RW_TABLE = (
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1,
-                    "Run Time": 10, "Job": 1, "IOPS": 5315, "BW": 21768440,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 2,
-                    "Run Time": 10, "Job": 1, "IOPS": 9000, "BW": 36846960,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 4,
-                    "Run Time": 10, "Job": 1, "IOPS": 14540, "BW": 58248396,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 8,
-                    "Run Time": 10, "Job": 1, "IOPS": 36198, "BW": 144703488,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 16,
-                    "Run Time": 10, "Job": 1, "IOPS": 44953, "BW": 179306496,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 32,
-                    "Run Time": 10, "Job": 1, "IOPS": 63692, "BW": 254803968,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 64,
-                    "Run Time": 10, "Job": 1, "IOPS": 105199, "BW": 419954700,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 128,
-                    "Run Time": 10, "Job": 1, "IOPS": 111104, "BW": 443547600,
-                    "CR": 0.7, "CPU Mask": 4},
-                # End of Random Read
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 1,
-                    "Run Time": 10, "Job": 1, "IOPS": 5315, "BW": 21768440,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 2,
-                    "Run Time": 10, "Job": 1, "IOPS": 9000, "BW": 36846960,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 4,
-                    "Run Time": 10, "Job": 1, "IOPS": 14540, "BW": 58248396,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 8,
-                    "Run Time": 10, "Job": 1, "IOPS": 36198, "BW": 144703488,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 16,
-                    "Run Time": 10, "Job": 1, "IOPS": 63078, "BW": 279445504,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 32,
-                    "Run Time": 10, "Job": 1, "IOPS": 62771, "BW": 253755392,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 64,
-                    "Run Time": 10, "Job": 1, "IOPS": 63385, "BW": 248512512,
-                    "CR": 0.7, "CPU Mask": 4},
-                {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 128,
-                    "Run Time": 10, "Job": 1, "IOPS": 63795, "BW": 250609664,
-                    "CR": 0.7, "CPU Mask": 4}
-                # End of Random Write
-                # {"RW Mode": "randrw", "Block Size": "4K", "IO Depth": 1,
-                #   "Run Time": 10, "Job": 1, "IOPS": 20000, "BW": 8000000},
-                # {"RW Mode": "read", "Block Size": "4K", "IO Depth": 1,
-                #   "Run Time": 10, "Job": 1, "IOPS": 50000, "BW": 200000000},
-                # {"RW Mode": "write", "Block Size": "4K", "IO Depth": 1,
-                #   "Run Time": 10, "Job": 1, "IOPS": 40000, "BW": 150000000}
-            )
+                {
+                    "Thread": 1,
+                    "IO Depth": 32,
+                    "Block Size": '4k',
+                    "Random Size": None,
+                    "Write Pattern": 50,
+                    "Duration": 10,
+                    "Test File": 'D:\IO.dat',
+                    "Read IO": {
+                        "BW": 171.3,
+                        "IOPS": 43851
+                    },
+                    "Write IO": {
+                        "BW": 171.43,
+                        "IOPS": 43885.35
+                    },
+                    "CR": 0.8
+                },
+)
 
 
 class TestAMD64NVMe(object):
@@ -172,12 +134,25 @@ class TestAMD64NVMe(object):
             amd64_nvm['Disk Information']["Size"]
  
     # @pytest.mark.repeat(3)
-    # @pytest.mark.parametrize('rw_table', RW_TABLE)
-    # def test_run_io_operation(self, target_system, rw_table):
-    def test_run_io_operation(self, target_system):
-        df_perf = target_system.run_io_operation(
-                # 1, 32, '4k', '4k', 50, 10, 'D:\IO.dat')
-                1, 32, '4k', None, 50, 10, 'D:\IO.dat')
+    @pytest.mark.parametrize('rw_table', RW_TABLE)
+    def test_run_io_operation(self, target_system, rw_table):
+        dic_perf = target_system.run_io_operation(
+            rw_table["Thread"],
+            rw_table["IO Depth"],
+            rw_table["Block Size"],
+            rw_table["Random Size"],
+            rw_table["Write Pattern"],
+            rw_table["Duration"],
+            rw_table["Test File"]
+        )
+        assert dic_perf["Read IO"]["BW"] >= \
+            rw_table["Read IO"]["BW"] * rw_table["CR"]
+        assert dic_perf["Read IO"]["IOPS"] >= \
+            rw_table["Read IO"]["IOPS"] * rw_table["CR"]
+        assert dic_perf["Write IO"]["BW"] >= \
+            rw_table["Write IO"]["BW"] * rw_table["CR"]
+        assert dic_perf["Write IO"]["IOPS"] >= \
+            rw_table["Write IO"]["IOPS"] * rw_table["CR"]
         # logger.debug(f'Read IO BW = {df_perf["Read IO"]["BW"]}')
         # logger.debug(f'Read IO PS = {df_perf["Read IO"]["IOPS"]}')
         # logger.debug(f'Write IO BW = {df_perf["Write IO"]["BW"]}')
