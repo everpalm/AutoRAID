@@ -4,16 +4,17 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from unit.application_interface import ApplicationInterface
 from unit.application_interface import dict_format
 import logging
-
+from typing import List, Dict
 
 ''' Define Win10 interface '''
 # logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 
 class Win10Interface(ApplicationInterface):
     @dict_format
-    def command_line(self, str_cli_cmd: str) -> list[str]:
+    def command_line(self, str_cli_cmd: str) -> List[str]:
         logger.debug('str_cli_cmd = %s', str_cli_cmd)
         logger.debug('self.mode = %s', self.mode)
         logger.debug('self.account = %s', self.account)

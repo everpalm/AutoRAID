@@ -10,6 +10,7 @@ from unit.application_interface import ApplicationInterface as api
 # from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
 
+# logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="session", autouse=True)

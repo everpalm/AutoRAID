@@ -15,10 +15,11 @@ PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
-# logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.CRITICAL)
 # logging.basicConfig(filename='C:\paramiko.log')
 logger = logging.getLogger(__name__)
 # logger = logging.getLogger("paramiko")
+# logger.disabled = True
 
 def dict_format(callback):
     def wrapper(*args, **kwargs):
@@ -85,10 +86,11 @@ class ApplicationInterface(object):
             my_socket.close()
         return local_ip
 
-    def __get_remote_ip(self) -> Tuple[str, str, str, str, str]:
+    def __get_remote_ip(self) -> Tuple[str]:
         # for dict_element in CONFIG_TABLE:
+        remote_ip = None
         for dict_element in self.__import_config():
-            remote_ip = None
+            # remote_ip = None
             if dict_element.get('Local') == self.local_ip:
                 logger.debug('Found target dict_element = %s', dict_element)
                 remote_ip = dict_element.get('Remote')

@@ -2,11 +2,18 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import pytest
-# import logging
+import logging
+import paramiko
 from amd_desktop.amd64_nvme import AMD64NMMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
 
 # logger = logging.getLogger(__name__)
+# logging.basicConfig(level=logging.CRITICAL)
+logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
+logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
+logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
+logging.getLogger("pymongo").setLevel(logging.CRITICAL)
+paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
 @pytest.fixture(scope="session", autouse=True)
 def target_system():
