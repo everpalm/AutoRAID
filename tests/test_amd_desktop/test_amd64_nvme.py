@@ -66,7 +66,7 @@ TEST_PATTERN = (
                     "Random Size": None,
                     "Write Pattern": 50,
                     "Duration": 10,
-                    "Test File": 'D:\IO.dat',
+                    "Test File": 'D:\\IO.dat',
                     "Read IO": {
                         "BW": 171.3,
                         "IOPS": 43851
@@ -136,64 +136,31 @@ class TestAMD64NVMe(object):
     # @pytest.mark.repeat(3)
     @pytest.mark.parametrize('test_pattern', TEST_PATTERN)
     def test_run_io_operation(self, target_system, test_pattern):
-        dic_perf = target_system.run_io_operation(
-            test_pattern["Thread"],
-            test_pattern["IO Depth"],
-            test_pattern["Block Size"],
-            test_pattern["Random Size"],
-            test_pattern["Write Pattern"],
-            test_pattern["Duration"],
-            test_pattern["Test File"]
+        # dic_perf = target_system.run_io_operation(
+        read_bw, read_iops, write_bw, write_iops = \
+            target_system.run_io_operation(
+                test_pattern["Thread"],
+                test_pattern["IO Depth"],
+                test_pattern["Block Size"],
+                test_pattern["Random Size"],
+                test_pattern["Write Pattern"],
+                test_pattern["Duration"],
+                test_pattern["Test File"]
         )
-        assert dic_perf["Read IO"]["BW"] >= \
+        # assert dic_perf["Read IO"]["BW"] >= \
+        #     test_pattern["Read IO"]["BW"] * test_pattern["CR"]
+        # assert dic_perf["Read IO"]["IOPS"] >= \
+        #     test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
+        # assert dic_perf["Write IO"]["BW"] >= \
+        #     test_pattern["Write IO"]["BW"] * test_pattern["CR"]
+        # assert dic_perf["Write IO"]["IOPS"] >= \
+        #     test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
+        assert read_bw >= \
             test_pattern["Read IO"]["BW"] * test_pattern["CR"]
-        assert dic_perf["Read IO"]["IOPS"] >= \
+        assert read_iops >= \
             test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
-        assert dic_perf["Write IO"]["BW"] >= \
+        assert write_bw >= \
             test_pattern["Write IO"]["BW"] * test_pattern["CR"]
-        assert dic_perf["Write IO"]["IOPS"] >= \
+        assert write_iops >= \
             test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
-        # logger.debug(f'Read IO BW = {df_perf["Read IO"]["BW"]}')
-        # logger.debug(f'Read IO PS = {df_perf["Read IO"]["IOPS"]}')
-        # logger.debug(f'Write IO BW = {df_perf["Write IO"]["BW"]}')
-        # logger.debug(f'Write IO PS = {df_perf["Write IO"]["IOPS"]}')
-    #     df_perf = target_system.run_io_operation(
-    #             rw_table['RW Mode'],
-    #             rw_table['Block Size'],
-    #             rw_table['IO Depth'],
-    #             rw_table['Job'],
-    #             rw_table['Run Time'],
-    #             rw_table['CPU Mask'])
-    #     # Check if IOPS is greater or equal to pass credible region
-    #     assert df_perf.iloc[-1, 0] >= rw_table['IOPS'] * rw_table['CR']
-    #     # Check if bandwidth is greater or equal to pass credible region
-    #     assert df_perf.iloc[-1, 1] >= rw_table['BW'] * rw_table['CR']
-
-    # @pytest.mark.parametrize("rw_table", RW_TABLE)
-    # def test_groupby_io_mean(self, target_system, rw_table):
-    #     str_iops_mean = target_system.groupby_io_mean(
-    #                 'my_data.json',
-    #                 'IO Depth',
-    #                 rw_table['IO Depth'],
-    #                 'IOPS')
-    #     str_bw_mean = target_system.groupby_io_mean(
-    #                 'my_data.json',
-    #                 'IO Depth',
-    #                 rw_table['IO Depth'],
-    #                 'BW')
-    #     logger.info('IO Depth = %s, IOPS = %s, BW = %s',
-    #                 rw_table['IO Depth'], str_iops_mean, str_bw_mean)
-    #     # Check if IOPS is greater or equal to pass credible region
-    #     assert str_iops_mean >= rw_table['IOPS'] * rw_table['CR']
-    #     # Check if bandwidth is greater or equal to pass credible region
-    #     assert str_bw_mean >= rw_table['BW'] * rw_table['CR']
-
-    # def test_groupby_io_mean_open_file(self, target_system):
-    #     with pytest.raises(FileNotFoundError):
-    #         target_system.groupby_io_mean(
-    #                 'stub.json',
-    #                 'IO Depth',
-    #                 4,
-    #                 'IOPS')
-# if __name__ == '__main__':
-# pytest.main(['test_system_under_testing.py', '-s', '-v', '-x'])
+        

@@ -187,9 +187,11 @@ class AMD64NMMe(object):
         read_iops = read_bw = write_iops = write_bw = None
         try:
             if random_size:
-                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
+                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
+                    -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
             else:
-                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
+                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
+                    -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
             
             str_output = self.api.io_command(str_command)
             # logger.debug('str_output = %s', str_output)
@@ -229,14 +231,15 @@ class AMD64NMMe(object):
             logger.error(f"Error occurred in run_io_operation: {e}")
             raise
         finally:
-            return {
-                "Read IO": {
-                    "BW": float(read_bw),
-                    "IOPS": float(read_iops)
-                },
-                "Write IO": {
-                    "BW": float(write_bw),
-                    "IOPS": float(write_iops)
-                }
-            }
+            return float(read_bw), float(read_iops), float(write_bw), float(write_iops)
+            # return {
+            #     "Read IO": {
+            #         "BW": float(read_bw),
+            #         "IOPS": float(read_iops)
+            #     },
+            #     "Write IO": {
+            #         "BW": float(write_bw),
+            #         "IOPS": float(write_iops)
+            #     }
+            # }
 
