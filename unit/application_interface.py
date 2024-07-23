@@ -143,14 +143,6 @@ class ApplicationInterface(object):
             Returns: OS type
             Raises: None
         '''
-        # if os.name == 'nt':
-        #     str_msg = 'Windows'
-        # elif os.name == 'posix':
-        #     str_msg = 'Linux'
-        # else:
-        #     str_msg = 'Unknown'
-        # logger.debug('str_msg = %s', str_msg)
-        # return str_msg
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     
@@ -230,41 +222,3 @@ class ApplicationInterface(object):
         else:
             raise ValueError('Unknown mode setting in command_line')
         return self.my_command(str_command_line)
-
-# class Win10Interface(ApplicationInterface):
-#     @dict_format
-#     def command_line(self, str_cli_cmd: str) -> list[str]:
-#         logger.debug('str_cli_cmd = %s', str_cli_cmd)
-#         logger.debug('self.mode = %s', self.mode)
-#         logger.debug('self.account = %s', self.account)
-#         logger.debug('self.password = %s', self.password)
-#         logger.debug('self.local_dir = %s', self.local_dir)
-#         logger.debug('self.remote_dir = %s', self.remote_dir)
-#         if self.mode == 'remote':
-#             logger.info('===Remote access mode===')
-#             logger.debug('self.remote_ip = %s', self.remote_ip)
-#             str_sshpass = f'sshpass -p \"{self.password}\"'\
-#                 ' ssh -o \"StrictHostKeyChecking=no\"'
-#             logger.debug('str_sshpass = %s', str_sshpass)
-#             str_command_line = f'{str_sshpass}'\
-#                 f' {self.account}@{self.remote_ip}'\
-#                 f' \"cd {self.remote_dir}&&{str_cli_cmd}\"'
-#             logger.debug('str_command_line = %s', str_command_line)
-#         elif self.mode == 'local':
-#             logger.info('===Local access mode===')
-#             str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
-#         else:
-#             raise ValueError('Unknown mode setting in command_line')
-#         return self.my_command(str_command_line)
-    
-
-'''To verify logging in pytest'''
-# if __name__ == '__main__':
-# pytest.main(['test_application_interface.py', '-s', '-v', '-x'])
-# pytest.main(['test_application_interface.py::TestApplicationInterface',\
-#  '-s', '-v', '-x'])
-# pytest.main(['test_application_interface.py::TestApplicationInterface::',\
-#  '-s', '-v', '-x'])
-# lionapp = ApplicationInterface('Linux', '10.19.38.217', 'root', 'marvell',
-# '/root/ryan/LIONSTEFPGA/LIONSTEFPGA').my_command('./lionapp -h')
-#    print(lionapp)

@@ -169,7 +169,9 @@ class AMD64NMMe(object):
                     "Type": str_size
                     }
 
-    def run_io_operation(self, thread: int, iodepth: int, block_size: str, random_size: str, write_pattern: int, duration: int, io_file: str) -> dict[str, str | int]:
+    def run_io_operation(self, thread: int, iodepth: int, block_size: str,
+        random_size: str, write_pattern: int, duration: int, io_file: str) ->\
+        dict[str, str | int]:
         ''' Run DISKSPD
             Args:
                 thread 2 -t2
@@ -181,8 +183,8 @@ class AMD64NMMe(object):
                 writethrough -Sh
                 data ms -D
                 5GB test file -c5g
-            Returns:
-            Raises:
+            Returns: read bw, read iops, write bw, write iops
+            Raises: Any errors occurs while invoking diskspd
         '''
         read_iops = read_bw = write_iops = write_bw = None
         try:
@@ -211,8 +213,8 @@ class AMD64NMMe(object):
                     read_values = read_match.group(1).split('|')
                     read_iops = read_values[3].strip()
                     read_bw = read_values[2].strip()
-                    logger.debug('read_iops = %s', read_iops)
-                    logger.debug('read_bw = %s', read_bw)
+                    logger.info('read_iops = %s', read_iops)
+                    logger.info('read_bw = %s', read_bw)
 
             if write_io_section:
                 write_io_text = write_io_section.group(1)
@@ -224,8 +226,8 @@ class AMD64NMMe(object):
                     write_values = write_match.group(1).split('|')
                     write_iops = write_values[3].strip()
                     write_bw = write_values[2].strip()
-                    logger.debug('write_iops = %s', write_iops)
-                    logger.debug('write_bw = %s', write_bw)
+                    logger.info('write_iops = %s', write_iops)
+                    logger.info('write_bw = %s', write_bw)
 
         except Exception as e:
             logger.error(f"Error occurred in run_io_operation: {e}")

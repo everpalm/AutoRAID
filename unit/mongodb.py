@@ -1,6 +1,7 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 from pymongo import MongoClient, errors
+from pymongo import DESCENDING
 
 
 class MongoDB(object):
@@ -86,5 +87,71 @@ class MongoDB(object):
                 return None
         except errors.PyMongoError as e:
             print(f"Error finding document: {e}")
+            return None
+        
+    def aggregate_metrics(self):
+        pipeline = [
+            {
+                '$match': {
+                    'keyword': {'$regex': r'test_run_io_operation\[[^\]]+\]'}
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'keyword': 1,
+                    'read_bw': 1,
+                    'read_iops': 1,
+                    'write_bw': 1,
+                    'write_iops': 1,
+                    'extracted_param': {
+                        '$regexFind': {
+                            'input': '$keyword',
+                            'regex': r'test_run_io_operation\[([^\]]+)\]'
+                        }
+                    }
+                }
+            },
+            {
+                '$project': {
+                    'keyword': 1,
+                    'read_bw': 1,
+                    'read_iops': 1,
+                    'write_bw': 1,
+                    'write_iops': 1,
+                    'extracted_param': '$extracted_param.match'
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "avg_read_bw": {"$avg": "$read_bw"},
+                    "max_read_bw": {"$max": "$read_bw"},
+                    "min_read_bw": {"$min": "$read_bw"},
+                    "std_read_bw": {"$stdDevSamp": "$read_bw"},
+                    "avg_read_iops": {"$avg": "$read_iops"},
+                    "max_read_iops": {"$max": "$read_iops"},
+                    "min_read_iops": {"$min": "$read_iops"},
+                    "std_read_iops": {"$stdDevSamp": "$read_iops"},
+                    "avg_write_bw": {"$avg": "$write_bw"},
+                    "max_write_bw": {"$max": "$write_bw"},
+                    "min_write_bw": {"$min": "$write_bw"},
+                    "std_write_bw": {"$stdDevSamp": "$write_bw"},
+                    "avg_write_iops": {"$avg": "$write_iops"},
+                    "max_write_iops": {"$max": "$write_iops"},
+                    "min_write_iops": {"$min": "$write_iops"},
+                    "std_write_iops": {"$stdDevSamp": "$write_iops"}
+                }
+            }
+        ]
+        try:
+            result = list(self.collection.aggregate(pipeline))
+            if result:
+                return result[0]
+            else:
+                print("No data found for aggregation.")
+                return None
+        except errors.PyMongoError as e:
+            print(f"Error performing aggregation: {e}")
             return None
 

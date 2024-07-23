@@ -10,73 +10,72 @@ import pytest
 logger = logging.getLogger(__name__)
 
 AMD64_NVM = (
-            {
-                "CPU Information":
-                {
-                    "CPU(s)": "12-Core",
-                    "Model Name": "AMD Ryzen 9"
-                },
-                "Desktop Information":
-                {
-                    "Manufacturer": "System",
-                    "Model": "System Product",
-                    "Name": "MY-TESTBED-01",
-                    "Operating System": "Windows"
-                },
-                "PCIE Configuration":
-                {
-                    "Manufacturer": "NVM",
-                    "VID": "1B4B",
-                    "DID": "22411B4B",
-                    "SDID": "22411B4B",
-                    "Rev": "20"
-                },
-                "NVME List":
-                {
-                    "Node": "nvme0n1",
-                    "SN": "00000000000000000000",
-                    'Model': 'Marvell_NVMe_Controller',
-                    'Namespace ID': '1',
-                    'Namespace Usage': '1.02 TB',
-                    'FW Rev': '10001053'
-                },
-                "NVME SMART-log":
-                {
-                    "critical_warning": 0,
-                    "temperature": 80,
-                    "power_cycles": 625,
-                    "unsafe_shutdowns": 624
-                },
-                "Disk Information":
-                {
-                    "Number": 1,
-                    "SerialNumber": '0050_43C5_0E00_0001.',
-                    "Volume": "D",
-                    "Size": "931.43 GB"
-                }
-            },
+    {
+        "CPU Information":
+        {
+            "CPU(s)": "12-Core",
+            "Model Name": "AMD Ryzen 9"
+        },
+        "Desktop Information":
+        {
+            "Manufacturer": "System",
+            "Model": "System Product",
+            "Name": "MY-TESTBED-01",
+            "Operating System": "Windows"
+        },
+        "PCIE Configuration":
+        {
+            "Manufacturer": "NVM",
+            "VID": "1B4B",
+            "DID": "22411B4B",
+            "SDID": "22411B4B",
+            "Rev": "20"
+        },
+        "NVME List":
+        {
+            "Node": "nvme0n1",
+            "SN": "00000000000000000000",
+            'Model': 'Marvell_NVMe_Controller',
+            'Namespace ID': '1',
+            'Namespace Usage': '1.02 TB',
+            'FW Rev': '10001053'
+        },
+        "NVME SMART-log":
+        {
+            "critical_warning": 0,
+            "temperature": 80,
+            "power_cycles": 625,
+            "unsafe_shutdowns": 624
+        },
+        "Disk Information":
+        {
+            "Number": 1,
+            "SerialNumber": '0050_43C5_0E00_0001.',
+            "Volume": "D",
+            "Size": "931.43 GB"
+        }
+    },
 )
 
-
 TEST_PATTERN = (
-                {
-                    "Thread": 1,
-                    "IO Depth": 32,
-                    "Block Size": '4k',
-                    "Random Size": None,
-                    "Write Pattern": 50,
-                    "Duration": 10,
-                    "Test File": 'D:\\IO.dat',
-                    "Read IO": {
-                        "BW": 171.3,
-                        "IOPS": 43851
-                    },
-                    "Write IO": {
-                        "BW": 171.43,
-                        "IOPS": 43885.35
-                    },
-                    "CR": 0.8
-                },
+    {
+        "Thread": 1,
+        "IO Depth": 32,
+        "Block Size": '4k',
+        "Random Size": None,
+        "Write Pattern": 50,
+        "Duration": 10,
+        "Test File": 'D:\\IO.dat',
+        "Read IO": {
+            "BW": 171.3,
+            "IOPS": 43851
+        },
+        "Write IO": {
+            "BW": 171.43,
+            "IOPS": 43885.35
+        },
+        "CR": 0.8
+    },
 )
 
 
@@ -136,7 +135,6 @@ class TestAMD64NVMe(object):
     # @pytest.mark.repeat(3)
     @pytest.mark.parametrize('test_pattern', TEST_PATTERN)
     def test_run_io_operation(self, target_system, test_pattern):
-        # dic_perf = target_system.run_io_operation(
         read_bw, read_iops, write_bw, write_iops = \
             target_system.run_io_operation(
                 test_pattern["Thread"],
@@ -147,14 +145,6 @@ class TestAMD64NVMe(object):
                 test_pattern["Duration"],
                 test_pattern["Test File"]
         )
-        # assert dic_perf["Read IO"]["BW"] >= \
-        #     test_pattern["Read IO"]["BW"] * test_pattern["CR"]
-        # assert dic_perf["Read IO"]["IOPS"] >= \
-        #     test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
-        # assert dic_perf["Write IO"]["BW"] >= \
-        #     test_pattern["Write IO"]["BW"] * test_pattern["CR"]
-        # assert dic_perf["Write IO"]["IOPS"] >= \
-        #     test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
         assert read_bw >= \
             test_pattern["Read IO"]["BW"] * test_pattern["CR"]
         assert read_iops >= \

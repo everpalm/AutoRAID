@@ -1,25 +1,10 @@
 # Contents of test_win10_mongodb.py
 '''Copyright (c) 2024 Jaron Cheng'''
-# import logging
+import logging
 # import pytest
 
-# logging.basicConfig(
-#     format='%(asctime)s %(levelname)-8s %(message)s',
-#     datefmt='%Y-%m-%d %H:%M:%S')
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
-# MDB_ATTR = [{
-#     "Log Path": '/home/pi/uart.log',
-#     "Report Path": ".report.json"
-# }]
-
-
-# @pytest.mark.parametrize("mdb_attr", MDB_ATTR)
-# class TestMongoDB(object):
-#      def test_write_log_and_report(self, my_mdb, mdb_attr):
-#          _ = my_mdb.write_log_and_report(
-#             mdb_attr["Log Path"],
-#             mdb_attr["Report Path"])
 import json
 import pytest
 from unittest.mock import patch, mock_open
@@ -27,6 +12,26 @@ from unittest.mock import patch, mock_open
 MDB_ATTR = [{
     "Log Path": '/home/pi/uart.log',
     "Report Path": ".report.json"
+}]
+
+# 模拟的聚合结果数据
+AGGREGATE_RESULTS = [{
+    "avg_read_bw": 115.0,
+    "max_read_bw": 130,
+    "min_read_bw": 100,
+    "std_read_bw": 12.909944,
+    "avg_read_iops": 215.0,
+    "max_read_iops": 230,
+    "min_read_iops": 200,
+    "std_read_iops": 12.909944,
+    "avg_write_bw": 165.0,
+    "max_write_bw": 180,
+    "min_write_bw": 150,
+    "std_write_bw": 12.909944,
+    "avg_write_iops": 265.0,
+    "max_write_iops": 280,
+    "min_write_iops": 250,
+    "std_write_iops": 12.909944
 }]
 
 class TestMongoDB:
@@ -118,4 +123,21 @@ class TestMongoDB:
         mock_collection.find_one.assert_called_once_with(filter_query)
         assert result == mock_document
 
+    @pytest.mark.parametrize("mock_aggregate_result", [AGGREGATE_RESULTS])
+    def test_aggregate_metrics(self, mongo_db, mock_aggregate_result):
+        mongo_db_instance, mock_collection = mongo_db
+        
+        mock_collection.aggregate.return_value = mock_aggregate_result
+        
+        # Call the aggregate_metrics method
+        result = mongo_db_instance.aggregate_metrics()
+        
+        # Verify the aggregate call
+        mock_collection.aggregate.assert_called_once()
+        
+        # Check if the result is as expected
+        assert result == mock_aggregate_result[0]
+        
+        if result:
+            logger.debug(f'metrics = {json.dumps(result, indent=4)}')
 
