@@ -124,7 +124,7 @@ class TestMongoDB:
         assert result == mock_document
 
     @pytest.mark.parametrize("mock_aggregate_result", [AGGREGATE_RESULTS])
-    def test_aggregate_metrics(self, mongo_db, mock_aggregate_result):
+    def test_aggregate_random_metrics(self, mongo_db, mock_aggregate_result):
         mongo_db_instance, mock_collection = mongo_db
         
         mock_collection.aggregate.return_value = mock_aggregate_result
