@@ -5,6 +5,8 @@ workspace/
 caches/
 .testmondata
 .coverage
+.coverage.*
 .report.json
 *.jar
 *.log*
+.testmondata-*

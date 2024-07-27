@@ -17,21 +17,21 @@ MDB_ATTR = [{
 # 模拟的聚合结果数据
 AGGREGATE_RESULTS = [{
     "avg_read_bw": 115.0,
-    "max_read_bw": 130,
-    "min_read_bw": 100,
-    "std_read_bw": 12.909944,
+    # "max_read_bw": 130,
+    # "min_read_bw": 100,
+    # "std_read_bw": 12.909944,
     "avg_read_iops": 215.0,
-    "max_read_iops": 230,
-    "min_read_iops": 200,
-    "std_read_iops": 12.909944,
+    # "max_read_iops": 230,
+    # "min_read_iops": 200,
+    # "std_read_iops": 12.909944,
     "avg_write_bw": 165.0,
-    "max_write_bw": 180,
-    "min_write_bw": 150,
-    "std_write_bw": 12.909944,
-    "avg_write_iops": 265.0,
-    "max_write_iops": 280,
-    "min_write_iops": 250,
-    "std_write_iops": 12.909944
+    # "max_write_bw": 180,
+    # "min_write_bw": 150,
+    # "std_write_bw": 12.909944,
+    "avg_write_iops": 265.0
+    # "max_write_iops": 280,
+    # "min_write_iops": 250,
+    # "std_write_iops": 12.909944
 }]
 
 class TestMongoDB:

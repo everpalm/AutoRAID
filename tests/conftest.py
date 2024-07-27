@@ -3,6 +3,7 @@
 import pytest
 import logging
 import os
+import paramiko
 from unit.system_under_testing import RasperberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
@@ -12,6 +13,8 @@ MDB_ATTR = [{
     "Report Path": ".report.json"
 }]
 
+logging.getLogger("pymongo").setLevel(logging.CRITICAL)
+paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 def pytest_addoption(parser):
@@ -61,6 +64,7 @@ def test_open_uart(drone):
     drone.close_uart()
 
 @pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="function", autouse=True)
 def store_gitlab_api_in_config(cmdopt, request):
     gitlab_api = glapi(private_token=cmdopt.get('private_token'), project_id='storage7301426/AutoRAID')
     request.config._store['gitlab_api'] = gitlab_api
@@ -117,3 +121,12 @@ def pytest_sessionfinish(session, exitstatus):
             log_path = attr["Log Path"]
             report_path = attr["Report Path"]
             mongo.write_log_and_report(log_path, report_path)
+
+# def pytest_runtest_teardown(item):
+#     test_folder = os.path.basename(os.path.dirname(item.fspath))
+#     collection_name = test_folder.replace('test_', '')
+#     mongo = MongoDB('192.168.0.128', 27017, 'AutoRAID', collection_name)
+#     for attr in MDB_ATTR:
+#         log_path = attr["Log Path"]
+#         report_path = attr["Report Path"]
+#         mongo.write_log_and_report(log_path, report_path)

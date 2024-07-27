@@ -92,55 +92,163 @@ class MongoDB(object):
     def aggregate_metrics(self):
         pipeline = [
             {
-                '$match': {
-                    'keyword': {'$regex': r'test_run_io_operation\[[^\]]+\]'}
+                "$project": {
+                    "_id": 0,
+                    "report.tests.keywords": 1,
+                    "report.tests.call.log.msg": 1
                 }
             },
+            { "$unwind": { "path": "$report.tests" } },
+            { "$unwind": { "path": "$report.tests.keywords" } },
             {
-                '$project': {
-                    '_id': 0,
-                    'keyword': 1,
-                    'read_bw': 1,
-                    'read_iops': 1,
-                    'write_bw': 1,
-                    'write_iops': 1,
-                    'extracted_param': {
-                        '$regexFind': {
-                            'input': '$keyword',
-                            'regex': r'test_run_io_operation\[([^\]]+)\]'
+                "$match": {
+                    "report.tests.keywords": {
+                        "$regex": "test_run_io_operation"
+                    }
+                }
+            },
+            { "$unwind": { "path": "$report.tests.call" } },
+            { "$unwind": { "path": "$report.tests.call.log" } },
+            {
+                "$project": {
+                    "msg": "$report.tests.call.log.msg",
+                    "write_pattern_string": {
+                        "$regexFind": {
+                            "input": "$report.tests.keywords",
+                            "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
                         }
                     }
                 }
             },
             {
-                '$project': {
-                    'keyword': 1,
-                    'read_bw': 1,
-                    'read_iops': 1,
-                    'write_bw': 1,
-                    'write_iops': 1,
-                    'extracted_param': '$extracted_param.match'
+                "$project": {
+                    "msg": 1,
+                    "write_pattern": {
+                        "$convert": {
+                            "input": {
+                                "$arrayElemAt": [
+                                    "$write_pattern_string.captures",
+                                    0
+                                ]
+                            },
+                            "to": "double",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    },
+                    "io_depth": {
+                        "$convert": {
+                            "input": {
+                                "$arrayElemAt": [
+                                    "$write_pattern_string.captures",
+                                    1
+                                ]
+                            },
+                            "to": "double",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "write_pattern": 1,
+                    "io_depth": 1,
+                    "read_iops_string": {
+                        "$regexFind": {
+                            "input": "$msg",
+                            "regex": "read_iops = (\\d+.\\d+)"
+                        }
+                    },
+                    "read_bw_string": {
+                        "$regexFind": {
+                            "input": "$msg",
+                            "regex": "read_bw = (\\d+.\\d+)"
+                        }
+                    },
+                    "write_iops_string": {
+                        "$regexFind": {
+                            "input": "$msg",
+                            "regex": "write_iops = (\\d+.\\d+)"
+                        }
+                    },
+                    "write_bw_string": {
+                        "$regexFind": {
+                            "input": "$msg",
+                            "regex": "write_bw = (\\d+.\\d+)"
+                        }
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "write_pattern": 1,
+                    "io_depth": 1,
+                    "read_iops": {
+                        "$convert": {
+                            "input": {
+                                "$arrayElemAt": [
+                                    "$read_iops_string.captures",
+                                    0
+                                ]
+                            },
+                            "to": "double",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    },
+                    "read_bw": {
+                        "$convert": {
+                            "input": {
+                                "$arrayElemAt": [
+                                    "$read_bw_string.captures",
+                                    0
+                                ]
+                            },
+                            "to": "double",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    },
+                    "write_iops": {
+                        "$convert": {
+                            "input": {
+                                "$arrayElemAt": [
+                                    "$write_iops_string.captures",
+                                    0
+                                ]
+                            },
+                            "to": "double",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    },
+                    "write_bw": {
+                        "$convert": {
+                            "input": {
+                                "$arrayElemAt": [
+                                    "$write_bw_string.captures",
+                                    0
+                                ]
+                            },
+                            "to": "double",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    }
                 }
             },
             {
                 "$group": {
-                    "_id": None,
-                    "avg_read_bw": {"$avg": "$read_bw"},
-                    "max_read_bw": {"$max": "$read_bw"},
-                    "min_read_bw": {"$min": "$read_bw"},
-                    "std_read_bw": {"$stdDevSamp": "$read_bw"},
-                    "avg_read_iops": {"$avg": "$read_iops"},
-                    "max_read_iops": {"$max": "$read_iops"},
-                    "min_read_iops": {"$min": "$read_iops"},
-                    "std_read_iops": {"$stdDevSamp": "$read_iops"},
-                    "avg_write_bw": {"$avg": "$write_bw"},
-                    "max_write_bw": {"$max": "$write_bw"},
-                    "min_write_bw": {"$min": "$write_bw"},
-                    "std_write_bw": {"$stdDevSamp": "$write_bw"},
-                    "avg_write_iops": {"$avg": "$write_iops"},
-                    "max_write_iops": {"$max": "$write_iops"},
-                    "min_write_iops": {"$min": "$write_iops"},
-                    "std_write_iops": {"$stdDevSamp": "$write_iops"}
+                    "_id": {
+                        "write_pattern": "$write_pattern",
+                        "io_depth": "$io_depth"
+                    },
+                    "avg_read_iops": { "$avg": "$read_iops" },
+                    "avg_read_bw": { "$avg": "$read_bw" },
+                    "avg_write_iops": { "$avg": "$write_iops" },
+                    "avg_write_bw": { "$avg": "$write_bw" }
                 }
             }
         ]
@@ -154,4 +262,3 @@ class MongoDB(object):
         except errors.PyMongoError as e:
             print(f"Error performing aggregation: {e}")
             return None
-
