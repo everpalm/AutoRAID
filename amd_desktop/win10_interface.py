@@ -23,7 +23,7 @@ class Win10Interface(ApplicationInterface):
         logger.debug('self.remote_dir = %s', self.remote_dir)
         logger.debug('self.os = %s', self.os)
         if self.mode == 'remote':
-            logger.info('===Remote access mode===')
+            logger.debug('===Remote access mode===')
             logger.debug('self.remote_ip = %s', self.remote_ip)
             str_sshpass = f'sshpass -p \"{self.password}\"'\
                 ' ssh -o \"StrictHostKeyChecking=no\"'
@@ -33,7 +33,7 @@ class Win10Interface(ApplicationInterface):
                 f' \"cd {self.remote_dir}&&{str_cli_cmd}\"'
             logger.debug('str_command_line = %s', str_command_line)
         elif self.mode == 'local':
-            logger.info('===Local access mode===')
+            logger.debug('===Local access mode===')
             str_command_line = f'cd {self.local_dir}&&{str_cli_cmd}'
         else:
             raise ValueError('Unknown mode setting in command_line')

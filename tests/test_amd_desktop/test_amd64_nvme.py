@@ -5,8 +5,7 @@ import logging
 import pytest
 
 ''' Set up logger '''
-# logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    # datefmt='%Y-%m-%d %H:%M:%S')
+
 logger = logging.getLogger(__name__)
 
 AMD64_NVM = (
@@ -106,6 +105,11 @@ class TestAMD64NVMe(object):
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_pcie_info(self, target_system, amd64_nvm):
+        logger.info(f'VID = {target_system.vid}')
+        logger.info(f'DID = {target_system.did}')
+        logger.info(f'SDID = {target_system.sdid}')
+        logger.info(f'Rev = {target_system.rev}')
+        
         assert target_system.vid == \
             amd64_nvm['PCIE Configuration']["VID"]
         assert target_system.did == \
@@ -117,7 +121,8 @@ class TestAMD64NVMe(object):
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_disk_num(self, target_system, amd64_nvm):
-        # logger.debug('target_system.disk_num = ', target_system.disk_num)
+        logger.info(f'Number = {target_system.disk_num}')
+        logger.info(f'SerialNumber = {target_system.serial_num}')
         assert target_system.disk_num == \
             amd64_nvm['Disk Information']["Number"]
         assert target_system.serial_num == \
@@ -125,8 +130,8 @@ class TestAMD64NVMe(object):
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_volume(self, target_system, amd64_nvm):
-        # logger.debug('target_system.node = ', target_system.node)
-        # logger.debug('target_system.size = ', target_system.size)
+        logger.info(f'Volume = {target_system.volume}')
+        logger.info(f'Size = {target_system.size}')
         assert target_system.volume == \
             amd64_nvm['Disk Information']["Volume"]
         assert target_system.size == \
@@ -145,6 +150,11 @@ class TestAMD64NVMe(object):
                 test_pattern["Duration"],
                 test_pattern["Test File"]
         )
+        logger.info(f'read_bw = {read_bw}')
+        logger.info(f'read_iops = {read_iops}')
+        logger.info(f'write_bw = {write_bw}')
+        logger.info(f'write_iops = {write_iops}')
+        
         assert read_bw >= \
             test_pattern["Read IO"]["BW"] * test_pattern["CR"]
         assert read_iops >= \

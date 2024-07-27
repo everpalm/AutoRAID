@@ -15,7 +15,9 @@ MDB_ATTR = [{
 
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
+
 logger = logging.getLogger(__name__)
+
 
 def pytest_addoption(parser):
     parser.addoption(

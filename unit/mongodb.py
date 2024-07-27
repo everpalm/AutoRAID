@@ -89,7 +89,7 @@ class MongoDB(object):
             print(f"Error finding document: {e}")
             return None
         
-    def aggregate_metrics(self):
+    def aggregate_metrics(self, write_pattern, io_depth):
         pipeline = [
             {
                 "$project": {
@@ -238,6 +238,10 @@ class MongoDB(object):
                         }
                     }
                 }
+            },
+            { "$match": { "write_pattern": write_pattern ,
+                         "io_depth": io_depth
+                        } 
             },
             {
                 "$group": {

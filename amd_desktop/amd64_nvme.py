@@ -56,7 +56,7 @@ class AMD64NMMe(object):
             str_return = self.api.command_line('wmic cpu get name')
             str_cpu_num = str_return.get(1).split(' ')[4]
             str_cpu_name = ' '.join(str_return.get(1).split(' ')[0:3])
-            logger.debug('str_cpu_num = %s, str_cpu_name = %s',
+            logger.debug('cpu_num = %s, cpu_name = %s',
                          str_cpu_num, str_cpu_name)
         except Exception as e:
             logger.error('error occurred in _get_cpu_info: %s', e)
@@ -76,8 +76,8 @@ class AMD64NMMe(object):
             
             int_disk_num = int(str_return.get(0).split(' ')[0].lstrip())
             str_serial_num = str_return.get(0).split(' ')[2].lstrip()
-            logger.debug('int_disk_num = %d', int_disk_num)
-            logger.debug('str_serial_num = %s', str_serial_num)
+            logger.debug('disk_num = %d', int_disk_num)
+            logger.debug('serial_num = %s', str_serial_num)
             
         except Exception as e:
             logger.error('Error occurred in _get_disk_num: %s', e)
@@ -102,9 +102,9 @@ class AMD64NMMe(object):
             str_vendor = ' '.join(str_return.get(1).split(' ')[0:1])
             str_model = ' '.join(str_return.get(1).split(' ')[2:4])
             str_name = str_return.get(1).split(' ')[5].lstrip()
-            logger.debug('str_vendor = %s', str_vendor)
-            logger.debug('str_model = %s', str_model)
-            logger.debug('str_name = %s', str_name)
+            logger.debug('vendor = %s', str_vendor)
+            logger.debug('model = %s', str_model)
+            logger.debug('name = %s', str_name)
     
         except Exception as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
@@ -135,9 +135,9 @@ class AMD64NMMe(object):
             if match:
                 str_vid, str_did, str_sdid, str_rev = match.groups()
             logger.debug(
-                    'self.manufacturer = %s, str_vid = %s, str_did = %s',
+                    'manufacturer = %s, vid = %s, did = %s',
                     self.manufacturer, str_vid, str_did)
-            logger.debug('str_sdid = %s, str_rev = %s', str_sdid, str_rev)
+            logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
                    
         except Exception as e:
             logger.error('Error occurred in _get_pcie_info: %s', e)
@@ -158,8 +158,8 @@ class AMD64NMMe(object):
                     f"powershell Get-Partition -DiskNumber {self.disk_num}")
             str_volume = str_return.get(7).split(' ')[1]
             str_size = ' '.join(str_return.get(7).split(' ')[3:5])
-            logger.debug('str_volume = %s', str_volume)
-            logger.debug('str_size = %s', str_size)
+            logger.debug('volume = %s', str_volume)
+            logger.debug('size = %s', str_size)
         except Exception as e:
             logger.error('Error occurred in _get_volume: %s', e)
             raise
@@ -213,8 +213,8 @@ class AMD64NMMe(object):
                     read_values = read_match.group(1).split('|')
                     read_iops = read_values[3].strip()
                     read_bw = read_values[2].strip()
-                    logger.info('read_iops = %s', read_iops)
-                    logger.info('read_bw = %s', read_bw)
+                    logger.debug('read_iops = %s', read_iops)
+                    logger.debug('read_bw = %s', read_bw)
 
             if write_io_section:
                 write_io_text = write_io_section.group(1)
@@ -226,8 +226,8 @@ class AMD64NMMe(object):
                     write_values = write_match.group(1).split('|')
                     write_iops = write_values[3].strip()
                     write_bw = write_values[2].strip()
-                    logger.info('write_iops = %s', write_iops)
-                    logger.info('write_bw = %s', write_bw)
+                    logger.debug('write_iops = %s', write_iops)
+                    logger.debug('write_bw = %s', write_bw)
 
         except Exception as e:
             logger.error(f"Error occurred in run_io_operation: {e}")

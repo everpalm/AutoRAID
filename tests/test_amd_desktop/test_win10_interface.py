@@ -4,8 +4,8 @@ import logging
 import pytest
 
 ''' Set up logger '''
-logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+# logging.basicConfig(
+#     format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
 
@@ -25,6 +25,6 @@ class TestWin10Interface(object):
     @pytest.mark.parametrize("win_cmd", WIN10_CMD_TABLE)
     def test_command_line(self, my_win10, win_cmd):
         list_executed = my_win10.command_line(win_cmd["Command"])
-        logger.debug("my_app.command_line = %s, type %s", list_executed,
-                     type(list_executed))
+        logger.info(f'Return = {list_executed}')
+        logger.debug(f'Command Type = {type(list_executed)}')
         assert list_executed == win_cmd["Return"][my_win10.mode]

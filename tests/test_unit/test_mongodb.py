@@ -130,7 +130,7 @@ class TestMongoDB:
         mock_collection.aggregate.return_value = mock_aggregate_result
         
         # Call the aggregate_metrics method
-        result = mongo_db_instance.aggregate_metrics()
+        result = mongo_db_instance.aggregate_metrics(0, 1)
         
         # Verify the aggregate call
         mock_collection.aggregate.assert_called_once()

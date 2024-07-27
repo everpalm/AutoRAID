@@ -77,7 +77,7 @@ class ApplicationInterface(object):
                 fcntl.ioctl(
                     my_socket.fileno(), 0x8915, struct.pack(
                         '256s', bytes(str_if_name[:15], 'utf-8')))[20:24])
-            logger.info('local_ip = %s', local_ip)
+            logger.debug('local_ip = %s', local_ip)
         except socket.error:
             local_ip = None
             logger.error('Network disconnected')
@@ -98,7 +98,7 @@ class ApplicationInterface(object):
                 str_password = dict_element.get('Password')
                 str_local_dir = dict_element.get('Local Directory')
                 str_remote_dir = dict_element.get('Remote Directory')
-                logger.info('remote_ip = %s', remote_ip)
+                logger.debug('remote_ip = %s', remote_ip)
                 break
             else:
                 logger.debug('Not target dict_element = %s', dict_element)
@@ -207,7 +207,7 @@ class ApplicationInterface(object):
         logger.debug('self.local_dir = %s', self.local_dir)
         logger.debug('self.remote_dir = %s', self.remote_dir)
         if self.mode == 'remote':
-            logger.info('===Remote access mode===')
+            logger.debug('===Remote access mode===')
             logger.debug('self.remote_ip = %s', self.remote_ip)
             str_sshpass = f'sshpass -p \"{self.password}\"'\
                 ' ssh -o \"StrictHostKeyChecking=no\"'
@@ -217,7 +217,7 @@ class ApplicationInterface(object):
                 f' \"cd {self.remote_dir};{str_cli_cmd}\"'
             logger.debug('str_command_line = %s', str_command_line)
         elif self.mode == 'local':
-            logger.info('===Local access mode===')
+            logger.debug('===Local access mode===')
             str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
         else:
             raise ValueError('Unknown mode setting in command_line')
