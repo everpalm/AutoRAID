@@ -312,7 +312,7 @@ class MongoDB(object):
                                     0
                                 ]
                             },
-                            "to": "double",
+                            "to": "int",
                             "onError": None,
                             "onNull": None
                         }
@@ -325,7 +325,7 @@ class MongoDB(object):
                                     1
                                 ]
                             },
-                            "to": "double",
+                            "to": "int",
                             "onError": None,
                             "onNull": None
                         }

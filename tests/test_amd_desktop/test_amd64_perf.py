@@ -23,7 +23,7 @@ class TestRandomReadWrite(nvm):
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = \
             target_system.run_io_operation(1, io_depth, '4k', '4k',
-                write_pattern, 10, 'D:\\IO.dat')
+                write_pattern, 60, 'D:\\IO.dat')
         logger.info(f'random_read_bw = {read_bw}')
         logger.info(f'random_read_iops = {read_iops}')
         logger.info(f'random_write_bw = {write_bw}')
@@ -57,7 +57,7 @@ class TestSequentialReadWrite(nvm):
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = \
             target_system.run_io_operation(1, io_depth, '4k', None,
-                write_pattern, 10, 'D:\\IO.dat')
+                write_pattern, 60, 'D:\\IO.dat')
         logger.info(f'sequential_read_bw = {read_bw}')
         logger.info(f'sequential_read_iops = {read_iops}')
         logger.info(f'sequential_write_bw = {write_bw}')
