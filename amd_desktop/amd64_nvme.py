@@ -51,17 +51,19 @@ class AMD64NMMe(object):
             Returns: A dictionary consists of CPU(s) and Model Name
             Raises: Logger error
         '''
-        str_return = str_cpu_num = str_cpu_name = None
+        str_return = int_cpu_num = str_cpu_name = None
         try:
+            str_return = self.api.command_line('wmic cpu get NumberOfCores')
+            int_cpu_num = int(str_return.get(1).split(' ')[0])
             str_return = self.api.command_line('wmic cpu get name')
-            str_cpu_num = str_return.get(1).split(' ')[4]
+            # str_cpu_num = str_return.get(1).split(' ')[4]
             str_cpu_name = ' '.join(str_return.get(1).split(' ')[0:3])
-            logger.debug('cpu_num = %s, cpu_name = %s',
-                         str_cpu_num, str_cpu_name)
+            logger.debug('cpu_num = %d, cpu_name = %s',
+                         int_cpu_num, str_cpu_name)
         except Exception as e:
             logger.error('error occurred in _get_cpu_info: %s', e)
         finally:
-            return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
+            return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 
     def _get_disk_num(self):
         try:
@@ -234,14 +236,4 @@ class AMD64NMMe(object):
             raise
         finally:
             return float(read_bw), float(read_iops), float(write_bw), float(write_iops)
-            # return {
-            #     "Read IO": {
-            #         "BW": float(read_bw),
-            #         "IOPS": float(read_iops)
-            #     },
-            #     "Write IO": {
-            #         "BW": float(write_bw),
-            #         "IOPS": float(write_iops)
-            #     }
-            # }
 

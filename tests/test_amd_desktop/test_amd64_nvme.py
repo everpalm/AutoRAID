@@ -5,14 +5,14 @@ import logging
 import pytest
 
 ''' Set up logger '''
-
+# logging.getLogger(__name__).setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 AMD64_NVM = (
     {
         "CPU Information":
         {
-            "CPU(s)": "12-Core",
+            "CPU(s)": 12,
             "Model Name": "AMD Ryzen 9"
         },
         "Desktop Information":
