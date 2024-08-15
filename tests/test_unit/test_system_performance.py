@@ -106,6 +106,7 @@ class TestPerformanceIODepth(object):
     def test_run_io_operation(self, target_system, rw_mode, io_depth):
         target_system.run_io_operation(rw_mode, '4k', io_depth, 1, 30, 4)
 
+    @pytest.mark.skip(reason="Group by MongoDB instead")
     @pytest.mark.parametrize("rr_table", RR_4K_IOD1_JOB1)
     def test_groupby_rr_mean(self, target_performance, rr_table):
         str_iops_mean = target_performance.groupby_io_mean(
@@ -121,6 +122,7 @@ class TestPerformanceIODepth(object):
         # Check if bandwidth is greater or equal to pass credible region
         assert str_bw_mean >= rr_table['BW'] * rr_table['CR']
 
+    @pytest.mark.skip(reason="Group by MongoDB instead")
     @pytest.mark.parametrize("rw_table", RW_4K_IOD1_JOB1)
     def test_groupby_rw_mean(self, target_performance, rw_table):
         str_iops_mean = target_performance.groupby_io_mean(

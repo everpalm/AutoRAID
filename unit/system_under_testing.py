@@ -6,10 +6,11 @@ import os
 # import paramiko
 import re
 import pandas as pd
-# import time
+import time
 from unit.application_interface import ApplicationInterface as api
+import RPi.GPIO as gpio
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -88,8 +89,8 @@ def dict_to_dataframe(callback):
     return wrapper
 
 
-class RasperberryPi(api):
-    ''' Rasperberry Pi
+class RaspberryPi(api):
+    ''' Raspberry Pi
         Any operations associated with Rasperberry Pi
 
         Attributes:
@@ -360,31 +361,58 @@ class SystemUnderTesting(api):
                     "CPU Mask": int_cpumask
                     }
 
-    # def groupby_io_mean(self, file_path, str_group_key, str_key, str_group):
-    #     ''' Groupby IO data and return its mean value
-    #         Args: Group key, data key, and data value
-    #         Returns: data mean
-    #         Raises:FileNotFoundError
-    #     '''
-    #     if os.path.exists(file_path):
-    #         df_perf = pd.read_json(file_path, orient='records',
-    #                                lines=True)
-    #         df_grouped = \
-    #           df_perf.groupby(str_group_key).mean(numeric_only=True)
-    #     else:
-    #         raise FileNotFoundError("File not found")
-    #     return df_grouped.loc[str_key][str_group]
 
-    # def kill_process(self, str_process):
-    #     ''' Kill process
-    #         Args:
-    #         Returns:
-    #         Raises:
-    #     '''
-    #     try:
-    #         _dict_return = self.command_line(f'killall {str_process}')
-    #         logger.debug('kill_process = %s', _dict_return)
-    #     except:
-    #         pass
-    #     finally:
-    #         return _dict_return
+class RaspBerryPins:
+    def __init__(self, gpio_0, gpio_1, gpio_2, gpio_3):
+        self.gpio_0 = gpio_0
+        self.gpio_1 = gpio_1
+        self.gpio_2 = gpio_2
+        self.gpio_3 = gpio_3
+
+class MyGPIO(object):
+    def __init__(self, pins, board_mode):
+        self.switch_pin = pins.gpio_2
+        self._board_mode = board_mode
+        gpio.setmode(self._board_mode)
+        # Relay is active low
+        gpio.setup(self.switch_pin, gpio.OUT, initial=gpio.LOW)
+
+    @property
+    def board_mode(self):
+        return self._board_mode
+
+    @board_mode.setter
+    def board_mode(self, value):
+        '''
+        Verbatim
+            Board: 10
+            BCM: 11
+        '''
+        if self._board_mode != value:
+            gpio.setmode(value)
+            self._board_mode = gpio.getmode()
+
+    def set_switch_mode(self):
+        mode = gpio.getmode()
+        logger.debug(f'self.switch_pin = {self.switch_pin}')
+        logger.debug(f'mode = {mode}')
+        if mode != gpio.BOARD:
+            self.switch_handler()
+        time.sleep(2)
+    
+    def switch_handler(self):
+        gpio.setmode(gpio.BOARD)
+        gpio.setup(self.switch_pin, gpio.OUT)
+
+    def hold_power_button(self):
+        self.set_switch_mode()
+        gpio.output(self.switch_pin, gpio.LOW)
+        time.sleep(5)
+    
+    def press_power_button(self):
+        self.set_switch_mode()        
+        gpio.output(self.switch_pin, gpio.LOW)     
+
+    def clear_gpio(self):
+        print('Clear GPIO')
+        gpio.cleanup()

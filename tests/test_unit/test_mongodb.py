@@ -45,7 +45,8 @@ class TestMongoDB:
         mock_log_data = "Sample log data"
         mock_report_data = {"key": "value"}
 
-        with patch("builtins.open", mock_open(read_data=mock_log_data)) as mock_log_file, \
+        with patch("builtins.open",
+                   mock_open(read_data=mock_log_data)) as mock_log_file, \
              patch("json.load", return_value=mock_report_data):
             
             mongo_db_instance.write_log_and_report(log_path, report_path)
@@ -130,7 +131,7 @@ class TestMongoDB:
         mock_collection.aggregate.return_value = mock_aggregate_result
         
         # Call the aggregate_metrics method
-        result = mongo_db_instance.aggregate_metrics(0, 1)
+        result = mongo_db_instance.aggregate_random_metrics(0, 1)
         
         # Verify the aggregate call
         mock_collection.aggregate.assert_called_once()

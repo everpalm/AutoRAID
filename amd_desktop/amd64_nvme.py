@@ -68,8 +68,12 @@ class AMD64NMMe(object):
     def _get_disk_num(self):
         try:
             str_return = int_disk_num = None
+            if self.manufacturer == "VEN_1B4B":
+                str_target = "Marvell"
+            else:
+                str_target = "CT500P5SSD8"
             str_return = self.api.command_line(
-                f'powershell Get-PhysicalDisk|findstr {self.manufacturer}')
+                    f'powershell Get-PhysicalDisk|findstr {str_target}')
             logger.debug('str_return = %s', str_return)
             
             # Check if str_return is None
@@ -133,7 +137,7 @@ class AMD64NMMe(object):
                 raise ValueError("Received None from command_line")
             
             pattern = r"VEN_(\w+)&DEV_(\w+)&SUBSYS_(\w+)&REV_(\w+)"
-            match = re.search(pattern, str_return.get(1))
+            match = re.search(pattern, str_return.get(0))
             if match:
                 str_vid, str_did, str_sdid, str_rev = match.groups()
             logger.debug(

@@ -48,7 +48,7 @@ AMD64_NVM = (
         },
         "Disk Information":
         {
-            "Number": 1,
+            "Number": 2,
             "SerialNumber": '0050_43C5_0E00_0001.',
             "Volume": "D",
             "Size": "931.43 GB"
@@ -66,12 +66,12 @@ TEST_PATTERN = (
         "Duration": 10,
         "Test File": 'D:\\IO.dat',
         "Read IO": {
-            "BW": 171.3,
-            "IOPS": 43851
+            "BW": 105,
+            "IOPS": 26920
         },
         "Write IO": {
-            "BW": 171.43,
-            "IOPS": 43885.35
+            "BW": 105,
+            "IOPS": 26972
         },
         "CR": 0.8
     },

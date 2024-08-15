@@ -4,7 +4,7 @@ import pytest
 import logging
 import os
 import paramiko
-from unit.system_under_testing import RasperberryPi as rpi
+from unit.system_under_testing import RaspberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
 

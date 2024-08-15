@@ -77,11 +77,11 @@ class TestSequentialReadWrite(nvm):
             assert write_bw >= result['avg_write_bw'] * 0.9
 
 
-ramp_times = list(range(10, 60, 10))
+ramp_times = list(range(10, 120, 10))
 
 
 class TestRampTimeReadWrite(nvm):
-    ''' Test AMD64 NVM Sequential Read Write Performance
+    ''' Test AMD64 NVM Ramp-up Time Read Write
         Performance of the AMD64 system
         Attributes:
             os: Operation System
@@ -89,6 +89,7 @@ class TestRampTimeReadWrite(nvm):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
+    @pytest.mark.repeat(2)
     @pytest.mark.parametrize('ramp_times', ramp_times)
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_system, write_pattern, ramp_times,

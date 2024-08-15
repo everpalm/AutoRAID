@@ -5,14 +5,14 @@ import logging
 import pytest
 # import time
 from unit.system_under_testing import SystemUnderTesting as sut
-from unit.system_under_testing import RasperberryPi as rp
 
 ''' Set up logger '''
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
+# logging.getLogger(__name__).setLevel(logging.DEBUG)
 
-GENERIC_X86 = [
+GENERIC_X86 = (
             {
                 "CPU Information":
                 {
@@ -47,8 +47,8 @@ GENERIC_X86 = [
                     "power_cycles": 625,
                     "unsafe_shutdowns": 624
                 }
-            }
-]
+            },
+)
 
 
 RW_TABLE = (
@@ -112,72 +112,102 @@ RW_TABLE = (
 
 
 class TestSystemUnderTesting(object):
-    @pytest.fixture(scope="session", autouse=True)
-    def target_system(self):
+    # @pytest.fixture(scope="session", autouse=True)
+    @pytest.fixture(scope="function", autouse=True)
+    def target_system(self, mocker, generic_x86):
         logger.info('===Setup SUT===')
-        return sut('Marvell')
+        marvell_sut = sut('Marvell')
+        marvell_sut.cpu_num = mocker.MagicMock(
+            return_value=generic_x86['CPU Information']["CPU(s)"])
+        marvell_sut.cpu_name = mocker.MagicMock(
+            return_value=generic_x86['CPU Information']["Model Name"])
+        marvell_sut.bdf = mocker.MagicMock(
+            return_value=generic_x86['PCIE Configuration']["BDF"])
+        marvell_sut.sdid = mocker.MagicMock(
+            return_value=generic_x86['PCIE Configuration']["SDID"])
+        marvell_sut.version = mocker.MagicMock(
+            return_value=generic_x86['Desktop Information']["Version"])
+        marvell_sut.os = mocker.MagicMock(return_value='Linux')
+        marvell_sut.node = mocker.MagicMock(
+            return_value=generic_x86['NVME List']["Node"])
+        marvell_sut.model = mocker.MagicMock(
+            return_value=generic_x86['NVME List']["Model"])
+        marvell_sut.namespace_usage = mocker.MagicMock(
+            return_value=generic_x86['NVME List']["Namespace Usage"])
+        marvell_sut.namespace_id = mocker.MagicMock(
+            return_value=generic_x86['NVME List']["Namespace ID"])
+        marvell_sut.fw_rev = mocker.MagicMock(
+            return_value=generic_x86['NVME List']["FW Rev"])
+        marvell_sut.critical_warning = mocker.MagicMock(
+            return_value=generic_x86['NVME SMART-log']["critical_warning"])
+        marvell_sut.temperature = mocker.MagicMock(
+            return_value=generic_x86['NVME SMART-log']["temperature"])
+        marvell_sut.power_cycles = mocker.MagicMock(
+            return_value=generic_x86['NVME SMART-log']["power_cycles"])
+        marvell_sut.unsafe_shutdowns = mocker.MagicMock(
+            return_value=generic_x86['NVME SMART-log']["unsafe_shutdowns"])
+        return marvell_sut
+        # return sut('Marvell')
 
-    @pytest.fixture(scope="session", autouse=True)
-    def drone(self):
-        logger.info('===Setup Drone===')
-        return rp("/dev/ttyUSB0", 115200, "uart.log")
+    # @pytest.fixture(scope="session", autouse=True)
+    # def drone(self):
+    #     logger.info('===Setup Drone===')
+    #     return rp("/dev/ttyUSB0", 115200, "uart.log")
 
-    @pytest.fixture(scope="session", autouse=True)
-    def test_open_uart(self, drone):
-        logger.info('===Setup UART===')
-        yield drone.open_uart()
-        logger.info('===Teardown UART===')
-        drone.close_uart()
+    # @pytest.fixture(scope="session", autouse=True)
+    # def test_open_uart(self, drone):
+    #     logger.info('===Setup UART===')
+    #     yield drone.open_uart()
+    #     logger.info('===Teardown UART===')
+    #     drone.close_uart()
 
     @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_cpu_info(self, target_system, generic_x86):
-        logger.info('CPU(s) = %s, CPU model = %s', target_system.cpu_num,
-                    target_system.cpu_name)
-        assert target_system.cpu_num == \
+        logger.info('CPU(s) = %s, CPU model = %s', target_system.cpu_num(),
+                    target_system.cpu_name())
+        assert target_system.cpu_num() == \
             generic_x86['CPU Information']["CPU(s)"]
-        assert target_system.cpu_name == \
+        assert target_system.cpu_name() == \
             generic_x86['CPU Information']["Model Name"]
 
     @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_desktop_info(self, target_system, generic_x86):
-        logger.info('Version = %s, Serial = %s', target_system.version,
-                    target_system.serial)
-        assert target_system.version == \
+        logger.info('Version = %s', target_system.version())
+        assert target_system.version() == \
             generic_x86['Desktop Information']["Version"]
-        # assert target_system.serial == \
-        #     generic_x86['Desktop Information']["Serial"]
 
     @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_pcie_info(self, target_system, generic_x86):
-        assert target_system.bdf == generic_x86['PCIE Configuration']["BDF"]
-        assert target_system.sdid == generic_x86['PCIE Configuration']["SDID"]
+        assert target_system.bdf() == generic_x86['PCIE Configuration']["BDF"]
+        assert target_system.sdid() == generic_x86['PCIE Configuration']["SDID"]
 
+    @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_os(self, target_system):
-        logger.info('my_sut.os = %s', target_system.os)
-        assert target_system.os == 'Linux'
+        logger.info('my_sut.os = %s', target_system.os())
+        assert target_system.os() == 'Linux'
 
     @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_nvme_device(self, target_system, generic_x86):
-        assert target_system.node == generic_x86['NVME List']["Node"]
-        assert target_system.model == generic_x86['NVME List']["Model"]
-        assert target_system.namespace_usage == \
+        assert target_system.node() == generic_x86['NVME List']["Node"]
+        assert target_system.model() == generic_x86['NVME List']["Model"]
+        assert target_system.namespace_usage() == \
             generic_x86['NVME List']["Namespace Usage"]
-        assert target_system.namespace_id == \
+        assert target_system.namespace_id() == \
             generic_x86['NVME List']["Namespace ID"]
-        assert target_system.fw_rev == generic_x86['NVME List']["FW Rev"]
+        assert target_system.fw_rev() == generic_x86['NVME List']["FW Rev"]
 
     @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_nvme_smart_log(self, target_system, generic_x86):
-        assert target_system.critical_warning == \
+        assert target_system.critical_warning() == \
             generic_x86['NVME SMART-log']["critical_warning"]
-        assert target_system.temperature <= \
+        assert target_system.temperature() <= \
             generic_x86['NVME SMART-log']["temperature"]
-        assert target_system.power_cycles >= \
+        assert target_system.power_cycles() >= \
             generic_x86['NVME SMART-log']["power_cycles"]
-        assert target_system.unsafe_shutdowns >= \
+        assert target_system.unsafe_shutdowns() >= \
             generic_x86['NVME SMART-log']["unsafe_shutdowns"]
 
-    # @pytest.mark.repeat(3)
+    # # @pytest.mark.repeat(3)
     @pytest.mark.parametrize('rw_table', RW_TABLE)
     def test_run_io_operation(self, target_system, rw_table):
         df_perf = target_system.run_io_operation(
@@ -192,31 +222,12 @@ class TestSystemUnderTesting(object):
         # Check if bandwidth is greater or equal to pass credible region
         assert df_perf.iloc[-1, 1] >= rw_table['BW'] * rw_table['CR']
 
-    # @pytest.mark.parametrize("rw_table", RW_TABLE)
-    # def test_groupby_io_mean(self, target_system, rw_table):
-    #     str_iops_mean = target_system.groupby_io_mean(
-    #                 'my_data.json',
-    #                 'IO Depth',
-    #                 rw_table['IO Depth'],
-    #                 'IOPS')
-    #     str_bw_mean = target_system.groupby_io_mean(
-    #                 'my_data.json',
-    #                 'IO Depth',
-    #                 rw_table['IO Depth'],
-    #                 'BW')
-    #     logger.info('IO Depth = %s, IOPS = %s, BW = %s',
-    #                 rw_table['IO Depth'], str_iops_mean, str_bw_mean)
-    #     # Check if IOPS is greater or equal to pass credible region
-    #     assert str_iops_mean >= rw_table['IOPS'] * rw_table['CR']
-    #     # Check if bandwidth is greater or equal to pass credible region
-    #     assert str_bw_mean >= rw_table['BW'] * rw_table['CR']
 
-    # def test_groupby_io_mean_open_file(self, target_system):
-    #     with pytest.raises(FileNotFoundError):
-    #         target_system.groupby_io_mean(
-    #                 'stub.json',
-    #                 'IO Depth',
-    #                 4,
-    #                 'IOPS')
-# if __name__ == '__main__':
-# pytest.main(['test_system_under_testing.py', '-s', '-v', '-x'])
+class TestMyGPIO(object):
+    def test_press_power_button(self, my_gpio):
+        my_gpio.press_power_button()
+        assert 1 == 1
+
+    def test_hold_power_button(self, my_gpio):
+        my_gpio.hold_power_button()
+        assert 2 == 2

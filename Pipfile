@@ -17,6 +17,7 @@ pytest-timeout = "*"
 python-gitlab = "*"
 mock = "*"
 psutil = "*"
+pytest-mock = "*"
 
 [dev-packages]
 
