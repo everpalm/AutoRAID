@@ -89,35 +89,38 @@ def dict_to_dataframe(callback):
     return wrapper
 
 
-class RaspberryPi(api):
+# class RaspberryPi(api):
+class RaspberryPi(object):
     ''' Raspberry Pi
         Any operations associated with Rasperberry Pi
 
-        Attributes:
+        API:
             mode: local
             network interface: eth0
             config file: app_map.json
     '''
     def __init__(self, str_uart_path, int_baut_rate, str_file_name):
-        super().__init__(
-                str_mode='local',
-                str_if_name='eth0',
-                str_config_file='local_map.json')
+        # super().__init__(
+        #         str_mode='local',
+        #         str_if_name='eth0',
+        #         str_config_file='local_map.json')
         self.uart_path = str_uart_path
         self.baut_rate = int_baut_rate
         self.file_name = str_file_name
+        self.api = api('local', 'eth0', 'app_map.json')
 
     def open_uart(self):
         logger.debug('self.file_name = %s', self.file_name)
-        self.command_line(f"screen -dm -L -Logfile {self.file_name} "
+        self.api.command_line(f"screen -dm -L -Logfile {self.file_name} "
                           f"{self.uart_path} {self.baut_rate}")
 
     def close_uart(self) -> int:
-        str_return = self.command_line("screen -ls")
+        # str_return = self.command_line("screen -ls")
+        str_return = self.api.command_line("screen -ls")
         logger.debug('str_return = %s', str_return)
         int_uart_port = str_return.get(1).split('..')[0]
         logger.info('int_uart_port is %d', int(int_uart_port))
-        self.command_line(f"screen -X -S {int_uart_port} quit")
+        self.api.command_line(f"screen -X -S {int_uart_port} quit")
         return int_uart_port
 
 

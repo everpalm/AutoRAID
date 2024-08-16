@@ -10,9 +10,11 @@ logger = logging.getLogger(__name__)
 class AMD64Perf(object):
     def __init__(self, exe_mode, network, manufacturer, io_file):
         self._io_file = io_file
-        self.api = win10(exe_mode, network, f'{manufacturer}.json')
+        # self.api = win10(exe_mode, network, f'{manufacturer}.json')
+        self.api = win10()
 
-    def run_io_operation(self, thread, iodepth, block_size, random_size, write_pattern, duration):
+    def run_io_operation(self, thread, iodepth, block_size, random_size,
+            write_pattern, duration):
         ''' Run DISKSPD
             Args:
                 thread 2 -t2
@@ -31,7 +33,8 @@ class AMD64Perf(object):
         try:
             if random_size:
                 str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-                    -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {self._io_file}'
+                -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g\
+                {self._io_file}'
             else:
                 str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
                     -w{write_pattern} -d{duration} -Sh -D -c5g {self._io_file}'
@@ -39,8 +42,10 @@ class AMD64Perf(object):
             str_output = self.api.io_command(str_command)
             # logger.debug('str_output = %s', str_output)
             
-            read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
-            write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
+            read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
+                re.S)
+            write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)',
+                str_output, re.S)
             # logger.debug(f'write_io_section = {write_io_section.group(1)}')
 
             if read_io_section:

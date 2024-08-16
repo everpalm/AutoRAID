@@ -17,7 +17,7 @@ class TestOperateGPIO(object):
         print('\n\033[32m================Teardown GPIO===============\033[0m')
         my_mgi.clear_gpio()
 
-    # @pytest.mark.skip(reason="Need isolated SUT")
+    @pytest.mark.skip(reason="Need isolated SUT")
     def test_press_power_button(self, setup_gpio):
         setup_gpio.press_power_button()
         # TODO

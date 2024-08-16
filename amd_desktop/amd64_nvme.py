@@ -35,7 +35,8 @@ class AMD64NVMe(object):
             serial: Used for indentifying system
     '''
     def __init__(self, str_manufacturer: str):
-        self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
+        # self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
+        self.api = win10()
         self.os = self.api.get_os()
         self.manufacturer = str_manufacturer
         self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()

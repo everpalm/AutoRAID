@@ -12,6 +12,7 @@ from unit.mongodb import MongoDB
 
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 logging.getLogger('unit.system_under_testing').setLevel(logging.DEBUG)
+logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="session", autouse=True)

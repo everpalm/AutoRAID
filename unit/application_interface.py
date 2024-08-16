@@ -15,7 +15,7 @@ PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
-# logging.basicConfig(level=logging.CRITICAL)
+# logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(filename='C:\paramiko.log')
 logger = logging.getLogger(__name__)
 # logger = logging.getLogger("paramiko")
@@ -50,16 +50,15 @@ class ApplicationInterface(object):
     '''
 
     def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
-        self.os = self.get_os()
         self.mode = str_mode
         self.config_file = str_config_file
-        self.local_ip = self.__get_local_ip(str_if_name)
+        self.local_ip = self._get_local_ip(str_if_name)
         self.remote_ip, self.account, self.password, self.local_dir, \
-            self.remote_dir = self.__get_remote_ip()
+            self.remote_dir = self._get_remote_ip()
+        self.os = self.get_os()
 
     def __import_config(self) -> dict[str, str]:
         try:
-            # with open(f'./config/{self.config_file}', 'r') as f:
             with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
                 dict_config_list = json.load(f)
                 return dict_config_list
@@ -69,7 +68,7 @@ class ApplicationInterface(object):
         # return dict_config_list
 
     @staticmethod
-    def __get_local_ip(str_if_name: str) -> str:
+    def _get_local_ip(str_if_name: str) -> str:
         # Create a socket instance
         my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
@@ -86,8 +85,7 @@ class ApplicationInterface(object):
             my_socket.close()
         return local_ip
 
-    def __get_remote_ip(self) -> Tuple[str]:
-        # for dict_element in CONFIG_TABLE:
+    def _get_remote_ip(self) -> Tuple[str]:
         remote_ip = None
         for dict_element in self.__import_config():
             # remote_ip = None
@@ -112,9 +110,9 @@ class ApplicationInterface(object):
 
     def get_ip_address(self) -> str:
         if self.mode == 'remote':
-            return self.__get_remote_ip()
+            return self._get_remote_ip()
         elif self.mode == 'local':
-            return self.__get_local_ip()
+            return self._get_local_ip()
 
     @staticmethod
     # def __my_command(str_ssh_command: str) -> list[str]:

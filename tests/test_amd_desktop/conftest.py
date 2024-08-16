@@ -29,8 +29,9 @@ def target_system():
 @pytest.fixture(scope="module", autouse=True)
 def my_win10(cmdopt):
     print('\n\033[32m================ Setup OS ===============\033[0m')
-    return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
-    cmdopt.get('config_file'))
+    # return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
+    # cmdopt.get('config_file'))
+    return win10()
 
 @pytest.fixture(scope="session", autouse=True)
 def my_mdb():

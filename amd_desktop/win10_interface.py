@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class Win10Interface(ApplicationInterface):
-    # def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
-    #     super().__init__(str_mode, str_if_name, str_config_file)
+    def __init__(self):
+        super().__init__(str_mode='remote', str_if_name='eth0',
+            str_config_file='app_map.json')
 
     @dict_format
     def command_line(self, str_cli_cmd: str) -> List[str]:

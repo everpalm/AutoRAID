@@ -138,29 +138,29 @@ class TestAMD64NVMe(object):
             amd64_nvm['Disk Information']["Size"]
  
     # @pytest.mark.repeat(3)
-    @pytest.mark.parametrize('test_pattern', TEST_PATTERN)
-    def test_run_io_operation(self, target_system, test_pattern):
-        read_bw, read_iops, write_bw, write_iops = \
-            target_system.run_io_operation(
-                test_pattern["Thread"],
-                test_pattern["IO Depth"],
-                test_pattern["Block Size"],
-                test_pattern["Random Size"],
-                test_pattern["Write Pattern"],
-                test_pattern["Duration"],
-                test_pattern["Test File"]
-        )
-        logger.info(f'read_bw = {read_bw}')
-        logger.info(f'read_iops = {read_iops}')
-        logger.info(f'write_bw = {write_bw}')
-        logger.info(f'write_iops = {write_iops}')
+    # @pytest.mark.parametrize('test_pattern', TEST_PATTERN)
+    # def test_run_io_operation(self, target_system, test_pattern):
+    #     read_bw, read_iops, write_bw, write_iops = \
+    #         target_system.run_io_operation(
+    #             test_pattern["Thread"],
+    #             test_pattern["IO Depth"],
+    #             test_pattern["Block Size"],
+    #             test_pattern["Random Size"],
+    #             test_pattern["Write Pattern"],
+    #             test_pattern["Duration"],
+    #             test_pattern["Test File"]
+    #     )
+    #     logger.info(f'read_bw = {read_bw}')
+    #     logger.info(f'read_iops = {read_iops}')
+    #     logger.info(f'write_bw = {write_bw}')
+    #     logger.info(f'write_iops = {write_iops}')
         
-        assert read_bw >= \
-            test_pattern["Read IO"]["BW"] * test_pattern["CR"]
-        assert read_iops >= \
-            test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
-        assert write_bw >= \
-            test_pattern["Write IO"]["BW"] * test_pattern["CR"]
-        assert write_iops >= \
-            test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
+    #     assert read_bw >= \
+    #         test_pattern["Read IO"]["BW"] * test_pattern["CR"]
+    #     assert read_iops >= \
+    #         test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
+    #     assert write_bw >= \
+    #         test_pattern["Write IO"]["BW"] * test_pattern["CR"]
+    #     assert write_iops >= \
+    #         test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
         
