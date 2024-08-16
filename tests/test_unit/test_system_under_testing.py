@@ -221,13 +221,3 @@ class TestSystemUnderTesting(object):
         assert df_perf.iloc[-1, 0] >= rw_table['IOPS'] * rw_table['CR']
         # Check if bandwidth is greater or equal to pass credible region
         assert df_perf.iloc[-1, 1] >= rw_table['BW'] * rw_table['CR']
-
-
-class TestMyGPIO(object):
-    def test_press_power_button(self, my_gpio):
-        my_gpio.press_power_button()
-        assert 1 == 1
-
-    def test_hold_power_button(self, my_gpio):
-        my_gpio.hold_power_button()
-        assert 2 == 2

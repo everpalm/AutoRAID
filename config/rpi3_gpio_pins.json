@@ -1,0 +1,142 @@
+{
+    "SDA.1": {
+        "physical_pin": 3,
+        "BCM": 2,
+        "mode": "ALT0"
+    },
+    "SCL.1": {
+        "physical_pin": 5,
+        "BCM": 3,
+        "mode": "ALT0"
+    },
+    "GPIO.7": {
+        "physical_pin": 7,
+        "BCM": 4,
+        "mode": "IN"
+    },
+    "TxD": {
+        "physical_pin": 8,
+        "BCM": 14,
+        "mode": "ALT5"
+    },
+    "RxD": {
+        "physical_pin": 10,
+        "BCM": 15,
+        "mode": "ALT5"
+    },
+    "GPIO.0": {
+        "physical_pin": 11,
+        "BCM": 17,
+        "mode": "IN"
+    },
+    "GPIO.1": {
+        "physical_pin": 12,
+        "BCM": 18,
+        "mode": "IN"
+    },
+    "GPIO.2": {
+        "physical_pin": 13,
+        "BCM": 27,
+        "mode": "IN"
+    },
+    "GPIO.3": {
+        "physical_pin": 15,
+        "BCM": 22,
+        "mode": "IN"
+    },
+    "GPIO.4": {
+        "physical_pin": 16,
+        "BCM": 23,
+        "mode": "IN"
+    },
+    "GPIO.5": {
+        "physical_pin": 18,
+        "BCM": 24,
+        "mode": "IN"
+    },
+    "MOSI": {
+        "physical_pin": 19,
+        "BCM": 10,
+        "mode": "ALT0"
+    },
+    "MOSO": {
+        "physical_pin": 21,
+        "BCM": 9,
+        "mode": "ALT0"
+    },
+    "GPIO.6": {
+        "physical_pin": 22,
+        "BCM": 25,
+        "mode": "IN"
+    },
+    "SCLK": {
+        "physical_pin": 23,
+        "BCM": 11,
+        "mode": "ALT0"
+    },
+    "CE0": {
+        "physical_pin": 24,
+        "BCM": 8,
+        "mode": "OUT"
+    },
+    "CE1": {
+        "physical_pin": 26,
+        "BCM": 7,
+        "mode": "OUT"
+    },
+    "SDA.0": {
+        "physical_pin": 27,
+        "BCM": null,
+        "mode": "IN"
+    },
+    "SCL.0": {
+        "physical_pin": 28,
+        "BCM": null,
+        "mode": "IN"
+    },
+    "GPIO.21": {
+        "physical_pin": 29,
+        "BCM": 5,
+        "mode": "IN"
+    },
+    "GPIO.22": {
+        "physical_pin": 31,
+        "BCM": 6,
+        "mode": "GPIO"
+    },
+    "GPIO.23": {
+        "physical_pin": 33,
+        "BCM": 13,
+        "mode": "IN"
+    },
+    "GPIO.24": {
+        "physical_pin": 35,
+        "BCM": 19,
+        "mode": "IN"
+    },
+    "GPIO.25": {
+        "physical_pin": 37,
+        "BCM": 26,
+        "mode": "IN"
+    },
+    "GPIO.26": {
+        "physical_pin": 32,
+        "BCM": 12,
+        "mode": "IN"
+    },
+    "GPIO.27": {
+        "physical_pin": 36,
+        "BCM": 16,
+        "mode": "IN"
+    },
+    "GPIO.28": {
+        "physical_pin": 38,
+        "BCM": 20,
+        "mode": "IN"
+    },
+    "GPIO.29": {
+        "physical_pin": 40,
+        "BCM": 21,
+        "mode": "IN"
+    }
+}

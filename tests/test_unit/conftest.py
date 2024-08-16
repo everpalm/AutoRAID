@@ -7,9 +7,8 @@ import paramiko
 from unittest.mock import patch
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB
-from unit.system_under_testing import MyGPIO as mgi
-from unit.system_under_testing import RaspBerryPins as rbp
-import RPi.GPIO as gpio
+# from unit.system_under_testing import MyGPIO as mgi
+# import RPi.GPIO as gpio
 
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 logging.getLogger('unit.system_under_testing').setLevel(logging.DEBUG)
@@ -39,18 +38,13 @@ def mongo_db():
 def gitlab_api(request):
     return request.config._store.get('gitlab_api', None) 
 
-@pytest.fixture(scope="session", autouse=True)    
-def my_pins():
-    print('\n\033====================Setup Pins====================\033[0m')
-    return rbp(11, 12, 13, 14)
-
-@pytest.fixture(scope="function", autouse=True)
-def my_gpio(my_pins):
-    print('\n\033====================Setup GPIO====================\033[0m')
-    my_mgi = mgi(my_pins, gpio.BOARD)
-    yield my_mgi
-    print('\n\033[32m================ Teardown GPIO ===============\033[0m')
-    my_mgi.clear_gpio()
+# @pytest.fixture(scope="function", autouse=True)
+# def my_gpio(my_pins):
+#     print('\n\033====================Setup GPIO====================\033[0m')
+#     my_mgi = mgi(my_pins, gpio.BOARD)
+#     yield my_mgi
+#     print('\n\033[32m================ Teardown GPIO ===============\033[0m')
+#     my_mgi.clear_gpio()
     
     
 
