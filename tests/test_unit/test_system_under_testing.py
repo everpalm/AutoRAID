@@ -208,6 +208,7 @@ class TestSystemUnderTesting(object):
             generic_x86['NVME SMART-log']["unsafe_shutdowns"]
 
     # # @pytest.mark.repeat(3)
+    @pytest.mark.skip(reason='Obsoleted')
     @pytest.mark.parametrize('rw_table', RW_TABLE)
     def test_run_io_operation(self, target_system, rw_table):
         df_perf = target_system.run_io_operation(

@@ -36,15 +36,7 @@ def mongo_db():
 
 @pytest.fixture(scope="session", autouse=True)
 def gitlab_api(request):
-    return request.config._store.get('gitlab_api', None) 
-
-# @pytest.fixture(scope="function", autouse=True)
-# def my_gpio(my_pins):
-#     print('\n\033====================Setup GPIO====================\033[0m')
-#     my_mgi = mgi(my_pins, gpio.BOARD)
-#     yield my_mgi
-#     print('\n\033[32m================ Teardown GPIO ===============\033[0m')
-#     my_mgi.clear_gpio()
+    return request.config._store.get('gitlab_api', None)
     
     
 

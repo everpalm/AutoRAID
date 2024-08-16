@@ -4,17 +4,17 @@ from unit.gpio import OperateGPIO as og
 from unit.gpio import RaspBerryPins as rbp
 
 class TestOperateGPIO(object):
-    @pytest.fixture(scope="session", autouse=True)    
+    @pytest.fixture(scope="module", autouse=True)    
     def my_pins(self):
-        print('\n\033====================Setup Pins====================\033[0m')
+        print('\n\033==================Setup GPIO.2==================\033[0m')
         return rbp('rpi3_gpio_pins.json', 'GPIO.2')
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_gpio(self, my_pins):
-        print('\n\033====================Setup GPIO====================\033[0m')
+        print('\n\033=================Set Board Mode=================\033[0m')
         my_mgi = og(my_pins, gpio.BOARD)
         yield my_mgi
-        print('\n\033[32m================ Teardown GPIO ===============\033[0m')
+        print('\n\033[32m================Teardown GPIO===============\033[0m')
         my_mgi.clear_gpio()
 
     # @pytest.mark.skip(reason="Need isolated SUT")
