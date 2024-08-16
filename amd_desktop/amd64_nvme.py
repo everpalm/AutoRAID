@@ -18,7 +18,7 @@ from unit.system_under_testing import dict_to_dataframe
 logger = logging.getLogger(__name__)
 # logger = logging.getLogger("paramiko")
 
-class AMD64NMMe(object):
+class AMD64NVMe(object):
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 
@@ -163,81 +163,87 @@ class AMD64NMMe(object):
             str_return = self.api.command_line(
                     f"powershell Get-Partition -DiskNumber {self.disk_num}")
             str_volume = str_return.get(7).split(' ')[1]
-            str_size = ' '.join(str_return.get(7).split(' ')[3:5])
+            # str_size = ' '.join(str_return.get(7).split(' ')[3:5])
             logger.debug('volume = %s', str_volume)
-            logger.debug('size = %s', str_size)
+            # logger.debug('size = %s', str_size)
         except Exception as e:
             logger.error('Error occurred in _get_volume: %s', e)
             raise
+        else:
+            if str_volume:
+                str_size = ' '.join(str_return.get(7).split(' ')[3:5])
+                logger.debug('size = %s', str_size)
+            else:
+                raise ValueError("Unexpected None value returned")
         finally:
             return {
                     "Volume": str_volume,
                     "Type": str_size
                     }
 
-    def run_io_operation(self, thread: int, iodepth: int, block_size: str,
-        random_size: str, write_pattern: int, duration: int, io_file: str) ->\
-        dict[str, str | int]:
-        ''' Run DISKSPD
-            Args:
-                thread 2 -t2
-                iodepth 32 -o32
-                blocksize 4k -b4k
-                random 4k -r4k
-                write 0% -w0
-                duration 120 seconds -d120
-                writethrough -Sh
-                data ms -D
-                5GB test file -c5g
-            Returns: read bw, read iops, write bw, write iops
-            Raises: Any errors occurs while invoking diskspd
-        '''
-        read_iops = read_bw = write_iops = write_bw = None
-        try:
-            if random_size:
-                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-                    -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
-            else:
-                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-                    -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
+    # def run_io_operation(self, thread: int, iodepth: int, block_size: str,
+    #     random_size: str, write_pattern: int, duration: int, io_file: str) ->\
+    #     dict[str, str | int]:
+    #     ''' Run DISKSPD
+    #         Args:
+    #             thread 2 -t2
+    #             iodepth 32 -o32
+    #             blocksize 4k -b4k
+    #             random 4k -r4k
+    #             write 0% -w0
+    #             duration 120 seconds -d120
+    #             writethrough -Sh
+    #             data ms -D
+    #             5GB test file -c5g
+    #         Returns: read bw, read iops, write bw, write iops
+    #         Raises: Any errors occurs while invoking diskspd
+    #     '''
+    #     read_iops = read_bw = write_iops = write_bw = None
+    #     try:
+    #         if random_size:
+    #             str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
+    #                 -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
+    #         else:
+    #             str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
+    #                 -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
             
-            str_output = self.api.io_command(str_command)
-            # logger.debug('str_output = %s', str_output)
+    #         str_output = self.api.io_command(str_command)
+    #         # logger.debug('str_output = %s', str_output)
             
-            read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
-            write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
-            # logger.debug(f'write_io_section = {write_io_section.group(1)}')
+    #         read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
+    #         write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
+    #         # logger.debug(f'write_io_section = {write_io_section.group(1)}')
 
-            if read_io_section:
-                read_io_text = read_io_section.group(1)
+    #         if read_io_section:
+    #             read_io_text = read_io_section.group(1)
 
-                # Extract total and I/O per s values
-                read_pattern = re.compile(r'total:\s*([\d\s|.]+)')
-                read_match = read_pattern.search(read_io_text)
+    #             # Extract total and I/O per s values
+    #             read_pattern = re.compile(r'total:\s*([\d\s|.]+)')
+    #             read_match = read_pattern.search(read_io_text)
 
-                if read_match:
-                    read_values = read_match.group(1).split('|')
-                    read_iops = read_values[3].strip()
-                    read_bw = read_values[2].strip()
-                    logger.debug('read_iops = %s', read_iops)
-                    logger.debug('read_bw = %s', read_bw)
+    #             if read_match:
+    #                 read_values = read_match.group(1).split('|')
+    #                 read_iops = read_values[3].strip()
+    #                 read_bw = read_values[2].strip()
+    #                 logger.debug('read_iops = %s', read_iops)
+    #                 logger.debug('read_bw = %s', read_bw)
 
-            if write_io_section:
-                write_io_text = write_io_section.group(1)
+    #         if write_io_section:
+    #             write_io_text = write_io_section.group(1)
 
-                # Extract total and I/O per s value
-                write_pattern = re.compile(r'total:\s*([\d\s|.]+)')
-                write_match = write_pattern.search(write_io_text)
-                if write_match:
-                    write_values = write_match.group(1).split('|')
-                    write_iops = write_values[3].strip()
-                    write_bw = write_values[2].strip()
-                    logger.debug('write_iops = %s', write_iops)
-                    logger.debug('write_bw = %s', write_bw)
+    #             # Extract total and I/O per s value
+    #             write_pattern = re.compile(r'total:\s*([\d\s|.]+)')
+    #             write_match = write_pattern.search(write_io_text)
+    #             if write_match:
+    #                 write_values = write_match.group(1).split('|')
+    #                 write_iops = write_values[3].strip()
+    #                 write_bw = write_values[2].strip()
+    #                 logger.debug('write_iops = %s', write_iops)
+    #                 logger.debug('write_bw = %s', write_bw)
 
-        except Exception as e:
-            logger.error(f"Error occurred in run_io_operation: {e}")
-            raise
-        finally:
-            return float(read_bw), float(read_iops), float(write_bw), float(write_iops)
+    #     except Exception as e:
+    #         logger.error(f"Error occurred in run_io_operation: {e}")
+    #         raise
+    #     finally:
+    #         return float(read_bw), float(read_iops), float(write_bw), float(write_iops)
 

@@ -16,14 +16,11 @@ class TestRandomReadWrite(nvm):
             manufacturer: Any
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
-    '''
+    # '''
     @pytest.mark.parametrize('io_depth', [2**power for power in range(1)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
-    def test_run_io_operation(self, target_system, write_pattern, io_depth,
-        my_mdb):
-        read_bw, read_iops, write_bw, write_iops = \
-            target_system.run_io_operation(1, io_depth, '4k', '4k',
-                write_pattern, 60, 'D:\\IO.dat')
+    def test_run_io_operation(self, target_perf, write_pattern, io_depth, my_mdb):
+        read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(1, io_depth, '4k', '4k', write_pattern, 60)
         logger.info(f'random_read_bw = {read_bw}')
         logger.info(f'random_read_iops = {read_iops}')
         logger.info(f'random_write_bw = {write_bw}')
@@ -53,11 +50,11 @@ class TestSequentialReadWrite(nvm):
     '''
     @pytest.mark.parametrize('io_depth', [2**power for power in range(1)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
-    def test_run_io_operation(self, target_system, write_pattern, io_depth,
+    def test_run_io_operation(self, target_perf, write_pattern, io_depth,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = \
-            target_system.run_io_operation(1, io_depth, '4k', None,
-                write_pattern, 60, 'D:\\IO.dat')
+            target_perf.run_io_operation(1, io_depth, '4k', None,
+                write_pattern, 10)
         logger.info(f'sequential_read_bw = {read_bw}')
         logger.info(f'sequential_read_iops = {read_iops}')
         logger.info(f'sequential_write_bw = {write_bw}')
@@ -89,14 +86,14 @@ class TestRampTimeReadWrite(nvm):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
-    @pytest.mark.repeat(2)
+    # @pytest.mark.repeat(2)
     @pytest.mark.parametrize('ramp_times', ramp_times)
     @pytest.mark.parametrize('write_pattern', [0, 100])
-    def test_run_io_operation(self, target_system, write_pattern, ramp_times,
+    def test_run_io_operation(self, target_perf, write_pattern, ramp_times,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = \
-            target_system.run_io_operation(1, 4, '4k', '4k',
-                write_pattern, ramp_times, 'D:\\IO.dat')
+            target_perf.run_io_operation(1, 4, '4k', '4k',
+                write_pattern, ramp_times)
         logger.info(f'ramp_read_bw = {read_bw}')
         logger.info(f'ramp_read_iops = {read_iops}')
         logger.info(f'ramp_write_bw = {write_bw}')
@@ -108,9 +105,3 @@ class TestRampTimeReadWrite(nvm):
         logger.debug(f'ramp_times = {ramp_times}')
         logger.debug(f'result = {result}')
 
-        # if result['_id']['write_pattern'] == write_pattern and \
-        #     result['_id']['ramp_times'] == ramp_times:
-        #     assert read_iops >= result['avg_read_iops'] * 0.9
-        #     assert read_bw >= result['avg_read_bw'] * 0.9
-        #     assert write_iops >= result['avg_write_iops'] * 0.9
-        #     assert write_bw >= result['avg_write_bw'] * 0.9

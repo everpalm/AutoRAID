@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class Win10Interface(ApplicationInterface):
+    # def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
+    #     super().__init__(str_mode, str_if_name, str_config_file)
+
     @dict_format
     def command_line(self, str_cli_cmd: str) -> List[str]:
         logger.debug('str_cli_cmd = %s', str_cli_cmd)
