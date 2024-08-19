@@ -34,7 +34,7 @@ class AMD64NVMe(object):
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    def __init__(self, str_manufacturer: str):
+    def __init__(self, str_manufacturer: str, nic_name):
         # self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
         self.api = win10()
         self.os = self.api.get_os()
@@ -44,6 +44,43 @@ class AMD64NVMe(object):
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
         self.volume, self.size = self._get_volume().values()
+        self.nic_name = nic_name
+        self._mac_address = None
+    
+    @property
+    def mac_address(self):
+        ''' Get MAC address
+            Parse MAC address from power shell 'Get-NetAdapter'
+            Args: None
+            Returns: Attribute _mac_address
+            Raises: Value
+        '''
+        if hasattr(self, '_mac_address') and self._mac_address:
+            return self._mac_address
+
+        try:
+            output = self.api.command_line('powershell Get-NetAdapter')
+            logger.debug(f'output = {output}')
+
+            filtered = output.get(3)
+            logger.debug(f'filtered = {filtered}')
+
+            if not filtered:
+                raise ValueError(
+                    "Failed to retrieve the expected output from command.")
+        
+            match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s", filtered)
+            if match:
+                mac_address = match.group(1)
+                logger.debug(f"Found: {mac_address}")
+                self._mac_address = mac_address
+            else:
+                raise ValueError("No matching Ethernet adapter found.")
+        except (ValueError, Exception) as e:
+            logger.error(f'Error: {e}')
+            self._mac_address = None
+
+        return self._mac_address
 
     def _get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
@@ -63,8 +100,8 @@ class AMD64NVMe(object):
                          int_cpu_num, str_cpu_name)
         except Exception as e:
             logger.error('error occurred in _get_cpu_info: %s', e)
-        finally:
-            return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
+        
+        return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 
     def _get_disk_num(self):
         try:
