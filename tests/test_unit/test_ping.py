@@ -1,90 +1,129 @@
 import logging
 from unittest.mock import MagicMock
-# from tests.test_unit.test_ping import Ping
+from unit.ping import LinuxPing
+from unit.ping import WindowsPing
 
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.DEBUG)
 
-# @pytest.fixture(scope="session", autouse=True)
-# def mock_api():
-#     mock = MagicMock()
-#     mock.ip_address = "127.0.0.1"  # Mocking the IP address
-#     return mock
 
-class TestPing:  
-    def test_ping_no_loss(self, target_ping):
-        # Setup the mock to return a successful ping response
-        # mock_api.command_line.return_value = (
-        #     "Pinging 127.0.0.1 with 32 bytes of data:\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n\n"
-        #     "Ping statistics for 127.0.0.1:\n"
-        #     "    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),\n"
-        #     "Approximate round trip times in milli-seconds:\n"
-        #     "    Minimum = 0ms, Maximum = 0ms, Average = 0ms"
-        # )
+class TestPing(object):
+    def test_linux_ping(self, mock_api):
+        ping_instance = LinuxPing(mock_api)
+        mock_api.command_line.return_value = {
+            0: 'PING 192.168.0.128 (192.168.0.128) 56(84) bytes of data.',
+            1: '64 bytes from 192.168.0.128: icmp_seq=1 ttl=128 time=0.300 ms',
+            6: '4 packets transmitted, 4 received, 0% packet loss, time 85ms',
+            7: 'rtt min/avg/max/mdev = 0.300/0.337/0.351/0.021 ms'
+        }
         
-        # ping = Ping(mock_api)
-        if target_ping.ping():
-            logger.info(f"target_ping.sent = {target_ping.sent}")
-            logger.info(f"target_ping.received = {target_ping.received}")
-            logger.info(f"target_ping.lost = {target_ping.lost}")
-        # ping.ping()
-        
-        # Verify the parsed values
-            assert (target_ping.sent == 4,
-                f"Expected Sent to be 4, got {target_ping.sent}")
-            # assert ping.received == 4, f"Expected Received to be 4, got {ping.received}"
-            # assert ping.lost == 0, f"Expected Lost to be 0, got {ping.lost}"
-            # assert ping.minimum == 0, f"Expected Minimum to be 0ms, got {ping.minimum}"
-            # assert ping.maximum == 0, f"Expected Maximum to be 0ms, got {ping.maximum}"
-            # assert ping.average == 0, f"Expected Average to be 0ms, got {ping.average}"
+        result = ping_instance.ping()
 
-    def test_ping_loss(self, target_ping):
-        # Setup the mock to return a successful ping response with no loss
-        # mock_api.command_line.return_value = (
-        #     "Pinging 127.0.0.1 with 32 bytes of data:\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n"
-        #     "Reply from 127.0.0.1: bytes=32 time<1ms TTL=128\n\n"
-        #     "Ping statistics for 127.0.0.1:\n"
-        #     "    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),\n"
-        #     "Approximate round trip times in milli-seconds:\n"
-        #     "    Minimum = 0ms, Maximum = 0ms, Average = 0ms"
-        # )
-        
-        # ping = Ping(mock_api)
-        if target_ping.ping():
-            logger.info(f"target_ping.sent = {target_ping.sent}")
-            logger.info(f"target_ping.received = {target_ping.received}")
-            logger.info(f"target_ping.lost = {target_ping.lost}")
-        # Check for no packet loss
-            assert (target_ping.lost == 0,
-                f"Expected no packet loss, got {target_ping.lost} packets lost")
+        logger.info(f'ping_instance.sent = {ping_instance.sent}')
+        logger.info(f'ping_instance.received = {ping_instance.received}')
+        logger.info(f'ping_instance.lost = {ping_instance.lost}')
+        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
+        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
+        logger.info(f'ping_instance.average = {ping_instance.average}')
+        logger.info(f'ping_instance.deviation = {ping_instance.deviation}')
 
-    def test_parse_statistics(self, target_ping):
-        # Setup the mock to return a failed ping response
-        # mock_api.command_line.return_value = (
-        #     "Pinging 256.256.256.256 with 32 bytes of data:\n"
-        #     "Request timed out.\n"
-        #     "Request timed out.\n"
-        #     "Request timed out.\n"
-        #     "Request timed out.\n\n"
-        #     "Ping statistics for 256.256.256.256:\n"
-        #     "    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),"
-        # )
+        assert result == True
+        assert ping_instance.sent == 4
+        assert ping_instance.received == 4
+        assert ping_instance.lost == 0
+        assert ping_instance.minimum == 0.300
+        assert ping_instance.average == 0.337
+        assert ping_instance.maximum == 0.351
+        assert ping_instance.deviation == 0.021
+
+    def test_linux_ping_loss(self, mock_api):
+        ping_instance = LinuxPing(mock_api)
         
-        # ping = Ping(mock_api)
-        if target_ping.ping():
-            logger.info(f"target_ping.maximum = {target_ping.maximum}")
-            logger.info(f"target_ping.minimum = {target_ping.minimum}")
-            logger.info(f"target_ping.average = {target_ping.average}")
-            assert target_ping.sent == 4, "Expected Sent to be 4"
-            # assert ping.received == 0, "Expected Received to be 0"
-            # assert ping.lost == 4, "Expected Lost to be 4"
-            # assert ping.minimum == 0, "Expected Minimum to be 0 in case of failure"
-            # assert ping.maximum == 0, "Expected Maximum to be 0 in case of failure"
-            # assert ping.average == 0, "Expected Average to be 0 in case of failure"
+        # 模拟ping连接失败的返回数据
+        mock_api.command_line.return_value = {
+            0: 'PING 192.168.0.128 (192.168.0.128) 56(84) bytes of data.',
+            1: 'From 192.168.0.1 icmp_seq=1 Destination Host Unreachable',
+            2: 'From 192.168.0.1 icmp_seq=2 Destination Host Unreachable',
+            3: 'From 192.168.0.1 icmp_seq=3 Destination Host Unreachable',
+            4: 'From 192.168.0.1 icmp_seq=4 Destination Host Unreachable',
+            6: '4 packets transmitted, 0 received, 100% packet loss, time 3999ms'
+        }
+        
+        result = ping_instance.ping()
+
+        logger.info(f'ping_instance.sent = {ping_instance.sent}')
+        logger.info(f'ping_instance.received = {ping_instance.received}')
+        logger.info(f'ping_instance.lost = {ping_instance.lost}')
+        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
+        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
+        logger.info(f'ping_instance.average = {ping_instance.average}')
+        logger.info(f'ping_instance.deviation = {ping_instance.deviation}')
+        
+        # 检查返回值是否为False，表示ping失败
+        assert result == False
+        # 验证解析结果
+        assert ping_instance.sent == 4
+        assert ping_instance.received == 0
+        assert ping_instance.lost == 4
+        assert ping_instance.minimum == 0
+        assert ping_instance.average == 0
+        assert ping_instance.maximum == 0
+        assert ping_instance.deviation == 0
+
+    def test_windows_ping(self, mock_api):
+        ping_instance = WindowsPing(mock_api)
+        mock_api.command_line.return_value = {
+            0: 'Pinging 192.168.0.128 with 32 bytes of data:',
+            1: 'Reply from 192.168.0.128: bytes=32 time=1ms TTL=128',
+            6: 'Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),',
+            7: 'Minimum = 1ms, Maximum = 1ms, Average = 1ms'
+        }
+        
+        result = ping_instance.ping()
+
+        logger.info(f'ping_instance.sent = {ping_instance.sent}')
+        logger.info(f'ping_instance.received = {ping_instance.received}')
+        logger.info(f'ping_instance.lost = {ping_instance.lost}')
+        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
+        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
+        logger.info(f'ping_instance.average = {ping_instance.average}')
+
+        assert result == True
+        assert ping_instance.sent == 4
+        assert ping_instance.received == 4
+        assert ping_instance.lost == 0
+        assert ping_instance.minimum == 1
+        assert ping_instance.average == 1
+        assert ping_instance.maximum == 1
+
+    def test_windows_ping_loss(self, mock_api):
+        ping_instance = WindowsPing(mock_api)
+        
+        # 模拟ping连接失败的返回数据
+        mock_api.command_line.return_value = {
+            0: 'Pinging 192.168.0.128 with 32 bytes of data:',
+            1: 'Request timed out.',
+            2: 'Request timed out.',
+            3: 'Request timed out.',
+            4: 'Request timed out.',
+            6: 'Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),'
+        }
+        
+        result = ping_instance.ping()
+
+        logger.info(f'ping_instance.sent = {ping_instance.sent}')
+        logger.info(f'ping_instance.received = {ping_instance.received}')
+        logger.info(f'ping_instance.lost = {ping_instance.lost}')
+        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
+        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
+        logger.info(f'ping_instance.average = {ping_instance.average}')
+
+        # 检查返回值是否为False，表示ping失败
+        assert result == False
+        # 验证解析结果
+        assert ping_instance.sent == 4
+        assert ping_instance.received == 0
+        assert ping_instance.lost == 4
+        assert ping_instance.minimum == 0
+        assert ping_instance.average == 0
+        assert ping_instance.maximum == 0
