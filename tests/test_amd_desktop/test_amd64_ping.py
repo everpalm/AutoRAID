@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.DEBUG)
 
 class TestAMD64Ping(object):
-    def test_ping_parse_statistics(self, target_ping):
+    def test_parse_statistics(self, target_ping):
         if target_ping.ping():
             logger.info(f"target_ping.maximum = {target_ping.maximum}")
             logger.info(f"target_ping.minimum = {target_ping.minimum}")

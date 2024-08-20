@@ -11,11 +11,12 @@ from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB
 from unit.gpio import OperateGPIO as og
 from unit.gpio import RaspBerryPins as rbp
-
+from unit.ping import Ping as ping
 
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 # logging.getLogger('unit.system_under_testing').setLevel(logging.DEBUG)
 # logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
+logging.getLogger('unit.ping').setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="session", autouse=True)
@@ -65,6 +66,10 @@ def setup_gpio(my_pins):
     # Clear GPIO
     gpio.cleanup.assert_called_once()
     
+@pytest.fixture(scope="session", autouse=True)
+def target_ping():
+    print('\n\033[32m================ Setup Ping ===============\033[0m')
+    return ping()
     
 
 

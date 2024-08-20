@@ -8,7 +8,6 @@ import re
 import pandas as pd
 # import time
 from unit.application_interface import ApplicationInterface as api
-# import RPi.GPIO as gpio
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -89,7 +88,6 @@ def dict_to_dataframe(callback):
     return wrapper
 
 
-# class RaspberryPi(api):
 class RaspberryPi(object):
     ''' Raspberry Pi
         Any operations associated with Rasperberry Pi
@@ -100,10 +98,6 @@ class RaspberryPi(object):
             config file: app_map.json
     '''
     def __init__(self, str_uart_path, int_baut_rate, str_file_name):
-        # super().__init__(
-        #         str_mode='local',
-        #         str_if_name='eth0',
-        #         str_config_file='local_map.json')
         self.uart_path = str_uart_path
         self.baut_rate = int_baut_rate
         self.file_name = str_file_name
@@ -115,7 +109,6 @@ class RaspberryPi(object):
                           f"{self.uart_path} {self.baut_rate}")
 
     def close_uart(self) -> int:
-        # str_return = self.command_line("screen -ls")
         str_return = self.api.command_line("screen -ls")
         logger.debug('str_return = %s', str_return)
         int_uart_port = str_return.get(1).split('..')[0]
