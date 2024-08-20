@@ -8,6 +8,7 @@ from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
 from unit.mongodb import MongoDB as mdb
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
+from amd_desktop.amd64_ping import AMD64Ping as aping
 
 # logger = logging.getLogger(__name__)
 # logging.basicConfig(level=logging.CRITICAL)
@@ -16,22 +17,30 @@ from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
+logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.DEBUG)
 # logging.getLogger('unit.application_interface').setLevel(logging.INFO)
 # logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
+
 
 @pytest.fixture(scope="session", autouse=True)
 def target_system():
     print('\n\033[32m================ Setup Platform ===============\033[0m')
     return amd64('VEN_1B4B', 'Ethernet 7')
 
+
 @pytest.fixture(scope="session", autouse=True)
 def my_win10(cmdopt):
     print('\n\033[32m================ Setup OS ===============\033[0m')
     # return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
-    # cmdopt.get('config_file'))
+    #     cmdopt.get('config_file'))
     return win10()
+
+@pytest.fixture(scope="session", autouse=True)
+def target_ping():
+    print('\n\033[32m================ Setup Ping ===============\033[0m')
+    return aping()
 
 @pytest.fixture(scope="session", autouse=True)
 def my_mdb():

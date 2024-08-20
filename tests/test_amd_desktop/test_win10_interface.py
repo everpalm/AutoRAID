@@ -26,5 +26,5 @@ class TestWin10Interface(object):
     def test_command_line(self, my_win10, win_cmd):
         list_executed = my_win10.command_line(win_cmd["Command"])
         logger.info(f'Return = {list_executed}')
-        logger.debug(f'Command Type = {type(list_executed)}')
+        # logger.debug(f'Command Type = {type(list_executed)}')
         assert list_executed == win_cmd["Return"][my_win10.mode]

@@ -13,54 +13,6 @@ logger = logging.getLogger(__name__)
 
 with open(f'{PROJECT_PATH}/config/amd64_nvme.json', 'r') as f:
     AMD64_NVM = [json.load(f)]
-    
-# AMD64_NVM = (
-#     {
-#         "CPU Information":
-#         {
-#             "CPU(s)": 12,
-#             "Model Name": "AMD Ryzen 9"
-#         },
-#         "Desktop Information":
-#         {
-#             "Manufacturer": "System",
-#             "Model": "System Product",
-#             "Name": "MY-TESTBED-01",
-#             "Operating System": "Windows"
-#         },
-#         "PCIE Configuration":
-#         {
-#             "Manufacturer": "NVM",
-#             "VID": "1B4B",
-#             "DID": "22411B4B",
-#             "SDID": "22411B4B",
-#             "Rev": "20"
-#         },
-#         "NVME List":
-#         {
-#             "Node": "nvme0n1",
-#             "SN": "00000000000000000000",
-#             'Model': 'Marvell_NVMe_Controller',
-#             'Namespace ID': '1',
-#             'Namespace Usage': '1.02 TB',
-#             'FW Rev': '10001053'
-#         },
-#         "NVME SMART-log":
-#         {
-#             "critical_warning": 0,
-#             "temperature": 80,
-#             "power_cycles": 625,
-#             "unsafe_shutdowns": 624
-#         },
-#         "Disk Information":
-#         {
-#             "Number": 2,
-#             "SerialNumber": '0050_43C5_0E00_0001.',
-#             "Volume": "D",
-#             "Size": "931.43 GB"
-#         },
-#     },
-# )
 
 TEST_PATTERN = (
     {

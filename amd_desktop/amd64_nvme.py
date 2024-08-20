@@ -64,7 +64,6 @@ class AMD64NVMe(object):
 
             filtered = output.get(3)
             logger.debug(f'filtered = {filtered}')
-
             if not filtered:
                 raise ValueError(
                     "Failed to retrieve the expected output from command.")
@@ -76,6 +75,7 @@ class AMD64NVMe(object):
                 self._mac_address = mac_address
             else:
                 raise ValueError("No matching Ethernet adapter found.")
+            
         except (ValueError, Exception) as e:
             logger.error(f'Error: {e}')
             self._mac_address = None
@@ -126,9 +126,9 @@ class AMD64NVMe(object):
         except Exception as e:
             logger.error('Error occurred in _get_disk_num: %s', e)
             raise
-        finally:
+        # finally:
             # return int(str_disk_num)
-            return {"Number": int_disk_num, "SerialNumber": str_serial_num}
+        return {"Number": int_disk_num, "SerialNumber": str_serial_num}
             
 
     def _get_desktop_info(self) -> dict[str, str]:
@@ -152,10 +152,10 @@ class AMD64NVMe(object):
     
         except Exception as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
-        finally:
-            return {"Manufacturer": str_vendor,
-                    "Model": str_model,
-                    "Name": str_name}
+        # finally:
+        return {"Manufacturer": str_vendor,
+                "Model": str_model,
+                "Name": str_name}
 
     def _get_pcie_info(self) -> dict[str, str]:
         ''' Get PCIe information
@@ -186,10 +186,10 @@ class AMD64NVMe(object):
         except Exception as e:
             logger.error('Error occurred in _get_pcie_info: %s', e)
             raise
-        finally:
+        # finally:
             # return {"BDF": str_bdf, "SDID": str_sdid}
-            return {"VID": str_vid, "DID": str_sdid,
-                    "SDID": str_sdid, "Rev": str_rev}
+        return {"VID": str_vid, "DID": str_sdid,
+                "SDID": str_sdid, "Rev": str_rev}
 
     def _get_volume(self):
         ''' Get Volume
