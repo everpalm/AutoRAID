@@ -166,8 +166,8 @@ class SystemUnderTesting(api):
                          str_cpu_num, str_cpu_name)
         except Exception as e:
             logger.error('error occurred in _get_cpu_info: %s', e)
-        finally:
-            return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
+        # finally:
+        return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
 
     def _get_desktop_info(self) -> dict[str, str]:
         ''' Get Desktop Computer information

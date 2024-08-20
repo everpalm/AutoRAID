@@ -1,7 +1,8 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import re
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,8 @@ class PingBase(ABC):
 class LinuxPing(PingBase):
     LINUX_PACKET_MSG = (r"(\d+) packets transmitted, (\d+) received, "
                         r"(\d+)% packet loss")
-    LINUX_STATISTICS = (r"rtt min/avg/max/mdev = ([\d\.]+)/([\d\.]+)/([\d\.]+)/([\d\.]+) ms")
+    LINUX_STATISTICS = (r"rtt min/avg/max/mdev ="
+                        r" ([\d\.]+)/([\d\.]+)/([\d\.]+)/([\d\.]+) ms")
 
     def __init__(self, api):
         super().__init__()
@@ -65,8 +67,10 @@ class LinuxPing(PingBase):
             logger.warning(f"RTT statistics parsing failed: {output}")
 
 class WindowsPing(PingBase):
-    WINDOWS_PACKET_MSG = (r"Packets: Sent = (\d+), Received = (\d+), Lost = (\d+)")
-    WINDOWS_STATISTICS = (r"Minimum = (\d+)ms, Maximum = (\d+)ms, Average = (\d+)ms")
+    WINDOWS_PACKET_MSG = (r"Packets: Sent = (\d+), Received ="
+                          r" (\d+), Lost = (\d+)")
+    WINDOWS_STATISTICS = (r"Minimum = (\d+)ms, Maximum = (\d+)ms,"
+                          r" Average = (\d+)ms")
 
     def __init__(self, api):
         super().__init__()

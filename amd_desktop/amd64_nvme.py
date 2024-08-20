@@ -143,14 +143,17 @@ class AMD64NVMe(object):
             # str_return = self.api.command_line('lshw|grep "Desktop" -A 4CA')
             str_return = self.api.command_line(
                 'wmic computersystem get Name, Manufacturer, Model')
-            str_vendor = ' '.join(str_return.get(1).split(' ')[0:1])
-            str_model = ' '.join(str_return.get(1).split(' ')[2:4])
-            str_name = str_return.get(1).split(' ')[5].lstrip()
+            if str_return:
+                str_vendor = ' '.join(str_return.get(1).split(' ')[0:1])
+                str_model = ' '.join(str_return.get(1).split(' ')[2:4])
+                str_name = str_return.get(1).split(' ')[5].lstrip()
+            else:
+                raise ValueError("Failed to get desktop info.")
             logger.debug('vendor = %s', str_vendor)
             logger.debug('model = %s', str_model)
             logger.debug('name = %s', str_name)
     
-        except Exception as e:
+        except (ValueError, Exception) as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
         # finally:
         return {"Manufacturer": str_vendor,
@@ -183,11 +186,9 @@ class AMD64NVMe(object):
                     self.manufacturer, str_vid, str_did)
             logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
                    
-        except Exception as e:
+        except (ValueError, Exception) as e:
             logger.error('Error occurred in _get_pcie_info: %s', e)
-            raise
-        # finally:
-            # return {"BDF": str_bdf, "SDID": str_sdid}
+            # raise
         return {"VID": str_vid, "DID": str_sdid,
                 "SDID": str_sdid, "Rev": str_rev}
 
@@ -200,24 +201,30 @@ class AMD64NVMe(object):
         try:
             str_return = self.api.command_line(
                     f"powershell Get-Partition -DiskNumber {self.disk_num}")
-            str_volume = str_return.get(7).split(' ')[1]
-            # str_size = ' '.join(str_return.get(7).split(' ')[3:5])
-            logger.debug('volume = %s', str_volume)
-            # logger.debug('size = %s', str_size)
-        except Exception as e:
-            logger.error('Error occurred in _get_volume: %s', e)
-            raise
-        else:
-            if str_volume:
+            if str_return:
+                str_volume = str_return.get(7).split(' ')[1]
+                # str_size = ' '.join(str_return.get(7).split(' ')[3:5])
+                logger.debug('volume = %s', str_volume)
+
                 str_size = ' '.join(str_return.get(7).split(' ')[3:5])
                 logger.debug('size = %s', str_size)
             else:
                 raise ValueError("Unexpected None value returned")
-        finally:
-            return {
-                    "Volume": str_volume,
-                    "Type": str_size
-                    }
+            # logger.debug('size = %s', str_size)
+        except (ValueError, Exception) as e:
+            logger.error('Error occurred in _get_volume: %s', e)
+            # raise
+        # else:
+        #     if str_volume:
+        #         str_size = ' '.join(str_return.get(7).split(' ')[3:5])
+        #         logger.debug('size = %s', str_size)
+        #     else:
+        #         raise ValueError("Unexpected None value returned")
+        # finally:
+        return {
+                "Volume": str_volume,
+                "Type": str_size
+                }
 
     # def run_io_operation(self, thread: int, iodepth: int, block_size: str,
     #     random_size: str, write_pattern: int, duration: int, io_file: str) ->\
