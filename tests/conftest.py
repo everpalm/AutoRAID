@@ -55,14 +55,14 @@ def cmdopt(request):
 
 @pytest.fixture(scope="session", autouse=True)
 def drone():
-    print('\n\033[32m================ Setup RSBPi ===============\033[0m')
+    print('\n\033[32m================== Setup RSBPi =================\033[0m')
     return rpi("/dev/ttyUSB0", 115200, "uart.log")
 
 @pytest.fixture(scope="session", autouse=True)
 def test_open_uart(drone):
-    print('\n\033[32m================ Setup UART ===============\033[0m')
+    print('\n\033[32m================== Setup UART ==================\033[0m')
     yield drone.open_uart()
-    print('\n\033[32m================ Teardown UART ===============\033[0m')
+    print('\n\033[32m================ Teardown UART =================\033[0m')
     drone.close_uart()
 
 @pytest.fixture(scope="session", autouse=True)

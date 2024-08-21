@@ -1,6 +1,9 @@
 # Contents of test_win10_mongodb.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
+from unit.mongodb import MongoDB
+from unittest.mock import patch
+
 # import pytest
 
 logger = logging.getLogger(__name__)
@@ -35,6 +38,22 @@ AGGREGATE_RESULTS = [{
 }]
 
 class TestMongoDB:
+    @pytest.fixture(scope="module")
+    def mongo_db(self):
+        print('\n\033[32m=============== Setup MongoDB ==============\033[0m')
+        # Mock MongoDB client
+        mock_client = patch('unit.mongodb.MongoClient').start()
+        mock_db = mock_client.return_value['test_db']
+        mock_collection = mock_db['test_collection']
+
+        # Create instance of MongoDB class
+        mongo_db_instance = MongoDB('localhost', 27017, 'test_db',
+                                    'test_collection')
+        
+        yield mongo_db_instance, mock_collection
+        print('\n\033[32m============= Teardown MongoDB ============\033[0m')
+        patch.stopall()
+
     @pytest.mark.parametrize("attr", MDB_ATTR)
     def test_write_log_and_report(self, mongo_db, attr):
         mongo_db_instance, mock_collection = mongo_db

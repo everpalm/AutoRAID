@@ -31,11 +31,13 @@ class TestAMD64Ping(object):
 
         assert result == True, "Ping should succeed"
         assert target_ping.sent > 0, "Packets sent should be greater than 0"
-        assert target_ping.received > 0, "Packets received should be greater than 0"
+        assert target_ping.received > 0, ("Packets received should be greater"
+                                          "than 0")
         assert target_ping.lost >= 0, "Packets lost should be 0 or greater"
         assert target_ping.minimum >= 0, "Minimum RTT should be 0 or greater"
         assert target_ping.average >= 0, "Average RTT should be 0 or greater"
         assert target_ping.maximum >= 0, "Maximum RTT should be 0 or greater"
-        assert target_ping.deviation >= 0, "Deviation RTT should be 0 or greater"
+        assert target_ping.deviation >= 0, ("Deviation RTT should be 0 or"
+                                            " greater")
         
 

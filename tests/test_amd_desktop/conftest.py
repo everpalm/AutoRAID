@@ -13,10 +13,10 @@ from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 # logging.basicConfig(level=logging.CRITICAL)
 # logging.basicConfig(
 #     format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
-logging.getLogger('amd_desktop.win10_interface').setLevel(logging.DEBUG)
-logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
-logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.DEBUG)
+logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.CRITICAL)
+logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
+logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.CRITICAL)
+logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.CRITICAL)
 # logging.getLogger('unit.application_interface').setLevel(logging.INFO)
 # logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 
