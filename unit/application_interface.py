@@ -62,11 +62,11 @@ class ApplicationInterface(object):
     def __import_config(self) -> Dict[str, str]:
         try:
             with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
-                dict_config_list = json.load(f)
-                if not isinstance(dict_config_list, dict):
-                    raise ValueError(f"Expected dict in config file, got {type(dict_config_list)}")
-                return dict_config_list
-        except (IOError, ValueError):
+                list_config = json.load(f)
+                if not isinstance(list_config, list):
+                    raise ValueError(f"Expected dict in config file, got {type(list_config)}")
+                return list_config
+        except Exception:
             logger.error('Cannot open/read file: %s', self.config_file)
             raise
         # return dict_config_list

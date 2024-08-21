@@ -7,8 +7,8 @@ import json
 logger = logging.getLogger(__name__)
 
 PROJECT_PATH = "/home/pi/Projects/AutoRAID"
-RELAY_ACTIVE_TIME = 2
-HOLD_BUTTON_TIME = 5
+# RELAY_ACTIVE_TIME = 2
+# HOLD_BUTTON_TIME = 5
 
 class RaspBerryPins(object):
     '''
@@ -45,6 +45,8 @@ class RaspBerryPins(object):
 
 
 class OperateGPIO(object):
+    RELAY_ACTIVE_TIME = 2
+    HOLD_BUTTON_TIME = 5
     def __init__(self, pin_define, board_mode):
         self.switch_pin = pin_define.power_switch
         # logger.debug(f'self.switch_pin = {self.switch_pin}')
@@ -76,7 +78,7 @@ class OperateGPIO(object):
         logger.debug(f'mode = {mode}')
         if mode != gpio.BOARD:
             self.switch_handler()
-        time.sleep(RELAY_ACTIVE_TIME)
+        time.sleep(self.RELAY_ACTIVE_TIME)
     
     def switch_handler(self):
         gpio.setmode(gpio.BOARD)
@@ -85,7 +87,7 @@ class OperateGPIO(object):
     def hold_power_button(self):
         self._set_switch_mode()
         gpio.output(self.switch_pin, gpio.LOW)
-        time.sleep(HOLD_BUTTON_TIME)
+        time.sleep(self.HOLD_BUTTON_TIME)
     
     def press_power_button(self):
         self._set_switch_mode()        

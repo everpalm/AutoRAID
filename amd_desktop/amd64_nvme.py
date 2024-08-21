@@ -169,16 +169,17 @@ class AMD64NVMe(object):
         '''
         str_return = str_bdf = str_sdid = None
         try:
-            str_return = self.api.command_line(
-                f"wmic path win32_pnpentity get deviceid, name|findstr {self.manufacturer}")
-            logger.debug('__dict_return = %s', str_return)
+            dict_return = self.api.command_line(
+                f"wmic path win32_pnpentity get deviceid,"
+                f" name|findstr {self.manufacturer}")
+            logger.debug(f'dict_return{type(dict_return)} = {dict_return}')
             
             # Check if str_return is None
-            if str_return is None:
+            if dict_return is None:
                 raise ValueError("Received None from command_line")
             
             pattern = r"VEN_(\w+)&DEV_(\w+)&SUBSYS_(\w+)&REV_(\w+)"
-            match = re.search(pattern, str_return.get(0))
+            match = re.search(pattern, dict_return.get(0))
             if match:
                 str_vid, str_did, str_sdid, str_rev = match.groups()
             logger.debug(
@@ -187,8 +188,8 @@ class AMD64NVMe(object):
             logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
                    
         except Exception as e:
-            logger.error('Error occurred in _get_pcie_info: %s', e)
-            # raise
+            logger.error('Device not found: %s', e)
+            raise
         return {"VID": str_vid, "DID": str_sdid,
                 "SDID": str_sdid, "Rev": str_rev}
 

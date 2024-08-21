@@ -19,6 +19,7 @@ mock = "*"
 psutil = "*"
 pytest-mock = "*"
 pytest-rerunfailures = "*"
+timeout-decorator = "*"
 
 [dev-packages]
 
