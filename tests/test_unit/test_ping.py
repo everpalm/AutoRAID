@@ -1,3 +1,5 @@
+# Contents of test_ping.py
+'''Copyright (c) 2024 Jaron Cheng'''
 import logging
 from unittest.mock import MagicMock
 from unit.ping import LinuxPing

@@ -14,7 +14,7 @@ class PingBase(ABC):
         self.minimum = 0
         self.maximum = 0
         self.average = 0
-        self.deviation = 0
+        # self.deviation = 0
 
     @abstractmethod
     def ping(self, count=4):
@@ -40,20 +40,24 @@ class LinuxPing(PingBase):
         super().__init__()
         self._api = api
         self._ip_address = self._api.remote_ip
+        self.deviation = 0
 
     def ping(self, count=4):
         try:
-            dict_return = self._api.command_line(f'ping -c {count} {self._ip_address}')
+            dict_return = self._api.command_line(
+                f'ping -c {count} {self._ip_address}')
             logger.debug(f'dict_return = {dict_return}')
             if dict_return:
                 self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
-                self._parse_statistics(dict_return.get(7), self.LINUX_STATISTICS)
+                self._parse_statistics(dict_return.get(7),
+                                       self.LINUX_STATISTICS)
                 return True
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
         except Exception as e:
             logger.error(f'Error: {e}')
+            raise
         return False
 
     def _parse_statistics(self, output, rtt_regex):
@@ -79,17 +83,21 @@ class WindowsPing(PingBase):
 
     def ping(self, count=4):
         try:
-            dict_return = self._api.command_line(f'ping -n {count} {self._ip_address}')
+            dict_return = self._api.command_line(
+                f'ping -n {count} {self._ip_address}')
             logger.debug(f'dict_return = {dict_return}')
             if dict_return:
-                self._parse_packets(dict_return.get(6), self.WINDOWS_PACKET_MSG)
-                self._parse_statistics(dict_return.get(7), self.WINDOWS_STATISTICS)
+                self._parse_packets(dict_return.get(6),
+                                    self.WINDOWS_PACKET_MSG)
+                self._parse_statistics(dict_return.get(7),
+                                       self.WINDOWS_STATISTICS)
                 return True
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
         except Exception as e:
             logger.error(f'Error: {e}')
+            raise
         return False
     
     def _parse_statistics(self, output, rtt_regex):

@@ -42,6 +42,9 @@ class AMD64Perf(object):
             str_output = self.api.io_command(str_command)
             # logger.debug('str_output = %s', str_output)
             
+            if not str_output:
+                raise RuntimeError("No output returned from io_command.")
+        
             read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
                 re.S)
             write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)',

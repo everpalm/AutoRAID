@@ -18,6 +18,7 @@ python-gitlab = "*"
 mock = "*"
 psutil = "*"
 pytest-mock = "*"
+pytest-rerunfailures = "*"
 
 [dev-packages]
 

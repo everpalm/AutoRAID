@@ -166,6 +166,7 @@ class SystemUnderTesting(api):
                          str_cpu_num, str_cpu_name)
         except Exception as e:
             logger.error('error occurred in _get_cpu_info: %s', e)
+            raise
         # finally:
         return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
 
@@ -183,6 +184,7 @@ class SystemUnderTesting(api):
             str_serial = str_return.get(4).split(':')[1].lstrip()
         except Exception as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
+            raise
         finally:
             return {"Version": str_version, "Serial": str_serial}
 

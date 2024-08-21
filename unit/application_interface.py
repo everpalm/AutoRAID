@@ -1,7 +1,9 @@
 # Contents of application_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
-from typing import Tuple, List
+from typing import Tuple
+from typing import List
+from typing import Dict
 import logging
 import subprocess
 import socket
@@ -57,12 +59,14 @@ class ApplicationInterface(object):
             self.remote_dir = self._get_remote_ip()
         self.os = self.get_os()
 
-    def __import_config(self) -> dict[str, str]:
+    def __import_config(self) -> Dict[str, str]:
         try:
             with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
                 dict_config_list = json.load(f)
+                if not isinstance(dict_config_list, dict):
+                    raise ValueError(f"Expected dict in config file, got {type(dict_config_list)}")
                 return dict_config_list
-        except IOError:
+        except (IOError, ValueError):
             logger.error('Cannot open/read file: %s', self.config_file)
             raise
         # return dict_config_list
@@ -168,7 +172,7 @@ class ApplicationInterface(object):
             return os_info
             
         except Exception as e:
-            print(f"Error: {e}")
+            logger.error(f"Error: {e}")
             return None
         finally:
             ssh.close()

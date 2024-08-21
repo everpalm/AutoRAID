@@ -269,7 +269,7 @@ class MongoDB(object):
                 logger.error("No data found for aggregation.")
                 return None
         except errors.PyMongoError as e:
-            print(f"Error performing aggregation: {e}")
+            logger.error(f"Error performing aggregation: {e}")
             return None
 
     def aggregate_sequential_metrics(self, write_pattern, io_depth):

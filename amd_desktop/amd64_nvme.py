@@ -76,7 +76,7 @@ class AMD64NVMe(object):
             else:
                 raise ValueError("No matching Ethernet adapter found.")
             
-        except (ValueError, Exception) as e:
+        except Exception as e:
             logger.error(f'Error: {e}')
             self._mac_address = None
 
@@ -153,7 +153,7 @@ class AMD64NVMe(object):
             logger.debug('model = %s', str_model)
             logger.debug('name = %s', str_name)
     
-        except (ValueError, Exception) as e:
+        except Exception as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
         # finally:
         return {"Manufacturer": str_vendor,
@@ -186,7 +186,7 @@ class AMD64NVMe(object):
                     self.manufacturer, str_vid, str_did)
             logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
                    
-        except (ValueError, Exception) as e:
+        except Exception as e:
             logger.error('Error occurred in _get_pcie_info: %s', e)
             # raise
         return {"VID": str_vid, "DID": str_sdid,
@@ -211,7 +211,7 @@ class AMD64NVMe(object):
             else:
                 raise ValueError("Unexpected None value returned")
             # logger.debug('size = %s', str_size)
-        except (ValueError, Exception) as e:
+        except Exception as e:
             logger.error('Error occurred in _get_volume: %s', e)
             # raise
         # else:

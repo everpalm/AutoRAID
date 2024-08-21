@@ -42,15 +42,3 @@ class Win10Interface(ApplicationInterface):
         else:
             raise ValueError('Unknown mode setting in command_line')
         return self.my_command(str_command_line)
-    
-
-'''To verify logging in pytest'''
-# if __name__ == '__main__':
-# pytest.main(['test_application_interface.py', '-s', '-v', '-x'])
-# pytest.main(['test_application_interface.py::TestApplicationInterface',\
-#  '-s', '-v', '-x'])
-# pytest.main(['test_application_interface.py::TestApplicationInterface::',\
-#  '-s', '-v', '-x'])
-# lionapp = ApplicationInterface('Linux', '10.19.38.217', 'root', 'marvell',
-# '/root/ryan/LIONSTEFPGA/LIONSTEFPGA').my_command('./lionapp -h')
-#    print(lionapp)

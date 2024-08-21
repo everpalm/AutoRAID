@@ -38,13 +38,13 @@ class SystemPerformance(object):
                                    lines=True)
             df_grouped = df_perf.groupby(self.group_key).mean(
                 numeric_only=True)
-            logger.info("===Groupby===")
+            print("===Groupby===")
             print(df_grouped)
             # print(df_grouped.corr())
             # print(df_grouped.corr().columns)
             # print(df_grouped.corr().index)
             # print(df_grouped.corr().loc['IOPS']['BW'])
-            logger.info("===Correlation===")
+            print("===Correlation===")
             print(df_grouped.corr().loc[str_group])
             # print(df_grouped.corr().loc[str_group]['BW'])
 
