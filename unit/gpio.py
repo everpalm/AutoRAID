@@ -54,8 +54,6 @@ class OperateGPIO(object):
         # Relay is active low
         gpio.setup(self.switch_pin, gpio.OUT, initial=gpio.HIGH)
         time.sleep(self.RELAY_ACTIVE_TIME)
-        # gpio.setup(self.switch_pin, gpio.OUT, initial=gpio.HIGH)
-        # gpio.setup(self.switch_pin, gpio.OUT)
 
     @property
     def board_mode(self):
@@ -89,6 +87,8 @@ class OperateGPIO(object):
     def hold_power_button(self):
         self._set_switch_mode()
         gpio.output(self.switch_pin, gpio.LOW)
+
+        #Hold power button for at least 4 seconds
         time.sleep(self.HOLD_BUTTON_TIME)
     
     def press_power_button(self):
@@ -101,3 +101,5 @@ class OperateGPIO(object):
     def clear_gpio(self):
         print('Clear GPIO')
         gpio.cleanup()
+
+    
