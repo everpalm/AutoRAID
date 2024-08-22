@@ -26,8 +26,10 @@ class PingBase(ABC):
             self.sent = int(match.group(1))
             self.received = int(match.group(2))
             self.lost = self.sent - self.received  # Calculate packet loss
+            return True
         else:
             logger.warning(f"Packet statistics parsing failed: {output}")
+        return False
 
 
 class LinuxPing(PingBase):
@@ -48,10 +50,11 @@ class LinuxPing(PingBase):
                 f'ping -c {count} {self._ip_address}')
             logger.debug(f'dict_return = {dict_return}')
             if dict_return:
-                self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
-                self._parse_statistics(dict_return.get(7),
+                bool_msg = self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
+                bool_sts = self._parse_statistics(dict_return.get(7),
                                        self.LINUX_STATISTICS)
-                return True
+                # return True
+                return bool_msg and bool_sts
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
@@ -67,8 +70,10 @@ class LinuxPing(PingBase):
             self.average = float(match.group(2))
             self.maximum = float(match.group(3))
             self.deviation = float(match.group(4))
+            return True
         else:
             logger.warning(f"RTT statistics parsing failed: {output}")
+        return False
 
 class WindowsPing(PingBase):
     WINDOWS_PACKET_MSG = (r"Packets: Sent = (\d+), Received ="

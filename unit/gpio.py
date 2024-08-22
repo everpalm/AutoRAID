@@ -43,7 +43,7 @@ class RaspBerryPins(object):
 
 
 class OperateGPIO(object):
-    RELAY_ACTIVE_TIME = 2
+    RELAY_ACTIVE_TIME = 1
     HOLD_BUTTON_TIME = 5
     def __init__(self, pin_define, board_mode):
         self.switch_pin = pin_define.power_switch
@@ -52,7 +52,8 @@ class OperateGPIO(object):
         gpio.setmode(self._board_mode)
 
         # Relay is active low
-        gpio.setup(self.switch_pin, gpio.OUT, initial=gpio.LOW)
+        gpio.setup(self.switch_pin, gpio.OUT, initial=gpio.HIGH)
+        time.sleep(self.RELAY_ACTIVE_TIME)
 
     @property
     def board_mode(self):
@@ -75,6 +76,8 @@ class OperateGPIO(object):
         logger.debug(f'mode = {mode}')
         if mode != gpio.BOARD:
             self.switch_handler()
+
+        #Persist relay for a period of time, not a glitch
         time.sleep(self.RELAY_ACTIVE_TIME)
     
     def switch_handler(self):
@@ -84,12 +87,19 @@ class OperateGPIO(object):
     def hold_power_button(self):
         self._set_switch_mode()
         gpio.output(self.switch_pin, gpio.LOW)
+
+        #Hold power button for at least 4 seconds
         time.sleep(self.HOLD_BUTTON_TIME)
     
     def press_power_button(self):
         self._set_switch_mode()        
-        gpio.output(self.switch_pin, gpio.LOW)     
+        gpio.output(self.switch_pin, gpio.LOW)
+
+        #Persist relay for a period of time, not a glitch
+        time.sleep(self.RELAY_ACTIVE_TIME)   
 
     def clear_gpio(self):
         print('Clear GPIO')
         gpio.cleanup()
+
+    

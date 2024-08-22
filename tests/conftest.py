@@ -5,10 +5,12 @@ import pytest
 import logging
 import os
 import paramiko
-from unit.system_under_testing import RaspberryPi as rpi
+# from unit.system_under_testing import RaspberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
 from unit.gpio import RaspBerryPins as rbp
+from unit.application_interface import ApplicationInterface as api
+from amd_desktop.amd64_ping import AMD64Ping as aping
 
 MDB_ATTR = [{
     "Log Path": '/home/pi/uart.log',
@@ -56,22 +58,22 @@ def cmdopt(request):
     cmdopt_dic.update({'private_token': request.config.getoption("--private_token")})
     return cmdopt_dic
 
-@pytest.fixture(scope="session", autouse=True)
-def drone():
-    print('\n\033[32m================== Setup RSBPi =================\033[0m')
-    return rpi("/dev/ttyUSB0", 115200, "uart.log")
+# @pytest.fixture(scope="session", autouse=True)
+# def drone():
+#     print('\n\033[32m================== Setup RSBPi =================\033[0m')
+#     return rpi("/dev/ttyUSB0", 115200, "uart.log")
 
 @pytest.fixture(scope="session", autouse=True)    
 def my_pins():
     print('\n=====================Setup GPIO.2=====================')
     return rbp('rpi3_gpio_pins.json', 'GPIO.2')
 
-@pytest.fixture(scope="session", autouse=True)
-def test_open_uart(drone):
-    print('\n\033[32m================== Setup UART ==================\033[0m')
-    yield drone.open_uart()
-    print('\n\033[32m================ Teardown UART =================\033[0m')
-    drone.close_uart()
+# @pytest.fixture(scope="session", autouse=True)
+# def test_open_uart(drone):
+#     print('\n\033[32m================== Setup UART ==================\033[0m')
+#     yield drone.open_uart()
+#     print('\n\033[32m================ Teardown UART =================\033[0m')
+#     drone.close_uart()
 
 @pytest.fixture(scope="session", autouse=True)
 # @pytest.fixture(scope="function", autouse=True)
@@ -80,6 +82,15 @@ def store_gitlab_api_in_config(cmdopt, request):
     request.config._store['gitlab_api'] = gitlab_api
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
+
+@pytest.fixture(scope="session", autouse=True)
+def drone_api():
+    return api('local', 'eth0', 'app_map.json')
+
+@pytest.fixture(scope="session", autouse=True)
+def target_ping(drone_api):
+    print('\n\033[32m================ Setup Ping ===============\033[0m')
+    return aping(drone_api)
 
 # @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 # def pytest_runtest_makereport(item, call):

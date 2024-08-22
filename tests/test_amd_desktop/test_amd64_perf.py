@@ -21,7 +21,7 @@ class TestRandomReadWrite(nvm):
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, io_depth, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
-            1, io_depth, '4k', '4k', write_pattern, 60)
+            1, io_depth, '4k', '4k', write_pattern, 120)
         logger.info(f'random_read_bw = {read_bw}')
         logger.info(f'random_read_iops = {read_iops}')
         logger.info(f'random_write_bw = {write_bw}')

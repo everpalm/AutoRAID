@@ -183,7 +183,8 @@ class ApplicationInterface(object):
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(self.remote_ip, username=self.account,
                        password=self.password)
-        stdin, stdout, stderr = client.exec_command(str_ssh_command,
+        # stdin, stdout, stderr = client.exec_command(str_ssh_command,
+        _, stdout, _ = client.exec_command(str_ssh_command,
                                                     get_pty=True)
         # for line in iter(stdout.readline, ""):
         #     logger.debug("line.strip() = %s", line.strip())
