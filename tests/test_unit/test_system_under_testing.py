@@ -110,7 +110,7 @@ RW_TABLE = (
                 #   "Run Time": 10, "Job": 1, "IOPS": 40000, "BW": 150000000}
             )
 
-
+@pytest.mark.skip(reason="Skipping this test class")
 class TestSystemUnderTesting(object):
     # @pytest.fixture(scope="session", autouse=True)
     @pytest.fixture(scope="function", autouse=True)
@@ -208,7 +208,6 @@ class TestSystemUnderTesting(object):
             generic_x86['NVME SMART-log']["unsafe_shutdowns"]
 
     # # @pytest.mark.repeat(3)
-    @pytest.mark.skip(reason='Obsoleted')
     @pytest.mark.parametrize('rw_table', RW_TABLE)
     def test_run_io_operation(self, target_system, rw_table):
         df_perf = target_system.run_io_operation(

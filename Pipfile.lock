@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b1d4a40aa1b638fdb42841f616a8491a4ad8a17e28f041ec4816c227e35f0527"
+            "sha256": "7b82a252affd67bf80e0a087bb1939ec15fab2a38b94fb45b546d61998cc4c17"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -224,9 +224,7 @@
             "version": "==3.3.2"
         },
         "coverage": {
-            "extras": [
-                "toml"
-            ],
+            "extras": [],
             "hashes": [
                 "sha256:06a9a2be0b5b576c3f18f1a241f0473575c4a26021b52b2a85263a00f034d51f",
                 "sha256:06fb182e69f33f6cd1d39a6c597294cff3143554b64b9825d1dc69d18cc2fff2",
@@ -597,6 +595,13 @@
             "index": "pypi",
             "version": "==4.1.0"
         },
+        "pytest-dependency": {
+            "hashes": [
+                "sha256:934b0e6a39d95995062c193f7eaeed8a8ffa06ff1bcef4b62b0dc74a708bacc1"
+            ],
+            "index": "pypi",
+            "version": "==0.6.0"
+        },
         "pytest-json-report": {
             "hashes": [
                 "sha256:2dde3c647851a19b5f3700729e8310a6e66efb2077d674f27ddea3d34dc615de",
@@ -692,6 +697,14 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.0.0"
         },
+        "setuptools": {
+            "hashes": [
+                "sha256:11e52c67415a381d10d6b462ced9cfb97066179f0e871399e006c4ab101fc85f",
+                "sha256:baf1fdb41c6da4cd2eae722e135500da913332ab3f2f5c7d33af9b492acb5235"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==68.0.0"
+        },
         "six": {
             "hashes": [
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
@@ -699,6 +712,13 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
+        },
+        "timeout-decorator": {
+            "hashes": [
+                "sha256:6a2f2f58db1c5b24a2cc79de6345760377ad8bdc13813f5265f6c3e63d16b3d7"
+            ],
+            "index": "pypi",
+            "version": "==0.5.0"
         },
         "tomli": {
             "hashes": [

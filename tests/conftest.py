@@ -1,3 +1,4 @@
+# Content of tests.conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import pytest
@@ -7,6 +8,7 @@ import paramiko
 from unit.system_under_testing import RaspberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
+from unit.gpio import RaspBerryPins as rbp
 
 MDB_ATTR = [{
     "Log Path": '/home/pi/uart.log',
@@ -44,6 +46,7 @@ def pytest_addoption(parser):
         default="xxxxx-xxxx",
         help="Check your GitLab Private Token"
     )
+    
 @pytest.fixture(scope="session")
 def cmdopt(request):
     cmdopt_dic = {}
@@ -57,6 +60,11 @@ def cmdopt(request):
 def drone():
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
     return rpi("/dev/ttyUSB0", 115200, "uart.log")
+
+@pytest.fixture(scope="session", autouse=True)    
+def my_pins():
+    print('\n=====================Setup GPIO.2=====================')
+    return rbp('rpi3_gpio_pins.json', 'GPIO.2')
 
 @pytest.fixture(scope="session", autouse=True)
 def test_open_uart(drone):

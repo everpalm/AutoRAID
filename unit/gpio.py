@@ -7,8 +7,6 @@ import json
 logger = logging.getLogger(__name__)
 
 PROJECT_PATH = "/home/pi/Projects/AutoRAID"
-# RELAY_ACTIVE_TIME = 2
-# HOLD_BUTTON_TIME = 5
 
 class RaspBerryPins(object):
     '''
@@ -40,7 +38,7 @@ class RaspBerryPins(object):
                 return temp["physical_pin"]
                 # return dict_config_list
         except IOError:
-            logger.error('Cannot open/read file: %s', self.pin_define_file)
+            logger.error(f'Cannot open/read file: {self.pin_define_file}')
             raise
 
 
@@ -49,8 +47,7 @@ class OperateGPIO(object):
     HOLD_BUTTON_TIME = 5
     def __init__(self, pin_define, board_mode):
         self.switch_pin = pin_define.power_switch
-        # logger.debug(f'self.switch_pin = {self.switch_pin}')
-        # self.switch_pin = pins._pin_define
+        logger.debug(f'self.switch_pin = {self.switch_pin}')
         self._board_mode = board_mode
         gpio.setmode(self._board_mode)
 

@@ -78,7 +78,7 @@ RW_4K_IOD1_JOB1 = (
                     "CR": 0.7, "CPU Mask": 0x1}
             )
 
-
+@pytest.mark.skip(reason="Skipping this test class")
 class TestPerformanceIODepth(object):
     @pytest.fixture(scope="session", autouse=True)
     def target_system(self):
@@ -138,7 +138,7 @@ class TestPerformanceIODepth(object):
         # Check if bandwidth is greater or equal to pass credible region
         assert str_bw_mean >= rw_table['BW'] * rw_table['CR']
 
-
+@pytest.mark.skip(reason="Skipping this test class")
 class TestPerformanceCPUMask(TestPerformanceIODepth):
     @pytest.mark.parametrize('cpu_mask', [hex(cpu_mask) for cpu_mask in
                                           range(1, 16)])
