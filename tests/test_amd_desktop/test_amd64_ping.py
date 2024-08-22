@@ -2,21 +2,21 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import pytest
-from unit.application_interface import ApplicationInterface as api
-from amd_desktop.amd64_ping import AMD64Ping as aping
+# from unit.application_interface import ApplicationInterface as api
+# from amd_desktop.amd64_ping import AMD64Ping as aping
 
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.INFO)
 
 class TestAMD64Ping(object):
-    @pytest.fixture(scope="module", autouse=True)
-    def drone_api(self):
-        return api('local', 'eth0', 'app_map.json')
+    # @pytest.fixture(scope="module", autouse=True)
+    # def drone_api(self):
+    #     return api('local', 'eth0', 'app_map.json')
 
-    @pytest.fixture(scope="module", autouse=True)
-    def target_ping(self, drone_api):
-        print('\n\033[32m================ Setup Ping ===============\033[0m')
-        return aping(drone_api)
+    # @pytest.fixture(scope="module", autouse=True)
+    # def target_ping(self, drone_api):
+    #     print('\n\033[32m================ Setup Ping ===============\033[0m')
+    #     return aping(drone_api)
     
     @pytest.mark.flaky(reruns=3, reruns_delay=10)
     # @pytest.mark.xfail(reason="Cannot be used with flaky")

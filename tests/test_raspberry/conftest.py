@@ -7,6 +7,7 @@ import RPi.GPIO as gpio
 from unit.gpio import OperateGPIO as og
 
 logging.getLogger('raspberry.pi3_gpio').setLevel(logging.DEBUG)
+logging.getLogger('unit.ping').setLevel(logging.DEBUG)
 
 @pytest.fixture(scope="module", autouse=True)
 def rpi_gpio(my_pins):

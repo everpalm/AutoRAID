@@ -9,6 +9,8 @@ from unit.system_under_testing import RaspberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
 from unit.gpio import RaspBerryPins as rbp
+from unit.application_interface import ApplicationInterface as api
+from amd_desktop.amd64_ping import AMD64Ping as aping
 
 MDB_ATTR = [{
     "Log Path": '/home/pi/uart.log',
@@ -80,6 +82,15 @@ def store_gitlab_api_in_config(cmdopt, request):
     request.config._store['gitlab_api'] = gitlab_api
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
+
+@pytest.fixture(scope="session", autouse=True)
+def drone_api():
+    return api('local', 'eth0', 'app_map.json')
+
+@pytest.fixture(scope="session", autouse=True)
+def target_ping(drone_api):
+    print('\n\033[32m================ Setup Ping ===============\033[0m')
+    return aping(drone_api)
 
 # @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 # def pytest_runtest_makereport(item, call):
