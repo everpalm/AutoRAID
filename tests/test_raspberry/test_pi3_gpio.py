@@ -7,7 +7,7 @@ from tests.test_amd_desktop.test_amd64_ping import TestAMD64Ping
 logger = logging.getLogger(__name__)
 
 class TestPowerOffSUT(object):
-# class TestPowerOffSUT(object):
+
     @pytest.mark.dependency(name="ping_loss")
     def test_ping_loss(self, target_ping):
         result = target_ping.ping()
@@ -27,24 +27,16 @@ class TestPowerOffSUT(object):
     @pytest.mark.dependency(depends=["ping_loss"])
     def test_press_power_button(self, rpi_gpio):
         rpi_gpio.press_power_button()
-        # pass
-        
-        # Assert power state
 
-    # @pytest.mark.skip(reason="Need isolated SUT")
-    # def test_hold_power_button(self, amd_gpio):
-    #     amd_gpio.hold_power_button()
-   
-        # assert 2 == 2
-        # Assert power state
 
-        # @pytest.mark.xfail(reason='SUT power off')
-    # def test_sut_power_off(self, target_ping):
-    #     result = self.test_ping_loss(target_ping)
-    #     print(f'result = {result}')
-        # bool_power_state = target_ping.ping()
-        # logger.info(f'bool_power_state = {bool_power_state}')
-        # assert bool_power_state == True
-    
-    # def test_ping_ok(self, target_ping):
-    #     assert 1 == 1
+class TestPowerOnSUT(object):
+
+    @pytest.mark.dependency(name="ping_ok")
+    def test_power_on(self, target_ping):
+        result = target_ping.ping()
+        # 检查返回值是否为True，表示ping成功
+        assert result == True
+
+    @pytest.mark.dependency(depends=["ping_ok"])
+    def test_press_power_button(self, rpi_gpio):
+        rpi_gpio.press_power_button()
