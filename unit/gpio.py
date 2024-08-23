@@ -9,19 +9,41 @@ logger = logging.getLogger(__name__)
 PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
 class RaspBerryPins(object):
-    '''
-    RaspBerry Pi Pin definition is singleton
-    '''
+    """
+    Singleton class for defining Raspberry Pi GPIO pins.
+
+    This class reads pin definitions from a JSON configuration file and provides
+    access to the physical pin number for specific functions. Only one instance
+    of this class can exist, ensuring consistent pin assignments across the 
+    application.
+
+    Attributes:
+        pin_define_file (str): The name of the JSON file containing pin definitions.
+        _pin_define (str): The key in the JSON file to retrieve the pin configuration.
+        power_switch (int): The physical pin number associated with the power switch.
+    """
     _instance = None
     _initialized = False
 
     def __new__(cls, *args, **kwargs):
-        # if not hasattr(cls, 'instance'):
+        """
+        Ensures only one instance of the class is created (Singleton pattern).
+
+        Returns:
+            RaspBerryPins: The singleton instance of the RaspBerryPins class.
+        """
         if cls._instance is None:
             cls.instance = super(RaspBerryPins, cls).__new__(cls)
         return cls.instance
 
     def __init__(self, pin_define_file, pin_define):
+        """
+        Initializes the RaspBerryPins class with the pin definition file and key.
+
+        Args:
+            pin_define_file (str): The name of the JSON file containing pin definitions.
+            pin_define (str): The key in the JSON file to retrieve the pin configuration.
+        """
         self.pin_define_file = pin_define_file
         self._pin_define = pin_define
         self.power_switch = self.get_gpio()
