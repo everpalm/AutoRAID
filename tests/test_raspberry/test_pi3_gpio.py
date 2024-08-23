@@ -27,7 +27,6 @@ class TestPowerOffSUT(object):
     when powered off and can respond to a power-on command via GPIO.
     """
 
-    # @pytest.mark.repeat(1)
     @pytest.mark.dependency(name="ping_loss")
     def test_ping_loss(self, target_ping):
         """
@@ -52,7 +51,6 @@ class TestPowerOffSUT(object):
         assert result == False
         # 验证解析结果
 
-    # @pytest.mark.repeat(1)
     @pytest.mark.dependency(name="power_on", depends=["ping_loss"])
     def test_press_power_button(self, rpi_gpio):
         """
@@ -64,7 +62,6 @@ class TestPowerOffSUT(object):
         """
         rpi_gpio.press_power_button()
 
-    # @pytest.mark.repeat(1)
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
     @pytest.mark.dependency(depends=["ping_loss", "power_on"])
     def test_power_on(self, target_ping):
@@ -85,6 +82,12 @@ class TestPowerOffSUT(object):
         # 检查返回值是否为True，表示ping成功
         assert result == True
 
+
+class TestSystemOperation(object):
+    # Placeholder
+    pass
+
+
 class TestPowerOnSUT(object):
     """
     Test suite for verifying SUT behavior during power-on sequence.
@@ -93,7 +96,6 @@ class TestPowerOnSUT(object):
     responds to pings, and can be powered off via GPIO.
     """
 
-    # @pytest.mark.repeat(1)
     @pytest.mark.dependency(name="ping_ok")
     def test_power_on(self, target_ping):
         """
@@ -120,7 +122,6 @@ class TestPowerOnSUT(object):
         # 检查返回值是否为True，表示ping成功
         assert result == True
 
-    # @pytest.mark.repeat(1)
     @pytest.mark.dependency(name="power_off", depends=["ping_ok"])
     def test_press_power_button(self, rpi_gpio):
         """
@@ -132,7 +133,6 @@ class TestPowerOnSUT(object):
         """
         rpi_gpio.press_power_button()
 
-    # @pytest.mark.repeat(1)
     @pytest.mark.flaky(reruns=3, reruns_delay=120)
     @pytest.mark.dependency(depends=["ping_ok", "power_off"])
     def test_ping_loss(self, target_ping):
