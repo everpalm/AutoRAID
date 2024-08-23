@@ -90,13 +90,19 @@ class OperateGPIO(object):
 
         #Hold power button for at least 4 seconds
         time.sleep(self.HOLD_BUTTON_TIME)
+
+        #Must avoid floating and keep HIGH state
+        gpio.output(self.switch_pin, gpio.HIGH)
     
     def press_power_button(self):
         self._set_switch_mode()        
         gpio.output(self.switch_pin, gpio.LOW)
 
         #Persist relay for a period of time, not a glitch
-        time.sleep(self.RELAY_ACTIVE_TIME)   
+        time.sleep(self.RELAY_ACTIVE_TIME)
+
+        #Must avoid floating and keep HIGH state
+        gpio.output(self.switch_pin, gpio.HIGH)
 
     def clear_gpio(self):
         print('Clear GPIO')

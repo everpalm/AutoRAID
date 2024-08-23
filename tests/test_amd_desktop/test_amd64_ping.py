@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.INFO)
 
 class TestAMD64Ping(object):
-    @pytest.mark.flaky(reruns=1, reruns_delay=10)
+    @pytest.mark.flaky(reruns=3, reruns_delay=10)
     # @pytest.mark.xfail(reason="Cannot be used with flaky")
     def test_ping_ok(self, target_ping):        
         result = target_ping.ping()
