@@ -27,7 +27,7 @@ class TestIOStress8Hours(object):
 
     def test_run_io_operation(self, target_stress, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
-            1, 32, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
+            2, 32, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
         
         logger.info(f'stress_read_bw = {read_bw}')
         logger.info(f'stress_read_iops = {read_iops}')
