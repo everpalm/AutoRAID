@@ -2,7 +2,7 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import re
 import logging
-# from amd_desktop.amd64_nvme import AMD64NVMe as amd64
+from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
 
 logger = logging.getLogger(__name__)
@@ -12,6 +12,8 @@ class AMD64Perf(object):
         self._io_file = io_file
         # self.api = win10(exe_mode, network, f'{manufacturer}.json')
         self.api = win10()
+        self.platform = amd64('VEN_1B4B', 'Ethernet 7')
+        self._cpu_num = self.platform.cpu_num
 
     def run_io_operation(self, thread, iodepth, block_size, random_size,
             write_pattern, duration):
@@ -26,18 +28,30 @@ class AMD64Perf(object):
                 writethrough -Sh
                 data ms -D
                 5GB test file -c5g
+                cpu 12 -c12
+                affinity 3 -a3 (running on cpu 3)
             Returns: read bw, read iops, write bw, write iops
             Raises: Any errors occurs while invoking diskspd
         '''
+        logger.debug(f'thread = {thread}')
+        logger.debug(f'iodepth = {iodepth}')
+        logger.debug(f'block_size = {block_size}')
+        logger.debug(f'random_size = {random_size}')
+        logger.debug(f'write_pattern = {write_pattern}')
+        logger.debug(f'duration = {duration}')
+        logger.debug(f'self._io_file = {self._io_file}')
+        
         read_iops = read_bw = write_iops = write_bw = None
         try:
             if random_size:
-                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-                -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g\
-                {self._io_file}'
+                str_command = (f'diskspd -c{self._cpu_num} -t{thread}'
+                f' -o{iodepth} -b{block_size} -r{random_size}'
+                f' -w{write_pattern} -d{duration} -Sh -D -c{self._cpu_num}G'
+                f' {self._io_file}')
             else:
-                str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-                    -w{write_pattern} -d{duration} -Sh -D -c5g {self._io_file}'
+                str_command = (f'diskspd -c{self._cpu_num} -t{thread}'
+                    f' -o{iodepth} -b{block_size} -w{write_pattern}'
+                    f' -d{duration} -Sh -D -c24G {self._io_file}')
             
             str_output = self.api.io_command(str_command)
             # logger.debug('str_output = %s', str_output)

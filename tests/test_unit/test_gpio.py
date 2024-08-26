@@ -27,11 +27,7 @@ class TestOperateGPIO(object):
     def test_press_power_button(self, setup_gpio):
         setup_gpio.press_power_button()
         gpio.output.assert_called()  # 检查 output 方法是否被调用
-        # TODO
-        # Assert power state
 
     def test_hold_power_button(self, setup_gpio):
         setup_gpio.hold_power_button()
         gpio.output.assert_called()  # 检查 output 方法是否被调用
-        # assert 2 == 2
-        # Assert power state

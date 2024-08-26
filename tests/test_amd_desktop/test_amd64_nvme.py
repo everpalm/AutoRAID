@@ -93,37 +93,56 @@ class TestAMD64NVMe(object):
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_volume(self, target_system, amd64_nvm):
-        logger.info(f'Volume = {target_system.volume}')
-        logger.info(f'Size = {target_system.size}')
-        assert target_system.volume == \
-            amd64_nvm['Disk Information']["Volume"]
-        assert target_system.size == \
-            amd64_nvm['Disk Information']["Size"]
- 
-    # @pytest.mark.repeat(3)
-    # @pytest.mark.parametrize('test_pattern', TEST_PATTERN)
-    # def test_run_io_operation(self, target_system, test_pattern):
-    #     read_bw, read_iops, write_bw, write_iops = \
-    #         target_system.run_io_operation(
-    #             test_pattern["Thread"],
-    #             test_pattern["IO Depth"],
-    #             test_pattern["Block Size"],
-    #             test_pattern["Random Size"],
-    #             test_pattern["Write Pattern"],
-    #             test_pattern["Duration"],
-    #             test_pattern["Test File"]
-    #     )
-    #     logger.info(f'read_bw = {read_bw}')
-    #     logger.info(f'read_iops = {read_iops}')
-    #     logger.info(f'write_bw = {write_bw}')
-    #     logger.info(f'write_iops = {write_iops}')
+        logger.info(f'{target_system.disk_info[0][0]} = '
+              f'{target_system.disk_info[0][1]}')
+        logger.info(f'{target_system.disk_info[1][0]} = '
+              f'{target_system.disk_info[1][1]}')
+        logger.info(f'{target_system.disk_info[2][0]} = '
+              f'{target_system.disk_info[2][1]}')
+        logger.info(f'{target_system.disk_info[3][0]} = '
+              f'{target_system.disk_info[3][1]}')
+        logger.info(f'{target_system.disk_info[4][0]} = '
+              f'{target_system.disk_info[4][1]}')
+        logger.info(f'{target_system.disk_info[5][0]} = '
+              f'{target_system.disk_info[5][1]}')
+        logger.info(f'{target_system.disk_info[6][0]} = '
+              f'{target_system.disk_info[6][1]}')
+        logger.info(f'{target_system.disk_info[7][0]} = '
+              f'{target_system.disk_info[7][1]}')
+        logger.info(f'{target_system.disk_info[8][0]} = '
+              f'{target_system.disk_info[8][1]}')
+        logger.info(f'{target_system.disk_info[9][0]} = '
+              f'{target_system.disk_info[9][1]}')
+        logger.info(f'{target_system.disk_info[10][0]} = '
+              f'{target_system.disk_info[10][1]}')
+        logger.info(f'{target_system.disk_info[11][0]} = '
+              f'{target_system.disk_info[11][1]}')
         
-    #     assert read_bw >= \
-    #         test_pattern["Read IO"]["BW"] * test_pattern["CR"]
-    #     assert read_iops >= \
-    #         test_pattern["Read IO"]["IOPS"] * test_pattern["CR"]
-    #     assert write_bw >= \
-    #         test_pattern["Write IO"]["BW"] * test_pattern["CR"]
-    #     assert write_iops >= \
-    #         test_pattern["Write IO"]["IOPS"] * test_pattern["CR"]
+        assert target_system.disk_info[0][1] == \
+            amd64_nvm['Disk Information']["D"]
+        assert target_system.disk_info[1][1] == \
+            amd64_nvm['Disk Information']["F"]
+        assert target_system.disk_info[2][1] == \
+            amd64_nvm['Disk Information']["G"]
+        assert target_system.disk_info[3][1] == \
+            amd64_nvm['Disk Information']["H"]
+        assert target_system.disk_info[4][1] == \
+            amd64_nvm['Disk Information']["I"]
+        assert target_system.disk_info[5][1] == \
+            amd64_nvm['Disk Information']["J"]
+        assert target_system.disk_info[6][1] == \
+            amd64_nvm['Disk Information']["K"]
+        assert target_system.disk_info[7][1] == \
+            amd64_nvm['Disk Information']["L"]
+        assert target_system.disk_info[8][1] == \
+            amd64_nvm['Disk Information']["M"]
+        assert target_system.disk_info[9][1] == \
+            amd64_nvm['Disk Information']["N"]
+        assert target_system.disk_info[10][1] == \
+            amd64_nvm['Disk Information']["O"]
+        assert target_system.disk_info[11][1] == \
+            amd64_nvm['Disk Information']["P"]
+        # assert target_system.size == \
+        #     amd64_nvm['Disk Information']["Size"]
+ 
         
