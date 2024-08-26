@@ -18,7 +18,7 @@ class TestIOStress8Hours(object):
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
     WRITE_PATTERN = 50
-    DURATION = 60
+    DURATION = 120
 
     @pytest.fixture(scope="module", autouse=True)
     def target_stress(self, target_system):
@@ -29,10 +29,10 @@ class TestIOStress8Hours(object):
         read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
             1, 32, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
         
-        logger.info(f'random_read_bw = {read_bw}')
-        logger.info(f'random_read_iops = {read_iops}')
-        logger.info(f'random_write_bw = {write_bw}')
-        logger.info(f'random_write_iops = {write_iops}')
+        logger.info(f'stress_read_bw = {read_bw}')
+        logger.info(f'stress_read_iops = {read_iops}')
+        logger.info(f'stress_write_bw = {write_bw}')
+        logger.info(f'stress_write_iops = {write_iops}')
         
         # result = my_mdb.aggregate_random_metrics(self.WRITE_PATTERN,
         #                                         self.QUEUE_DEPTH)

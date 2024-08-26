@@ -10,10 +10,11 @@ from amd_desktop.win10_interface import Win10Interface as win10
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
-logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
+logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.CRITICAL)
-logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.CRITICAL)
+logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
+logging.getLogger('amd_desktop.amd64_stress').setLevel(logging.INFO)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
@@ -44,7 +45,7 @@ def test_open_uart(drone):
     print('\n\033[32m================== Setup UART ==================\033[0m')
     yield drone.open_uart()
     print('\n\033[32m================ Teardown UART =================\033[0m')
-#     drone.close_uart()
+    drone.close_uart()
 
 @pytest.fixture(scope="function", autouse=True)
 def target_perf():
