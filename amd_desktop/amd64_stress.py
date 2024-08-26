@@ -1,60 +1,42 @@
-# Contents of amd64_perf.py
+# Contents of amd64_stress.py
 '''Copyright (c) 2024 Jaron Cheng'''
-import re
+
 import logging
-from amd_desktop.amd64_nvme import AMD64NVMe as amd64
+import re
 from amd_desktop.win10_interface import Win10Interface as win10
+from typing import List
 
 logger = logging.getLogger(__name__)
 
-class AMD64Perf(object):
-    def __init__(self, exe_mode, network, manufacturer, io_file):
-        self._io_file = io_file
-        # self.api = win10(exe_mode, network, f'{manufacturer}.json')
+class AMD64MultiPathStress(object):
+    def __init__(self, write_pattern, duration, io_paths: List):
+        self.write_pattern = write_pattern
+        self.duration = duration
+        self.io_paths = io_paths
         self.api = win10()
-        self.platform = amd64('VEN_1B4B', 'Ethernet 7')
-        self._cpu_num = self.platform.cpu_num
 
     def run_io_operation(self, thread, iodepth, block_size, random_size,
             write_pattern, duration):
-        ''' Run DISKSPD
-            Args:
-                thread 2 -t2
-                iodepth 32 -o32
-                blocksize 4k -b4k
-                random 4k -r4k
-                write 0% -w0
-                duration 120 seconds -d120
-                writethrough -Sh
-                data ms -D
-                5GB test file -c5g
-                cpu 12 -c12
-                affinity 3 -a3 (running on cpu 3)
-            Returns: read bw, read iops, write bw, write iops
-            Raises: Any errors occurs while invoking diskspd
-        '''
+
         logger.debug(f'thread = {thread}')
         logger.debug(f'iodepth = {iodepth}')
         logger.debug(f'block_size = {block_size}')
         logger.debug(f'random_size = {random_size}')
         logger.debug(f'write_pattern = {write_pattern}')
         logger.debug(f'duration = {duration}')
-        logger.debug(f'self._io_file = {self._io_file}')
+        logger.debug(f'self._io_file = {self.io_paths}')
         
         read_iops = read_bw = write_iops = write_bw = None
+        list_io_path = [f'{drive_letter}:\\IO.dat' for drive_letter, _ in self.io_paths]
+        print(f'list_io_path = {list_io_path}')
+        print(f'{" ".join(list_io_path)}')
         try:
-            if random_size:
-                str_command = (f'diskspd -c{self._cpu_num} -t{thread}'
-                f' -o{iodepth} -b{block_size} -r{random_size}'
-                f' -w{write_pattern} -d{duration} -Sh -D -c{self._cpu_num}G'
-                f' {self._io_file}')
-            else:
-                str_command = (f'diskspd -c{self._cpu_num} -t{thread}'
-                    f' -o{iodepth} -b{block_size} -w{write_pattern}'
-                    f' -d{duration} -Sh -D -c24G {self._io_file}')
+            str_command = (f'diskspd -c1 -t{thread}'
+            f' -o{iodepth} -b{block_size} -r{random_size}'
+            f' -w{write_pattern} -d{duration} -Sh -D -c2G'
+            f' {" ".join(list_io_path)}')
             
             str_output = self.api.io_command(str_command)
-            # logger.debug('str_output = %s', str_output)
             
             if not str_output:
                 raise RuntimeError("No output returned from io_command.")

@@ -31,9 +31,19 @@
         "unsafe_shutdowns": 624
     },
     "Disk Information": {
-        "Number": 2,
+        "Number": 12,
         "SerialNumber": "0050_43C5_0E00_0001.",
-        "Volume": "D",
-        "Size": "931.43 GB"
+        "D": "40 GB",
+        "F": "40 GB",
+        "G": "40 GB",
+        "H": "40 GB",
+        "I": "40 GB",
+        "J": "40 GB",
+        "K": "40 GB",
+        "L": "40 GB",
+        "M": "40 GB",
+        "N": "40 GB",
+        "O": "40 GB",
+        "P": "40 GB"
     }
 }

@@ -6,7 +6,7 @@ import os
 from tests.test_amd_desktop.test_amd64_nvme import TestAMD64NVMe as nvm
 
 logger = logging.getLogger(__name__)
-logging.getLogger(__name__).setLevel(logging.DEBUG)
+logging.getLogger(__name__).setLevel(logging.INFO)
 
 class TestRandomReadWrite(nvm):
     ''' Test AMD64 NVM Random Read Write Performance

@@ -93,12 +93,59 @@ class TestAMD64NVMe(object):
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_volume(self, target_system, amd64_nvm):
-        logger.info(f'Volume = {target_system.volume}')
-        logger.info(f'Size = {target_system.size}')
-        assert target_system.volume == \
-            amd64_nvm['Disk Information']["Volume"]
-        assert target_system.size == \
-            amd64_nvm['Disk Information']["Size"]
+        # logger.info(f'Volume = {target_system.volume}')
+        # logger.info(f'Size = {target_system.size}')
+        logger.info(f'{target_system.disk_info[0][0]} = '
+              f'{target_system.disk_info[0][1]}')
+        logger.info(f'{target_system.disk_info[1][0]} = '
+              f'{target_system.disk_info[1][1]}')
+        logger.info(f'{target_system.disk_info[2][0]} = '
+              f'{target_system.disk_info[2][1]}')
+        logger.info(f'{target_system.disk_info[3][0]} = '
+              f'{target_system.disk_info[3][1]}')
+        logger.info(f'{target_system.disk_info[4][0]} = '
+              f'{target_system.disk_info[4][1]}')
+        logger.info(f'{target_system.disk_info[5][0]} = '
+              f'{target_system.disk_info[5][1]}')
+        logger.info(f'{target_system.disk_info[6][0]} = '
+              f'{target_system.disk_info[6][1]}')
+        logger.info(f'{target_system.disk_info[7][0]} = '
+              f'{target_system.disk_info[7][1]}')
+        logger.info(f'{target_system.disk_info[8][0]} = '
+              f'{target_system.disk_info[8][1]}')
+        logger.info(f'{target_system.disk_info[9][0]} = '
+              f'{target_system.disk_info[9][1]}')
+        logger.info(f'{target_system.disk_info[10][0]} = '
+              f'{target_system.disk_info[10][1]}')
+        logger.info(f'{target_system.disk_info[11][0]} = '
+              f'{target_system.disk_info[11][1]}')
+        
+        assert target_system.disk_info[0][1] == \
+            amd64_nvm['Disk Information']["D"]
+        assert target_system.disk_info[1][1] == \
+            amd64_nvm['Disk Information']["F"]
+        assert target_system.disk_info[2][1] == \
+            amd64_nvm['Disk Information']["G"]
+        assert target_system.disk_info[3][1] == \
+            amd64_nvm['Disk Information']["H"]
+        assert target_system.disk_info[4][1] == \
+            amd64_nvm['Disk Information']["I"]
+        assert target_system.disk_info[5][1] == \
+            amd64_nvm['Disk Information']["J"]
+        assert target_system.disk_info[6][1] == \
+            amd64_nvm['Disk Information']["K"]
+        assert target_system.disk_info[7][1] == \
+            amd64_nvm['Disk Information']["L"]
+        assert target_system.disk_info[8][1] == \
+            amd64_nvm['Disk Information']["M"]
+        assert target_system.disk_info[9][1] == \
+            amd64_nvm['Disk Information']["N"]
+        assert target_system.disk_info[10][1] == \
+            amd64_nvm['Disk Information']["O"]
+        assert target_system.disk_info[11][1] == \
+            amd64_nvm['Disk Information']["P"]
+        # assert target_system.size == \
+        #     amd64_nvm['Disk Information']["Size"]
  
     # @pytest.mark.repeat(3)
     # @pytest.mark.parametrize('test_pattern', TEST_PATTERN)

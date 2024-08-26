@@ -10,7 +10,7 @@ from amd_desktop.win10_interface import Win10Interface as win10
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
-logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.CRITICAL)
+logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.CRITICAL)
