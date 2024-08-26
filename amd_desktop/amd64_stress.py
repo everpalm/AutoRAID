@@ -84,7 +84,7 @@ class AMD64MultiPathStress(object):
         try:
             str_command = (f'diskspd -c1 -t{thread}'
             f' -o{iodepth} -b{block_size} -r{random_size}'
-            f' -w{write_pattern} -d{duration} -Sh -D -c2G'
+            f' -w{write_pattern} -d{duration} -L -Sh -D -c2G'
             f' {" ".join(list_io_path)}')
             
             str_output = self.api.io_command(str_command)

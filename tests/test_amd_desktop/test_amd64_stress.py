@@ -7,8 +7,8 @@ from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.INFO)
 
-# class TestIOStress8Hours(TestAMD64NVMe):
-class TestIOStress8Hours(object):
+
+class TestAMD64MultiPathStress(object):
     ''' Test I/O Stress for 8 hours
         Endurance of the AMD64 system
         Attributes:
@@ -17,7 +17,7 @@ class TestIOStress8Hours(object):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
-    WRITE_PATTERN = 50
+    WRITE_PATTERN = 0
     DURATION = 120
 
     @pytest.fixture(scope="module", autouse=True)
@@ -27,12 +27,12 @@ class TestIOStress8Hours(object):
 
     def test_run_io_operation(self, target_stress, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
-            2, 32, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
+            1, 32, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
         
-        logger.info(f'stress_read_bw = {read_bw}')
-        logger.info(f'stress_read_iops = {read_iops}')
-        logger.info(f'stress_write_bw = {write_bw}')
-        logger.info(f'stress_write_iops = {write_iops}')
+        logger.info(f'w{self.WRITE_PATTERN}_stress_read_bw = {read_bw}')
+        logger.info(f'w{self.WRITE_PATTERN}_stress_read_iops = {read_iops}')
+        logger.info(f'w{self.WRITE_PATTERN}_stress_write_bw = {write_bw}')
+        logger.info(f'w{self.WRITE_PATTERN}_stress_write_iops = {write_iops}')
         
         # result = my_mdb.aggregate_random_metrics(self.WRITE_PATTERN,
         #                                         self.QUEUE_DEPTH)

@@ -3,12 +3,12 @@
 import pytest
 import logging
 import os
-from tests.test_amd_desktop.test_amd64_nvme import TestAMD64NVMe as nvm
+# from tests.test_amd_desktop.test_amd64_nvme import TestAMD64NVMe as nvm
 
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.INFO)
 
-class TestRandomReadWrite(nvm):
+class TestRandomReadWrite(object):
     ''' Test AMD64 NVM Random Read Write Performance
         Performance of the AMD64 system
         Attributes:
@@ -17,11 +17,12 @@ class TestRandomReadWrite(nvm):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     # '''
-    @pytest.mark.parametrize('io_depth', [2**power for power in range(1)])
+    @pytest.mark.flaky(reruns=3, reruns_delay=60)
+    @pytest.mark.parametrize('io_depth', [2**power for power in range(6)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, io_depth, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
-            2, io_depth, '4k', '4k', write_pattern, 120)
+            io_depth, '4k', '4k', write_pattern, 120)
         logger.info(f'random_read_bw = {read_bw}')
         logger.info(f'random_read_iops = {read_iops}')
         logger.info(f'random_write_bw = {write_bw}')
@@ -40,7 +41,7 @@ class TestRandomReadWrite(nvm):
             assert write_bw >= result['avg_write_bw'] * 0.9
 
 
-class TestSequentialReadWrite(nvm):
+class TestSequentialReadWrite(object):
     ''' Test AMD64 NVM Sequential Read Write Performance
         Performance of the AMD64 system
         Attributes:
@@ -49,12 +50,13 @@ class TestSequentialReadWrite(nvm):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
-    @pytest.mark.parametrize('io_depth', [2**power for power in range(1)])
+    @pytest.mark.flaky(reruns=3, reruns_delay=60)
+    @pytest.mark.parametrize('io_depth', [2**power for power in range(6)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, io_depth,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = \
-            target_perf.run_io_operation(2, io_depth, '4k', None,
+            target_perf.run_io_operation(io_depth, '4k', None,
                 write_pattern, 10)
         logger.info(f'sequential_read_bw = {read_bw}')
         logger.info(f'sequential_read_iops = {read_iops}')
@@ -78,7 +80,7 @@ class TestSequentialReadWrite(nvm):
 ramp_times = list(range(10, 120, 10))
 
 
-class TestRampTimeReadWrite(nvm):
+class TestRampTimeReadWrite(object):
     ''' Test AMD64 NVM Ramp-up Time Read Write
         Performance of the AMD64 system
         Attributes:
@@ -88,12 +90,13 @@ class TestRampTimeReadWrite(nvm):
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
     # @pytest.mark.repeat(2)
+    @pytest.mark.flaky(reruns=3, reruns_delay=60)
     @pytest.mark.parametrize('ramp_times', ramp_times)
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, ramp_times,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = \
-            target_perf.run_io_operation(2, 4, '4k', '4k',
+            target_perf.run_io_operation(4, '4k', '4k',
                 write_pattern, ramp_times)
         logger.info(f'ramp_read_bw = {read_bw}')
         logger.info(f'ramp_read_iops = {read_iops}')

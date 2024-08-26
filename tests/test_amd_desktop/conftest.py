@@ -10,9 +10,12 @@ from amd_desktop.win10_interface import Win10Interface as win10
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
-logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.CRITICAL)
+logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_stress').setLevel(logging.INFO)
 
@@ -40,7 +43,7 @@ def drone():
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
     return rpi("/dev/ttyUSB0", 115200, "uart.log")
 
-@pytest.fixture(scope="class", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def test_open_uart(drone):
     print('\n\033[32m================== Setup UART ==================\033[0m')
     yield drone.open_uart()
