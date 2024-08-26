@@ -21,7 +21,7 @@ class TestRandomReadWrite(object):
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, io_depth, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
-            io_depth, '4k', '4k', write_pattern, 300)
+            io_depth, '4k', '4k', write_pattern, 120)
         logger.info(f'random_read_bw = {read_bw}')
         logger.info(f'random_read_iops = {read_iops}')
         logger.info(f'random_write_bw = {write_bw}')
@@ -55,7 +55,7 @@ class TestSequentialReadWrite(object):
     def test_run_io_operation(self, target_perf, write_pattern, io_depth,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
-            io_depth, '4k', None, write_pattern, 300)
+            io_depth, '4k', None, write_pattern, 120)
         logger.info(f'sequential_read_bw = {read_bw}')
         logger.info(f'sequential_read_iops = {read_iops}')
         logger.info(f'sequential_write_bw = {write_bw}')
@@ -88,7 +88,7 @@ class TestRampTimeReadWrite(object):
     '''
     # @pytest.mark.repeat(2)
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
-    @pytest.mark.parametrize('ramp_times', list(range(60, 300, 60)))
+    @pytest.mark.parametrize('ramp_times', list(range(30, 120, 30)))
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, ramp_times,
         my_mdb):

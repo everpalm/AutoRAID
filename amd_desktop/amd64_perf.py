@@ -47,12 +47,12 @@ class AMD64Perf(object):
             if random_size:
                 str_command = (f'diskspd -c{self._cpu_num} -t{self._thread}'
                 f' -o{iodepth} -b{block_size} -r{random_size}'
-                f' -w{write_pattern} -d{duration} -Sh -D -c{self._cpu_num}G'
+                f' -w{write_pattern} -d{duration} -Sh -D -c32G'
                 f' {self._io_file}')
             else:
                 str_command = (f'diskspd -c{self._cpu_num} -t{self._thread}'
                     f' -o{iodepth} -b{block_size} -w{write_pattern}'
-                    f' -d{duration} -Sh -D -c24G {self._io_file}')
+                    f' -d{duration} -Sh -D -c32G {self._io_file}')
             
             str_output = self.api.io_command(str_command)
             # logger.debug('str_output = %s', str_output)

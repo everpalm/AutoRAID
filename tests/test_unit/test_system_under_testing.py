@@ -147,19 +147,6 @@ class TestSystemUnderTesting(object):
         marvell_sut.unsafe_shutdowns = mocker.MagicMock(
             return_value=generic_x86['NVME SMART-log']["unsafe_shutdowns"])
         return marvell_sut
-        # return sut('Marvell')
-
-    # @pytest.fixture(scope="session", autouse=True)
-    # def drone(self):
-    #     logger.info('===Setup Drone===')
-    #     return rp("/dev/ttyUSB0", 115200, "uart.log")
-
-    # @pytest.fixture(scope="session", autouse=True)
-    # def test_open_uart(self, drone):
-    #     logger.info('===Setup UART===')
-    #     yield drone.open_uart()
-    #     logger.info('===Teardown UART===')
-    #     drone.close_uart()
 
     @pytest.mark.parametrize('generic_x86', GENERIC_X86)
     def test_get_cpu_info(self, target_system, generic_x86):

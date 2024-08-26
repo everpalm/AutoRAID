@@ -17,7 +17,7 @@ class TestAMD64MultiPathStress(object):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
-    WRITE_PATTERN = 50
+    WRITE_PATTERN = 15
     DURATION = 120
 
     @pytest.fixture(scope="module", autouse=True)

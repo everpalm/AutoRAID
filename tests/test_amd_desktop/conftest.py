@@ -35,7 +35,7 @@ def my_win10(cmdopt):
 
 @pytest.fixture(scope="session", autouse=True)
 def my_mdb():
-    print('\n\033[32m================ Setup MongoDB ===============\033[0m')
+    print('\n\033[32m================== Setup MongoDB ===============\033[0m')
     return mdb('192.168.0.128', 27017, 'AutoRAID', 'amd_desktop')
 
 @pytest.fixture(scope="session", autouse=True)
