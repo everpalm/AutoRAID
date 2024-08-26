@@ -200,43 +200,6 @@ class AMD64NVMe(object):
             Returns: Volume, Size
             Raises: Any errors
         '''
-        # try:
-        #     str_return = self.api.command_line(
-        #             f"powershell Get-Partition -DiskNumber {self.disk_num}")
-        #     # if str_return:
-        #     #     str_volume = str_return.get(7).split(' ')[1]
-        #     #     logger.debug('volume = %s', str_volume)
-
-        #     #     str_size = ' '.join(str_return.get(7).split(' ')[3:5])
-        #     #     logger.debug('size = %s', str_size)
-        #     # 使用正则表达式来提取DriveLetter和Size
-        #     pattern = re.compile(r'\d+\s+([A-Z]?)\s+\d+\s+([\d.]+\s+\w+)')
-
-        #     # 存储结果
-        #     list_disk_info = []
-
-        #     # 查找所有匹配项
-        #     if str_return:
-        #         for match in pattern.findall(str_return):
-        #             drive_letter = match[0] if match[0] else "No Drive Letter"
-        #             size = match[1]
-        #             list_disk_info.append((drive_letter, size))
-
-        #         # 打印统计结果
-        #         total_disks = len(list_disk_info)
-        #         print(f"Total number of disks: {total_disks}")
-        #     else:
-        #         raise ValueError("Unexpected None value returned")
-
-        # except Exception as e:
-        #     logger.error('Error occurred in _get_volume: %s', e)
-        #     raise
-
-        # # return {
-        # #         "Volume": str_volume,
-        # #         "Type": str_size
-        # #         }
-        # return list_disk_info
         try:
         # 获取命令输出
             str_return = self.api.command_line(f"powershell Get-Partition -DiskNumber {self.disk_num}")
@@ -270,71 +233,4 @@ class AMD64NVMe(object):
             logger.error('Error occurred in _get_volume: %s', e)
             raise
 
-        return list_disk_info                
-
-    # def run_io_operation(self, thread: int, iodepth: int, block_size: str,
-    #     random_size: str, write_pattern: int, duration: int, io_file: str) ->\
-    #     dict[str, str | int]:
-    #     ''' Run DISKSPD
-    #         Args:
-    #             thread 2 -t2
-    #             iodepth 32 -o32
-    #             blocksize 4k -b4k
-    #             random 4k -r4k
-    #             write 0% -w0
-    #             duration 120 seconds -d120
-    #             writethrough -Sh
-    #             data ms -D
-    #             5GB test file -c5g
-    #         Returns: read bw, read iops, write bw, write iops
-    #         Raises: Any errors occurs while invoking diskspd
-    #     '''
-    #     read_iops = read_bw = write_iops = write_bw = None
-    #     try:
-    #         if random_size:
-    #             str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-    #                 -r{random_size} -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
-    #         else:
-    #             str_command = f'diskspd -t{thread} -o{iodepth} -b{block_size} \
-    #                 -w{write_pattern} -d{duration} -Sh -D -c5g {io_file}'
-            
-    #         str_output = self.api.io_command(str_command)
-    #         # logger.debug('str_output = %s', str_output)
-            
-    #         read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
-    #         write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
-    #         # logger.debug(f'write_io_section = {write_io_section.group(1)}')
-
-    #         if read_io_section:
-    #             read_io_text = read_io_section.group(1)
-
-    #             # Extract total and I/O per s values
-    #             read_pattern = re.compile(r'total:\s*([\d\s|.]+)')
-    #             read_match = read_pattern.search(read_io_text)
-
-    #             if read_match:
-    #                 read_values = read_match.group(1).split('|')
-    #                 read_iops = read_values[3].strip()
-    #                 read_bw = read_values[2].strip()
-    #                 logger.debug('read_iops = %s', read_iops)
-    #                 logger.debug('read_bw = %s', read_bw)
-
-    #         if write_io_section:
-    #             write_io_text = write_io_section.group(1)
-
-    #             # Extract total and I/O per s value
-    #             write_pattern = re.compile(r'total:\s*([\d\s|.]+)')
-    #             write_match = write_pattern.search(write_io_text)
-    #             if write_match:
-    #                 write_values = write_match.group(1).split('|')
-    #                 write_iops = write_values[3].strip()
-    #                 write_bw = write_values[2].strip()
-    #                 logger.debug('write_iops = %s', write_iops)
-    #                 logger.debug('write_bw = %s', write_bw)
-
-    #     except Exception as e:
-    #         logger.error(f"Error occurred in run_io_operation: {e}")
-    #         raise
-    #     finally:
-    #         return float(read_bw), float(read_iops), float(write_bw), float(write_iops)
-
+        return list_disk_info
