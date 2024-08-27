@@ -23,7 +23,6 @@ class TestAMD64MultiPathStress(object):
     @pytest.fixture(scope="module", autouse=True)
     def target_stress(self, target_system):
         print('\n\033[32m================ Setup I/O Stress ===============\033[0m')
-        # return amps(target_system, 50, 30)
         return amps(target_system)
 
     def test_run_io_operation(self, target_stress, my_mdb):
@@ -37,8 +36,8 @@ class TestAMD64MultiPathStress(object):
         
         # result = my_mdb.aggregate_random_metrics(self.WRITE_PATTERN,
         #                                         self.QUEUE_DEPTH)
-        # # logger.debug(f'write_pattern = {write_pattern}')
-        # # logger.debug(f'io_depth = {io_depth}')
+        # logger.debug(f'write_pattern = {self.WRITE_PATTERN}')
+        # logger.debug(f'io_depth = {self.QUEUE_DEPTH}')
         # logger.debug(f'result = {result}')
 
         # if (result['_id']['write_pattern'] == self.WRITE_PATTERN and

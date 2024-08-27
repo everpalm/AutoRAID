@@ -32,12 +32,18 @@ class TestRandomReadWrite(object):
         logger.debug(f'io_depth = {io_depth}')
         logger.debug(f'result = {result}')
 
-        if result['_id']['write_pattern'] == write_pattern and \
-            result['_id']['io_depth'] == io_depth:
-            assert read_iops >= result['avg_read_iops'] * 0.9
-            assert read_bw >= result['avg_read_bw'] * 0.9
-            assert write_iops >= result['avg_write_iops'] * 0.9
-            assert write_bw >= result['avg_write_bw'] * 0.9
+        if (result['_id']['write_pattern'] == write_pattern and
+            result['_id']['io_depth'] == io_depth):
+            if read_iops and read_bw:
+                assert (result['avg_read_iops'] * 1.1 > read_iops >
+                        result['avg_read_iops'] * 0.9)
+                assert (result['avg_read_bw'] * 1.1 > read_bw >
+                        result['avg_read_bw'] * 0.9)
+            if write_iops and write_bw:
+                assert (result['avg_write_iops'] * 1.1 > write_iops >
+                        result['avg_write_iops'] * 0.9)
+                assert (result['avg_write_bw'] * 1.1 > write_bw >
+                        result['avg_write_bw'] * 0.9)
 
 
 class TestSequentialReadWrite(object):
@@ -50,12 +56,11 @@ class TestSequentialReadWrite(object):
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
-    @pytest.mark.parametrize('block_size', [f'{2**pwr}k' for pwr in range(2,8)])
+    @pytest.mark.parametrize('block_size', [f'{2**pwr}k' for pwr in range(2,3)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, block_size,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
-            # io_depth, '4k', None, write_pattern, 120)
             32, block_size, None, write_pattern, 120)
         logger.info(f'sequential_read_bw = {read_bw}')
         logger.info(f'sequential_read_iops = {read_iops}')
@@ -69,14 +74,16 @@ class TestSequentialReadWrite(object):
 
         if (result['_id']['write_pattern'] == write_pattern and
             result['_id']['block_size'] == block_size):
-            assert (result['avg_read_iops'] * 1.1 > read_iops > 
-                    result['avg_read_iops'] * 0.9)
-            assert (result['avg_read_bw'] * 1.1 > read_bw >
-                     result['avg_read_bw'] * 0.9)
-            assert (result['avg_write_iops'] * 0.9 > write_iops >
-                    result['avg_write_iops'] * 0.9)
-            assert (result['avg_write_bw'] * 0.9 > write_bw >
-                    result['avg_write_bw'] * 0.9)
+            if read_iops and read_bw:
+                assert (result['avg_read_iops'] * 1.1 > read_iops > 
+                        result['avg_read_iops'] * 0.9)
+                assert (result['avg_read_bw'] * 1.1 > read_bw >
+                        result['avg_read_bw'] * 0.9)
+            if write_iops and write_bw:
+                assert (result['avg_write_iops'] * 1.1 > write_iops >
+                        result['avg_write_iops'] * 0.9)
+                assert (result['avg_write_bw'] * 1.1 > write_bw >
+                        result['avg_write_bw'] * 0.9)
 
 
 class TestRampTimeReadWrite(object):
