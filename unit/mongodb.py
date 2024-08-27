@@ -274,173 +274,190 @@ class MongoDB(object):
 
     def aggregate_sequential_metrics(self, write_pattern, io_depth):
         pipeline = [
-            {
-                "$project": {
-                    "_id": 0,
-                    "report.tests.keywords": 1,
-                    "report.tests.call.log.msg": 1
-                }
-            },
-            { "$unwind": { "path": "$report.tests" } },
-            { "$unwind": { "path": "$report.tests.keywords" } },
-            {
-                "$match": {
-                    "report.tests.keywords": {
-                        "$regex": "test_run_io_operation"
-                    }
-                }
-            },
-            { "$unwind": { "path": "$report.tests.call" } },
-            { "$unwind": { "path": "$report.tests.call.log" } },
-            {
-                "$project": {
-                    "msg": "$report.tests.call.log.msg",
-                    "write_pattern_string": {
-                        "$regexFind": {
-                            "input": "$report.tests.keywords",
-                            "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
-                        }
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "msg": 1,
-                    "write_pattern": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_pattern_string.captures",
-                                    0
+                        # Stage 1
+                        {
+                            "$project": {
+                                "_id": 0,
+                                "report.tests.keywords": 1,
+                                "report.tests.call.log.msg": 1
+                            }
+                        },
+                        # Stage 2
+                        { "$unwind": { "path": "$report.tests" } },
+                        # Stage 3
+                        { "$unwind": { "path": "$report.tests.keywords" } },
+                        # Stage 4
+                        {
+                            "$project": {
+                                "write_pattern_string": {
+                                    "$regexFind": {
+                                        "input": "$report.tests.keywords",
+                                        "regex": "test_run_io_operation\\[(\\d+)-([\\dk]+)\\]"
+                                    }
+                                },
+                                "msg": "$report.tests.call.log.msg"
+                            }
+                        },
+                        # Stage 5
+                        {
+                            "$match": {
+                                "$or": [
+                                    {
+                                        "write_pattern_string.match": {
+                                            "$regex": "test_run_io_operation"
+                                        }
+                                    },
+                                    {
+                                        "report.tests.call.log.msg": {
+                                            "$regex": "write_pattern"
+                                        }
+                                    }
                                 ]
-                            },
-                            "to": "int",
-                            "onError": None,
-                            "onNull": None
+                            }
+                        },
+                        # Stage 6
+                        {
+                            "$project": {
+                                "write_pattern": {
+                                    "$convert": {
+                                        "input": {
+                                            "$arrayElemAt": [
+                                                "$write_pattern_string.captures",
+                                                0
+                                            ]
+                                        },
+                                        "to": "double",
+                                        "onError": None,
+                                        "onNull": None
+                                    }
+                                },
+                                "block_size": {
+                                    "$convert": {
+                                        "input": {
+                                            "$arrayElemAt": [
+                                                "$write_pattern_string.captures",
+                                                1
+                                            ]
+                                        },
+                                        "to": "string",
+                                        "onError": None,
+                                        "onNull": None
+                                    }
+                                },
+                                "msg": 1
+                            }
+                        },
+                        # Stage 7
+                        { "$unwind": { "path": "$msg" } },
+                        # Stage 8
+                        { "$match": { "msg": { "$regex": "sequential" } } },
+                        # Stage 9
+                        {
+                            "$project": {
+                                "write_pattern": 1,
+                                "block_size": 1,
+                                "read_iops_string": {
+                                    "$regexFind": {
+                                        "input": "$msg",
+                                        "regex": "sequential_read_iops\\s*=\\s*([\\d\\.]+)"
+                                    }
+                                },
+                                "read_bw_string": {
+                                    "$regexFind": {
+                                        "input": "$msg",
+                                        "regex": "sequential_read_bw\\s*=\\s*([\\d\\.]+)"
+                                    }
+                                },
+                                "write_iops_string": {
+                                    "$regexFind": {
+                                        "input": "$msg",
+                                        "regex": "sequential_write_iops\\s*=\\s*([\\d\\.]+)"
+                                    }
+                                },
+                                "write_bw_string": {
+                                    "$regexFind": {
+                                        "input": "$msg",
+                                        "regex": "sequential_write_bw\\s*=\\s*([\\d\\.]+)"
+                                    }
+                                }
+                            }
+                        },
+                        # Stage 10
+                        {
+                            "$project": {
+                                "write_pattern": 1,
+                                "block_size": 1,
+                                "read_iops": {
+                                    "$convert": {
+                                        "input": {
+                                            "$arrayElemAt": [
+                                                "$read_iops_string.captures",
+                                                0
+                                            ]
+                                        },
+                                        "to": "double",
+                                        "onError": None,
+                                        "onNull": None
+                                    }
+                                },
+                                "read_bw": {
+                                    "$convert": {
+                                        "input": {
+                                            "$arrayElemAt": [
+                                                "$read_bw_string.captures",
+                                                0
+                                            ]
+                                        },
+                                        "to": "double",
+                                        "onError": None,
+                                        "onNull": None
+                                    }
+                                },
+                                "write_iops": {
+                                    "$convert": {
+                                        "input": {
+                                            "$arrayElemAt": [
+                                                "$write_iops_string.captures",
+                                                0
+                                            ]
+                                        },
+                                        "to": "double",
+                                        "onError": None,
+                                        "onNull": None
+                                    }
+                                },
+                                "write_bw": {
+                                    "$convert": {
+                                        "input": {
+                                            "$arrayElemAt": [
+                                                "$write_bw_string.captures",
+                                                0
+                                            ]
+                                        },
+                                        "to": "double",
+                                        "onError": None,
+                                        "onNull": None
+                                    }
+                                }
+                            }
+                        },
+                        # Stage 11
+                        {
+                            "$group": {
+                                "_id": {
+                                    "write_pattern": "$write_pattern",
+                                    "block_size": "$block_size"
+                                },
+                                "avg_read_iops": { "$avg": "$read_iops" },
+                                "avg_read_bw": { "$avg": "$read_bw" },
+                                "std_dev_read_iops": { "$stdDevPop": "$read_iops" },
+                                "avg_write_iops": { "$avg": "$write_iops" },
+                                "avg_write_bw": { "$avg": "$write_bw" },
+                                "std_dev_write_iops": { "$stdDevPop": "$write_iops" }
+                            }
                         }
-                    },
-                    "io_depth": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_pattern_string.captures",
-                                    1
-                                ]
-                            },
-                            "to": "int",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "write_pattern": 1,
-                    "io_depth": 1,
-                    "read_iops_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "sequential_read_iops = (\\d+.\\d+)"
-                        }
-                    },
-                    "read_bw_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "sequential_read_bw = (\\d+.\\d+)"
-                        }
-                    },
-                    "write_iops_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "sequential_write_iops = (\\d+.\\d+)"
-                        }
-                    },
-                    "write_bw_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "sequential_write_bw = (\\d+.\\d+)"
-                        }
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "write_pattern": 1,
-                    "io_depth": 1,
-                    "read_iops": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$read_iops_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "read_bw": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$read_bw_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "write_iops": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_iops_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "write_bw": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_bw_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    }
-                }
-            },
-            { "$match": { "write_pattern": write_pattern ,
-                         "io_depth": io_depth
-                        } 
-            },
-            {
-                "$group": {
-                    "_id": {
-                        "write_pattern": "$write_pattern",
-                        "io_depth": "$io_depth"
-                    },
-                    "avg_read_iops": { "$avg": "$read_iops" },
-                    "avg_read_bw": { "$avg": "$read_bw" },
-                    "std_dev_read_iops": {"$stdDevPop": "$read_iops"},
-                    "avg_write_iops": { "$avg": "$write_iops" },
-                    "avg_write_bw": { "$avg": "$write_bw" },
-                    "std_dev_write_iops": {"$stdDevPop": "$write_iops"}
-                }
-            }
-        ]
+                    ]
+
         try:
             result = list(self.collection.aggregate(pipeline))
             if result:
