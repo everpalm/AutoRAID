@@ -43,11 +43,22 @@ class AMD64NVMe(object):
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
-        # self.volume, self.size = self._get_volume().values()
         self.disk_info = self._get_volume()
         self.nic_name = nic_name
         self._mac_address = None
+        self.memory_size = self._get_memory_size()
     
+    def _get_memory_size(self):
+        try:
+            dict_memory_size = self.api.command_line(
+                'wmic ComputerSystem get TotalPhysicalMemory')
+            logger.debug(f'dict_memory_size = {dict_memory_size}')
+            int_memory_size = int(dict_memory_size.get(1))//(1024 ** 3)
+            logger.debug(f'int_memory_size = {int_memory_size}')
+        except:
+            pass
+        return int_memory_size
+
     @property
     def mac_address(self):
         ''' Get MAC address

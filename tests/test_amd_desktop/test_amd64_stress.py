@@ -17,17 +17,18 @@ class TestAMD64MultiPathStress(object):
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
-    WRITE_PATTERN = 15
+    WRITE_PATTERN = 0
     DURATION = 120
 
     @pytest.fixture(scope="module", autouse=True)
     def target_stress(self, target_system):
         print('\n\033[32m================ Setup I/O Stress ===============\033[0m')
-        return amps(50, 30, target_system.disk_info)
+        # return amps(target_system, 50, 30)
+        return amps(target_system)
 
     def test_run_io_operation(self, target_stress, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
-            1, 32, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
+            2, 8, '4k', '4k', self.WRITE_PATTERN, self.DURATION)
         
         logger.info(f'w{self.WRITE_PATTERN}_stress_read_bw = {read_bw}')
         logger.info(f'w{self.WRITE_PATTERN}_stress_read_iops = {read_iops}')

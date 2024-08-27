@@ -8,13 +8,16 @@ from amd_desktop.win10_interface import Win10Interface as win10
 logger = logging.getLogger(__name__)
 
 class AMD64Perf(object):
-    def __init__(self, exe_mode, network, manufacturer, io_file):
+    # def __init__(self, exe_mode, network, manufacturer, io_file):
+    def __init__(self, platform, io_file):
         self._io_file = io_file
         # self.api = win10(exe_mode, network, f'{manufacturer}.json')
         self.api = win10()
-        self.platform = amd64('VEN_1B4B', 'Ethernet 7')
-        self._cpu_num = self.platform.cpu_num
+        # self.platform = amd64('VEN_1B4B', 'Ethernet 7')
+        self._platform = platform
+        self._cpu_num = self._platform.cpu_num
         self._thread = self._cpu_num * 2
+        self._file_size = self._platform.memory_size * 2
 
     def run_io_operation(self, iodepth, block_size, random_size,
             write_pattern, duration):
@@ -41,18 +44,19 @@ class AMD64Perf(object):
         logger.info(f'write_pattern = {write_pattern}')
         logger.info(f'duration = {duration}')
         logger.info(f'self._io_file = {self._io_file}')
+        logger.info(f'self._file_size = {self._file_size}')
         
         read_iops = read_bw = write_iops = write_bw = None
         try:
             if random_size:
                 str_command = (f'diskspd -c{self._cpu_num} -t{self._thread}'
-                f' -o{iodepth} -b{block_size} -r{random_size}'
-                f' -w{write_pattern} -d{duration} -Sh -D -c32G'
+                f' -o{iodepth} -b{block_size} -r{random_size} -Sh -D -L '
+                f' -w{write_pattern} -d{duration} -c{self._file_size}G'
                 f' {self._io_file}')
             else:
                 str_command = (f'diskspd -c{self._cpu_num} -t{self._thread}'
-                    f' -o{iodepth} -b{block_size} -w{write_pattern}'
-                    f' -d{duration} -Sh -D -c32G {self._io_file}')
+                    f' -o{iodepth} -b{block_size} -w{write_pattern} -Sh -D '
+                    f' -d{duration} -L -c{self._file_size}G {self._io_file}')
             
             str_output = self.api.io_command(str_command)
             # logger.debug('str_output = %s', str_output)

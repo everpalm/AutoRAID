@@ -13,7 +13,7 @@ from unit.system_under_testing import RaspberryPi as rpi
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
-logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
+logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
@@ -28,7 +28,7 @@ def target_system():
 
 @pytest.fixture(scope="session", autouse=True)
 def my_win10(cmdopt):
-    print('\n\033[32m================ Setup OS ===============\033[0m')
+    print('\n\033[32m================ Setup Interface ==============\033[0m')
     # return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
     #     cmdopt.get('config_file'))
     return win10()
@@ -51,6 +51,7 @@ def test_open_uart(drone):
     drone.close_uart()
 
 @pytest.fixture(scope="function", autouse=True)
-def target_perf():
-    print('\n\033[32m================ Setup DiskSPD ===============\033[0m')
-    return amd64perf('remote', 'eth0', 'VEN_1B4B', 'D:\\IO.dat')
+def target_perf(target_system):
+    print('\n\033[32m================ Setup Performance =============\033[0m')
+    # return amd64perf('remote', 'eth0', 'VEN_1B4B', 'D:\\IO.dat')
+    return amd64perf(target_system, 'D:\\IO.dat')
