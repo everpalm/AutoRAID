@@ -624,6 +624,26 @@ class MongoDB(object):
             return None
         
     def aggregate_ramp_metrics(self, write_pattern, ramp_times):
+        """
+        Aggregates ramp I/O metrics from the MongoDB collection.
+
+        The aggregation pipeline processes documents to extract and compute
+        average and standard deviation metrics for ramp IOPS and bandwidth
+        based on the write pattern and ramp times.
+
+        Args:
+            write_pattern (int): The write pattern to filter the metrics (e.g.,
+            50 for 50% writes).
+            ramp_times (int): The ramp times to filter the metrics.
+
+        Returns:
+            dict or None: A dictionary containing the aggregated metrics, or None
+            if no data is found.
+
+        Raises:
+            PyMongoError: If there is an error performing the aggregation in
+            MongoDB.
+        """
         pipeline = [
             {
                 "$project": {
