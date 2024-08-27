@@ -24,7 +24,8 @@ class AMD64MultiPathStress(object):
         api (Win10Interface): An instance of the Win10Interface class used to
                               execute commands on the Windows 10 environment.
     """
-    def __init__(self, write_pattern, duration, io_paths: List):
+    # def __init__(self, write_pattern, duration, io_paths: List):
+    def __init__(self, platform):
         """
         Initializes the AMD64MultiPathStress class with test parameters.
 
@@ -34,10 +35,12 @@ class AMD64MultiPathStress(object):
             io_paths (List[str]): List of I/O paths (drive letters) where the
                                   stress test will be executed.
         """
-        self.write_pattern = write_pattern
-        self.duration = duration
-        self.io_paths = io_paths
+        # self.write_pattern = write_pattern
+        # self.duration = duration
+        self._platform = platform
+        self.io_paths = self._platform.disk_info
         self.api = win10()
+        self._file_size = self._platform.memory_size * 2
 
     def run_io_operation(self, thread, iodepth, block_size, random_size,
             write_pattern, duration):
@@ -75,16 +78,17 @@ class AMD64MultiPathStress(object):
         logger.info(f'write_pattern = {write_pattern}')
         logger.info(f'duration = {duration}')
         logger.debug(f'self._io_file = {self.io_paths}')
-        
+        logger.debug(f'self._file_size = {self._file_size}')
+
         read_iops = read_bw = write_iops = write_bw = None
         list_io_path = [f'{drive_letter}:\\IO.dat' for drive_letter,
                         _ in self.io_paths]
         logger.info(f'_io_file = {" ".join(list_io_path)}')
 
         try:
-            str_command = (f'diskspd -c1 -t{thread}'
+            str_command = (f'diskspd -c1 -t{thread} -L -Sh -D'
             f' -o{iodepth} -b{block_size} -r{random_size}'
-            f' -w{write_pattern} -d{duration} -Sh -D -c2G'
+            f' -w{write_pattern} -d{duration} -c{self._file_size}G'
             f' {" ".join(list_io_path)}')
             
             str_output = self.api.io_command(str_command)

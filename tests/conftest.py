@@ -68,15 +68,7 @@ def my_pins():
     print('\n=====================Setup GPIO.2=====================')
     return rbp('rpi3_gpio_pins.json', 'GPIO.2')
 
-# @pytest.fixture(scope="session", autouse=True)
-# def test_open_uart(drone):
-#     print('\n\033[32m================== Setup UART ==================\033[0m')
-#     yield drone.open_uart()
-#     print('\n\033[32m================ Teardown UART =================\033[0m')
-#     drone.close_uart()
-
 @pytest.fixture(scope="session", autouse=True)
-# @pytest.fixture(scope="function", autouse=True)
 def store_gitlab_api_in_config(cmdopt, request):
     gitlab_api = glapi(private_token=cmdopt.get('private_token'), project_id='storage7301426/AutoRAID')
     request.config._store['gitlab_api'] = gitlab_api

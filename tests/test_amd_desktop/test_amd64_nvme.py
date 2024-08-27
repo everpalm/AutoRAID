@@ -38,6 +38,11 @@ TEST_PATTERN = (
 
 class TestAMD64NVMe(object):
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_memory_size(self, target_system, amd64_nvm):
+        memory_size = target_system.memory_size
+        logger.info(f'Memory Size = {memory_size} GB')
+
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_mac_address(self, target_system, amd64_nvm):
         mac_address = target_system.mac_address
         logger.info(f'MAC Address = {mac_address}')
