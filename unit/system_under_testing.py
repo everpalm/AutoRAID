@@ -105,8 +105,8 @@ class RaspberryPi(object):
 
     def open_uart(self):
         logger.debug('self.file_name = %s', self.file_name)
-        self.api.command_line(f"screen -dm -L -Logfile {self.file_name} "
-                          f"{self.uart_path} {self.baut_rate}")
+        self.api.command_line(f"screen -dm -L -Logfile {self.file_name}"
+                          f" {self.uart_path} {self.baut_rate}")
 
     def close_uart(self) -> int:
         str_return = self.api.command_line("screen -ls")

@@ -4,6 +4,7 @@ import re
 import logging
 # from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
+from typing import Dict
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ class AMD64Perf(object):
         self._cpu_num = self._platform.cpu_num
         self._thread = self._cpu_num * 2
         self._file_size = self._platform.memory_size * 2
-
+                
     def run_io_operation(self, iodepth, block_size, random_size,
             write_pattern, duration):
         ''' Run DISKSPD
