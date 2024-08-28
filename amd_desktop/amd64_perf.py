@@ -2,7 +2,7 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import re
 import logging
-from amd_desktop.amd64_nvme import AMD64NVMe as amd64
+# from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
 
 logger = logging.getLogger(__name__)

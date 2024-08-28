@@ -602,12 +602,54 @@ class MongoDB(object):
                                     "write_pattern": "$write_pattern",
                                     "block_size": "$block_size"
                                 },
-                                "avg_read_iops": { "$avg": "$read_iops" },
-                                "avg_read_bw": { "$avg": "$read_bw" },
-                                "std_dev_read_iops": { "$stdDevPop": "$read_iops" },
-                                "avg_write_iops": { "$avg": "$write_iops" },
-                                "avg_write_bw": { "$avg": "$write_bw" },
-                                "std_dev_write_iops": { "$stdDevPop": "$write_iops" }
+                                "avg_read_iops": {
+                                    "$avg": "$read_iops"
+                                },
+                                "avg_read_bw": {
+                                    "$avg": "$read_bw"
+                                },
+                                "avg_write_iops": {
+                                    "$avg": "$write_iops"
+                                },
+                                "avg_write_bw": {
+                                    "$avg": "$write_bw"
+                                },
+                                "max_read_iops": {
+                                    "$max": "$read_iops"
+                                },
+                                "min_read_iops": {
+                                    "$min": "$read_iops"
+                                },
+                                "std_dev_read_iops": {
+                                    "$stdDevPop": "$read_iops"
+                                },
+                                "max_write_iops": {
+                                    "$max": "$write_iops"
+                                },
+                                "min_write_iops": {
+                                    "$min": "$write_iops"
+                                },
+                                "std_dev_write_iops": {
+                                    "$stdDevPop": "$write_iops"
+                                },
+                                "max_read_bw": {
+                                    "$max": "$read_bw"
+                                },
+                                "min_read_bw": {
+                                    "$min": "$read_bw"
+                                },
+                                "std_dev_read_bw": {
+                                    "$stdDevPop": "$read_bw"
+                                },
+                                "max_write_bw": {
+                                    "$max": "$write_bw"
+                                },
+                                "min_write_bw": {
+                                    "$min": "$write_bw"
+                                },
+                                "std_dev_write_bw": {
+                                    "$stdDevPop": "$write_bw"
+                                }
                             }
                         }
                     ]
