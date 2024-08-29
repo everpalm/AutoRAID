@@ -91,13 +91,12 @@ class TestSequentialReadWrite(object):
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
-    @pytest.mark.parametrize('block_size', [f'{2**pwr}k' for pwr in range(2,6)])
+    @pytest.mark.parametrize('block_size', [f'{2**pwr}k' for pwr in range(2,8)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, block_size,
         my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
             32, block_size, None, write_pattern, 120)
- 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'sequential_')
     
         criteria = my_mdb.aggregate_sequential_metrics(write_pattern, block_size)
