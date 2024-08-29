@@ -116,7 +116,7 @@ class TestRampTimeReadWrite(object):
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
     '''
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
-    @pytest.mark.parametrize('ramp_times', list(range(30, 120, 30)))
+    @pytest.mark.parametrize('ramp_times', list(range(30, 190, 10)))
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, ramp_times,
         my_mdb):
