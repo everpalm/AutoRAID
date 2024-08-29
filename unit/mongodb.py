@@ -742,183 +742,200 @@ class MongoDB(object):
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
-        pipeline = [
-            {
-                "$project": {
-                    "_id": 0,
-                    "report.tests.keywords": 1,
-                    "report.tests.call.log.msg": 1,
-                    "report.collectors": 1
-                }
-            },
-            {
-                "$match": {
-                    "report.collectors.outcome": {
-                        "$regex": "passed"
-                    }
-                }
-            },
-            { "$unwind": { "path": "$report.tests" } },
-            { "$unwind": { "path": "$report.tests.keywords" } },
-            {
-                "$match": {
-                    "report.tests.keywords": {
-                        "$regex": "test_run_io_operation"
-                    }
-                }
-            },
-            { "$unwind": { "path": "$report.tests.call" } },
-            { "$unwind": { "path": "$report.tests.call.log" } },
-            {
-                "$project": {
-                    "msg": "$report.tests.call.log.msg",
-                    "write_pattern_string": {
-                        "$regexFind": {
-                            "input": "$report.tests.keywords",
-                            # "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
-                            "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
-                        }
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "msg": 1,
-                    "write_pattern": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_pattern_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "int",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "ramp_times": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_pattern_string.captures",
-                                    1
-                                ]
-                            },
-                            "to": "int",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "write_pattern": 1,
-                    "ramp_times": 1,
-                    "read_iops_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "ramp_read_iops = (\\d+.\\d+)"
-                        }
-                    },
-                    "read_bw_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "ramp_read_bw = (\\d+.\\d+)"
-                        }
-                    },
-                    "write_iops_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "ramp_write_iops = (\\d+.\\d+)"
-                        }
-                    },
-                    "write_bw_string": {
-                        "$regexFind": {
-                            "input": "$msg",
-                            "regex": "ramp_write_bw = (\\d+.\\d+)"
-                        }
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "write_pattern": 1,
-                    "ramp_times": 1,
-                    "read_iops": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$read_iops_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "read_bw": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$read_bw_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "write_iops": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_iops_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    },
-                    "write_bw": {
-                        "$convert": {
-                            "input": {
-                                "$arrayElemAt": [
-                                    "$write_bw_string.captures",
-                                    0
-                                ]
-                            },
-                            "to": "double",
-                            "onError": None,
-                            "onNull": None
-                        }
-                    }
-                }
-            },
-            { "$match": { "write_pattern": write_pattern ,
-                         "ramp_times": ramp_times
-                        } 
-            },
-            {
-                "$group": {
-                    "_id": {
-                        "write_pattern": "$write_pattern",
-                        "ramp_times": "$ramp_times"
-                    },
-                    "avg_read_iops": { "$avg": "$read_iops" },
-                    "avg_read_bw": { "$avg": "$read_bw" },
-                    "std_dev_read_iops": {"$stdDevPop": "$read_iops"},
-                    "avg_write_iops": { "$avg": "$write_iops" },
-                    "avg_write_bw": { "$avg": "$write_bw" },
-                    "std_dev_write_iops": {"$stdDevPop": "$write_iops"}
-                }
-            }
-        ]
+        # pipeline = [
+        #     {
+        #         "$project": {
+        #             "_id": 0,
+        #             "report.tests.keywords": 1,
+        #             "report.tests.call.log.msg": 1,
+        #             "report.collectors": 1
+        #         }
+        #     },
+        #     {
+        #         "$match": {
+        #             "report.collectors.outcome": {
+        #                 "$regex": "passed"
+        #             }
+        #         }
+        #     },
+        #     { "$unwind": { "path": "$report.tests" } },
+        #     { "$unwind": { "path": "$report.tests.keywords" } },
+        #     {
+        #         "$match": {
+        #             "report.tests.keywords": {
+        #                 "$regex": "test_run_io_operation"
+        #             }
+        #         }
+        #     },
+        #     { "$unwind": { "path": "$report.tests.call" } },
+        #     { "$unwind": { "path": "$report.tests.call.log" } },
+        #     {
+        #         "$project": {
+        #             "msg": "$report.tests.call.log.msg",
+        #             "write_pattern_string": {
+        #                 "$regexFind": {
+        #                     "input": "$report.tests.keywords",
+        #                     # "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
+        #                     "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "msg": 1,
+        #             "write_pattern": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_pattern_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "int",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "ramp_times": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_pattern_string.captures",
+        #                             1
+        #                         ]
+        #                     },
+        #                     "to": "int",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "write_pattern": 1,
+        #             "ramp_times": 1,
+        #             "read_iops_string": {
+        #                 "$regexFind": {
+        #                     "input": "$msg",
+        #                     "regex": "ramp_read_iops = (\\d+.\\d+)"
+        #                 }
+        #             },
+        #             "read_bw_string": {
+        #                 "$regexFind": {
+        #                     "input": "$msg",
+        #                     "regex": "ramp_read_bw = (\\d+.\\d+)"
+        #                 }
+        #             },
+        #             "write_iops_string": {
+        #                 "$regexFind": {
+        #                     "input": "$msg",
+        #                     "regex": "ramp_write_iops = (\\d+.\\d+)"
+        #                 }
+        #             },
+        #             "write_bw_string": {
+        #                 "$regexFind": {
+        #                     "input": "$msg",
+        #                     "regex": "ramp_write_bw = (\\d+.\\d+)"
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "write_pattern": 1,
+        #             "ramp_times": 1,
+        #             "read_iops": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$read_iops_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "read_bw": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$read_bw_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "write_iops": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_iops_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "write_bw": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_bw_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     { "$match": { "write_pattern": write_pattern ,
+        #                  "ramp_times": ramp_times
+        #                 } 
+        #     },
+        #     {
+        #         "$group": {
+        #             "_id": {
+        #                 "write_pattern": "$write_pattern",
+        #                 "ramp_times": "$ramp_times"
+        #             },
+        #             "avg_read_iops": { "$avg": "$read_iops" },
+        #             "avg_read_bw": { "$avg": "$read_bw" },
+        #             "std_dev_read_iops": {"$stdDevPop": "$read_iops"},
+        #             "avg_write_iops": { "$avg": "$write_iops" },
+        #             "avg_write_bw": { "$avg": "$write_bw" },
+        #             "std_dev_write_iops": {"$stdDevPop": "$write_iops"}
+        #         }
+        #     }
+        # ]
+        try:
+            with open('config/pipeline_ramp_times.json', 'r') as file:
+                pipeline = json.load(file)
+        except FileNotFoundError:
+            logger.error("Pipeline configuration file not found.")
+            return None
+        except json.JSONDecodeError as e:
+            logger.critical(f"Error decoding JSON from pipeline configuration: {e}")
+            return None
+        
+        # Update the pipeline with the specific filter values
+        for stage in pipeline:
+            if "$match" in stage and "write_pattern" in stage["$match"]:
+                stage["$match"]["write_pattern"]["$eq"] = write_pattern
+            if "$match" in stage and "ramp_times" in stage["$match"]:
+                stage["$match"]["ramp_times"]["$eq"] = ramp_times
+
         try:
             result = list(self.collection.aggregate(pipeline))
             if result:
