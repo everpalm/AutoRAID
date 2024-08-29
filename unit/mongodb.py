@@ -203,225 +203,6 @@ class MongoDB(object):
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
-        # pipeline = [
-        #     {
-        #         "$project": {
-        #             "_id": 0,
-        #             "report.tests.keywords": 1,
-        #             "report.tests.call.log.msg": 1,
-        #             "report.collectors": 1
-        #         }
-        #     },
-        #     {
-        #         "$match": {
-        #             "report.collectors.outcome": {
-        #                 "$regex": "passed"
-        #             }
-        #         }
-        #     },
-        #     { "$unwind": { "path": "$report.tests" } },
-        #     { "$unwind": { "path": "$report.tests.keywords" } },
-        #     {
-        #         "$match": {
-        #             "report.tests.keywords": {
-        #                 "$regex": "test_run_io_operation"
-        #             }
-        #         }
-        #     },
-        #     { "$unwind": { "path": "$report.tests.call" } },
-        #     { "$unwind": { "path": "$report.tests.call.log" } },
-        #     {
-        #         "$project": {
-        #             "msg": "$report.tests.call.log.msg",
-        #             "write_pattern_string": {
-        #                 "$regexFind": {
-        #                     "input": "$report.tests.keywords",
-        #                     "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
-        #                 }
-        #             }
-        #         }
-        #     },
-        #     {
-        #         "$project": {
-        #             "msg": 1,
-        #             "write_pattern": {
-        #                 "$convert": {
-        #                     "input": {
-        #                         "$arrayElemAt": [
-        #                             "$write_pattern_string.captures",
-        #                             0
-        #                         ]
-        #                     },
-        #                     "to": "int",
-        #                     "onError": None,
-        #                     "onNull": None
-        #                 }
-        #             },
-        #             "io_depth": {
-        #                 "$convert": {
-        #                     "input": {
-        #                         "$arrayElemAt": [
-        #                             "$write_pattern_string.captures",
-        #                             1
-        #                         ]
-        #                     },
-        #                     "to": "int",
-        #                     "onError": None,
-        #                     "onNull": None
-        #                 }
-        #             }
-        #         }
-        #     },
-        #     {
-        #         "$project": {
-        #             "write_pattern": 1,
-        #             "io_depth": 1,
-        #             "read_iops_string": {
-        #                 "$regexFind": {
-        #                     "input": "$msg",
-        #                     "regex": "random_read_iops = (\\d+.\\d+)"
-        #                 }
-        #             },
-        #             "read_bw_string": {
-        #                 "$regexFind": {
-        #                     "input": "$msg",
-        #                     "regex": "random_read_bw = (\\d+.\\d+)"
-        #                 }
-        #             },
-        #             "write_iops_string": {
-        #                 "$regexFind": {
-        #                     "input": "$msg",
-        #                     "regex": "random_write_iops = (\\d+.\\d+)"
-        #                 }
-        #             },
-        #             "write_bw_string": {
-        #                 "$regexFind": {
-        #                     "input": "$msg",
-        #                     "regex": "random_write_bw = (\\d+.\\d+)"
-        #                 }
-        #             }
-        #         }
-        #     },
-        #     {
-        #         "$project": {
-        #             "write_pattern": 1,
-        #             "io_depth": 1,
-        #             "read_iops": {
-        #                 "$convert": {
-        #                     "input": {
-        #                         "$arrayElemAt": [
-        #                             "$read_iops_string.captures",
-        #                             0
-        #                         ]
-        #                     },
-        #                     "to": "double",
-        #                     "onError": None,
-        #                     "onNull": None
-        #                 }
-        #             },
-        #             "read_bw": {
-        #                 "$convert": {
-        #                     "input": {
-        #                         "$arrayElemAt": [
-        #                             "$read_bw_string.captures",
-        #                             0
-        #                         ]
-        #                     },
-        #                     "to": "double",
-        #                     "onError": None,
-        #                     "onNull": None
-        #                 }
-        #             },
-        #             "write_iops": {
-        #                 "$convert": {
-        #                     "input": {
-        #                         "$arrayElemAt": [
-        #                             "$write_iops_string.captures",
-        #                             0
-        #                         ]
-        #                     },
-        #                     "to": "double",
-        #                     "onError": None,
-        #                     "onNull": None
-        #                 }
-        #             },
-        #             "write_bw": {
-        #                 "$convert": {
-        #                     "input": {
-        #                         "$arrayElemAt": [
-        #                             "$write_bw_string.captures",
-        #                             0
-        #                         ]
-        #                     },
-        #                     "to": "double",
-        #                     "onError": None,
-        #                     "onNull": None
-        #                 }
-        #             }
-        #         }
-        #     },
-        #     { "$match": { "write_pattern": write_pattern ,
-        #                  "io_depth": io_depth
-        #                 } 
-        #     },
-        #     {
-        #         "$group": {
-        #             "_id": {
-        #                 "write_pattern": "$write_pattern",
-        #                 "io_depth": "$io_depth"
-        #             },
-        #             "avg_read_iops": {
-        #                 "$avg": "$read_iops"
-        #             },
-        #             "avg_read_bw": {
-        #                 "$avg": "$read_bw"
-        #             },
-        #             "avg_write_iops": {
-        #                 "$avg": "$write_iops"
-        #             },
-        #             "avg_write_bw": {
-        #                 "$avg": "$write_bw"
-        #             },
-        #             "max_read_iops": {
-        #                 "$max": "$read_iops"
-        #             },
-        #             "min_read_iops": {
-        #                 "$min": "$read_iops"
-        #             },
-        #             "std_dev_read_iops": {
-        #                 "$stdDevPop": "$read_iops"
-        #             },
-        #             "max_write_iops": {
-        #                 "$max": "$write_iops"
-        #             },
-        #             "min_write_iops": {
-        #                 "$min": "$write_iops"
-        #             },
-        #             "std_dev_write_iops": {
-        #                 "$stdDevPop": "$write_iops"
-        #             },
-        #             "max_read_bw": {
-        #                 "$max": "$read_bw"
-        #             },
-        #             "min_read_bw": {
-        #                 "$min": "$read_bw"
-        #             },
-        #             "std_dev_read_bw": {
-        #                 "$stdDevPop": "$read_bw"
-        #             },
-        #             "max_write_bw": {
-        #                 "$max": "$write_bw"
-        #             },
-        #             "min_write_bw": {
-        #                 "$min": "$write_bw"
-        #             },
-        #             "std_dev_write_bw": {
-        #                 "$stdDevPop": "$write_bw"
-        #             }
-        #         }
-
-        #     }
-        # ]
         pipeline = [
             {
                 "$project": {
@@ -470,31 +251,31 @@ class MongoDB(object):
                 "write_pattern_string": {
                     "$regexFind": {
                     "input": "$report.tests.keywords",
-                    "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
+                    "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
                     }
                 },
                 "read_iops_string": {
                     "$regexFind": {
                     "input": "$report.tests.call.log.msg",
-                    "regex": "read_iops\\s*=\\s*(\\d+.\\d+)"
+                    "regex": "random_read_iops\\s*=\\s*(\\d+.\\d+)"
                     }
                 },
                 "read_bw_string": {
                     "$regexFind": {
                     "input": "$report.tests.call.log.msg",
-                    "regex": "read_bw\\s*=\\s*(\\d+.\\d+)"
+                    "regex": "random_read_bw\\s*=\\s*(\\d+.\\d+)"
                     }
                 },
                 "write_iops_string": {
                     "$regexFind": {
                     "input": "$report.tests.call.log.msg",
-                    "regex": "write_iops\\s*=\\s*(\\d+.\\d+)"
+                    "regex": "random_write_iops\\s*=\\s*(\\d+.\\d+)"
                     }
                 },
                 "write_bw_string": {
                     "$regexFind": {
                     "input": "$report.tests.call.log.msg",
-                    "regex": "write_bw\\s*=\\s*(\\d+.\\d+)"
+                    "regex": "random_write_bw\\s*=\\s*(\\d+.\\d+)"
                     }
                 }
                 }
@@ -690,9 +471,18 @@ class MongoDB(object):
                         # Stage 2
                         {
                             "$match": {
-                                "report.collectors.outcome": {
-                                    "$regex": "passed"
-                                }
+                                "$and": [
+                                    {
+                                        "report.tests.keywords": {
+                                            "$regex": "TestSequentialReadWrite"
+                                        }
+                                    },
+                                    {
+                                        "report.collectors.outcome": {
+                                            "$regex": "passed"
+                                        }
+                                    }
+                                ]
                             }
                         },
                         # Stage 3
@@ -705,7 +495,7 @@ class MongoDB(object):
                                 "write_pattern_string": {
                                     "$regexFind": {
                                         "input": "$report.tests.keywords",
-                                        "regex": "test_run_io_operation\\[(\\d+)-([\\dk]+)\\]"
+                                        "regex": "test_run_io_operation\\[(\\d+)-([\\dk]+)"
                                     }
                                 },
                                 "msg": "$report.tests.call.log.msg"
@@ -739,7 +529,7 @@ class MongoDB(object):
                                                 0
                                             ]
                                         },
-                                        "to": "double",
+                                        "to": "int",
                                         "onError": None,
                                         "onNull": None
                                     }
@@ -1140,7 +930,7 @@ class MongoDB(object):
             logger.critical(f"Error performing aggregation: {e}")
             return None
         
-    def aggregate_stress_metrics(self):
+    def aggregate_stress_metrics(self, write_pattern, iodepth):
         """
         Aggregates I/O stress metrics from the MongoDB collection.
 
@@ -1161,217 +951,424 @@ class MongoDB(object):
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
+        # pipeline = [
+        #     {
+        #         "$project": {
+        #         "_id": 0,
+        #         "report.tests.keywords": 1,
+        #         "report.tests.call.log": 1,
+        #         "report.collectors.outcome": 1
+        #         }
+        #     },
+        #     {
+        #         "$match": {
+        #         "report.collectors.outcome": {
+        #             "$regex": "passed"
+        #         }
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #         "path": "$report.tests"
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #         "path": "$report.tests.keywords"
+        #         }
+        #     },
+        #     {
+        #         "$match": {
+        #         "report.tests.keywords": {
+        #             "$regex": "test_run_io_operation"
+        #         }
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #         "path": "$report.tests.call.log"
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #         "count_string": {
+        #             "$regexFind": {
+        #             "input": "$report.tests.keywords",
+        #             "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
+        #             }
+        #         },
+        #         "read_iops_string": {
+        #             "$regexFind": {
+        #             "input": "$report.tests.call.log.msg",
+        #             "regex": "[wW]\\d+_stress_read_iops\\s*=\\s*(\\d+.\\d+)"
+        #             }
+        #         },
+        #         "read_bw_string": {
+        #             "$regexFind": {
+        #             "input": "$report.tests.call.log.msg",
+        #             "regex": "[wW]\\d+_stress_read_bw\\s*=\\s*(\\d+.\\d+)"
+        #             }
+        #         },
+        #         "write_iops_string": {
+        #             "$regexFind": {
+        #             "input": "$report.tests.call.log.msg",
+        #             "regex": "[wW]\\d+_stress_write_iops\\s*=\\s*(\\d+.\\d+)"
+        #             }
+        #         },
+        #         "write_bw_string": {
+        #             "$regexFind": {
+        #             "input": "$report.tests.call.log.msg",
+        #             "regex": "[wW]\\d+_stress_write_bw\\s*=\\s*(\\d+.\\d+)"
+        #             }
+        #         }
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #         "run": {
+        #             "$convert": {
+        #             "input": {
+        #                 "$arrayElemAt": [
+        #                 "$count_string.captures",
+        #                 0
+        #                 ]
+        #             },
+        #             "to": "int",
+        #             "onError": None,
+        #             "onNull": None
+        #             }
+        #         },
+        #         "count": {
+        #             "$convert": {
+        #             "input": {
+        #                 "$arrayElemAt": [
+        #                 "$count_string.captures",
+        #                 1
+        #                 ]
+        #             },
+        #             "to": "int",
+        #             "onError": None,
+        #             "onNull": None
+        #             }
+        #         },
+        #         "read_iops": {
+        #             "$convert": {
+        #             "input": {
+        #                 "$arrayElemAt": [
+        #                 "$read_iops_string.captures",
+        #                 0
+        #                 ]
+        #             },
+        #             "to": "double",
+        #             "onError": None,
+        #             "onNull": None
+        #             }
+        #         },
+        #         "read_bw": {
+        #             "$convert": {
+        #             "input": {
+        #                 "$arrayElemAt": [
+        #                 "$read_bw_string.captures",
+        #                 0
+        #                 ]
+        #             },
+        #             "to": "double",
+        #             "onError": None,
+        #             "onNull": None
+        #             }
+        #         },
+        #         "write_iops": {
+        #             "$convert": {
+        #             "input": {
+        #                 "$arrayElemAt": [
+        #                 "$write_iops_string.captures",
+        #                 0
+        #                 ]
+        #             },
+        #             "to": "double",
+        #             "onError": None,
+        #             "onNull": None
+        #             }
+        #         },
+        #         "write_bw": {
+        #             "$convert": {
+        #             "input": {
+        #                 "$arrayElemAt": [
+        #                 "$write_bw_string.captures",
+        #                 0
+        #                 ]
+        #             },
+        #             "to": "double",
+        #             "onError": None,
+        #             "onNull": None
+        #             }
+        #         }
+        #         }
+        #     },
+        #     {
+        #         "$group": {
+        #         "_id": {
+        #             "count": "$count"
+        #         },
+        #         "avg_read_iops": {
+        #             "$avg": "$read_iops"
+        #         },
+        #         "max_read_iops": {
+        #             "$max": "$read_iops"
+        #         },
+        #         "min_read_iops": {
+        #             "$min": "$read_iops"
+        #         },
+        #         "std_dev_read_iops": {
+        #             "$stdDevPop": "$read_iops"
+        #         },
+        #         "avg_read_bw": {
+        #             "$avg": "$read_bw"
+        #         },
+        #         "max_read_bw": {
+        #             "$max": "$read_bw"
+        #         },
+        #         "min_read_bw": {
+        #             "$min": "$read_bw"
+        #         },
+        #         "std_dev_read_bw": {
+        #             "$stdDevPop": "$read_bw"
+        #         },
+        #         "avg_write_iops": {
+        #             "$avg": "$write_iops"
+        #         },
+        #         "avg_write_bw": {
+        #             "$avg": "$write_bw"
+        #         },
+        #         "max_write_iops": {
+        #             "$max": "$write_iops"
+        #         },
+        #         "min_write_iops": {
+        #             "$min": "$write_iops"
+        #         },
+        #         "std_dev_write_iops": {
+        #             "$stdDevPop": "$write_iops"
+        #         },
+        #         "max_write_bw": {
+        #             "$max": "$write_bw"
+        #         },
+        #         "min_write_bw": {
+        #             "$min": "$write_bw"
+        #         },
+        #         "std_dev_write_bw": {
+        #             "$stdDevPop": "$write_bw"
+        #         }
+        #         }
+        #     }
+        # ]
         pipeline = [
             {
-                "$project": {
-                "_id": 0,
-                "report.tests.keywords": 1,
-                "report.tests.call.log": 1,
-                "report.collectors.outcome": 1
+                '$project': {
+                    '_id': 0, 
+                    'report.tests.keywords': 1, 
+                    'report.tests.call.log.msg': 1, 
+                    'report.collectors.outcome': 1
                 }
-            },
-            {
-                "$match": {
-                "report.collectors.outcome": {
-                    "$regex": "passed"
+            }, {
+                '$match': {
+                    '$and': [
+                        {
+                            'report.collectors.outcome': {
+                                '$regex': 'passed'
+                            }
+                        }, {
+                            'report.tests.keywords': {
+                                '$regex': 'test_run_io_operation\\['
+                            }
+                        }, {
+                            'report.tests.keywords': {
+                                '$regex': 'TestAMD64MultiPathStress'
+                            }
+                        }
+                    ]
                 }
+            }, {
+                '$unwind': {
+                    'path': '$report.tests'
                 }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests"
+            }, {
+                '$unwind': {
+                    'path': '$report.tests.keywords'
                 }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests.keywords"
+            }, {
+                '$unwind': {
+                    'path': '$report.tests.call.log'
                 }
-            },
-            {
-                "$match": {
-                "report.tests.keywords": {
-                    "$regex": "test_run_io_operation"
-                }
-                }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests.call.log"
-                }
-            },
-            {
-                "$project": {
-                "count_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.keywords",
-                    "regex": "test_run_io_operation\\[(\\d+)-(\\d+)\\]"
-                    }
-                },
-                "read_iops_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "[wW]\\d+_stress_read_iops\\s*=\\s*(\\d+.\\d+)"
-                    }
-                },
-                "read_bw_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "[wW]\\d+_stress_read_bw\\s*=\\s*(\\d+.\\d+)"
-                    }
-                },
-                "write_iops_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "[wW]\\d+_stress_write_iops\\s*=\\s*(\\d+.\\d+)"
-                    }
-                },
-                "write_bw_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "[wW]\\d+_stress_write_bw\\s*=\\s*(\\d+.\\d+)"
-                    }
-                }
-                }
-            },
-            {
-                "$project": {
-                "run": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$count_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "int",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "count": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$count_string.captures",
-                        1
-                        ]
-                    },
-                    "to": "int",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "read_iops": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$read_iops_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "read_bw": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$read_bw_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "write_iops": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$write_iops_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "write_bw": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$write_bw_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
+            }, {
+                '$project': {
+                    'write_pattern_string': {
+                        '$regexFind': {
+                            'input': '$report.tests.keywords', 
+                            'regex': 'test_run_io_operation\\[(\\d+)-(\\d+)'
+                        }
+                    }, 
+                    'read_iops_string': {
+                        '$regexFind': {
+                            'input': '$report.tests.call.log.msg', 
+                            'regex': 'stress_read_iops\\s*=\\s*(\\d+.\\d+)'
+                        }
+                    }, 
+                    'read_bw_string': {
+                        '$regexFind': {
+                            'input': '$report.tests.call.log.msg', 
+                            'regex': 'stress_read_bw\\s*=\\s*(\\d+.\\d+)'
+                        }
+                    }, 
+                    'write_iops_string': {
+                        '$regexFind': {
+                            'input': '$report.tests.call.log.msg', 
+                            'regex': 'stress_write_iops\\s*=\\s*(\\d+.\\d+)'
+                        }
+                    }, 
+                    'write_bw_string': {
+                        '$regexFind': {
+                            'input': '$report.tests.call.log.msg', 
+                            'regex': 'stress_write_bw\\s*=\\s*(\\d+.\\d+)'
+                        }
                     }
                 }
+            }, {
+                '$project': {
+                    'write_pattern': {
+                        '$convert': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    '$write_pattern_string.captures', 0
+                                ]
+                            }, 
+                            'to': 'int', 
+                            'onError': None, 
+                            'onNull': None
+                        }
+                    }, 
+                    'iodepth': {
+                        '$convert': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    '$write_pattern_string.captures', 1
+                                ]
+                            }, 
+                            'to': 'int', 
+                            'onError': None, 
+                            'onNull': None
+                        }
+                    }, 
+                    'read_iops': {
+                        '$convert': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    '$read_iops_string.captures', 0
+                                ]
+                            }, 
+                            'to': 'double', 
+                            'onError': None, 
+                            'onNull': None
+                        }
+                    }, 
+                    'read_bw': {
+                        '$convert': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    '$read_bw_string.captures', 0
+                                ]
+                            }, 
+                            'to': 'double', 
+                            'onError': None, 
+                            'onNull': None
+                        }
+                    }, 
+                    'write_iops': {
+                        '$convert': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    '$write_iops_string.captures', 0
+                                ]
+                            }, 
+                            'to': 'double', 
+                            'onError': None, 
+                            'onNull': None
+                        }
+                    }, 
+                    'write_bw': {
+                        '$convert': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    '$write_bw_string.captures', 0
+                                ]
+                            }, 
+                            'to': 'double', 
+                            'onError': None, 
+                            'onNull': None
+                        }
+                    }
                 }
-            },
-            {
-                "$group": {
-                "_id": {
-                    "count": "$count"
-                },
-                "avg_read_iops": {
-                    "$avg": "$read_iops"
-                },
-                "max_read_iops": {
-                    "$max": "$read_iops"
-                },
-                "min_read_iops": {
-                    "$min": "$read_iops"
-                },
-                "std_dev_read_iops": {
-                    "$stdDevPop": "$read_iops"
-                },
-                "avg_read_bw": {
-                    "$avg": "$read_bw"
-                },
-                "max_read_bw": {
-                    "$max": "$read_bw"
-                },
-                "min_read_bw": {
-                    "$min": "$read_bw"
-                },
-                "std_dev_read_bw": {
-                    "$stdDevPop": "$read_bw"
-                },
-                "avg_write_iops": {
-                    "$avg": "$write_iops"
-                },
-                "avg_write_bw": {
-                    "$avg": "$write_bw"
-                },
-                "max_write_iops": {
-                    "$max": "$write_iops"
-                },
-                "min_write_iops": {
-                    "$min": "$write_iops"
-                },
-                "std_dev_write_iops": {
-                    "$stdDevPop": "$write_iops"
-                },
-                "max_write_bw": {
-                    "$max": "$write_bw"
-                },
-                "min_write_bw": {
-                    "$min": "$write_bw"
-                },
-                "std_dev_write_bw": {
-                    "$stdDevPop": "$write_bw"
+            }, {
+                '$match': {
+                    'write_pattern': write_pattern, 
+                    'iodepth': iodepth
                 }
+            }, {
+                '$group': {
+                    '_id': {
+                        'write_pattern': '$write_pattern', 
+                        'iodepth': '$iodepth'
+                    }, 
+                    'avg_read_iops': {
+                        '$avg': '$read_iops'
+                    }, 
+                    'max_read_iops': {
+                        '$max': '$read_iops'
+                    }, 
+                    'min_read_iops': {
+                        '$min': '$read_iops'
+                    }, 
+                    'std_dev_read_iops': {
+                        '$stdDevPop': '$read_iops'
+                    }, 
+                    'avg_read_bw': {
+                        '$avg': '$read_bw'
+                    }, 
+                    'max_read_bw': {
+                        '$max': '$read_bw'
+                    }, 
+                    'min_read_bw': {
+                        '$min': '$read_bw'
+                    }, 
+                    'std_dev_read_bw': {
+                        '$stdDevPop': '$read_bw'
+                    }, 
+                    'avg_write_iops': {
+                        '$avg': '$write_iops'
+                    }, 
+                    'max_write_iops': {
+                        '$max': '$write_iops'
+                    }, 
+                    'min_write_iops': {
+                        '$min': '$write_iops'
+                    }, 
+                    'std_dev_write_iops': {
+                        '$stdDevPop': '$write_iops'
+                    }, 
+                    'avg_write_bw': {
+                        '$avg': '$write_bw'
+                    }, 
+                    'max_write_bw': {
+                        '$max': '$write_bw'
+                    }, 
+                    'min_write_bw': {
+                        '$min': '$write_bw'
+                    }, 
+                    'std_dev_write_bw': {
+                        '$stdDevPop': '$write_bw'
+                    }
                 }
             }
         ]
-
         try:
             result = list(self.collection.aggregate(pipeline))
             if result:
