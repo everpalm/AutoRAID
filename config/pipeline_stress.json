@@ -1,0 +1,222 @@
+[
+    {
+        "$project": {
+            "_id": 0,
+            "report.tests.keywords": 1,
+            "report.tests.call.log.msg": 1,
+            "report.collectors": 1
+        }
+    },
+    {
+        "$match": {
+            "report.tests.keywords": {
+                "$regex": "TestRandomReadWrite"
+            }
+        }
+    },
+    {
+        "$match": {
+            "report.collectors.outcome": {
+                "$regex": "passed"
+            }
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$report.tests"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$report.tests.keywords"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$report.tests.call"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$report.tests.call.log"
+        }
+    },
+    {
+        "$project": {
+            "write_pattern_string": {
+                "$regexFind": {
+                    "input": "$report.tests.keywords",
+                    "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
+                }
+            },
+            "read_iops_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "random_read_iops\\s*=\\s*(\\d+.\\d+)"
+                }
+            },
+            "read_bw_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "random_read_bw\\s*=\\s*(\\d+.\\d+)"
+                }
+            },
+            "write_iops_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "random_write_iops\\s*=\\s*(\\d+.\\d+)"
+                }
+            },
+            "write_bw_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "random_write_bw\\s*=\\s*(\\d+.\\d+)"
+                }
+            }
+        }
+    },
+    {
+        "$project": {
+            "write_pattern": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_pattern_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "int",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "io_depth": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_pattern_string.captures",
+                            1
+                        ]
+                    },
+                    "to": "int",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "read_iops": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$read_iops_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "read_bw": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$read_bw_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "write_iops": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_iops_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "write_bw": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_bw_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "write_pattern": {"$eq": 50},
+            "io_depth": {"$eq": 32}
+        }
+    },
+    {
+        "$group": {
+            "_id": {
+                "write_pattern": "$write_pattern",
+                "io_depth": "$io_depth"
+            },
+            "avg_read_iops": {
+                "$avg": "$read_iops"
+            },
+            "max_read_iops": {
+                "$max": "$read_iops"
+            },
+            "min_read_iops": {
+                "$min": "$read_iops"
+            },
+            "std_dev_read_iops": {
+                "$stdDevPop": "$read_iops"
+            },
+            "avg_read_bw": {
+                "$avg": "$read_bw"
+            },
+            "max_read_bw": {
+                "$max": "$read_bw"
+            },
+            "min_read_bw": {
+                "$min": "$read_bw"
+            },
+            "std_dev_read_bw": {
+                "$stdDevPop": "$read_bw"
+            },
+            "avg_write_iops": {
+                "$avg": "$write_iops"
+            },
+            "max_write_iops": {
+                "$max": "$write_iops"
+            },
+            "min_write_iops": {
+                "$min": "$write_iops"
+            },
+            "std_dev_write_iops": {
+                "$stdDevPop": "$write_iops"
+            },
+            "avg_write_bw": {
+                "$avg": "$write_bw"
+            },
+            "max_write_bw": {
+                "$max": "$write_bw"
+            },
+            "min_write_bw": {
+                "$min": "$write_bw"
+            },
+            "std_dev_write_bw": {
+                "$stdDevPop": "$write_bw"
+            }
+        }
+    }
+]

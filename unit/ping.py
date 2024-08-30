@@ -120,8 +120,8 @@ class LinuxPing(PingBase):
                 bool_msg = self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
                 bool_sts = self._parse_statistics(dict_return.get(7),
                                        self.LINUX_STATISTICS)
-                # return True
                 return bool_msg and bool_sts
+            
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
@@ -203,6 +203,7 @@ class WindowsPing(PingBase):
                 self._parse_statistics(dict_return.get(7),
                                        self.WINDOWS_STATISTICS)
                 return True
+            
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
