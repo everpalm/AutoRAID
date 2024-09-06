@@ -24,7 +24,6 @@ class AMD64MultiPathStress(object):
         api (Win10Interface): An instance of the Win10Interface class used to
                               execute commands on the Windows 10 environment.
     """
-    # def __init__(self, write_pattern, duration, io_paths: List):
     def __init__(self, platform):
         """
         Initializes the AMD64MultiPathStress class with test parameters.
@@ -35,8 +34,6 @@ class AMD64MultiPathStress(object):
             io_paths (List[str]): List of I/O paths (drive letters) where the
                                   stress test will be executed.
         """
-        # self.write_pattern = write_pattern
-        # self.duration = duration
         self._platform = platform
         self.io_paths = self._platform.disk_info
         self.api = win10()
