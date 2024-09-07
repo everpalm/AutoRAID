@@ -21,6 +21,8 @@ pytest-mock = "*"
 pytest-rerunfailures = "*"
 timeout-decorator = "*"
 pytest-dependency = "*"
+zipp = "*"
+"rpi.gpio" = "*"
 
 [dev-packages]
 
