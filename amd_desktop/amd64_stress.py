@@ -36,7 +36,6 @@ class AMD64MultiPathStress(object):
         """
         self._platform = platform
         self.io_paths = self._platform.disk_info
-        # self.api = win10()
         self._api = platform.api
         self._file_size = self._platform.memory_size * 2
 

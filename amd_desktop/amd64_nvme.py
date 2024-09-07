@@ -3,26 +3,19 @@
 from __future__ import annotations  # Header, Python 3.7 or later version
 import logging
 import os
-# import paramiko
 import re
-import pandas as pd
-# import time
-from amd_desktop.win10_interface import Win10Interface as win10
 from unit.system_under_testing import convert_size
 from unit.system_under_testing import dict_to_dataframe
-# from unit.system_under_testing import RasperberryPi as rpi
-# import psutil
 
-# logging.basicConfig(level=logging.DEBUG)
-# logging.basicConfig(filename='C:\paramiko.log')
 logger = logging.getLogger(__name__)
-# logger = logging.getLogger("paramiko")
+
 
 class AMD64NVMe(object):
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 
         Attributes:
+            interface: Pass object with the 1st argument
             os: Operation System
             manufacturer: Any
             bdf: Bus-Device-Function in the format of xx:yy.zz
@@ -34,20 +27,16 @@ class AMD64NVMe(object):
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    # def __init__(self, str_manufacturer: str, nic_name):
-    def __init__(self, interface, str_manufacturer):
-        # self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
-        # self.api = win10(mode, nic_name, f'{str_manufacturer}.json')
+    def __init__(self, interface):
         self.api = interface
-        # self.api = win10()
         self.os = self.api.get_os()
-        self.manufacturer = str_manufacturer
-        self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
+        self.manufacturer = interface.config_file.replace('.json', '')
+        self.vid, self.did, self.sdid, self.rev = \
+            self._get_pcie_info().values()
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
         self.disk_info = self._get_volume()
-        # self.nic_name = nic_name
         self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
@@ -217,7 +206,8 @@ class AMD64NVMe(object):
         '''
         try:
         # 获取命令输出
-            str_return = self.api.command_line(f"powershell Get-Partition -DiskNumber {self.disk_num}")
+            str_return = self.api.command_line(
+                f"powershell Get-Partition -DiskNumber {self.disk_num}")
 
             # 使用正则表达式来提取DriveLetter和Size
             pattern = re.compile(r'\d+\s+([A-Z]?)\s+\d+\s+([\d.]+\s+\w+)')
@@ -242,7 +232,8 @@ class AMD64NVMe(object):
                 total_disks = len(list_disk_info)
                 logger.debug(f"Total number of disks: {total_disks}")
             else:
-                raise ValueError("Unexpected None value returned from command line")
+                raise ValueError(
+                    "Unexpected None value returned from command line")
 
         except Exception as e:
             logger.error('Error occurred in _get_volume: %s', e)
