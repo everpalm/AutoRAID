@@ -54,6 +54,7 @@ class ApplicationInterface(object):
     def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
         self.mode = str_mode
         self.config_file = str_config_file
+        self.if_name = str_if_name
         self.local_ip = self._get_local_ip(str_if_name)
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir = self._get_remote_ip()
@@ -119,15 +120,12 @@ class ApplicationInterface(object):
             return self._get_local_ip()
 
     @staticmethod
-    # def __my_command(str_ssh_command: str) -> list[str]:
     def my_command(str_ssh_command: str) -> List[str]:
         __list_msg = []
-        # __list_err = []
         messages = subprocess.Popen(
             str_ssh_command, shell=True, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         str_msg_stdout = messages.stdout.readlines()
-        # str_msg_stderr = messages.stderr.readlines()
 
         for message in str_msg_stdout:
             if str(message, 'utf8') != '\n':
@@ -138,7 +136,6 @@ class ApplicationInterface(object):
                 __list_msg.append(response_msg.replace('\x08', ''))
         return __list_msg
 
-    # @staticmethod
     def get_os(self) -> str:
         ''' Get OS version
             Args: None

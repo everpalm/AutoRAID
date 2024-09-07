@@ -34,9 +34,12 @@ class AMD64NVMe(object):
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    def __init__(self, str_manufacturer: str, nic_name):
+    # def __init__(self, str_manufacturer: str, nic_name):
+    def __init__(self, interface, str_manufacturer):
         # self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
-        self.api = win10()
+        # self.api = win10(mode, nic_name, f'{str_manufacturer}.json')
+        self.api = interface
+        # self.api = win10()
         self.os = self.api.get_os()
         self.manufacturer = str_manufacturer
         self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
@@ -44,7 +47,8 @@ class AMD64NVMe(object):
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
         self.disk_info = self._get_volume()
-        self.nic_name = nic_name
+        # self.nic_name = nic_name
+        self.nic_name = self.api.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
     

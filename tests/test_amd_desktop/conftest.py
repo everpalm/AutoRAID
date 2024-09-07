@@ -22,27 +22,39 @@ logging.getLogger('unit.mongodb').setLevel(logging.DEBUG)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
-@pytest.fixture(scope="session", autouse=True)
-def target_system():
-    print('\n\033[32m================ Setup Platform ===============\033[0m')
-    return amd64('VEN_1B4B', 'Ethernet 7')
+# @pytest.fixture(scope="session", autouse=True)
+# def target_system():
+#     print('\n\033[32m================ Setup Platform ===============\033[0m')
+#     # return amd64('VEN_1B4B', 'Ethernet 7')
+#     # return amd64('')
+#     return amd64(my_win10, 'VEN_1B4B')
 
 @pytest.fixture(scope="session", autouse=True)
 def my_win10(cmdopt):
+# def my_win10():
     print('\n\033[32m================ Setup Interface ==============\033[0m')
-    # return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
-    #     cmdopt.get('config_file'))
-    return win10()
+    return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
+        cmdopt.get('config_file'))
+    # return win10()
+
+@pytest.fixture(scope="session", autouse=True)
+def target_system(my_win10):
+    print('\n\033[32m================ Setup Platform ===============\033[0m')
+    # return amd64('VEN_1B4B', 'Ethernet 7')
+    # return amd64('')
+    return amd64(interface=my_win10, str_manufacturer='VEN_1B4B')
 
 @pytest.fixture(scope="session", autouse=True)
 def my_mdb():
     print('\n\033[32m================== Setup MongoDB ===============\033[0m')
-    return mdb('192.168.0.128', 27017, 'AutoRAID', 'amd_desktop')
+    return mdb(host='192.168.0.128', port=27017, db_name='AutoRAID',
+               collection_name='amd_desktop')
 
 @pytest.fixture(scope="session", autouse=True)
 def drone():
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
-    return rpi("/dev/ttyUSB0", 115200, "uart.log")
+    return rpi(str_uart_path="/dev/ttyUSB0", int_baut_rate=115200,
+               str_file_name="uart.log")
 
 @pytest.fixture(scope="module", autouse=True)
 def test_open_uart(drone):
@@ -54,4 +66,4 @@ def test_open_uart(drone):
 @pytest.fixture(scope="function", autouse=True)
 def target_perf(target_system):
     print('\n\033[32m================ Setup Performance =============\033[0m')
-    return amd64perf(target_system, 'D:\\IO.dat')
+    return amd64perf(platform=target_system, io_file='D:\\IO.dat')
