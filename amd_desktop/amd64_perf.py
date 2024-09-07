@@ -11,8 +11,6 @@ class AMD64Perf(object):
 
     def __init__(self, platform, io_file):
         self._io_file = io_file
-        # self.api = win10(exe_mode, network, f'{manufacturer}.json')
-        # self.api = win10()
         self._platform = platform
         self._api = platform.api
         self._cpu_num = self._platform.cpu_num
@@ -58,10 +56,7 @@ class AMD64Perf(object):
                     f' -o{iodepth} -b{block_size} -w{write_pattern} -Sh -D '
                     f' -d{duration} -L -c{self._file_size}G {self._io_file}')
             
-            # str_output = self.api.io_command(str_command)
-            # str_output = self._platform.api.io_command(str_command)
             str_output = self._api.io_command(str_command)
-            # logger.debug('str_output = %s', str_output)
             
             if not str_output:
                 raise RuntimeError("No output returned from io_command.")
@@ -70,7 +65,6 @@ class AMD64Perf(object):
                 re.S)
             write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)',
                 str_output, re.S)
-            # logger.debug(f'write_io_section = {write_io_section.group(1)}')
 
             if read_io_section:
                 read_io_text = read_io_section.group(1)

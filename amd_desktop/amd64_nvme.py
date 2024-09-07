@@ -3,26 +3,21 @@
 from __future__ import annotations  # Header, Python 3.7 or later version
 import logging
 import os
-# import paramiko
 import re
-import pandas as pd
-# import time
-from amd_desktop.win10_interface import Win10Interface as win10
+# import pandas as pd
+# from amd_desktop.win10_interface import Win10Interface as win10
 from unit.system_under_testing import convert_size
 from unit.system_under_testing import dict_to_dataframe
-# from unit.system_under_testing import RasperberryPi as rpi
-# import psutil
 
-# logging.basicConfig(level=logging.DEBUG)
-# logging.basicConfig(filename='C:\paramiko.log')
 logger = logging.getLogger(__name__)
-# logger = logging.getLogger("paramiko")
+
 
 class AMD64NVMe(object):
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 
         Attributes:
+            interface: Pass object with the 1st argument
             os: Operation System
             manufacturer: Any
             bdf: Bus-Device-Function in the format of xx:yy.zz
@@ -34,12 +29,8 @@ class AMD64NVMe(object):
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    # def __init__(self, str_manufacturer: str, nic_name):
     def __init__(self, interface, str_manufacturer):
-        # self.api = win10('remote', 'eth0', f'{str_manufacturer}.json')
-        # self.api = win10(mode, nic_name, f'{str_manufacturer}.json')
         self.api = interface
-        # self.api = win10()
         self.os = self.api.get_os()
         self.manufacturer = str_manufacturer
         self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
