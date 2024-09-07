@@ -8,8 +8,6 @@ from typing import List
 # from typing import Dict
 
 ''' Define Win10 interface '''
-# logging.basicConfig(level=logging.DEBUG)
-# logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 
