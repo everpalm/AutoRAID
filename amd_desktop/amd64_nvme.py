@@ -48,7 +48,7 @@ class AMD64NVMe(object):
         self.disk_num, self.serial_num = self._get_disk_num().values()
         self.disk_info = self._get_volume()
         # self.nic_name = nic_name
-        self.nic_name = self.api.if_name
+        self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
     

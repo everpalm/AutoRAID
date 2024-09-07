@@ -5,7 +5,7 @@ from unit.application_interface import ApplicationInterface
 from unit.application_interface import dict_format
 import logging
 from typing import List
-from typing import Dict
+# from typing import Dict
 
 ''' Define Win10 interface '''
 # logging.basicConfig(level=logging.DEBUG)

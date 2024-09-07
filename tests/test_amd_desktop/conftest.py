@@ -10,8 +10,8 @@ from amd_desktop.win10_interface import Win10Interface as win10
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+# logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+#                     datefmt='%Y-%m-%d %H:%M:%S')
 
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)

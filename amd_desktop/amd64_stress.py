@@ -3,8 +3,8 @@
 
 import logging
 import re
-from amd_desktop.win10_interface import Win10Interface as win10
-from typing import List
+# from amd_desktop.win10_interface import Win10Interface as win10
+# from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,8 @@ class AMD64MultiPathStress(object):
         """
         self._platform = platform
         self.io_paths = self._platform.disk_info
-        self.api = win10()
+        # self.api = win10()
+        self._api = platform.api
         self._file_size = self._platform.memory_size * 2
 
     def run_io_operation(self, thread, iodepth, block_size, random_size,
@@ -88,7 +89,7 @@ class AMD64MultiPathStress(object):
             f' -w{write_pattern} -d{duration} -c{self._file_size}G'
             f' {" ".join(list_io_path)}')
             
-            str_output = self.api.io_command(str_command)
+            str_output = self._api.io_command(str_command)
             
             if not str_output:
                 raise RuntimeError("No output returned from io_command.")
