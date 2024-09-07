@@ -43,8 +43,10 @@ def pytest_addoption(parser):
     parser.addoption(
         "--config_file",
         action="store",
-        default="app_map.json",
-        help="Default config file: app_map.json"
+        # default="app_map.json",
+        default="VEN_1B4B.json",
+        # help="Default config file: app_map.json"
+        help="Default config file: VEN_1B4B.json"
     )
     parser.addoption(
         "--private_token",
@@ -58,8 +60,10 @@ def cmdopt(request):
     cmdopt_dic = {}
     cmdopt_dic.update({'mode': request.config.getoption("--mode")})
     cmdopt_dic.update({'if_name': request.config.getoption("--if_name")})
-    cmdopt_dic.update({'config_file': request.config.getoption("--config_file")})
-    cmdopt_dic.update({'private_token': request.config.getoption("--private_token")})
+    cmdopt_dic.update(
+        {'config_file': request.config.getoption("--config_file")})
+    cmdopt_dic.update(
+        {'private_token': request.config.getoption("--private_token")})
     return cmdopt_dic
 
 @pytest.fixture(scope="session", autouse=True)    
@@ -69,7 +73,8 @@ def my_pins():
 
 @pytest.fixture(scope="session", autouse=True)
 def store_gitlab_api_in_config(cmdopt, request):
-    gitlab_api = glapi(private_token=cmdopt.get('private_token'), project_id='storage7301426/AutoRAID')
+    gitlab_api = glapi(private_token=cmdopt.get('private_token'),
+                       project_id='storage7301426/AutoRAID')
     request.config._store['gitlab_api'] = gitlab_api
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
