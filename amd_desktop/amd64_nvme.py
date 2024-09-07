@@ -29,11 +29,14 @@ class AMD64NVMe(object):
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    def __init__(self, interface, str_manufacturer):
+    # def __init__(self, interface, str_manufacturer):
+    def __init__(self, interface):
         self.api = interface
         self.os = self.api.get_os()
-        self.manufacturer = str_manufacturer
-        self.vid, self.did, self.sdid, self.rev = self._get_pcie_info().values()
+        # self.manufacturer = str_manufacturer
+        self.manufacturer = interface.config_file.replace('.json', '')
+        self.vid, self.did, self.sdid, self.rev = \
+            self._get_pcie_info().values()
         self.cpu_num, self.cpu_name = self._get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
@@ -208,7 +211,8 @@ class AMD64NVMe(object):
         '''
         try:
         # 获取命令输出
-            str_return = self.api.command_line(f"powershell Get-Partition -DiskNumber {self.disk_num}")
+            str_return = self.api.command_line(
+                f"powershell Get-Partition -DiskNumber {self.disk_num}")
 
             # 使用正则表达式来提取DriveLetter和Size
             pattern = re.compile(r'\d+\s+([A-Z]?)\s+\d+\s+([\d.]+\s+\w+)')
@@ -233,7 +237,8 @@ class AMD64NVMe(object):
                 total_disks = len(list_disk_info)
                 logger.debug(f"Total number of disks: {total_disks}")
             else:
-                raise ValueError("Unexpected None value returned from command line")
+                raise ValueError(
+                    "Unexpected None value returned from command line")
 
         except Exception as e:
             logger.error('Error occurred in _get_volume: %s', e)

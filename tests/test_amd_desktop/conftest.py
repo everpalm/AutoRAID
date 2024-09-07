@@ -31,18 +31,16 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
 @pytest.fixture(scope="session", autouse=True)
 def my_win10(cmdopt):
-# def my_win10():
     print('\n\033[32m================ Setup Interface ==============\033[0m')
     return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
         cmdopt.get('config_file'))
-    # return win10()
 
 @pytest.fixture(scope="session", autouse=True)
 def target_system(my_win10):
     print('\n\033[32m================ Setup Platform ===============\033[0m')
     # return amd64('VEN_1B4B', 'Ethernet 7')
-    # return amd64('')
-    return amd64(interface=my_win10, str_manufacturer='VEN_1B4B')
+    # return amd64(interface=my_win10, str_manufacturer='VEN_1B4B')
+    return amd64(interface=my_win10)
 
 @pytest.fixture(scope="session", autouse=True)
 def my_mdb():
