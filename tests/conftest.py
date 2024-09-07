@@ -17,6 +17,10 @@ MDB_ATTR = [{
     "Report Path": ".report.json"
 }]
 
+logging.basicConfig(level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
@@ -57,11 +61,6 @@ def cmdopt(request):
     cmdopt_dic.update({'config_file': request.config.getoption("--config_file")})
     cmdopt_dic.update({'private_token': request.config.getoption("--private_token")})
     return cmdopt_dic
-
-# @pytest.fixture(scope="session", autouse=True)
-# def drone():
-#     print('\n\033[32m================== Setup RSBPi =================\033[0m')
-#     return rpi("/dev/ttyUSB0", 115200, "uart.log")
 
 @pytest.fixture(scope="session", autouse=True)    
 def my_pins():

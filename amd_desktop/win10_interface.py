@@ -5,7 +5,7 @@ from unit.application_interface import ApplicationInterface
 from unit.application_interface import dict_format
 import logging
 from typing import List
-from typing import Dict
+# from typing import Dict
 
 ''' Define Win10 interface '''
 # logging.basicConfig(level=logging.DEBUG)
@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class Win10Interface(ApplicationInterface):
-    def __init__(self):
-        super().__init__(str_mode='remote', str_if_name='eth0',
-            str_config_file='app_map.json')
+
+    # def __init__(self):
+    #     super().__init__(str_mode='remote', str_if_name='eth0',
+    #         str_config_file='app_map.json')
 
     @dict_format
     def command_line(self, str_cli_cmd: str) -> List[str]:
