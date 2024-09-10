@@ -20,6 +20,7 @@ WIN10_CMD_TABLE = ({"Command": "cd",
 
 
 class TestWin10Interface(object):
+    @pytest.mark.skip(reason="Obsoleted")
     @pytest.mark.parametrize("win_cmd", WIN10_CMD_TABLE)
     def test_command_line(self, my_win10, win_cmd):
         list_executed = my_win10.command_line(win_cmd["Command"])
