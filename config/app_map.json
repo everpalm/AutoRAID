@@ -4,7 +4,7 @@
         "Local": "192.168.0.193",
         "Account": "ste",
         "Password": "123456",
-        "Local Directory": "/home/pi",
+        "Local Directory": "/home/pi/Projects/AutoRAID",
         "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     },
     {
