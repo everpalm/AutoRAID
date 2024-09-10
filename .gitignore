@@ -3,10 +3,8 @@ logs/
 remoting/
 workspace/
 caches/
-.testmondata
-.coverage
-.coverage.*
 .report.json
 *.jar
 *.log*
-.testmondata-*
+.testmondata*
+.coverage*

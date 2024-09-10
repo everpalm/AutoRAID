@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 #     return api(cmdopt.get('mode'), cmdopt.get('if_name'),
 #         cmdopt.get('config_file'))
 
-@pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def gitlab_api(request):
     return request.config._store.get('gitlab_api', None)
 

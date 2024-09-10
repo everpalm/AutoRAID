@@ -1,11 +1,12 @@
-def gv
 pipeline {
     triggers {
-        // Trigger hook every 5 minutes
+        // Trigger build every 5 minutes
         pollSCM('H/5 * * * *')
+        // Weekly cleanup trigger (e.g., every Monday at midnight)
+        cron('H 0 * * 1')
     }
     agent {
-        // Run test on the nodes with the same label
+        // Run tests on the nodes with the specified label
         label 'test_my_node'
     }
     parameters {
@@ -22,7 +23,7 @@ pipeline {
             choices: [
                 'all',
                 'system_under_testing',
-                'win10_interface',
+                'application_interface',
                 'device_under_testing'
             ],
             description: 'My Test Suite',
@@ -32,7 +33,7 @@ pipeline {
             choices: [
                 'all',
                 'system_under_testing',
-                'win10_interface',
+                'application_interface',
                 'device_under_testing'
             ],
             description: 'Functional Test',
@@ -46,6 +47,10 @@ pipeline {
         stage("Init") {
             steps {
                 script {
+                    // Unstash the .testmondata file from the previous build, if exists
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        unstash name: 'testmondata'
+                    }
                     gv = load "script.groovy"
                 }
             }
@@ -71,7 +76,7 @@ pipeline {
         stage('Staging') {
             when {
                 expression {
-                    params.MY_SUITE == 'win10_interface' || params.MY_SUITE == 'all'
+                    params.MY_SUITE == 'application_interface' || params.MY_SUITE == 'all'
                 }
             }
             steps {
@@ -80,17 +85,30 @@ pipeline {
                 }
             }
         }
+        stage('Weekly Cleanup') {
+            when {
+                triggeredBy 'TimerTrigger'
+            }
+            steps {
+                script {
+                    echo "Weekly cleanup: Removing .testmondata file"
+                    sh 'rm -f .testmondata'
+                }
+            }
+        }
     }
     post {
         always {
+            // Send email notification
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@yahoo.com.tw'
-            // sh "pipenv run python -m pytest --cache-clear"
+            // Stash the .testmondata file for the next build
+            stash includes: '.testmondata', name: 'testmondata'
         }
         success {
-            echo 'todo - 1'
+            echo 'Build succeeded.'
         }
         failure {
-            echo 'todo - 2'
+            echo 'Build failed.'
         }
     }
 }
