@@ -14,12 +14,12 @@ from unit.system_under_testing import RaspberryPi as rpi
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
-logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_stress').setLevel(logging.INFO)
+logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
 logging.getLogger('unit.mongodb').setLevel(logging.DEBUG)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)

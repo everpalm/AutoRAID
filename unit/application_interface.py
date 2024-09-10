@@ -206,19 +206,35 @@ class ApplicationInterface(object):
         logger.debug('self.password = %s', self.password)
         logger.debug('self.local_dir = %s', self.local_dir)
         logger.debug('self.remote_dir = %s', self.remote_dir)
+        str_sshpass = (f'sshpass -p \"{self.password}\"'
+                ' ssh -o \"StrictHostKeyChecking=no\"')
+        logger.debug('str_sshpass = %s', str_sshpass)
         if self.mode == 'remote':
             logger.debug('===Remote access mode===')
-            logger.debug('self.remote_ip = %s', self.remote_ip)
-            str_sshpass = f'sshpass -p \"{self.password}\"'\
-                ' ssh -o \"StrictHostKeyChecking=no\"'
-            logger.debug('str_sshpass = %s', str_sshpass)
-            str_command_line = f'{str_sshpass}'\
-                f' {self.account}@{self.remote_ip}'\
-                f' \"cd {self.remote_dir};{str_cli_cmd}\"'
-            logger.debug('str_command_line = %s', str_command_line)
+            if self.os == 'Linux':
+                # logger.debug('===Remote access mode===')
+                logger.debug('===Linux===')
+                # logger.debug('self.remote_ip = %s', self.remote_ip)
+                # str_sshpass = (f'sshpass -p \"{self.password}\"'
+                #     ' ssh -o \"StrictHostKeyChecking=no\"')
+                # logger.debug('str_sshpass = %s', str_sshpass)
+                str_command_line = (f'{str_sshpass}'
+                    f' {self.account}@{self.remote_ip}'
+                    f' \"cd {self.remote_dir};{str_cli_cmd}"')
+                # logger.debug('str_command_line = %s', str_command_line)
+            # elif self.mode == 'local':
+            elif self.os == 'Windows':
+                # logger.debug('===Local access mode===')
+                logger.debug('===Windows===')
+                str_command_line = (f'{str_sshpass}'
+                    f' {self.account}@{self.remote_ip}'
+                    f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
+                # logger.debug('str_command_line = %s', str_command_line)
+            
         elif self.mode == 'local':
             logger.debug('===Local access mode===')
             str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
         else:
             raise ValueError('Unknown mode setting in command_line')
+        logger.debug('str_command_line = %s', str_command_line)
         return self.my_command(str_command_line)

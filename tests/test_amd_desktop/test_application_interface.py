@@ -6,8 +6,9 @@ import pytest
 # from unit.application_interface import ApplicationInterface as api
 
 ''' Set up logger '''
-logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+# logging.basicConfig(
+#     format='%(asctime)s %(levelname)-8s %(message)s',
+#     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
 WINDOWS_CMD_TABLE = ({
@@ -20,7 +21,8 @@ WINDOWS_CMD_TABLE = ({
                        "Command": "ver",
                         "Return": {
                             "remote": {
-                                0: 'Microsoft Windows [Version 10.0.19045.4780]'
+                                0: '',
+                                1: 'Microsoft Windows [Version 10.0.19045.4780]'
                             }
                         }
                     })
