@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 WIN10_CMD_TABLE = ({"Command": "cd",
                     "Return": {"remote":
-                        {0: 'C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID'},
+                        {0: 'C:\\Users\\STE\\Projects\\AutoRAID'},
                         "local": {0: '/home/pi'}}
                     },
                    {"Command": "ver",

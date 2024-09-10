@@ -31,18 +31,20 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 #     # return amd64('')
 #     return amd64(my_win10, 'VEN_1B4B')
 
-@pytest.fixture(scope="session", autouse=True)
-def my_win10(cmdopt):
-    print('\n\033[32m================ Setup Interface ==============\033[0m')
-    return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
-        cmdopt.get('config_file'))
+# @pytest.fixture(scope="session", autouse=True)
+# def my_win10(cmdopt):
+#     print('\n\033[32m================ Setup Interface ==============\033[0m')
+#     return win10(cmdopt.get('mode'), cmdopt.get('if_name'),
+#         cmdopt.get('config_file'))
 
 @pytest.fixture(scope="session", autouse=True)
-def target_system(my_win10):
+# def target_system(my_win10):
+def target_system(my_app):
     print('\n\033[32m================ Setup Platform ===============\033[0m')
     # return amd64('VEN_1B4B', 'Ethernet 7')
     # return amd64(interface=my_win10, str_manufacturer='VEN_1B4B')
-    return amd64(interface=my_win10)
+    # return amd64(interface=my_win10)
+    return amd64(interface=my_app)
 
 @pytest.fixture(scope="session", autouse=True)
 def my_mdb():
@@ -54,7 +56,7 @@ def my_mdb():
 def drone():
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
     return rpi(str_uart_path="/dev/ttyUSB0", int_baut_rate=115200,
-               str_file_name="uart.log")
+               str_file_name="logs/uart.log")
 
 @pytest.fixture(scope="module", autouse=True)
 def test_open_uart(drone):
