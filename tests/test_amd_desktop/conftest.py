@@ -7,12 +7,14 @@ import pytest
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.win10_interface import Win10Interface as win10
+from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
-# logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-#                     datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
+logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.win10_interface').setLevel(logging.CRITICAL)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.DEBUG)
@@ -65,3 +67,9 @@ def test_open_uart(drone):
 def target_perf(target_system):
     print('\n\033[32m================ Setup Performance =============\033[0m')
     return amd64perf(platform=target_system, io_file='D:\\IO.dat')
+
+@pytest.fixture(scope="session", autouse=True)
+def my_app(cmdopt):
+    print('\n\033[32m================== Setup API =================\033[0m')
+    return api(cmdopt.get('mode'), cmdopt.get('if_name'),
+        cmdopt.get('config_file'))
