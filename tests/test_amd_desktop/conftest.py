@@ -25,7 +25,7 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
 @pytest.fixture(scope="session")
 def target_system(my_app):
-    print('\n\033[32m================ Setup Platform ===============\033[0m')
+    print('\n\033[32m================== Setup Platform ==============\033[0m')
     return amd64(interface=my_app)
 
 @pytest.fixture(scope="session")
@@ -44,16 +44,16 @@ def drone():
 def test_open_uart(drone):
     print('\n\033[32m================== Setup UART ==================\033[0m')
     yield drone.open_uart()
-    print('\n\033[32m================ Teardown UART =================\033[0m')
+    print('\n\033[32m================== Teardown UART ===============\033[0m')
     drone.close_uart()
 
 @pytest.fixture(scope="function")
 def target_perf(target_system):
-    print('\n\033[32m================ Setup Performance =============\033[0m')
+    print('\n\033[32m================== Setup Performance ===========\033[0m')
     return amd64perf(platform=target_system, io_file='D:\\IO.dat')
 
 @pytest.fixture(scope="session")
 def my_app(cmdopt):
-    print('\n\033[32m================== Setup API =================\033[0m')
+    print('\n\033[32m================== Setup API ===================\033[0m')
     return api(cmdopt.get('mode'), cmdopt.get('if_name'),
         cmdopt.get('config_file'))
