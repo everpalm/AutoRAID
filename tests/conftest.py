@@ -77,11 +77,13 @@ def store_gitlab_api_in_config(cmdopt, request):
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
 
-@pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def drone_api():
     return api('local', 'eth0', 'app_map.json')
 
-@pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def target_ping(drone_api):
     print('\n\033[32m================== Setup Ping ==================\033[0m')
     return aping(drone_api)
