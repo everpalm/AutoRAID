@@ -7,7 +7,7 @@ import os
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.DEBUG)
 
-CF_LEVEL = 6
+CF_LEVEL = 7
 
 def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
     logger.debug(f'upper_{prefix}iops = {upper_iops}')
