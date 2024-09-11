@@ -654,6 +654,34 @@ class MongoDB(object):
                         },
                         # Stage 13
                         {
+                            "$match": {
+                                "$expr": {
+                                    "$or": [
+                                        {
+                                            "$and": [
+                                                {
+                                                    "$gt": ["$write_iops", 130000]
+                                                },
+                                                {
+                                                    "$lt": ["$write_iops", 380000]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "$and": [
+                                                {
+                                                    "$gt": ["$write_bw", 600]
+                                                },
+                                                {
+                                                    "$lt": ["$write_bw", 1400]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
                             "$group": {
                                 "_id": {
                                     "write_pattern": "$write_pattern",

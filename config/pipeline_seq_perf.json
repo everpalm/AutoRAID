@@ -1,0 +1,266 @@
+[
+    {
+        "$project": {
+            "_id": 0,
+            "report.tests.keywords": 1,
+            "report.tests.call.log.msg": 1,
+            "report.collectors": 1
+        }
+    },
+    {
+        "$match": {
+            "$and": [
+                {
+                    "report.tests.keywords": {
+                        "$regex": "TestSequentialReadWrite"
+                    }
+                },
+                {
+                    "report.collectors.outcome": {
+                        "$regex": "passed"
+                    }
+                }
+            ]
+        }
+    },
+    { "$unwind": { "path": "$report.tests" } },
+    { "$unwind": { "path": "$report.tests.keywords" } },
+    {
+        "$project": {
+            "write_pattern_string": {
+                "$regexFind": {
+                    "input": "$report.tests.keywords",
+                    "regex": "test_run_io_operation\\[(\\d+)-([\\dk]+)"
+                }
+            },
+            "msg": "$report.tests.call.log.msg"
+        }
+    },
+    {
+        "$match": {
+            "$or": [
+                {
+                    "write_pattern_string.match": {
+                        "$regex": "test_run_io_operation"
+                    }
+                },
+                {
+                    "report.tests.call.log.msg": {
+                        "$regex": "write_pattern"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "$project": {
+            "write_pattern": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_pattern_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "int",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "block_size": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_pattern_string.captures",
+                            1
+                        ]
+                    },
+                    "to": "string",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "msg": 1
+        }
+    },
+    { "$unwind": { "path": "$msg" } },
+    { "$match": { "msg": { "$regex": "sequential" } } },
+    {
+        "$project": {
+            "write_pattern": 1,
+            "block_size": 1,
+            "read_iops_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_read_iops\\s*=\\s*([\\d\\.]+)"
+                }
+            },
+            "read_bw_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_read_bw\\s*=\\s*([\\d\\.]+)"
+                }
+            },
+            "write_iops_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_write_iops\\s*=\\s*([\\d\\.]+)"
+                }
+            },
+            "write_bw_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_write_bw\\s*=\\s*([\\d\\.]+)"
+                }
+            }
+        }
+    },
+    {
+        "$project": {
+            "write_pattern": 1,
+            "block_size": 1,
+            "read_iops": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$read_iops_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "read_bw": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$read_bw_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "write_iops": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_iops_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "write_bw": {
+                "$convert": {
+                    "input": {
+                        "$arrayElemAt": [
+                            "$write_bw_string.captures",
+                            0
+                        ]
+                    },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "write_pattern": {"$eq": 50},
+            "block_size": {"$eq": "64k"}
+        }
+    },
+    {
+        "$match": {
+            "$expr": {
+                "$or": [
+                    {
+                        "$and": [
+                            {
+                                "$gt": ["$write_iops", 130000]
+                            },
+                            {
+                                "$lt": ["$write_iops", 380000]
+                            }
+                        ]
+                    },
+                    {
+                        "$and": [
+                            {
+                                "$gt": ["$write_bw", 600]
+                            },
+                            {
+                                "$lt": ["$write_bw", 1400]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": {
+                "write_pattern": "$write_pattern",
+                "block_size": "$block_size"
+            },
+            "avg_read_iops": {
+                "$avg": "$read_iops"
+            },
+            "avg_read_bw": {
+                "$avg": "$read_bw"
+            },
+            "avg_write_iops": {
+                "$avg": "$write_iops"
+            },
+            "avg_write_bw": {
+                "$avg": "$write_bw"
+            },
+            "max_read_iops": {
+                "$max": "$read_iops"
+            },
+            "min_read_iops": {
+                "$min": "$read_iops"
+            },
+            "std_dev_read_iops": {
+                "$stdDevPop": "$read_iops"
+            },
+            "max_write_iops": {
+                "$max": "$write_iops"
+            },
+            "min_write_iops": {
+                "$min": "$write_iops"
+            },
+            "std_dev_write_iops": {
+                "$stdDevPop": "$write_iops"
+            },
+            "max_read_bw": {
+                "$max": "$read_bw"
+            },
+            "min_read_bw": {
+                "$min": "$read_bw"
+            },
+            "std_dev_read_bw": {
+                "$stdDevPop": "$read_bw"
+            },
+            "max_write_bw": {
+                "$max": "$write_bw"
+            },
+            "min_write_bw": {
+                "$min": "$write_bw"
+            },
+            "std_dev_write_bw": {
+                "$stdDevPop": "$write_bw"
+            }
+        }
+    }
+]
