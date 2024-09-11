@@ -28,7 +28,6 @@ class TestAMD64MultiPathStress(object):
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in
             advance
     '''
-    # @pytest.fixture(scope="function", autouse=True)
     @pytest.fixture(scope="function")
     def target_stress(self, target_system):
         print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
