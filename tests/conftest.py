@@ -63,9 +63,10 @@ def cmdopt(request):
         {'private_token': request.config.getoption("--private_token")})
     return cmdopt_dic
 
-@pytest.fixture(scope="session", autouse=True)    
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def my_pins():
-    print('\n=====================Setup GPIO.2=====================')
+    print('\n\033[32m================= Setup GPIO.2 =================\033[0m')
     return rbp('rpi3_gpio_pins.json', 'GPIO.2')
 
 @pytest.fixture(scope="session", autouse=True)
@@ -82,7 +83,7 @@ def drone_api():
 
 @pytest.fixture(scope="session", autouse=True)
 def target_ping(drone_api):
-    print('\n\033[32m================ Setup Ping ===============\033[0m')
+    print('\n\033[32m================== Setup Ping ==================\033[0m')
     return aping(drone_api)
 
 # @pytest.hookimpl(tryfirst=True, hookwrapper=True)
