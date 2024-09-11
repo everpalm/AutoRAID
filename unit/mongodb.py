@@ -673,8 +673,28 @@ class MongoDB(object):
                                                     "$gt": ["$write_bw", 600]
                                                 },
                                                 {
-                                                    "$lt": ["$write_bw", 1400]
+                                                    "$lt": ["$write_bw", 3500]
                                                 }
+                                            ]
+                                        },
+                                        {
+                                            "$and": [
+                                            {
+                                                "$gt": ["$read_iops", 130000]
+                                            },
+                                            {
+                                                "$lt": ["$read_iops", 380000]
+                                            }
+                                            ]
+                                        },
+                                        {
+                                            "$and": [
+                                            {
+                                                "$gt": ["$read_bw", 600]
+                                            },
+                                            {
+                                                "$lt": ["$read_bw", 3500]
+                                            }
                                             ]
                                         }
                                     ]
