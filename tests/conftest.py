@@ -5,7 +5,6 @@ import pytest
 import logging
 import os
 import paramiko
-# from unit.system_under_testing import RaspberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
 from unit.gpio import RaspBerryPins as rbp
@@ -43,9 +42,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--config_file",
         action="store",
-        # default="app_map.json",
         default="VEN_1B4B.json",
-        # help="Default config file: app_map.json"
         help="Default config file: VEN_1B4B.json"
     )
     parser.addoption(

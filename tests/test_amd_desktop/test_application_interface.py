@@ -28,13 +28,7 @@ WINDOWS_CMD_TABLE = ({
                     })
 
 class TestApplicationInterface(object):
-    # @pytest.fixture(scope="session", autouse=True)
-    # def my_app(self, cmdopt):
-    #     logger.info('====================Setup API====================')
-    #     return api(cmdopt.get('mode'),
-    #                cmdopt.get('if_name'),
-    #                cmdopt.get('config_file'))
-    # @pytest.mark.skip(reason="Current SUT is Windows")
+    
     @pytest.mark.parametrize("windows_cmd", WINDOWS_CMD_TABLE)
     def test_command_line(self, my_app, windows_cmd):
         list_executed = my_app.command_line(windows_cmd["Command"])

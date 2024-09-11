@@ -8,7 +8,6 @@ import json
 PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
 ''' Set up logger '''
-# logging.getLogger(__name__).setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 with open(f'{PROJECT_PATH}/config/amd64_nvme.json', 'r') as f:
