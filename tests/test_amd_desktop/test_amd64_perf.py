@@ -7,7 +7,7 @@ import os
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.DEBUG)
 
-CF_LEVEL = 20
+CF_LEVEL = 6
 
 def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
     logger.debug(f'upper_{prefix}iops = {upper_iops}')
@@ -78,7 +78,7 @@ class TestRandomReadWrite(object):
         logger.debug(f'io_depth = {io_depth}')
         logger.debug(f'result = {criteria}')
 
-        # validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+        validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
 class TestSequentialReadWrite(object):
     ''' Test AMD64 NVM Sequential Read Write Performance
@@ -103,7 +103,7 @@ class TestSequentialReadWrite(object):
         logger.debug(f'block_size = {block_size}')
         logger.debug(f'criteria = {criteria}')
 
-        # validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+        validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
 class TestRampTimeReadWrite(object):
     ''' Test AMD64 NVM Ramp-up Time Read Write
