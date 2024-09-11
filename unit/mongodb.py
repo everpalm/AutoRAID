@@ -743,7 +743,7 @@ class MongoDB(object):
             MongoDB.
         """
         try:
-            with open('config/pipeline_ramp_times.json', 'r') as file:
+            with open('/home/pi/Projects/AutoRAID/workspace/AutoRAID/config/pipeline_ramp_times.json', 'r') as file:
                 pipeline = json.load(file)
         except FileNotFoundError:
             logger.error("Pipeline configuration file not found.")
@@ -792,7 +792,8 @@ class MongoDB(object):
             MongoDB.
         """
         try:
-            with open('config/pipeline_stress.json', 'r') as file:
+            # with open('config/pipeline_stress.json', 'r') as file:
+            with open('/home/pi/Projects/AutoRAID/workspace/AutoRAID/config/pipeline_stress.json', 'r') as file:
                 pipeline = json.load(file)
         except FileNotFoundError:
             logger.error("Pipeline configuration file not found.")

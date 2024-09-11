@@ -102,7 +102,7 @@ pipeline {
             // Send email notification
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@yahoo.com.tw'
             // Stash the .testmondata file for the next build
-            stash includes: '.testmondata', name: 'testmondata'
+            stash includes: '.testmondata', name: 'testmondata', allowEmpty: true
         }
         success {
             echo 'Build succeeded.'
