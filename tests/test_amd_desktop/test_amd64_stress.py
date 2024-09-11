@@ -33,7 +33,8 @@ class TestAMD64MultiPathStress(object):
         print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
         return amps(platform=target_system)
 
-    @pytest.mark.parametrize('iodepth', list(range(MIN_IODEPTH, MAX_IODEPTH)))
+    # @pytest.mark.parametrize('iodepth', list(range(MIN_IODEPTH, MAX_IODEPTH)))
+    @pytest.mark.parametrize('iodepth', [2**power for power in range(6)])
     @pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
     def test_run_io_operation(self, target_stress, write_pattern, iodepth,
                               my_mdb):
