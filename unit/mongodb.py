@@ -683,7 +683,7 @@ class MongoDB(object):
                                                 "$gt": ["$read_iops", 130000]
                                             },
                                             {
-                                                "$lt": ["$read_iops", 380000]
+                                                "$lt": ["$read_iops", 400000]
                                             }
                                             ]
                                         },
