@@ -654,54 +654,6 @@ class MongoDB(object):
                         },
                         # Stage 13
                         {
-                            "$match": {
-                                "$expr": {
-                                    "$or": [
-                                        {
-                                            "$and": [
-                                                {
-                                                    "$gt": ["$write_iops", 130000]
-                                                },
-                                                {
-                                                    "$lt": ["$write_iops", 380000]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "$and": [
-                                                {
-                                                    "$gt": ["$write_bw", 600]
-                                                },
-                                                {
-                                                    "$lt": ["$write_bw", 3500]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "$and": [
-                                            {
-                                                "$gt": ["$read_iops", 130000]
-                                            },
-                                            {
-                                                "$lt": ["$read_iops", 400000]
-                                            }
-                                            ]
-                                        },
-                                        {
-                                            "$and": [
-                                            {
-                                                "$gt": ["$read_bw", 600]
-                                            },
-                                            {
-                                                "$lt": ["$read_bw", 3500]
-                                            }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
                             "$group": {
                                 "_id": {
                                     "write_pattern": "$write_pattern",
