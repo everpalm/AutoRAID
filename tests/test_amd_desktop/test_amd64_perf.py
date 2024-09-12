@@ -25,51 +25,22 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
     if read_iops and read_bw:
         max_read_iops = criteria['max_read_iops']
         min_read_iops = criteria['min_read_iops']
-        # avg_read_iops = criteria['avg_read_iops']
         std_dev_read_iops = criteria['std_dev_read_iops']
-        # diff_read_iops = max_read_iops - avg_read_iops
-        # logger.debug(f'diff_read_iops = {diff_read_iops}')
-        # upper_limit_read_iops = (criteria['max_read_iops'] +
-        #                          criteria['std_dev_read_iops'] * CF_LEVEL)
-        # lower_limit_read_iops = (criteria['min_read_iops'] -
-        #                          criteria['std_dev_read_iops'] * CF_LEVEL)
-        # upper_limit_read_bw = (criteria['max_read_bw'] +
-        #                        criteria['std_dev_read_bw'] * CF_LEVEL)
-        # lower_limit_read_bw = (criteria['min_read_bw'] -
-        #                        criteria['std_dev_read_bw'] * CF_LEVEL)
-        # upper_limit_read_iops = avg_read_iops + std_dev_read_iops * CF_LEVEL
-        # lower_limit_read_iops = avg_read_iops - std_dev_read_iops * CF_LEVEL
-        
-        # if upper_limit_read_iops > max_read_iops:
+
         deviation = std_dev_read_iops * CF_LEVEL
         upper_limit_read_iops = max_read_iops + deviation
-        # if lower_limit_read_iops < min_read_iops:
         lower_limit_read_iops = min_read_iops - deviation
         
         max_read_bw = criteria['max_read_bw']
         min_read_bw = criteria['min_read_bw']
-        # avg_read_bw = criteria['avg_read_bw']
         std_dev_read_bw = criteria['std_dev_read_bw']
-        # diff_read_bw = max_read_bw - avg_read_bw
-        # logger.debug(f'diff_read_bw = {diff_read_bw}')
-        # upper_limit_read_bw = (criteria['max_read_bw'] +
-        #                        criteria['std_dev_read_bw'] * cfl_read_iops)
-        # lower_limit_read_bw = (criteria['min_read_bw'] -
-        #                        criteria['std_dev_read_bw'] * cfl_read_iops)
-        # upper_limit_read_bw = avg_read_bw + std_dev_read_bw * CF_LEVEL
-        # lower_limit_read_bw = avg_read_bw - std_dev_read_bw * CF_LEVEL
-        
-        # if upper_limit_read_bw > max_read_bw:
+
         deviation = std_dev_read_bw * CF_LEVEL
         upper_limit_read_bw = max_read_bw + deviation
-        # if lower_limit_read_bw < min_read_bw:
         lower_limit_read_bw = min_read_bw - deviation
 
         log_target_limit(upper_limit_read_iops, lower_limit_read_iops,
                         upper_limit_read_bw, lower_limit_read_bw, 'read_')
-        
-        # assert lower_limit_read_iops >= 0
-        # assert lower_limit_read_bw >=0
         
         assert upper_limit_read_iops > read_iops > lower_limit_read_iops
         assert upper_limit_read_bw > read_bw > lower_limit_read_bw
@@ -77,48 +48,22 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
     if write_iops and write_bw:
         max_write_iops = criteria['max_write_iops']
         min_write_iops = criteria['min_write_iops']
-        # avg_write_iops = criteria['avg_write_iops']
         std_dev_write_iops = criteria['std_dev_write_iops']
-        # diff_write_iops = max_write_iops - avg_write_iops
-        # logger.debug(f'diff_write_iops = {diff_write_iops}')
-        # upper_limit_write_iops = (criteria['max_write_iops'] +
-        #                           criteria['std_dev_write_iops'] * CF_LEVEL)
-        # lower_limit_write_iops = (criteria['min_write_iops'] -
-        #                           criteria['std_dev_write_iops'] * CF_LEVEL)
-        # upper_limit_write_bw = (criteria['max_write_bw'] +
-        #                         criteria['std_dev_write_bw'] * CF_LEVEL)
-        # lower_limit_write_bw = (criteria['min_write_bw'] -
-        #                         criteria['std_dev_write_bw'] * CF_LEVEL)
-        # upper_limit_write_iops = avg_write_iops + std_dev_write_iops * CF_LEVEL 
-        # lower_limit_write_iops = avg_write_iops - std_dev_write_iops * CF_LEVEL
-        
-        # if upper_limit_write_iops > max_write_iops:
+
         deviation = std_dev_write_iops * CF_LEVEL
         upper_limit_write_iops = max_write_iops + deviation 
-        # if lower_limit_write_iops < min_write_iops:
         lower_limit_write_iops = min_write_iops - deviation
         
         max_write_bw = criteria['max_write_bw']
         min_write_bw = criteria['min_write_bw']
-        # avg_write_bw = criteria['avg_write_bw']
         std_dev_write_bw = criteria['std_dev_write_bw']
-        # diff_write_bw = max_write_bw - avg_write_bw
-        # logger.debug(f'diff_write_bw = {diff_write_bw}')
-
-        # upper_limit_write_bw = avg_write_bw + std_dev_write_bw * CF_LEVEL 
-        # lower_limit_write_bw = avg_write_bw - std_dev_write_bw * CF_LEVEL
-
-        # if upper_limit_write_bw > max_write_bw:
+    
         deviation = std_dev_write_bw * CF_LEVEL
         upper_limit_write_bw = max_write_bw + deviation
-        # if lower_limit_write_bw < min_write_bw:
         lower_limit_write_bw = min_write_bw - deviation
 
         log_target_limit(upper_limit_write_iops, lower_limit_write_iops,
                         upper_limit_write_bw, lower_limit_write_bw, 'write_')
-        
-        # assert lower_limit_write_iops >= 0
-        # assert lower_limit_write_bw >=0
        
         assert upper_limit_write_iops > write_iops > lower_limit_write_iops
         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
