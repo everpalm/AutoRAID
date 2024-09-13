@@ -59,6 +59,7 @@ pipeline {
                     // Unstash the .testmondata file from the previous build, if exists
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         unstash name: 'testmondata'
+                        echo "Successfully unstashed 'testmondata'."
                     }
                     gv = load "script.groovy"
                 }
@@ -76,9 +77,9 @@ pipeline {
                 script {
                     if (params.TEST_SUIT == 'unit' || params.TEST_SUIT == 'all') {
                         gv.test_unit()
-                    } else if (params.TEST_SUIT == 'amd_desktop' || params.TEST_SUITE == 'all') {
+                    } else if (params.TEST_SUITE == 'amd_desktop' || params.TEST_SUITE == 'all') {
                         gv.test_amd_desktop()
-                    } else if (params.TEST_SUIT == 'rasperberry' || params.TEST_SUIT == 'all') {
+                    } else if (params.TEST_SUITE == 'rasperberry' || params.TEST_SUITE == 'all') {
                         gv.test_raspberry()
                     } else if (params.TEST_CASE == 'amd64_nvme') {
                         gv.test_amd64_nvme()
