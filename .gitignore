@@ -8,3 +8,4 @@ caches/
 *.log*
 .testmondata*
 .coverage*
+.pytest_cache/
