@@ -6,6 +6,7 @@ import pytest
 
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
+from datetime import datetime
 # from amd_desktop.win10_interface import Win10Interface as win10
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
@@ -37,9 +38,14 @@ def my_mdb():
 @pytest.fixture(scope="session")
 def drone(drone_api):
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
+    # 获取当前时间并格式化为字符串
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # 将时间戳添加到日志文件名
+    str_file_name = f"logs/uart_{timestamp}.log"
+    
     return rpi(str_uart_path="/dev/ttyUSB0", int_baut_rate=115200,
-            #    str_file_name="/home/pi/Projects/AutoRAID/logs/uart.log",
-               str_file_name="logs/uart.log", rpi_api=drone_api)
+               str_file_name=str_file_name, rpi_api=drone_api)
 
 @pytest.fixture(scope="module", autouse=True)
 def test_open_uart(drone):
@@ -57,5 +63,4 @@ def target_perf(target_system):
 def my_app(cmdopt):
     print('\n\033[32m================== Setup API ===================\033[0m')
     return api(cmdopt.get('mode'), cmdopt.get('if_name'),
-        # cmdopt.get('config_file'), cmdopt.get('workspace'))
         cmdopt.get('config_file'))

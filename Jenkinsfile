@@ -48,8 +48,9 @@ pipeline {
     }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
-        WORKSPACE_DIR = '/home/pi/Projects/AutoRAID/workspace/AutoRAID'
-        TEST_AMD64_DESKTOP = '${WORKSAPCE_DIR}/tests/test_amd64_desktop'
+        TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
+        TEST_UNIT = "${WORKSPACE}/tests/test_unit"
+        TEST_RASPBERRY = "${WORKSPACE}/tests/test_raspberry"
     }
     stages {
         stage("Init") {
