@@ -37,7 +37,10 @@ pipeline {
             choices: [
                 'TestRandomReadWrite',
                 'TestSequentialReadWrite',
-                'TestRampTimeReadWrite'
+                'TestRampTimeReadWrite',
+                'TestAMD64MultiPathStress',
+                'TestAMD64Ping',
+                'TestApplicationInterface'
             ],
             description: 'Test step',
             name: 'TEST_STEP'
@@ -46,6 +49,7 @@ pipeline {
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
         WORKSPACE_DIR = '/home/pi/Projects/AutoRAID/workspace/AutoRAID'
+        TEST_AMD64_DESKTOP = '${WORKSAPCE_DIR}/tests/test_amd64_desktop'
     }
     stages {
         stage("Init") {
@@ -69,10 +73,14 @@ pipeline {
         stage('Testing') {
             steps {
                 script {
-                    if (params.TEST_SUIT == 'test_unit' || params.TEST_SUIT == 'all') {
+                    if (params.TEST_SUIT == 'unit' || params.TEST_SUIT == 'all') {
                         gv.test_unit()
-                    } else if (params.TEST_SUIT == 'test_amd_desktop' || params.TEST_SUITE == 'all') {
+                    } else if (params.TEST_SUIT == 'amd_desktop' || params.TEST_SUITE == 'all') {
                         gv.test_amd_desktop()
+                    } else if (params.TEST_SUIT == 'rasperberry' || params.TEST_SUIT == 'all') {
+                        gv.test_raspberry()
+                    } else if (params.TEST_CASE == 'amd64_nvme') {
+                        gv.test_amd64_nvme()
                     }
                 }
             }
