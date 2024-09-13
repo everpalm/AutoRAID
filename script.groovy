@@ -1,5 +1,6 @@
 def build_app() {
-    echo 'Build - 1'
+    echo 'Sync pipenv'
+    sh 'pipenv sync'
 }
 
 def test_amd_desktop() {
