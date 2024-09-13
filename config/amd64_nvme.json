@@ -1,7 +1,8 @@
 {
     "CPU Information": {
         "CPU(s)": 12,
-        "Model Name": "AMD Ryzen 9"
+        "Model Name": "AMD Ryzen 9",
+        "Hyperthreading": true
     },
     "Desktop Information": {
         "Manufacturer": "System",

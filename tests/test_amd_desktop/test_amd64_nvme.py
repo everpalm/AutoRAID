@@ -37,6 +37,12 @@ TEST_PATTERN = (
 
 class TestAMD64NVMe(object):
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
+    def test_get_hyperthreading(self, target_system, amd64_nvm):
+        logger.info(f'hyperthreading = {target_system.hyperthreading}')
+        assert (target_system.hyperthreading == 
+            amd64_nvm['CPU Information']['Hyperthreading'])
+
+    @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_memory_size(self, target_system, amd64_nvm):
         memory_size = target_system.memory_size
         logger.info(f'Memory Size = {memory_size} GB')
@@ -92,8 +98,6 @@ class TestAMD64NVMe(object):
         logger.info(f'SerialNumber = {target_system.serial_num}')
         assert (target_system.disk_num ==
             amd64_nvm['Disk Information']["Number"])
-        # assert target_system.serial_num == \
-        #     amd64_nvm['Disk Information']["SerialNumber"]
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_volume(self, target_system, amd64_nvm):
