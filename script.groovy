@@ -1,5 +1,4 @@
 def build_app() {
-    echo 'Sync pipenv'
     sh 'pipenv sync'
 }
 
