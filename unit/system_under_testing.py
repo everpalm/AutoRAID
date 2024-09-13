@@ -305,7 +305,7 @@ class SystemUnderTesting(api):
                     "unsafe_shutdowns": int_unsafe_shutdowns
                     }
 
-    @dict_to_dataframe
+    # @dict_to_dataframe
     @convert_size
     def run_io_operation(
                 self,
