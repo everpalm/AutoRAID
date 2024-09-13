@@ -38,8 +38,8 @@ def my_mdb():
 def drone(drone_api):
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
     return rpi(str_uart_path="/dev/ttyUSB0", int_baut_rate=115200,
-               str_file_name="/home/pi/Projects/AutoRAID/logs/uart.log",
-               rpi_api=drone_api)
+            #    str_file_name="/home/pi/Projects/AutoRAID/logs/uart.log",
+               str_file_name="logs/uart.log", rpi_api=drone_api)
 
 @pytest.fixture(scope="module", autouse=True)
 def test_open_uart(drone):
@@ -57,4 +57,5 @@ def target_perf(target_system):
 def my_app(cmdopt):
     print('\n\033[32m================== Setup API ===================\033[0m')
     return api(cmdopt.get('mode'), cmdopt.get('if_name'),
-        cmdopt.get('config_file'), cmdopt.get('workspace'))
+        # cmdopt.get('config_file'), cmdopt.get('workspace'))
+        cmdopt.get('config_file'))

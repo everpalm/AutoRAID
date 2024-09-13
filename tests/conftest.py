@@ -12,7 +12,8 @@ from unit.application_interface import ApplicationInterface as api
 from amd_desktop.amd64_ping import AMD64Ping as aping
 
 MDB_ATTR = [{
-    "Log Path": '/home/pi/Projects/AutoRAID/logs/uart.log',
+    # "Log Path": '/home/pi/Projects/AutoRAID/logs/uart.log',
+    "Log Path": 'logs/uart.log',
     "Report Path": ".report.json"
 }]
 
@@ -87,9 +88,11 @@ def store_gitlab_api_in_config(cmdopt, request):
 
 # @pytest.fixture(scope="session", autouse=True)
 @pytest.fixture(scope="session")
-def drone_api(cmdopt):
-    # return api('local', 'eth0', 'app_map.json')
-    return api('local', 'eth0', 'app_map.json', cmdopt.get('workspace'))
+# def drone_api(cmdopt):
+def drone_api():
+    print('\n\033[32m================== Setup RPi API ===============\033[0m')
+    return api('local', 'eth0', 'app_map.json')
+    # return api('local', 'eth0', 'app_map.json', cmdopt.get('workspace'))
 
 # @pytest.fixture(scope="session", autouse=True)
 @pytest.fixture(scope="session")
