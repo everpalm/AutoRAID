@@ -39,13 +39,13 @@ def my_mdb():
 def drone(drone_api):
     print('\n\033[32m================== Setup RSBPi =================\033[0m')
     # 获取当前时间并格式化为字符串
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
     # 将时间戳添加到日志文件名
-    str_file_name = f"logs/uart_{timestamp}.log"
+    # str_file_name = f"logs/uart_{timestamp}.log"
     
     return rpi(str_uart_path="/dev/ttyUSB0", int_baut_rate=115200,
-               str_file_name=str_file_name, rpi_api=drone_api)
+               str_file_name="uart.log", rpi_api=drone_api)
 
 @pytest.fixture(scope="module", autouse=True)
 def test_open_uart(drone):
