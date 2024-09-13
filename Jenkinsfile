@@ -81,6 +81,12 @@ pipeline {
                         gv.test_raspberry()
                     } else if (params.TEST_CASE == 'amd64_nvme') {
                         gv.test_amd64_nvme()
+                    } else if (params.TEST_CASE == 'amd64_perf') {
+                        gv.test_amd64_perf()
+                    } else if (params.TEST_CASE == 'amd64_stress') {
+                        gv.test_amd64_stress()
+                    } else if (params.TEST_CASE == 'application_interface') {
+                        gv.test_application_interface()
                     }
                 }
             }
