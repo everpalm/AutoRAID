@@ -5,7 +5,7 @@ import logging
 import os
 # import paramiko
 import re
-import pandas as pd
+# import pandas as pd
 # import time
 from unit.application_interface import ApplicationInterface as api
 
@@ -56,36 +56,36 @@ def convert_size(callback):
     return wrapper
 
 
-def dict_to_dataframe(callback):
-    ''' Convert a dictionary to a Pandas dataframe
-        Args: Any dictionary
-        Returns: A dataframe
-        Raises: ValueError, IOError
-    '''
-    def wrapper(*args, **kwargs):
-        result_dict = callback(*args, **kwargs)
-        if isinstance(result_dict, dict):
-            df = pd.DataFrame([result_dict], index=[0])
-            logger.debug("df = %s", df)
-            try:
-                if os.path.exists('my_data.json'):
-                    existing_data = pd.read_json('my_data.json',
-                                                 orient='records',
-                                                 lines=True)
-                    combined_data = pd.concat([existing_data, df],
-                                              ignore_index=True)
-                else:
-                    combined_data = df
-                combined_data.to_json('my_data.json',
-                                      orient='records',
-                                      lines=True)
-            except IOError as e:
-                logger.error(f"Error occurred in dict_to_dataframe: {e}")
-                raise
-            return df
-        else:
-            raise ValueError("Input is not a dictionary!")
-    return wrapper
+# def dict_to_dataframe(callback):
+#     ''' Convert a dictionary to a Pandas dataframe
+#         Args: Any dictionary
+#         Returns: A dataframe
+#         Raises: ValueError, IOError
+#     '''
+#     def wrapper(*args, **kwargs):
+#         result_dict = callback(*args, **kwargs)
+#         if isinstance(result_dict, dict):
+#             df = pd.DataFrame([result_dict], index=[0])
+#             logger.debug("df = %s", df)
+#             try:
+#                 if os.path.exists('my_data.json'):
+#                     existing_data = pd.read_json('my_data.json',
+#                                                  orient='records',
+#                                                  lines=True)
+#                     combined_data = pd.concat([existing_data, df],
+#                                               ignore_index=True)
+#                 else:
+#                     combined_data = df
+#                 combined_data.to_json('my_data.json',
+#                                       orient='records',
+#                                       lines=True)
+#             except IOError as e:
+#                 logger.error(f"Error occurred in dict_to_dataframe: {e}")
+#                 raise
+#             return df
+#         else:
+#             raise ValueError("Input is not a dictionary!")
+#     return wrapper
 
 
 class RaspberryPi(object):
