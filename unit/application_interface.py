@@ -12,8 +12,7 @@ import fcntl
 import struct
 import json
 import paramiko
-# import re
-# PROJECT_PATH = "/home/pi/Projects/AutoRAID/workspace/AutoRAID"
+
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
@@ -28,6 +27,7 @@ def dict_format(callback):
         dict_result = callback(*args, **kwargs)
         logger.debug("Result to be transformed = %s", dict_result)
         return dict(enumerate(dict_result))
+    wrapper._original = callback
     return wrapper
 
 # def json_format(callback):
@@ -50,11 +50,9 @@ class ApplicationInterface(object):
             password: Input the password in SSH
             dir: The folder where lionapp is locationed
     '''
-    # def __init__(self, str_mode: str, str_if_name: str, str_config_file: str, workspace: str):
     def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
         self.mode = str_mode
         self.config_file = str_config_file
-        # self.workspace = workspace
         self.if_name = str_if_name
         self.local_ip = self._get_local_ip(str_if_name)
         self.remote_ip, self.account, self.password, self.local_dir, \
@@ -63,8 +61,6 @@ class ApplicationInterface(object):
 
     def __import_config(self) -> Dict[str, str]:
         try:
-            # with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
-            # with open(f'{self.workspace}/config/{self.config_file}', 'r') as f:
             with open(f'config/{self.config_file}', 'r') as f:
                 list_config = json.load(f)
                 if not isinstance(list_config, list):
@@ -73,7 +69,6 @@ class ApplicationInterface(object):
         except Exception:
             logger.error('Cannot open/read file: %s', self.config_file)
             raise
-        # return dict_config_list
 
     @staticmethod
     def _get_local_ip(str_if_name: str) -> str:

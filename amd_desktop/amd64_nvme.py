@@ -42,6 +42,27 @@ class AMD64NVMe(object):
         self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
+        self.hyperthreading = self._get_hyperthreading()
+    
+    def _get_hyperthreading(self):
+        try:
+            output = self.api.command_line._original(self.api,
+                'wmic cpu Get NumberOfCores,NumberOfLogicalProcessors /Format:List')
+            logger.debug(f'output = {output}')
+            output_string = "".join(output)
+            logger.debug(f'output_string = {output_string}')
+            match = re.search(r'NumberOfLogicalProcessors=(\d+)', output_string)
+
+            if match:
+                int_logical_processor = int(match.group(1))
+                logger.debug(f"int_logical_processor = {int_logical_processor}")
+            else:
+                raise ValueError("No matching logical processor found.")
+            if int_logical_processor/self.cpu_num == 2:
+                return True
+        except Exception as e:
+            logger.error(f'_get_hyperthreading: {e}')
+        return False
     
     def _get_memory_size(self):
         try:
