@@ -6,7 +6,7 @@ import pytest
 
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
-from amd_desktop.win10_interface import Win10Interface as win10
+# from amd_desktop.win10_interface import Win10Interface as win10
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi

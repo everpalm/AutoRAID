@@ -12,7 +12,7 @@ from unit.application_interface import ApplicationInterface as api
 from amd_desktop.amd64_ping import AMD64Ping as aping
 
 MDB_ATTR = [{
-    "Log Path": '/home/pi/Projects/logs/uart.log',
+    "Log Path": '/home/pi/Projects/AutoRAID/logs/uart.log',
     "Report Path": ".report.json"
 }]
 
