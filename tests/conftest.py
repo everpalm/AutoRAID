@@ -51,6 +51,12 @@ def pytest_addoption(parser):
         default="xxxxx-xxxx",
         help="Check your GitLab Private Token"
     )
+    parser.addoption(
+        "--workspace",
+        action="store",
+        default="/home/pi/Projects/AutoRAID/workspace/AutoRAID",
+        help="In accordance with the setting in Jenkins"
+    )
     
 @pytest.fixture(scope="session")
 def cmdopt(request):
@@ -61,6 +67,8 @@ def cmdopt(request):
         {'config_file': request.config.getoption("--config_file")})
     cmdopt_dic.update(
         {'private_token': request.config.getoption("--private_token")})
+    cmdopt_dic.update(
+        {'workspace': request.config.getoption("--workspace")})
     return cmdopt_dic
 
 # @pytest.fixture(scope="session", autouse=True)
@@ -79,8 +87,9 @@ def store_gitlab_api_in_config(cmdopt, request):
 
 # @pytest.fixture(scope="session", autouse=True)
 @pytest.fixture(scope="session")
-def drone_api():
-    return api('local', 'eth0', 'app_map.json')
+def drone_api(cmdopt):
+    # return api('local', 'eth0', 'app_map.json')
+    return api('local', 'eth0', 'app_map.json', cmdopt.get('workspace'))
 
 # @pytest.fixture(scope="session", autouse=True)
 @pytest.fixture(scope="session")
