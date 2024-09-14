@@ -4,8 +4,6 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 import logging
 import os
 import re
-# import pandas as pd
-# from amd_desktop.win10_interface import Win10Interface as win10
 from unit.system_under_testing import convert_size
 # from unit.system_under_testing import dict_to_dataframe
 
