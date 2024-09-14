@@ -9,70 +9,47 @@
     },
     {
         "$match": {
-            "report.tests.keywords": {
-                "$regex": "TestRandomReadWrite"
-            }
+            "$and": [
+                {
+                    "report.tests.keywords": {
+                        "$regex": "TestSequentialReadWrite"
+                    }
+                },
+                {
+                    "report.collectors.outcome": {
+                        "$regex": "passed"
+                    }
+                }
+            ]
         }
     },
-    {
-        "$match": {
-            "report.collectors.outcome": {
-                "$regex": "passed"
-            }
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$report.tests"
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$report.tests.keywords"
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$report.tests.call"
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$report.tests.call.log"
-        }
-    },
+    { "$unwind": { "path": "$report.tests" } },
+    { "$unwind": { "path": "$report.tests.keywords" } },
     {
         "$project": {
             "write_pattern_string": {
                 "$regexFind": {
                     "input": "$report.tests.keywords",
-                    "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
+                    "regex": "test_run_io_operation\\[(\\d+)-([\\dk]+)"
                 }
             },
-            "read_iops_string": {
-                "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_read_iops\\s*=\\s*(\\d+.\\d+)"
+            "msg": "$report.tests.call.log.msg"
+        }
+    },
+    {
+        "$match": {
+            "$or": [
+                {
+                    "write_pattern_string.match": {
+                        "$regex": "test_run_io_operation"
+                    }
+                },
+                {
+                    "report.tests.call.log.msg": {
+                        "$regex": "write_pattern"
+                    }
                 }
-            },
-            "read_bw_string": {
-                "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_read_bw\\s*=\\s*(\\d+.\\d+)"
-                }
-            },
-            "write_iops_string": {
-                "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_write_iops\\s*=\\s*(\\d+.\\d+)"
-                }
-            },
-            "write_bw_string": {
-                "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_write_bw\\s*=\\s*(\\d+.\\d+)"
-                }
-            }
+            ]
         }
     },
     {
@@ -90,7 +67,7 @@
                     "onNull": null
                 }
             },
-            "io_depth": {
+            "block_size": {
                 "$convert": {
                     "input": {
                         "$arrayElemAt": [
@@ -98,11 +75,50 @@
                             1
                         ]
                     },
-                    "to": "int",
+                    "to": "string",
                     "onError": null,
                     "onNull": null
                 }
             },
+            "msg": 1
+        }
+    },
+    { "$unwind": { "path": "$msg" } },
+    { "$match": { "msg": { "$regex": "sequential" } } },
+    {
+        "$project": {
+            "write_pattern": 1,
+            "block_size": 1,
+            "read_iops_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_read_iops\\s*=\\s*([\\d\\.]+)"
+                }
+            },
+            "read_bw_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_read_bw\\s*=\\s*([\\d\\.]+)"
+                }
+            },
+            "write_iops_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_write_iops\\s*=\\s*([\\d\\.]+)"
+                }
+            },
+            "write_bw_string": {
+                "$regexFind": {
+                    "input": "$msg",
+                    "regex": "sequential_write_bw\\s*=\\s*([\\d\\.]+)"
+                }
+            }
+        }
+    },
+    {
+        "$project": {
+            "write_pattern": 1,
+            "block_size": 1,
             "read_iops": {
                 "$convert": {
                     "input": {
@@ -160,14 +176,62 @@
     {
         "$match": {
             "write_pattern": {"$eq": 50},
-            "io_depth": {"$eq": 32}
+            "block_size": {"$eq": "64k"}
+        }
+    },
+    {
+        "$match": {
+            "$expr": {
+                "$or": [
+                    {
+                        "$and": [
+                            {
+                                "$gt": ["$write_iops", 130000]
+                            },
+                            {
+                                "$lt": ["$write_iops", 380000]
+                            }
+                        ]
+                    },
+                    {
+                        "$and": [
+                            {
+                                "$gt": ["$write_bw", 600]
+                            },
+                            {
+                                "$lt": ["$write_bw", 3500]
+                            }
+                        ]
+                    },
+                    {
+                        "$and": [
+                        {
+                            "$gt": ["$read_iops", 130000]
+                        },
+                        {
+                            "$lt": ["$read_iops", 400000]
+                        }
+                        ]
+                    },
+                    {
+                        "$and": [
+                        {
+                            "$gt": ["$read_bw", 600]
+                        },
+                        {
+                            "$lt": ["$read_bw", 3500]
+                        }
+                        ]
+                    }
+                ]
+            }
         }
     },
     {
         "$group": {
             "_id": {
                 "write_pattern": "$write_pattern",
-                "io_depth": "$io_depth"
+                "block_size": "$block_size"
             },
             "percentile_read_iops": {
                 "$percentile": {
@@ -200,6 +264,15 @@
             "avg_read_iops": {
                 "$avg": "$read_iops"
             },
+            "avg_read_bw": {
+                "$avg": "$read_bw"
+            },
+            "avg_write_iops": {
+                "$avg": "$write_iops"
+            },
+            "avg_write_bw": {
+                "$avg": "$write_bw"
+            },
             "max_read_iops": {
                 "$max": "$read_iops"
             },
@@ -208,21 +281,6 @@
             },
             "std_dev_read_iops": {
                 "$stdDevPop": "$read_iops"
-            },
-            "avg_read_bw": {
-                "$avg": "$read_bw"
-            },
-            "max_read_bw": {
-                "$max": "$read_bw"
-            },
-            "min_read_bw": {
-                "$min": "$read_bw"
-            },
-            "std_dev_read_bw": {
-                "$stdDevPop": "$read_bw"
-            },
-            "avg_write_iops": {
-                "$avg": "$write_iops"
             },
             "max_write_iops": {
                 "$max": "$write_iops"
@@ -233,8 +291,14 @@
             "std_dev_write_iops": {
                 "$stdDevPop": "$write_iops"
             },
-            "avg_write_bw": {
-                "$avg": "$write_bw"
+            "max_read_bw": {
+                "$max": "$read_bw"
+            },
+            "min_read_bw": {
+                "$min": "$read_bw"
+            },
+            "std_dev_read_bw": {
+                "$stdDevPop": "$read_bw"
             },
             "max_write_bw": {
                 "$max": "$write_bw"

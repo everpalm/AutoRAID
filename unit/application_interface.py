@@ -8,12 +8,11 @@ import logging
 import subprocess
 import socket
 import fcntl
-import os
+# import os
 import struct
 import json
 import paramiko
-# import re
-PROJECT_PATH = "/home/pi/Projects/AutoRAID"
+
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
@@ -28,6 +27,7 @@ def dict_format(callback):
         dict_result = callback(*args, **kwargs)
         logger.debug("Result to be transformed = %s", dict_result)
         return dict(enumerate(dict_result))
+    wrapper._original = callback
     return wrapper
 
 # def json_format(callback):
@@ -50,7 +50,6 @@ class ApplicationInterface(object):
             password: Input the password in SSH
             dir: The folder where lionapp is locationed
     '''
-
     def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
         self.mode = str_mode
         self.config_file = str_config_file
@@ -62,7 +61,7 @@ class ApplicationInterface(object):
 
     def __import_config(self) -> Dict[str, str]:
         try:
-            with open(f'{PROJECT_PATH}/config/{self.config_file}', 'r') as f:
+            with open(f'config/{self.config_file}', 'r') as f:
                 list_config = json.load(f)
                 if not isinstance(list_config, list):
                     raise ValueError(f"Expected dict in config file, got {type(list_config)}")
@@ -70,7 +69,6 @@ class ApplicationInterface(object):
         except Exception:
             logger.error('Cannot open/read file: %s', self.config_file)
             raise
-        # return dict_config_list
 
     @staticmethod
     def _get_local_ip(str_if_name: str) -> str:
@@ -206,19 +204,25 @@ class ApplicationInterface(object):
         logger.debug('self.password = %s', self.password)
         logger.debug('self.local_dir = %s', self.local_dir)
         logger.debug('self.remote_dir = %s', self.remote_dir)
+        str_sshpass = (f'sshpass -p \"{self.password}\"'
+                ' ssh -o \"StrictHostKeyChecking=no\"')
+        logger.debug('str_sshpass = %s', str_sshpass)
         if self.mode == 'remote':
             logger.debug('===Remote access mode===')
-            logger.debug('self.remote_ip = %s', self.remote_ip)
-            str_sshpass = f'sshpass -p \"{self.password}\"'\
-                ' ssh -o \"StrictHostKeyChecking=no\"'
-            logger.debug('str_sshpass = %s', str_sshpass)
-            str_command_line = f'{str_sshpass}'\
-                f' {self.account}@{self.remote_ip}'\
-                f' \"cd {self.remote_dir};{str_cli_cmd}\"'
-            logger.debug('str_command_line = %s', str_command_line)
+            if self.os == 'Linux':
+                logger.debug('===Linux===')
+                str_command_line = (f'{str_sshpass}'
+                    f' {self.account}@{self.remote_ip}'
+                    f' \"cd {self.remote_dir};{str_cli_cmd}"')
+            elif self.os == 'Windows':
+                logger.debug('===Windows===')
+                str_command_line = (f'{str_sshpass}'
+                    f' {self.account}@{self.remote_ip}'
+                    f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
         elif self.mode == 'local':
             logger.debug('===Local access mode===')
             str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
         else:
             raise ValueError('Unknown mode setting in command_line')
+        logger.debug('str_command_line = %s', str_command_line)
         return self.my_command(str_command_line)

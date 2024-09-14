@@ -5,7 +5,6 @@ import pytest
 import logging
 import os
 import paramiko
-# from unit.system_under_testing import RaspberryPi as rpi
 from unit.gitlab import GitLabAPI as glapi
 from unit.mongodb import MongoDB
 from unit.gpio import RaspBerryPins as rbp
@@ -13,7 +12,8 @@ from unit.application_interface import ApplicationInterface as api
 from amd_desktop.amd64_ping import AMD64Ping as aping
 
 MDB_ATTR = [{
-    "Log Path": '/home/pi/uart.log',
+    # "Log Path": '/home/pi/Projects/AutoRAID/logs/uart.log',
+    "Log Path": 'logs/uart.log',
     "Report Path": ".report.json"
 }]
 
@@ -43,9 +43,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--config_file",
         action="store",
-        # default="app_map.json",
         default="VEN_1B4B.json",
-        # help="Default config file: app_map.json"
         help="Default config file: VEN_1B4B.json"
     )
     parser.addoption(
@@ -53,6 +51,12 @@ def pytest_addoption(parser):
         action="store",
         default="xxxxx-xxxx",
         help="Check your GitLab Private Token"
+    )
+    parser.addoption(
+        "--workspace",
+        action="store",
+        default="/home/pi/Projects/AutoRAID/workspace/AutoRAID",
+        help="In accordance with the setting in Jenkins"
     )
     
 @pytest.fixture(scope="session")
@@ -64,11 +68,14 @@ def cmdopt(request):
         {'config_file': request.config.getoption("--config_file")})
     cmdopt_dic.update(
         {'private_token': request.config.getoption("--private_token")})
+    cmdopt_dic.update(
+        {'workspace': request.config.getoption("--workspace")})
     return cmdopt_dic
 
-@pytest.fixture(scope="session", autouse=True)    
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def my_pins():
-    print('\n=====================Setup GPIO.2=====================')
+    print('\n\033[32m================= Setup GPIO.2 =================\033[0m')
     return rbp('rpi3_gpio_pins.json', 'GPIO.2')
 
 @pytest.fixture(scope="session", autouse=True)
@@ -79,13 +86,18 @@ def store_gitlab_api_in_config(cmdopt, request):
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
 
-@pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
+# def drone_api(cmdopt):
 def drone_api():
+    print('\n\033[32m================== Setup RPi API ===============\033[0m')
     return api('local', 'eth0', 'app_map.json')
+    # return api('local', 'eth0', 'app_map.json', cmdopt.get('workspace'))
 
-@pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def target_ping(drone_api):
-    print('\n\033[32m================ Setup Ping ===============\033[0m')
+    print('\n\033[32m================== Setup Ping ==================\033[0m')
     return aping(drone_api)
 
 # @pytest.hookimpl(tryfirst=True, hookwrapper=True)

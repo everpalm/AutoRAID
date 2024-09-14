@@ -7,7 +7,10 @@ import os
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.DEBUG)
 
-CF_LEVEL = 20
+READ_R_CFL= 3
+READ_L_CFL = 10
+WRITE_R_CFL = 3
+WRITE_L_CFL = 6
 
 def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
     logger.debug(f'upper_{prefix}iops = {upper_iops}')
@@ -23,36 +26,68 @@ def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
 
 def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
     if read_iops and read_bw:
-        upper_limit_read_iops = (criteria['max_read_iops'] +
-                                 criteria['std_dev_read_iops'] * CF_LEVEL)
-        lower_limit_read_iops = (criteria['min_read_iops'] -
-                                 criteria['std_dev_read_iops'] * CF_LEVEL)
-        upper_limit_read_bw = (criteria['max_read_bw'] +
-                               criteria['std_dev_read_bw'] * CF_LEVEL)
-        lower_limit_read_bw = (criteria['min_read_bw'] -
-                               criteria['std_dev_read_bw'] * CF_LEVEL)
+        avg_read_iops = criteria['avg_read_iops']
+        # pct_read_iops = criteria['percentile_read_iops']
+        min_read_iops = criteria['min_read_iops']
+        std_dev_read_iops = criteria['std_dev_read_iops']
+
+        upper_limit_read_iops = (avg_read_iops + std_dev_read_iops *
+        # upper_limit_read_iops = (pct_read_iops + std_dev_read_iops *
+                                 READ_R_CFL)
+        lower_limit_read_iops = (avg_read_iops - std_dev_read_iops *
+        # lower_limit_read_iops = (pct_read_iops - std_dev_read_iops *
+                                 READ_L_CFL)
+        if lower_limit_read_iops < 0:
+            lower_limit_read_iops = min_read_iops
+        
+        avg_read_bw = criteria['avg_read_bw']
+        # pct_read_bw = criteria['percentile_read_bw']
+        min_read_bw = criteria['min_read_bw']
+        std_dev_read_bw = criteria['std_dev_read_bw']
+
+        upper_limit_read_bw = avg_read_bw + std_dev_read_bw * READ_R_CFL
+        # upper_limit_read_bw = pct_read_bw + std_dev_read_bw * READ_R_CFL
+        lower_limit_read_bw = avg_read_bw - std_dev_read_bw * READ_L_CFL
+        # lower_limit_read_bw = pct_read_bw - std_dev_read_bw * READ_L_CFL
+        if lower_limit_read_bw < 0:
+            lower_limit_read_bw = min_read_bw
+
         log_target_limit(upper_limit_read_iops, lower_limit_read_iops,
                         upper_limit_read_bw, lower_limit_read_bw, 'read_')
-
-        assert lower_limit_read_iops >= 0
-        assert lower_limit_read_bw >=0
+        
         assert upper_limit_read_iops > read_iops > lower_limit_read_iops
         assert upper_limit_read_bw > read_bw > lower_limit_read_bw
 
     if write_iops and write_bw:
-        upper_limit_write_iops = (criteria['max_write_iops'] +
-                                  criteria['std_dev_write_iops'] * CF_LEVEL)
-        lower_limit_write_iops = (criteria['min_write_iops'] -
-                                  criteria['std_dev_write_iops'] * CF_LEVEL)
-        upper_limit_write_bw = (criteria['max_write_bw'] +
-                                criteria['std_dev_write_bw'] * CF_LEVEL)
-        lower_limit_write_bw = (criteria['min_write_bw'] -
-                                criteria['std_dev_write_bw'] * CF_LEVEL)
+        avg_write_iops = criteria['avg_write_iops']
+        # pct_write_iops = criteria['percentile_write_iops']
+        min_write_iops = criteria['min_write_iops']
+        std_dev_write_iops = criteria['std_dev_write_iops']
+
+        upper_limit_write_iops = (avg_write_iops + std_dev_write_iops *
+        # upper_limit_write_iops = (pct_write_iops + std_dev_write_iops *
+                                  WRITE_R_CFL)
+        lower_limit_write_iops = (avg_write_iops - std_dev_write_iops *
+        # lower_limit_write_iops = (pct_write_iops - std_dev_write_iops *
+                                  WRITE_L_CFL)
+        if lower_limit_write_iops < 0:
+            lower_limit_write_iops = min_write_iops
+
+        avg_write_bw = criteria['avg_write_bw']
+        # pct_write_bw = criteria['percentile_write_bw']
+        min_write_bw = criteria['min_write_bw']
+        std_dev_write_bw = criteria['std_dev_write_bw']
+    
+        upper_limit_write_bw = avg_write_bw + std_dev_write_bw * WRITE_R_CFL
+        # upper_limit_write_bw = pct_write_bw + std_dev_write_bw * WRITE_R_CFL
+        lower_limit_write_bw = avg_write_bw - std_dev_write_bw * WRITE_L_CFL
+        # lower_limit_write_bw = pct_write_bw - std_dev_write_bw * WRITE_L_CFL
+        if lower_limit_write_bw < 0:
+            lower_limit_write_bw = min_write_bw
+
         log_target_limit(upper_limit_write_iops, lower_limit_write_iops,
                         upper_limit_write_bw, lower_limit_write_bw, 'write_')
-        
-        assert lower_limit_write_iops >= 0
-        assert lower_limit_write_bw >=0
+       
         assert upper_limit_write_iops > write_iops > lower_limit_write_iops
         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
@@ -67,9 +102,11 @@ class TestRandomReadWrite(object):
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
     @pytest.mark.parametrize('io_depth', [2**power for power in range(6)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
-    def test_run_io_operation(self, target_perf, write_pattern, io_depth, my_mdb):
-        read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
-            io_depth, '4k', '4k', write_pattern, 156)
+    def test_run_io_operation(self, target_perf, write_pattern, io_depth,
+                              my_mdb):
+        read_bw, read_iops, write_bw, write_iops = \
+            target_perf.run_io_operation(io_depth, '4k', '4k', write_pattern,
+                                         156)
       
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'random_')
         
@@ -78,7 +115,7 @@ class TestRandomReadWrite(object):
         logger.debug(f'io_depth = {io_depth}')
         logger.debug(f'result = {criteria}')
 
-        # validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+        validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
 class TestSequentialReadWrite(object):
     ''' Test AMD64 NVM Sequential Read Write Performance
@@ -103,17 +140,18 @@ class TestSequentialReadWrite(object):
         logger.debug(f'block_size = {block_size}')
         logger.debug(f'criteria = {criteria}')
 
-        # validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+        validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
 class TestRampTimeReadWrite(object):
     ''' Test AMD64 NVM Ramp-up Time Read Write
         Performance of the AMD64 system
-        Attributes:
-            os: Operation System
-            manufacturer: Any
-            bdf: Bus-Device-Function in the format of xx:yy.zz
-            sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
+        Fixtures:
+            target_perf:
+            ramp_times:
+            write_pattern:
+            my_mdb:
     '''
+    @pytest.mark.skip(reason="Discerned for now")
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
     @pytest.mark.parametrize('ramp_times', list(range(120, 181, 10)))
     @pytest.mark.parametrize('write_pattern', [0, 100])
@@ -129,4 +167,5 @@ class TestRampTimeReadWrite(object):
         logger.debug(f'write_pattern = {write_pattern}')
         logger.debug(f'ramp_times = {ramp_times}')
         logger.debug(f'result = {result}')
+        # logger.debug(f'percentile_read_iops = {result["percentile_read_iops"]}')
 

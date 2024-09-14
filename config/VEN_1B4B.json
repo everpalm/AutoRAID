@@ -4,8 +4,16 @@
         "Local": "192.168.0.193",
         "Account": "ste",
         "Password": "123456",
-        "Local Directory": "/home/pi",
-        "Remote Directory": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID"
+        "Local Directory": "home/pi/Projects/AutoRAID",
+        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
+    },
+    {
+        "Remote": "192.168.0.128",
+        "Local": "192.168.0.117",
+        "Account": "ste",
+        "Password": "123456",
+        "Local Directory": "/home/pi/Projects/AutoRAID",
+        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     },
     {
         "Remote": "192.168.0.128",

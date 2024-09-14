@@ -1,51 +1,66 @@
-def gv
 pipeline {
     triggers {
-        // Trigger hook every 5 minutes
+        // Trigger build every 5 minutes
         pollSCM('H/5 * * * *')
+        // Weekly cleanup trigger (e.g., every Monday at midnight)
+        cron('H 0 * * 1')
     }
     agent {
-        // Run test on the nodes with the same label
+        // Run tests on the nodes with the specified label
         label 'test_my_node'
     }
     parameters {
         // Add parameters for test suite selection
         choice(
             choices: [
-                'test_amd_desktop',
-                'test_unit'
+                'all',
+                'amd_desktop',
+                'raspberry',
+                'unit'
             ],
-            description: 'Select the test environment',
-            name: 'TEST_ENVIRONMENT'
+            description: 'Test Suite',
+            name: 'TEST_SUITE'
         )
         choice(
             choices: [
-                'all',
-                'system_under_testing',
-                'win10_interface',
-                'device_under_testing'
+                'amd64_nvme',
+                'amd64_perf',
+                'amd64_ping',
+                'amd64_stress',
+                'application_interface',
+                'test_pi3_gpio',
             ],
-            description: 'My Test Suite',
-            name: 'MY_SUITE'
+            description: 'Test case',
+            name: 'TEST_CASE'
         )
         choice(
             choices: [
-                'all',
-                'system_under_testing',
-                'win10_interface',
-                'device_under_testing'
+                'TestRandomReadWrite',
+                'TestSequentialReadWrite',
+                'TestRampTimeReadWrite',
+                'TestAMD64MultiPathStress',
+                'TestAMD64Ping',
+                'TestApplicationInterface'
             ],
-            description: 'Functional Test',
-            name: 'FUNCTIONAL'
+            description: 'Test step',
+            name: 'TEST_STEP'
         )
     }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
+        TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
+        TEST_UNIT = "${WORKSPACE}/tests/test_unit"
+        TEST_RASPBERRY = "${WORKSPACE}/tests/test_raspberry"
     }
     stages {
         stage("Init") {
             steps {
                 script {
+                    // Unstash the .testmondata file from the previous build, if exists
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        unstash name: 'testmondata'
+                        echo "Successfully unstashed 'testmondata'."
+                    }
                     gv = load "script.groovy"
                 }
             }
@@ -53,44 +68,55 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    gv.buildApp()
+                    gv.build_app()
                 }
             }
         }
         stage('Testing') {
             steps {
                 script {
-                    if (params.TEST_ENVIRONMENT == 'test_unit') {
-                        sh 'cd /home/pi/Projects/AutoRAID/tests/test_unit && pipenv run pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
-                    } else if (params.TEST_ENVIRONMENT == 'test_amd_desktop') {
-                        sh 'cd /home/pi/Projects/AutoRAID/tests/test_amd_desktop && pipenv run pytest --testmon --private_token=$MY_PRIVATE_TOKEN'
+                    if (params.TEST_SUIT == 'unit' || params.TEST_SUIT == 'all') {
+                        gv.test_unit()
+                    } else if (params.TEST_SUITE == 'amd_desktop' || params.TEST_SUITE == 'all') {
+                        gv.test_amd_desktop()
+                    } else if (params.TEST_SUITE == 'rasperberry' || params.TEST_SUITE == 'all') {
+                        gv.test_raspberry()
+                    } else if (params.TEST_CASE == 'amd64_nvme') {
+                        gv.test_amd64_nvme()
+                    } else if (params.TEST_CASE == 'amd64_perf') {
+                        gv.test_amd64_perf()
+                    } else if (params.TEST_CASE == 'amd64_stress') {
+                        gv.test_amd64_stress()
+                    } else if (params.TEST_CASE == 'application_interface') {
+                        gv.test_application_interface()
                     }
                 }
             }
         }
-        stage('Staging') {
+        stage('Weekly Cleanup') {
             when {
-                expression {
-                    params.MY_SUITE == 'win10_interface' || params.MY_SUITE == 'all'
-                }
+                triggeredBy 'TimerTrigger'
             }
             steps {
                 script {
-                    gv.testApp()
+                    echo "Weekly cleanup: Removing .testmondata file"
+                    sh 'rm -f .testmondata'
                 }
             }
         }
     }
     post {
         always {
+            // Send email notification
             emailext body: 'Test results are available at: $BUILD_URL', subject: 'Test Results', to: 'everpalm@yahoo.com.tw'
-            // sh "pipenv run python -m pytest --cache-clear"
+            // Stash the .testmondata file for the next build
+            stash includes: '.testmondata', name: 'testmondata', allowEmpty: true
         }
         success {
-            echo 'todo - 1'
+            echo 'Build succeeded.'
         }
         failure {
-            echo 'todo - 2'
+            echo 'Build failed.'
         }
     }
 }
