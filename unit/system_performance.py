@@ -2,7 +2,7 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import os
-import pandas as pd
+# import pandas as pd
 # from system_under_testing import SystemUnderTasting as sut
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -33,25 +33,25 @@ class SystemPerformance(object):
             Returns: data mean
             Raises:FileNotFoundError
         '''
-        if os.path.exists(self.file_path):
-            df_perf = pd.read_json(self.file_path, orient='records',
-                                   lines=True)
-            df_grouped = df_perf.groupby(self.group_key).mean(
-                numeric_only=True)
-            print("===Groupby===")
-            print(df_grouped)
-            # print(df_grouped.corr())
-            # print(df_grouped.corr().columns)
-            # print(df_grouped.corr().index)
-            # print(df_grouped.corr().loc['IOPS']['BW'])
-            print("===Correlation===")
-            print(df_grouped.corr().loc[str_group])
-            # print(df_grouped.corr().loc[str_group]['BW'])
+        # if os.path.exists(self.file_path):
+        #     df_perf = pd.read_json(self.file_path, orient='records',
+        #                            lines=True)
+        #     df_grouped = df_perf.groupby(self.group_key).mean(
+        #         numeric_only=True)
+        #     print("===Groupby===")
+        #     print(df_grouped)
+        #     # print(df_grouped.corr())
+        #     # print(df_grouped.corr().columns)
+        #     # print(df_grouped.corr().index)
+        #     # print(df_grouped.corr().loc['IOPS']['BW'])
+        #     print("===Correlation===")
+        #     print(df_grouped.corr().loc[str_group])
+        #     # print(df_grouped.corr().loc[str_group]['BW'])
 
-        else:
-            raise FileNotFoundError("File not found")
-        return df_grouped.loc[str_key][str_group]
-
+        # else:
+        #     raise FileNotFoundError("File not found")
+        # return df_grouped.loc[str_key][str_group]
+        pass
     # def kill_process(self, str_process):
     #     ''' Kill process
     #         Args:

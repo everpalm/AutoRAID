@@ -5,7 +5,7 @@ import logging
 import os
 # import paramiko
 import re
-import pandas as pd
+# import pandas as pd
 # import time
 from unit.application_interface import ApplicationInterface as api
 
@@ -56,36 +56,36 @@ def convert_size(callback):
     return wrapper
 
 
-def dict_to_dataframe(callback):
-    ''' Convert a dictionary to a Pandas dataframe
-        Args: Any dictionary
-        Returns: A dataframe
-        Raises: ValueError, IOError
-    '''
-    def wrapper(*args, **kwargs):
-        result_dict = callback(*args, **kwargs)
-        if isinstance(result_dict, dict):
-            df = pd.DataFrame([result_dict], index=[0])
-            logger.debug("df = %s", df)
-            try:
-                if os.path.exists('my_data.json'):
-                    existing_data = pd.read_json('my_data.json',
-                                                 orient='records',
-                                                 lines=True)
-                    combined_data = pd.concat([existing_data, df],
-                                              ignore_index=True)
-                else:
-                    combined_data = df
-                combined_data.to_json('my_data.json',
-                                      orient='records',
-                                      lines=True)
-            except IOError as e:
-                logger.error(f"Error occurred in dict_to_dataframe: {e}")
-                raise
-            return df
-        else:
-            raise ValueError("Input is not a dictionary!")
-    return wrapper
+# def dict_to_dataframe(callback):
+#     ''' Convert a dictionary to a Pandas dataframe
+#         Args: Any dictionary
+#         Returns: A dataframe
+#         Raises: ValueError, IOError
+#     '''
+#     def wrapper(*args, **kwargs):
+#         result_dict = callback(*args, **kwargs)
+#         if isinstance(result_dict, dict):
+#             df = pd.DataFrame([result_dict], index=[0])
+#             logger.debug("df = %s", df)
+#             try:
+#                 if os.path.exists('my_data.json'):
+#                     existing_data = pd.read_json('my_data.json',
+#                                                  orient='records',
+#                                                  lines=True)
+#                     combined_data = pd.concat([existing_data, df],
+#                                               ignore_index=True)
+#                 else:
+#                     combined_data = df
+#                 combined_data.to_json('my_data.json',
+#                                       orient='records',
+#                                       lines=True)
+#             except IOError as e:
+#                 logger.error(f"Error occurred in dict_to_dataframe: {e}")
+#                 raise
+#             return df
+#         else:
+#             raise ValueError("Input is not a dictionary!")
+#     return wrapper
 
 
 class RaspberryPi(object):
@@ -97,23 +97,25 @@ class RaspberryPi(object):
             network interface: eth0
             config file: app_map.json
     '''
-    def __init__(self, str_uart_path, int_baut_rate, str_file_name):
+    # def __init__(self, str_uart_path, int_baut_rate, str_file_name):
+    def __init__(self, str_uart_path, int_baut_rate, str_file_name, rpi_api):
         self.uart_path = str_uart_path
         self.baut_rate = int_baut_rate
         self.file_name = str_file_name
-        self.api = api('local', 'eth0', 'app_map.json')
+        # self.api = api('local', 'eth0', 'app_map.json')
+        self.api = rpi_api
 
     def open_uart(self):
         logger.debug('self.file_name = %s', self.file_name)
-        self.api.command_line(f"screen -dm -L -Logfile {self.file_name}"
+        self.api.command_line(f"sudo screen -dm -L -Logfile {self.file_name}"
                           f" {self.uart_path} {self.baut_rate}")
 
     def close_uart(self) -> int:
-        str_return = self.api.command_line("screen -ls")
+        str_return = self.api.command_line("sudo screen -ls")
         logger.debug('str_return = %s', str_return)
         int_uart_port = str_return.get(1).split('..')[0]
         logger.info('int_uart_port is %d', int(int_uart_port))
-        self.api.command_line(f"screen -X -S {int_uart_port} quit")
+        self.api.command_line(f"sudo screen -X -S {int_uart_port} quit")
         return int_uart_port
 
 
@@ -305,7 +307,7 @@ class SystemUnderTesting(api):
                     "unsafe_shutdowns": int_unsafe_shutdowns
                     }
 
-    @dict_to_dataframe
+    # @dict_to_dataframe
     @convert_size
     def run_io_operation(
                 self,
