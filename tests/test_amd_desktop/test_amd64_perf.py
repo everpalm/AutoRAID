@@ -10,7 +10,7 @@ logging.getLogger(__name__).setLevel(logging.DEBUG)
 READ_R_CFL= 3
 READ_L_CFL = 10
 WRITE_R_CFL = 3
-WRITE_L_CFL = 6
+WRITE_L_CFL = 7
 
 def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
     logger.debug(f'upper_{prefix}iops = {upper_iops}')
