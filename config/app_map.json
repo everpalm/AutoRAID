@@ -4,7 +4,6 @@
         "Local": "192.168.0.193",
         "Account": "ste",
         "Password": "123456",
-        "Local Directory": "/home/pi/Projects/AutoRAID",
         "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     },
     {
@@ -12,7 +11,6 @@
         "Local": "192.168.0.117",
         "Account": "ste",
         "Password": "123456",
-        "Local Directory": "/home/pi/Projects/AutoRAID",
         "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     },
     {
@@ -20,7 +18,6 @@
         "Local": "192.168.0.128",
         "Account": "root",
         "Password": "marvell",
-        "Local Directory": "/home/pi",
         "Remote Directory": "/home/test/FW_Generic"
     }
 ]
