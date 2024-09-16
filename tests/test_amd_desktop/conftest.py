@@ -6,8 +6,6 @@ import pytest
 
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
-from datetime import datetime
-# from amd_desktop.win10_interface import Win10Interface as win10
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
@@ -19,7 +17,7 @@ logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_stress').setLevel(logging.INFO)
-logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
+logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
 logging.getLogger('unit.mongodb').setLevel(logging.INFO)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
