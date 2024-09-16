@@ -17,7 +17,7 @@ logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_stress').setLevel(logging.INFO)
-logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
+logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
 logging.getLogger('unit.mongodb').setLevel(logging.INFO)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
