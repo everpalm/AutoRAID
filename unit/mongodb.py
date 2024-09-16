@@ -375,6 +375,34 @@ class MongoDB(object):
                     "write_pattern": "$write_pattern",
                     "io_depth": "$io_depth"
                 },
+                "percentile_read_iops": {
+                    "$percentile": {
+                    "input": "$read_iops",
+                    "p": [0.99],
+                    "method": "approximate"
+                    }
+                },
+                "percentile_write_iops": {
+                    "$percentile": {
+                    "input": "$write_iops",
+                    "p": [0.99],
+                    "method": "approximate"
+                    }
+                },
+                "percentile_read_bw": {
+                    "$percentile": {
+                    "input": "$read_bw",
+                    "p": [0.99],
+                    "method": "approximate"
+                    }
+                },
+                "percentile_write_bw": {
+                    "$percentile": {
+                    "input": "$write_bw",
+                    "p": [0.99],
+                    "method": "approximate"
+                    }
+                },
                 "avg_read_iops": {
                     "$avg": "$read_iops"
                 },
@@ -658,6 +686,34 @@ class MongoDB(object):
                                 "_id": {
                                     "write_pattern": "$write_pattern",
                                     "block_size": "$block_size"
+                                },
+                                "percentile_read_iops": {
+                                    "$percentile": {
+                                    "input": "$read_iops",
+                                    "p": [0.99],
+                                    "method": "approximate"
+                                    }
+                                },
+                                "percentile_write_iops": {
+                                    "$percentile": {
+                                    "input": "$write_iops",
+                                    "p": [0.99],
+                                    "method": "approximate"
+                                    }
+                                },
+                                "percentile_read_bw": {
+                                    "$percentile": {
+                                    "input": "$read_bw",
+                                    "p": [0.99],
+                                    "method": "approximate"
+                                    }
+                                },
+                                "percentile_write_bw": {
+                                    "$percentile": {
+                                    "input": "$write_bw",
+                                    "p": [0.99],
+                                    "method": "approximate"
+                                    }
                                 },
                                 "avg_read_iops": {
                                     "$avg": "$read_iops"
