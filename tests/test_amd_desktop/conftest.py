@@ -14,8 +14,7 @@ from unit.system_under_testing import RaspberryPi as rpi
 logging.getLogger('amd_desktop.amd64_event').setLevel(logging.DEBUG)
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
-# logging.getLogger('amd_desktop.amd64_ping').setLevel(logging.INFO)
-logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
+logging.getLogger('unit.application_interface').setLevel(logging.DEBUG)
 logging.getLogger('unit.mongodb').setLevel(logging.INFO)
 logging.getLogger('unit.system_under_testing').setLevel(logging.INFO)
 
@@ -57,5 +56,5 @@ def my_app(cmdopt):
         cmdopt.get('config_file'))
 
 @pytest.fixture
-def win_event():
+def win_event(target_system):
     return ae(platform=target_system, config_file='win_events.json')

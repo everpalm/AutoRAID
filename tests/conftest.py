@@ -18,6 +18,7 @@ MDB_ATTR = [{
 }]
 
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
+logging.getLogger("amd_desktop.amd64_ping").setLevel(logging.INFO)
 logging.getLogger("unit.application_interface").setLevel(logging.INFO)
 logging.getLogger("unit.gitlab").setLevel(logging.CRITICAL)
 logging.getLogger("unit.gpio").setLevel(logging.INFO)
