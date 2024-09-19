@@ -55,6 +55,6 @@ def my_app(cmdopt):
     return api(cmdopt.get('mode'), cmdopt.get('if_name'),
         cmdopt.get('config_file'))
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def win_event(target_system):
     return ae(platform=target_system, config_file='win_events.json')
