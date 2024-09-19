@@ -5,23 +5,24 @@ import pytest
 import logging
 import os
 import paramiko
-from unit.gitlab import GitLabAPI as glapi
-from unit.mongodb import MongoDB
-from unit.gpio import RaspBerryPins as rbp
-from unit.application_interface import ApplicationInterface as api
 from amd_desktop.amd64_ping import AMD64Ping as aping
+from unit.application_interface import ApplicationInterface as api
+from unit.gitlab import GitLabAPI as glapi
+from unit.gpio import RaspBerryPins as rbp
+from unit.mongodb import MongoDB
+
 
 MDB_ATTR = [{
     "Log Path": 'logs/uart.log',
     "Report Path": ".report.json"
 }]
 
-logging.basicConfig(level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S')
-
 logging.getLogger("pymongo").setLevel(logging.CRITICAL)
-paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
+logging.getLogger("unit.application_interface").setLevel(logging.INFO)
+logging.getLogger("unit.gitlab").setLevel(logging.CRITICAL)
+logging.getLogger("unit.gpio").setLevel(logging.INFO)
+logging.getLogger("unit.mongodb").setLevel(logging.INFO)
+paramiko.util.log_to_file("logs/paramiko.log", level=logging.CRITICAL)
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ import re
 # import time
 from unit.application_interface import ApplicationInterface as api
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
