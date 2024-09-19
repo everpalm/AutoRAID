@@ -16,7 +16,6 @@ Test cases include:
 import logging
 import pytest
 
-logging.getLogger(__name__).setLevel(logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TestPowerOffSUT(object):
