@@ -5,7 +5,7 @@ import logging
 import os
 
 logger = logging.getLogger(__name__)
-logging.getLogger(__name__).setLevel(logging.DEBUG)
+# logging.getLogger(__name__).setLevel(logging.DEBUG)
 
 READ_R_CFL= 3
 READ_L_CFL = 10

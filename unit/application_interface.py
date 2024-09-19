@@ -217,9 +217,10 @@ class ApplicationInterface(object):
                     f' \"cd {self.remote_dir};{str_cli_cmd}"')
             elif self.os == 'Windows':
                 logger.debug('===Windows===')
-                str_command_line = (f'{str_sshpass}'
-                    f' {self.account}@{self.remote_ip}'
-                    f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
+                str_command_line = (f"{str_sshpass}"
+                    f" {self.account}@{self.remote_ip}"
+                    # f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
+                    f" 'cd {self.remote_dir}&&{str_cli_cmd}'")
         elif self.mode == 'local':
             logger.debug('===Local access mode===')
             # str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
