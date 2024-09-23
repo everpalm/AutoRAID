@@ -7,12 +7,12 @@ import re
 logger = logging.getLogger(__name__)
 
 
-class WinEvent(ABC):
+class SystemLogging(ABC):
     @abstractmethod
-    def find_error_event(self):
+    def find_error(self):
         pass
 
-class AMD64Event(WinEvent):
+class WindowsEvent(SystemLogging):
     def __init__(self, platform, config_file):
         self.config_file = config_file
         self._platform = platform 
@@ -28,7 +28,7 @@ class AMD64Event(WinEvent):
         self._config_file = f'config/{file_name}'
         logger.debug(f'self._config_file = {self._config_file}')
 
-    def find_error_event(self, log_name, event_id, pattern):
+    def find_error(self, log_name, event_id, pattern):
         try:
             output = self._api.command_line._original(self._api,
                 f'powershell "Get-EventLog -LogName {log_name}|Where-Object'
