@@ -4,7 +4,7 @@ import logging
 import paramiko
 import pytest
 
-from amd_desktop.amd64_event import AMD64Event as ae
+from amd_desktop.amd64_event import WindowsEvent as we
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from unit.application_interface import ApplicationInterface as api
@@ -57,4 +57,4 @@ def my_app(cmdopt):
 
 @pytest.fixture(scope="module")
 def win_event(target_system):
-    return ae(platform=target_system, config_file='win_events.json')
+    return we(platform=target_system, config_file='win_events.json')

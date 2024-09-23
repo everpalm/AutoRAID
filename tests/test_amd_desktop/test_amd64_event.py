@@ -19,11 +19,11 @@ MY_EVENTS = (
 
 class TestAMD64Event:
     @pytest.mark.parametrize('my_events', MY_EVENTS)
-    def test_find_error_event(self, win_event, my_events):
+    def test_find_error(self, win_event, my_events):
         logger.debug(f'win_event.config_file = {win_event.config_file}')
-        output = win_event.find_error_event(my_events["LogName"],
-                                            my_events["Event ID"],
-                                            my_events["Pattern"])
+        output = win_event.find_error(my_events["LogName"],
+                                    my_events["Event ID"],
+                                    my_events["Pattern"])
         print(f'output = {output}')
 
 
