@@ -9,7 +9,7 @@ import re
 # import time
 from unit.application_interface import ApplicationInterface as api
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -97,16 +97,15 @@ class RaspberryPi(object):
             network interface: eth0
             config file: app_map.json
     '''
-    # def __init__(self, str_uart_path, int_baut_rate, str_file_name):
     def __init__(self, str_uart_path, int_baut_rate, str_file_name, rpi_api):
         self.uart_path = str_uart_path
         self.baut_rate = int_baut_rate
         self.file_name = str_file_name
-        # self.api = api('local', 'eth0', 'app_map.json')
         self.api = rpi_api
 
     def open_uart(self):
         logger.debug('self.file_name = %s', self.file_name)
+        self.api.command_line(f'pwd')
         self.api.command_line(f"sudo screen -dm -L -Logfile {self.file_name}"
                           f" {self.uart_path} {self.baut_rate}")
 
@@ -114,7 +113,7 @@ class RaspberryPi(object):
         str_return = self.api.command_line("sudo screen -ls")
         logger.debug('str_return = %s', str_return)
         int_uart_port = str_return.get(1).split('..')[0]
-        logger.info('int_uart_port is %d', int(int_uart_port))
+        logger.info(f'int_uart_port = {int_uart_port}')
         self.api.command_line(f"sudo screen -X -S {int_uart_port} quit")
         return int_uart_port
 
