@@ -21,6 +21,7 @@ timeout-decorator = "*"
 pytest-dependency = "*"
 zipp = "*"
 "rpi.gpio" = "*"
+pylint = "*"
 
 [dev-packages]
 
