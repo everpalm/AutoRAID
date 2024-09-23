@@ -16,11 +16,9 @@ import paramiko
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
-# logging.basicConfig(level=logging.DEBUG)
-# logging.basicConfig(filename='C:\paramiko.log')
+
 logger = logging.getLogger(__name__)
-# logger = logging.getLogger("paramiko")
-# logger.disabled = True
+
 
 def dict_format(callback):
     def wrapper(*args, **kwargs):
@@ -97,7 +95,6 @@ class ApplicationInterface(object):
                 remote_ip = dict_element.get('Remote')
                 str_account = dict_element.get('Account')
                 str_password = dict_element.get('Password')
-                # str_local_dir = dict_element.get('Local Directory')
                 str_local_dir = os.environ.get('WORKSPACE')
                 str_remote_dir = dict_element.get('Remote Directory')
                 logger.debug('remote_ip = %s', remote_ip)
