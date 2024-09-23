@@ -8,7 +8,7 @@ import logging
 import subprocess
 import socket
 import fcntl
-# import os
+import os
 import struct
 import json
 import paramiko
@@ -16,11 +16,9 @@ import paramiko
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
-# logging.basicConfig(level=logging.DEBUG)
-# logging.basicConfig(filename='C:\paramiko.log')
+
 logger = logging.getLogger(__name__)
-# logger = logging.getLogger("paramiko")
-# logger.disabled = True
+
 
 def dict_format(callback):
     def wrapper(*args, **kwargs):
@@ -97,7 +95,7 @@ class ApplicationInterface(object):
                 remote_ip = dict_element.get('Remote')
                 str_account = dict_element.get('Account')
                 str_password = dict_element.get('Password')
-                str_local_dir = dict_element.get('Local Directory')
+                str_local_dir = os.environ.get('WORKSPACE')
                 str_remote_dir = dict_element.get('Remote Directory')
                 logger.debug('remote_ip = %s', remote_ip)
                 break
@@ -216,12 +214,14 @@ class ApplicationInterface(object):
                     f' \"cd {self.remote_dir};{str_cli_cmd}"')
             elif self.os == 'Windows':
                 logger.debug('===Windows===')
-                str_command_line = (f'{str_sshpass}'
-                    f' {self.account}@{self.remote_ip}'
-                    f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
+                str_command_line = (f"{str_sshpass}"
+                    f" {self.account}@{self.remote_ip}"
+                    # f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
+                    f" 'cd {self.remote_dir}&&{str_cli_cmd}'")
         elif self.mode == 'local':
             logger.debug('===Local access mode===')
-            str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
+            # str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
+            str_command_line = f'{str_cli_cmd}'
         else:
             raise ValueError('Unknown mode setting in command_line')
         logger.debug('str_command_line = %s', str_command_line)
