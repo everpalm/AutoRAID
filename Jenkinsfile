@@ -25,6 +25,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    gv.test_pep8()
                     gv.build_app()
                 }
             }
