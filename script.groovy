@@ -33,6 +33,6 @@ def test_application_interface() {
 }
 
 def test_pep8() {
-    sh 'pylint ${WORKSPACE} --exit-zero'
+    sh 'pipenv run pylint ${TEST_UNIT} --exit-zero'
 }
 return this
