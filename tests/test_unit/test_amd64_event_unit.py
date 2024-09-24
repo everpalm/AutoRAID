@@ -1,20 +1,68 @@
-import logging
-
-logger = logging.getLogger(__name__)
-# with open(f'config/amd64_event.json', 'r', encoding='utf-8') as f:
-#     MY_EVENTS = [json.load(f)]
-log_name = 'System'
-event_id = 157
-pattern = r'Disk (\d+) has been surprise removed.'
+from collections import defaultdict
 
 
+# 測試類別
 class TestAMD64Event:
-    # @pytest.mark.parametrize('my_events', MY_EVENTS)
-    def test_find_error_event(self, win_event):
-        logger.debug(f'win_event.config_file = {win_event.config_file}')
-        # output = win_event.get_stornvme()
-        output = win_event.find_error_event(log_name, event_id, pattern)
-        print(f'output = {output}')
-        # print(f'my_events = {my_events}')
 
+    def test_find_error_success(self, windows_event):
+        # 模擬成功的 API 調用
+        windows_event._api.command_line._original.return_value = [
+            "EventID: 1234, ErrorCode: 500, Message: Sample error message",
+            "EventID: 1234, ErrorCode: 400, Message: Another error message"
+        ]
 
+        # 測試 find_error 方法
+        result = windows_event.find_error("Application", 1234, r"ErrorCode: (\d+)")
+        
+        # 確認 find_error 返回 True
+        assert result == True
+
+        # 檢查 error_features 是否正確填充
+        expected_error_features = {1234: ['500', '400']}
+        assert windows_event.error_features == expected_error_features
+
+        # 驗證命令是否正確執行
+        windows_event._api.command_line._original.assert_called_once_with(
+            windows_event._api,
+            'powershell "Get-EventLog -LogName Application|Where-Object { $_.EventID -eq 1234 }"'
+        )
+
+    def test_find_error_no_match(self, windows_event):
+        # 模擬無匹配的 API 調用
+        windows_event._api.command_line._original.return_value = []
+
+        # 測試 find_error 方法
+        result = windows_event.find_error("Application", 1234, r"ErrorCode: (\d+)")
+        
+        # 確認 find_error 返回 False
+        assert result == False
+
+        # 檢查 error_features 應保持空
+        assert windows_event.error_features == defaultdict(list)
+
+        # 驗證命令是否正確執行
+        windows_event._api.command_line._original.assert_called_once_with(
+            windows_event._api,
+            'powershell "Get-EventLog -LogName Application|Where-Object { $_.EventID -eq 1234 }"'
+        )
+
+    def test_find_error_exception(self, windows_event):
+        # 模擬 API 調用拋出異常
+        windows_event._api.command_line._original.side_effect = Exception("Command failed")
+
+        # 測試 find_error 方法
+        result = windows_event.find_error("Application", 1234, r"ErrorCode: (\d+)")
+        
+        # 確認 find_error 返回 False
+        assert result == False
+
+        # 檢查 error_features 應保持空
+        assert windows_event.error_features == defaultdict(list)
+
+    def test_config_file_property(self, windows_event):
+        # 測試 config_file 的 getter
+        assert windows_event.config_file == 'config/config_file.json'
+
+        # 測試 config_file 的 setter
+        windows_event.config_file = 'new_config.json'
+        assert windows_event.config_file == 'config/new_config.json'

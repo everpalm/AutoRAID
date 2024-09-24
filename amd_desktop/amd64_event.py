@@ -52,5 +52,6 @@ class WindowsEvent(SystemLogging):
                 return False          
         except Exception as e:
             logger.error(f'find_error_event: {e}')
+            return False
 
         
