@@ -1,14 +1,4 @@
 pipeline {
-    triggers {
-        // Poll SCM every 5 minutes for new commits on development branch
-        pollSCM('H/5 * * * *') {
-            // Only trigger if changes are detected on the 'development' branch
-            ignorePostCommitHooks(false)
-            scmBranches {
-                branch('*/development')
-            }
-        }
-    }
     agent {
         label 'test_my_node'
     }
@@ -38,6 +28,7 @@ pipeline {
         stage('Testing') {
             steps {
                 script {
+                    gv.test_pep8()
                     gv.test_unit()
                 }
             }
@@ -46,28 +37,36 @@ pipeline {
     post {
         success {
             script {
-                def versionContent = readFile(file: VERSION_FILE).trim()
-                def (mainVersion, subVersion, buildVersion) = versionContent.tokenize('.')
-                buildVersion = buildVersion.toInteger() + 1
-                def newVersion = "${mainVersion}.${subVersion}.${buildVersion}"
-                writeFile(file: VERSION_FILE, text: newVersion)
+                try {
+                    def versionContent = readFile(file: VERSION_FILE).trim()
+                    def (mainVersion, subVersion, buildVersion) = versionContent.tokenize('.')
+                    buildVersion = buildVersion.toInteger() + 1
+                    def newVersion = "${mainVersion}.${subVersion}.${buildVersion}"
+                    writeFile(file: VERSION_FILE, text: newVersion)
 
-                sh """
-                git config user.name "everpalm"
-                git config user.email "everpalm@yahoo.com.tw"
-                git add version.txt
-                git commit -m "Bumped build version to ${newVersion} after successful development"
-                git tag -a "v${newVersion}" -m "Tagging version v${newVersion} after Development stage"
-                git push https://everpalm:${GIT_TOKEN}@github.com/everpalm/AutoRAID.git --tags
-                """
-                echo "Build version updated and tagged to v${newVersion}"
+                    // 提交新版本號
+                    sh """
+                    git config user.name "everpalm"
+                    git config user.email "everpalm@yahoo.com.tw"
+                    git add version.txt
+                    git commit -m "Bumped build version to ${newVersion} after successful development"
+                    git tag -a "v${newVersion}" -m "Tagging version v${newVersion} after Development stage"
+                    git push https://everpalm:${env.GIT_TOKEN}@github.com/everpalm/AutoRAID.git --tags
+                    """
 
-                // Merge development to staging
-                sh """
-                git checkout staging
-                git merge development
-                git push https://everpalm:${GIT_TOKEN}@github.com/everpalm/AutoRAID.git staging
-                """
+                    echo "Build version updated and tagged to v${newVersion}"
+
+                    // 合併 development 到 staging
+                    sh """
+                    git fetch origin
+                    git checkout staging
+                    git merge development
+                    git push https://everpalm:${env.GIT_TOKEN}@github.com/everpalm/AutoRAID.git staging
+                    """
+                } catch (Exception e) {
+                    echo "An error occurred during the post-build process: ${e.getMessage()}"
+                    currentBuild.result = 'FAILURE'
+                }
             }
         }
     }
