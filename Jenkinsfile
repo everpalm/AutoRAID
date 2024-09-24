@@ -41,11 +41,12 @@ pipeline {
                     // 合併 development 到 staging
                     sh """
                     git fetch origin
-                    git checkout origin/staging
-                    git merge development
+                    git checkout staging
+                    git merge origin/staging
+                    git merge origin/development
                     git push https://everpalm:${env.GIT_TOKEN}@github.com/everpalm/AutoRAID.git staging
                     """
-                } catch (Exception e) {
+                } catch (e) {
                     echo "An error occurred during the post-build process: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                 }
