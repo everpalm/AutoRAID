@@ -1,13 +1,7 @@
 pipeline {
     triggers {
         // Poll SCM every 5 minutes for new commits on development branch
-        pollSCM('H/5 * * * *') {
-            // Only trigger if changes are detected on the 'development' branch
-            ignorePostCommitHooks(false)
-            scmBranches {
-                branch('*/development')
-            }
-        }
+        pollSCM('H/5 * * * *')
     }
     agent {
         label 'test_my_node'
