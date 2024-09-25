@@ -2,6 +2,10 @@ pipeline {
     agent {
         label 'test_my_node'
     }
+    triggers {
+        // Poll SCM every 5 minutes for new commits on development branch
+        pollSCM('H/5 * * * *')
+    }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
         VERSION_FILE = "${WORKSPACE}/version.txt"
