@@ -2,12 +2,16 @@ pipeline {
     agent {
         label 'test_my_node'
     }
+    triggers {
+        // Poll SCM every 5 minutes for new commits on development branch
+        pollSCM('H/5 * * * *')
+    }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
         VERSION_FILE = "${WORKSPACE}/version.txt"
         GIT_TOKEN = credentials('github-token')
         TEST_UNIT = "${WORKSPACE}/tests/test_unit"
-        TEST_AMD_DESKTOP = "${WORKSPACE}/test_amd_desktop"
+        TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
     }
     stages {
         stage('Init') {
@@ -30,6 +34,7 @@ pipeline {
                 script {
                     gv.test_pep8()
                     gv.test_unit()
+                    gv.test_amd64_nvme()
                 }
             }
         }
@@ -44,13 +49,18 @@ pipeline {
                     git checkout staging
                     git merge origin/staging
                     git merge origin/development
-                    git push https://everpalm:${env.GIT_TOKEN}@github.com/everpalm/AutoRAID.git staging
                     """
+                    sh('git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging')
                 } catch (e) {
                     echo "An error occurred during the post-build process: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                 }
             }
+        }
+        failure {
+            mail to: 'everpalm@yahoo.com.tw',
+                 subject: 'Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}',
+                 body: 'Please check the Jenkins console output for details.'
         }
     }
 }
