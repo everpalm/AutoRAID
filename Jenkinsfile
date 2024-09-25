@@ -30,6 +30,7 @@ pipeline {
                 script {
                     gv.test_pep8()
                     gv.test_unit()
+                    gv.test_amd64_nvme()
                 }
             }
         }
@@ -44,13 +45,18 @@ pipeline {
                     git checkout staging
                     git merge origin/staging
                     git merge origin/development
-                    git push https://everpalm:${env.GIT_TOKEN}@github.com/everpalm/AutoRAID.git staging
                     """
+                    sh('git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging')
                 } catch (e) {
                     echo "An error occurred during the post-build process: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                 }
             }
+        }
+        failure {
+            mail to: 'everpalm@yahoo.com.tw',
+                 subject: 'Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}',
+                 body: 'Please check the Jenkins console output for details.'
         }
     }
 }
