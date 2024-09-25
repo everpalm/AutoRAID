@@ -7,7 +7,7 @@ pipeline {
         VERSION_FILE = "${WORKSPACE}/version.txt"
         GIT_TOKEN = credentials('github-token')
         TEST_UNIT = "${WORKSPACE}/tests/test_unit"
-        TEST_AMD_DESKTOP = "${WORKSPACE}/test_amd_desktop"
+        TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
     }
     stages {
         stage('Init') {
