@@ -1,5 +1,4 @@
 def build_app() {
-    // sh "mkdir -p ${WORKSPACE}/logs"
     sh 'pipenv sync'
 }
 
