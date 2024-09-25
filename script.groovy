@@ -1,4 +1,5 @@
 def build_app() {
+    sh "mkdir -p ${WORKSPACE}/logs"
     sh 'pipenv sync'
 }
 
@@ -30,5 +31,9 @@ def test_amd64_stress() {
 }
 def test_application_interface() {
     sh 'pipenv run pytest ${TEST_AMD_DESKTOP}/test_application_interface.py --testmon --private_token=$MY_PRIVATE_TOKEN'
+}
+
+def test_pep8() {
+    sh 'pipenv run pylint ${TEST_UNIT} --exit-zero'
 }
 return this
