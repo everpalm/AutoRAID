@@ -40,7 +40,21 @@ pipeline {
         }
     }
     post {
+        always {
+            script {
+                // 總是將測試報告存檔
+                archiveArtifacts artifacts: '**/htmlcov/**', allowEmptyArchive: true
+            }
+        }
         success {
+            emailext(
+                to: 'everpalm@yahoo.com.tw',
+                subject: "Build Success: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: """<p>All tests passed successfully!</p>
+                         <p>Please check the attached test coverage report.</p>""",
+                mimeType: 'text/html',
+                attachmentsPattern: '**/htmlcov/index.html'
+            )
             script {
                 try {
                     // 合併 development 到 staging
@@ -58,9 +72,15 @@ pipeline {
             }
         }
         failure {
-            mail to: 'everpalm@yahoo.com.tw',
-                 subject: 'Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}',
-                 body: 'Please check the Jenkins console output for details.'
+            // mail to: 'everpalm@yahoo.com.tw',
+            //      subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+            //      body: 'Please check the Jenkins console output for details.'
+            emailext(
+                to: 'everpalm@yahoo.com.tw',
+                subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: 'The build has failed. Please check the Jenkins console output for details.',
+                mimeType: 'text/html'
+            )
         }
     }
 }
