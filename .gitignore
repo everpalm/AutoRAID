@@ -1,11 +1,12 @@
 **/__pycache__
+caches/
+htmlcov/
 logs/*.*
 remoting/
 workspace/
-caches/
-.report.json
 *.jar
 *.log*
-.testmondata*
 .coverage*
 .pytest_cache/
+.report.json
+.testmondata*
