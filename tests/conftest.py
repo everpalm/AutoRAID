@@ -38,8 +38,8 @@ def pytest_addoption(parser):
     parser.addoption(
         "--if_name",
         action="store",
-        default="eth0",
-        help="Default name of interface: eth0"
+        default="wlan0",
+        help="Default name of interface: wlan0"
     )
     parser.addoption(
         "--config_file",
@@ -89,7 +89,7 @@ def store_gitlab_api_in_config(cmdopt, request):
 @pytest.fixture(scope="session")
 def drone_api():
     print('\n\033[32m================== Setup RPi API ===============\033[0m')
-    return api('local', 'eth0', 'app_map.json')
+    return api('local', 'wlan0', 'app_map.json')
 
 @pytest.fixture(scope="session")
 def target_ping(drone_api):
