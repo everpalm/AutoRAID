@@ -23,8 +23,9 @@ zipp = "*"
 "rpi.gpio" = "*"
 pylint = "*"
 screen = "*"
-bcrypt = "4.2.0"
-cryptography = "43.0.1"
+bcrypt = {version="==4.0.1", hashes=["..."], allow_prereleases=true}
+cryptography = {version="==41.0.3", hashes=["..."], allow_prereleases=true}
+
 
 [dev-packages]
 
