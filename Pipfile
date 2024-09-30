@@ -23,8 +23,8 @@ zipp = "*"
 "rpi.gpio" = "*"
 pylint = "*"
 screen = "*"
-bcrypt = "*"
-cryptography = "*"
+bcrypt = "4.2.0"
+cryptography = "43.0.1"
 
 [dev-packages]
 
