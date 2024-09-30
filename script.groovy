@@ -1,5 +1,5 @@
 def build_app() {
-    sh 'pipenv sync --skip-lock'
+    sh 'pipenv sync'
 }
 
 def test_amd_desktop() {
