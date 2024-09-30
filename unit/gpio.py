@@ -6,7 +6,7 @@ import json
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-PROJECT_PATH = "/home/pi/Projects/AutoRAID"
+# PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
 class RaspBerryPins(object):
     """
@@ -66,7 +66,8 @@ class RaspBerryPins(object):
         """
         try:
             # print(f'self._pin_define = {self._pin_define}')
-            with open(f'{PROJECT_PATH}/config/{self.pin_define_file}', 'r') as f:
+            # with open(f'{PROJECT_PATH}/config/{self.pin_define_file}', 'r') as f:
+            with open(f'config/{self.pin_define_file}', 'r') as f:
                 dict_pin_define = json.load(f)
                 logger.debug(f'dict_pin_define = {dict_pin_define}')
                 temp = dict_pin_define.get(self._pin_define)

@@ -29,16 +29,13 @@ RUN pip install bcrypt==3.1.7 cryptography
 
 # 設定工作目錄，並將腳本代碼複製進容器
 WORKDIR /script
+COPY requirements.txt /script/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Prior to execution
 COPY . /script
-
-# 安装项目的依赖项
-RUN pip install -r requirements.txt
-
-# 设置 PYTHONPATH
-ENV PYTHONPATH="/script:${PYTHONPATH}"
-
-# 暴露 API 端口
+RUN touch /script/logs/uart.log
+# ENV PYTHONPATH="/script:${PYTHONPATH}"
+ENV PYTHONPATH="/script"
 EXPOSE 80
-
-# 运行测试
 CMD ["pytest"]
