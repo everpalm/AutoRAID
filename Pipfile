@@ -1,7 +1,7 @@
 [[source]]
-url = "https://www.piwheels.org/simple"
+url = "https://pypi.org/simple"
 verify_ssl = true
-name = "piwheels"
+name = "pypi"
 
 [packages]
 paramiko = "*"
@@ -9,7 +9,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-testmon = "*"
 pytest-repeat = "*"
-pymongo = "*"
+pymongo = "==3.12.0"
 pytest-json-report = "*"
 pytest-timeout = "*"
 python-gitlab = "*"
@@ -20,12 +20,10 @@ pytest-rerunfailures = "*"
 timeout-decorator = "*"
 pytest-dependency = "*"
 zipp = "*"
-"rpi.gpio" = "*"
 pylint = "*"
 screen = "*"
-bcrypt = {version="==4.0.1", hashes=["..."], allow_prereleases=true}
-cryptography = {version="==41.0.3", hashes=["..."], allow_prereleases=true}
-
+bcrypt = "*"
+cryptography = "*"
 
 [dev-packages]
 
