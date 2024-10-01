@@ -12,7 +12,7 @@ pipeline {
         GIT_TOKEN = credentials('github-token')
         TEST_UNIT = "${WORKSPACE}/tests/test_unit"
         TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
-        PATH = "/home/pi/.local/bin:$PATH"
+        PATH = "/home/pi/.pyenv/shims:/home/pi/.pyenv/bin:${env.PATH}"
     }
     stages {
         stage('Init') {
