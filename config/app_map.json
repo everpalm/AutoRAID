@@ -1,5 +1,6 @@
 [
     {
+        "Name": "MY-RASPI-01",
         "Remote": "192.168.0.128",
         "Local": "192.168.0.193",
         "Account": "ste",
@@ -7,6 +8,7 @@
         "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     },
     {
+        "Name": "MY-RASPI-02",
         "Remote": "192.168.0.128",
         "Local": "192.168.0.117",
         "Account": "ste",
@@ -14,10 +16,11 @@
         "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     },
     {
+        "Name": "MY-RASPI-03",
         "Remote": "192.168.0.128",
-        "Local": "192.168.0.128",
-        "Account": "root",
-        "Password": "marvell",
-        "Remote Directory": "/home/test/FW_Generic"
+        "Local": "192.168.0.139",
+        "Account": "ste",
+        "Password": "123456",
+        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
     }
 ]
