@@ -110,7 +110,7 @@ RW_TABLE = (
                 #   "Run Time": 10, "Job": 1, "IOPS": 40000, "BW": 150000000}
             )
 
-@pytest.mark.skip(reason="Skipping this test class")
+# @pytest.mark.skip(reason="Skipping this test class")
 class TestSystemUnderTesting(object):
     # @pytest.fixture(scope="session", autouse=True)
     @pytest.fixture(scope="function", autouse=True)
