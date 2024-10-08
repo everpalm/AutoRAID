@@ -5,6 +5,7 @@ import RPi.GPIO as gpio
 from unittest.mock import MagicMock
 from unit.gpio import OperateGPIO as og
 
+
 class TestOperateGPIO(object):
     @pytest.fixture(scope="class", autouse=True)
     def setup_gpio(self, my_pins):
