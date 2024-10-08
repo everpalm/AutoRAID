@@ -37,6 +37,7 @@ AGGREGATE_RESULTS = [{
     # "std_write_iops": 12.909944
 }]
 
+
 class TestMongoDB:
     @pytest.fixture(scope="module")
     def mongo_db(self):
