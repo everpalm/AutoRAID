@@ -13,9 +13,9 @@ import pytest
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session")
-def gitlab_api(request):
-    return request.config._store.get('gitlab_api', None)
+# @pytest.fixture(scope="session")
+# def gitlab_api(request):
+#     return request.config._store.get('gitlab_api', None)
 
 
 # 創建 platform_mock 的 fixture
