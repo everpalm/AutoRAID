@@ -5,35 +5,11 @@ import logging
 import pytest
 import json
 
-# PROJECT_PATH = "/home/pi/Projects/AutoRAID"
-
 ''' Set up logger '''
 logger = logging.getLogger(__name__)
 
-# with open(f'{PROJECT_PATH}/config/amd64_nvme.json', 'r') as f:
 with open('config/amd64_nvme.json', 'r') as f:
     AMD64_NVM = [json.load(f)]
-
-# TEST_PATTERN = (
-#     {
-#         "Thread": 1,
-#         "IO Depth": 32,
-#         "Block Size": '4k',
-#         "Random Size": None,
-#         "Write Pattern": 50,
-#         "Duration": 10,
-#         "Test File": 'D:\\IO.dat',
-#         "Read IO": {
-#             "BW": 105,
-#             "IOPS": 26920
-#         },
-#         "Write IO": {
-#             "BW": 105,
-#             "IOPS": 26972
-#         },
-#         "CR": 0.8
-#     },
-# )
 
 
 class TestAMD64NVMe(object):
