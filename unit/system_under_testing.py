@@ -305,3 +305,58 @@ class SystemUnderTesting(api):
                     "power_cycles": int_power_cycles,
                     "unsafe_shutdowns": int_unsafe_shutdowns
                     }
+
+    # Should be decoupled
+    # @dict_to_dataframe
+    @convert_size
+    def run_io_operation(
+                self,
+                str_rw: str,
+                str_bs: str,
+                str_iodepth: str,
+                str_numjobs: str,
+                str_runtime: str,
+                int_cpumask: int) -> dict[str, str | int]:
+        ''' Run FIO
+            Args:
+            Returns:
+            Raises:
+        '''
+        bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
+        try:
+            bool_return = self.io_command(f'fio --filename=/dev/{self.node} \
+                    --direct=1 --rw={str_rw} --bs={str_bs} --ioengine=libaio \
+                    --iodepth={str_iodepth} --runtime={str_runtime} \
+                    --numjobs={str_numjobs} --time_based --group_reporting \
+                    --name=iops-test-job --eta-newline=1 \
+                    --cpumask={int_cpumask} | tee iops.log')
+            logger.debug('_bool_return = %s', bool_return)
+            if str_rw == 'randread' or str_rw == 'read':
+                dict_return = \
+                    self.command_line("cat ~/iops.log | grep 'read:'")
+            if str_rw == 'randwrite' or str_rw == 'write':
+                dict_return = \
+                    self.command_line('cat ~/iops.log | grep "write:"')
+            if str_rw == 'randrw':
+                dict_return = \
+                    self.command_line('cat ~/iops.log | grep "write:"')
+            str_iops_temp = dict_return.get(0).split(':')[1]
+            str_iops = str_iops_temp.split('=')[1].split(',')[0]
+            str_bw_temp = dict_return.get(0).split(':')[1].split('=')[2]
+            str_bw = str_bw_temp.split(',')[0].split(' ')[0]
+            logger.debug('str_iops = %s, str_bw = %s', str_iops, str_bw)
+        except Exception as e:
+            logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
+            raise
+        finally:
+            return {
+                    "IOPS": str_iops,
+                    "BW": str_bw,
+                    "File Name": self.node,
+                    "RW Mode": str_rw,
+                    "Block Size": str_bs,
+                    "IO Depth": str_iodepth,
+                    "Job": str_numjobs,
+                    "Run Time": str_runtime,
+                    "CPU Mask": int_cpumask
+                    }
