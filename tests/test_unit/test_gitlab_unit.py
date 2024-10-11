@@ -4,6 +4,11 @@ import pytest
 from unittest.mock import MagicMock, patch
 
 
+@pytest.fixture(scope="session")
+def gitlab_api(request):
+    return request.config._store.get('gitlab_api', None)
+
+
 class TestGitLabAPI:
     def test_fetch_test_case_content(self, gitlab_api):
         with patch.object(gitlab_api.gl.projects, 'get') as mock_get:

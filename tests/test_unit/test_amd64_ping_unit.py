@@ -11,7 +11,6 @@ logging.getLogger(__name__).setLevel(logging.DEBUG)
 
 
 class TestPing(object):
-    # @pytest.fixture(scope="module", autouse=True)
     @pytest.fixture(scope="module")
     def mock_api(self):
         mock = MagicMock()
