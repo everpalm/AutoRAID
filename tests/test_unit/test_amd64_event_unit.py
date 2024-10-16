@@ -77,8 +77,10 @@ class TestAMD64Event:
 
     def test_config_file_property(self, windows_event):
         # 測試 config_file 的 getter
-        assert windows_event.config_file == 'config/config_file.json'
+        # assert windows_event.config_file == 'config/config_file.json'
+        assert windows_event.config_file == 'config_file.json'
 
         # 測試 config_file 的 setter
         windows_event.config_file = 'new_config.json'
-        assert windows_event.config_file == 'config/new_config.json'
+        # assert windows_event.config_file == 'config/new_config.json'
+        assert windows_event.config_file == 'new_config.json'

@@ -25,7 +25,8 @@ class WindowsEvent(SystemLogging):
 
     @config_file.setter
     def config_file(self, file_name):
-        self._config_file = f'config/{file_name}'
+        # self._config_file = f'config/{file_name}'
+        self._config_file = f'{file_name}'
         logger.debug(f'self._config_file = {self._config_file}')
 
     def find_error(self, log_name, event_id, pattern):

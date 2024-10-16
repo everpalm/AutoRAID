@@ -57,4 +57,4 @@ def my_app(cmdopt):
 
 @pytest.fixture(scope="module")
 def win_event(target_system):
-    return we(platform=target_system, config_file='win_events.json')
+    return we(platform=target_system, config_file='config/win_events.json')
