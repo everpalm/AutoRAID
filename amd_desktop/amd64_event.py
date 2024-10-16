@@ -17,7 +17,7 @@ class WindowsEvent(SystemLogging):
         self.config_file = config_file
         self._platform = platform 
         self._api = platform.api
-        self.error_features = defaultdict(list)
+        self.error_features = defaultdict(set)
 
     @property
     def config_file(self):
@@ -38,15 +38,16 @@ class WindowsEvent(SystemLogging):
             if output:
                 for line in output:
                     if line:
-                        print(f'line = {line}')
+                        logger.debug(f'line = {line}')
                         match = re.search(pattern, line)
                         if match:
                             value = str(match.group(1))
-                            if event_id not in self.error_features:
-                                self.error_features[event_id] = [value]
-                            else:
-                                if value not in self.error_features[event_id]:
-                                    self.error_features[event_id].append(value)
+                            # if event_id not in self.error_features:
+                            #     self.error_features[event_id] = [value]
+                            # else:
+                            #     if value not in self.error_features[event_id]:
+                            #         self.error_features[event_id].append(value)
+                            self.error_features[event_id].add(value)
                 logger.debug(f"self.error_features = {self.error_features}")
                 return True
             else:
