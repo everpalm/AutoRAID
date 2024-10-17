@@ -3,7 +3,7 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
-MY_EVENTS = (
+IO_EVENTS = (
     {
         "LogName": "System",
         "Event ID": 157,
@@ -18,13 +18,12 @@ MY_EVENTS = (
 )
 
 class TestAMD64Event:
-    @pytest.mark.parametrize('my_events', MY_EVENTS)
-    def test_find_error(self, win_event, my_events):
-        logger.debug(f'win_event.config_file = {win_event.config_file}')
-        output = win_event.find_error(my_events["LogName"],
-                                    my_events["Event ID"],
-                                    my_events["Pattern"])
-        print(f'output = {output}')
-
+    @pytest.mark.parametrize('io_events', IO_EVENTS)
+    def test_find_error(self, win_event, io_events):
+        output = win_event.find_error(io_events["LogName"],
+                                    io_events["Event ID"],
+                                    io_events["Pattern"])
+        logger.debug(f'output = {output}')
+        assert output == False
 
 
