@@ -1,6 +1,9 @@
 # Contents of amd_64_nvme.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
+from abc import abstractmethod
+from abc import ABC
+from collections import defaultdict
 import logging
 import os
 import re
@@ -9,6 +12,14 @@ from unit.system_under_testing import convert_size
 
 logger = logging.getLogger(__name__)
 
+# class SystemLogging(ABC):
+#     @abstractmethod
+#     def find_error(self):
+#         pass
+
+#     @abstractmethod
+#     def clear_error(self):
+#         pass
 
 class AMD64NVMe(object):
     ''' AMD 64 NVMe System
@@ -41,6 +52,7 @@ class AMD64NVMe(object):
         self._mac_address = None
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
+        self.error_features = defaultdict(set)
     
     def _get_hyperthreading(self):
         try:

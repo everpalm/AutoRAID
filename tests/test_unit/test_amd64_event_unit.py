@@ -1,86 +1,109 @@
-from amd_desktop.amd64_event import WindowsEvent
-from collections import defaultdict
-from unittest.mock import MagicMock
 import pytest
+from unittest.mock import MagicMock, patch
+from collections import defaultdict
+import re
+from amd_desktop.amd64_nvme import AMD64NVMe
+from amd_desktop.amd64_event import WindowsEvent  # 引入 WindowsEvent 類，確保正確的模組名稱
 
-# 創建 platform_mock 的 fixture
-@pytest.fixture(scope="module")
-def platform_mock():
-    return MagicMock()
+# 測試 WindowsEvent 的 find_error 方法
+@pytest.fixture
+def mock_platform():
+    mock_platform = MagicMock(spec=AMD64NVMe)
+    # 模擬 api 和 command_line
+    mock_platform.api = MagicMock()  # 添加 api 屬性
+    mock_platform.api.command_line = MagicMock()  # 添加 command_line 子屬性
+    mock_platform.api.command_line._original = MagicMock()  # 添加 _original 方法
+    
+    mock_platform.error_features = defaultdict(set)
+    return mock_platform
 
+def test_find_error_success(mock_platform):
+    # 假設 PowerShell 的輸出
+    mock_platform.api.command_line._original.return_value = [
+        'Event 157: Disk 1 has been surprise removed.'
+    ]
 
-# 創建 WindowsEvent 實例的 fixture，並注入 platform_mock
-@pytest.fixture(scope="function")
-def windows_event(platform_mock):
-    windows_event = WindowsEvent(platform_mock, 'config_file.json')
-    windows_event._api = MagicMock()  # 預設 Mock _api
-    return windows_event
+    # 初始化 WindowsEvent
+    win_event = WindowsEvent(mock_platform)
+    
+    # 定義日誌事件查找條件
+    log_name = "System"
+    event_id = 157
+    pattern = r'Disk (\d+) has been surprise removed.'
+    
+    # 調用 find_error 方法
+    result = win_event.find_error(log_name, event_id, pattern)
+    
+    # 驗證結果
+    assert result is True
+    assert event_id in mock_platform.error_features
+    assert '1' in mock_platform.error_features[event_id]
 
+def test_find_error_no_match(mock_platform):
+    # 模擬沒有匹配的輸出
+    mock_platform.api.command_line._original.return_value = [
+        'Event 158: Another event.'
+    ]
 
-# 測試類別
-class TestAMD64Event:
+    # 初始化 WindowsEvent
+    win_event = WindowsEvent(mock_platform)
 
-    def test_find_error_success(self, windows_event):
-        # 模擬成功的 API 調用
-        windows_event._api.command_line._original.return_value = [
-            "EventID: 1234, ErrorCode: 500, Message: Sample error message",
-            "EventID: 1234, ErrorCode: 400, Message: Another error message"
-        ]
+    # 調用 find_error 方法
+    log_name = "System"
+    event_id = 157
+    pattern = r'Disk (\d+) has been surprise removed.'
 
-        # 測試 find_error 方法
-        result = windows_event.find_error("Application", 1234, r"ErrorCode: (\d+)")
-        
-        # 確認 find_error 返回 True
-        assert result == True
+    result = win_event.find_error(log_name, event_id, pattern)
 
-        # 檢查 error_features 是否正確填充
-        expected_error_features = {1234: ['500', '400']}
-        assert windows_event.error_features == expected_error_features
+    # 沒有匹配應該返回 False
+    assert result is False
+    assert event_id not in mock_platform.error_features
 
-        # 驗證命令是否正確執行
-        windows_event._api.command_line._original.assert_called_once_with(
-            windows_event._api,
-            'powershell "Get-EventLog -LogName Application|Where-Object { $_.EventID -eq 1234 }"'
-        )
+def test_find_error_empty_output(mock_platform):
+    # 模擬 PowerShell 沒有返回任何輸出
+    mock_platform.api.command_line._original.return_value = []
 
-    def test_find_error_no_match(self, windows_event):
-        # 模擬無匹配的 API 調用
-        windows_event._api.command_line._original.return_value = []
+    # 初始化 WindowsEvent
+    win_event = WindowsEvent(mock_platform)
 
-        # 測試 find_error 方法
-        result = windows_event.find_error("Application", 1234, r"ErrorCode: (\d+)")
-        
-        # 確認 find_error 返回 False
-        assert result == False
+    # 調用 find_error 方法
+    log_name = "System"
+    event_id = 157
+    pattern = r'Disk (\d+) has been surprise removed.'
 
-        # 檢查 error_features 應保持空
-        assert windows_event.error_features == defaultdict(list)
+    result = win_event.find_error(log_name, event_id, pattern)
 
-        # 驗證命令是否正確執行
-        windows_event._api.command_line._original.assert_called_once_with(
-            windows_event._api,
-            'powershell "Get-EventLog -LogName Application|Where-Object { $_.EventID -eq 1234 }"'
-        )
+    # 沒有輸出應該返回 False
+    assert result is False
 
-    def test_find_error_exception(self, windows_event):
-        # 模擬 API 調用拋出異常
-        windows_event._api.command_line._original.side_effect = Exception("Command failed")
+def test_clear_error_success(mock_platform):
+    # 模擬 PowerShell 清除日誌成功
+    mock_platform.api.command_line._original.return_value = "Log cleared."
 
-        # 測試 find_error 方法
-        result = windows_event.find_error("Application", 1234, r"ErrorCode: (\d+)")
-        
-        # 確認 find_error 返回 False
-        assert result == False
+    # 初始化 WindowsEvent
+    win_event = WindowsEvent(mock_platform)
 
-        # 檢查 error_features 應保持空
-        assert windows_event.error_features == defaultdict(list)
+    # 調用 clear_error 方法
+    result = win_event.clear_error()
 
-    def test_config_file_property(self, windows_event):
-        # 測試 config_file 的 getter
-        # assert windows_event.config_file == 'config/config_file.json'
-        assert windows_event.config_file == 'config_file.json'
+    # 應該返回 True
+    assert result is True
+    mock_platform.api.command_line._original.assert_called_once_with(
+        mock_platform.api, 'powershell "Clear-EventLog -LogName system"'
+    )
 
-        # 測試 config_file 的 setter
-        windows_event.config_file = 'new_config.json'
-        # assert windows_event.config_file == 'config/new_config.json'
-        assert windows_event.config_file == 'new_config.json'
+def test_clear_error_failure(mock_platform):
+    # 模擬 PowerShell 清除日誌失敗
+    mock_platform.api.command_line._original.side_effect = Exception("Command failed")
+
+    # 初始化 WindowsEvent
+    win_event = WindowsEvent(mock_platform)
+
+    # 調用 clear_error 方法
+    result = win_event.clear_error()
+
+    # 應該返回 False，且記錄錯誤
+    assert result is False
+    mock_platform.api.command_line._original.assert_called_once_with(
+        mock_platform.api, 'powershell "Clear-EventLog -LogName system"'
+    )

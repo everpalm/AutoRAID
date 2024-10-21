@@ -6,7 +6,7 @@ import logging
 import pytest
 
 # logging.getLogger("pymongo").setLevel(logging.CRITICAL)
-# logging.getLogger('amd_desktop.amd64_event').setLevel(logging.INFO)
+logging.getLogger('amd_desktop.amd64_event').setLevel(logging.DEBUG)
 # logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
 # logging.getLogger('unit.ping').setLevel(logging.CRITICAL)
 
