@@ -3,6 +3,7 @@
 import pytest
 import logging
 import os
+from test_amd64_event import TestAMD64Event
 
 logger = logging.getLogger(__name__)
 # logging.getLogger(__name__).setLevel(logging.DEBUG)
@@ -156,3 +157,6 @@ class TestRampTimeReadWrite(object):
         logger.debug(f'ramp_times = {ramp_times}')
         logger.debug(f'result = {result}')
 
+class TestPerfEvent(TestAMD64Event):
+    print("I'm here!!!!!!!!!!!!!!!!!!!!!!!!")
+    pass
