@@ -3,7 +3,7 @@
 import pytest
 import logging
 import os
-from test_amd64_event import TestAMD64Event
+from amd_desktop.amd64_event import WindowsEvent as we
 
 logger = logging.getLogger(__name__)
 # logging.getLogger(__name__).setLevel(logging.DEBUG)
@@ -80,6 +80,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
         assert upper_limit_write_iops > write_iops > lower_limit_write_iops
         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
+
 class TestRandomReadWrite(object):
     ''' Test AMD64 NVM Random Read Write Performance
         Performance of the AMD64 system
@@ -105,6 +106,17 @@ class TestRandomReadWrite(object):
         logger.debug(f'result = {criteria}')
 
         validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+
+@pytest.fixture(scope="module")
+def win_event(target_system):
+    print('\n\033[32m================== Setup Win Event =============\033[0m')
+    return we(platform=target_system)
+
+@pytest.fixture(scope="function", autouse=True)
+def test_check_error(win_event):
+    yield win_event.clear_error()
+    win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)')
+    win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.')
 
 class TestSequentialReadWrite(object):
     ''' Test AMD64 NVM Sequential Read Write Performance
@@ -157,6 +169,6 @@ class TestRampTimeReadWrite(object):
         logger.debug(f'ramp_times = {ramp_times}')
         logger.debug(f'result = {result}')
 
-class TestPerfEvent(TestAMD64Event):
-    print("I'm here!!!!!!!!!!!!!!!!!!!!!!!!")
-    pass
+# class TestPerfEvent(TestAMD64Event):
+#     print("I'm here!!!!!!!!!!!!!!!!!!!!!!!!")
+#     pass

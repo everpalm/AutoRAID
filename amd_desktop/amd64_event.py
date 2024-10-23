@@ -1,4 +1,4 @@
-from collections import defaultdict
+# from collections import defaultdict
 from abc import ABC, abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 import logging
@@ -17,27 +17,14 @@ class SystemLogging(ABC):
     def clear_error(self):
         pass
 
-# Windows 平台的配置類
-# class WindowsEventConfig:
-#     def __init__(self, platform, config_file):
-#         self.config_file = config_file
-#         self._platform = platform
-#         self._api = platform.api
-#         self.error_features = defaultdict(set)
 
-#     @property
-#     def config_file(self):
-#         return self._config_file
-
-#     @config_file.setter
-#     def config_file(self, file_name):
-#         self._config_file = f'{file_name}'
-#         logger.debug(f'self._config_file = {self._config_file}')
+class MatchFoundException(Exception):
+    pass
 
 
 # Windows 平台的日誌處理器
 class WindowsEvent(SystemLogging):
-    # def __init__(self, config: WindowsEventConfig):
+
     def __init__(self, platform: AMD64NVMe):
         self._api = platform.api
         self._error_features = platform.error_features
@@ -61,16 +48,21 @@ class WindowsEvent(SystemLogging):
                             match_found = True  # 匹配成功
                             value = str(match.group(1))
                             self._error_features[event_id].add(value)
+                            raise MatchFoundException(f"Match found for event ID {event_id}: {value}")
                 logger.debug(f"self._error_features = {self._error_features}")
-
+                
+            
             return match_found  # 根據是否有匹配模式來返回
+        except MatchFoundException as e:
+            logger.info(f"Process stopped due to: {e}")
+            raise  # 如果需要在外部捕捉這個異常，可以選擇重新拋出
+
         except Exception as e:
             logger.error(f'find_error_event: {e}')
             return False
 
     def clear_error(self):
         try:
-            # result = self.config._api.command_line._original(
             result = self._api.command_line._original(self._api,
                 'powershell "Clear-EventLog -LogName system"'
             )
