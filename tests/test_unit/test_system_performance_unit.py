@@ -19,15 +19,21 @@ RUN_TIME = [30, 60, 120, 240, 480]
 JOB_NUM = [1, 2, 4, 8, 16, 32, 64, 128]
 
 RR_4K_IOD1_JOB1 = (
-    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1, "Run Time": 30, "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
-    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1, "Run Time": 30, "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
-    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 2, "Run Time": 30, "Job": 1, "IOPS": 9000, "BW": 36846960, "CR": 0.7, "CPU Mask": 0x1},
-    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 4, "Run Time": 30, "Job": 1, "IOPS": 14540, "BW": 58248396, "CR": 0.7, "CPU Mask": 0x1},
+    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1, "Run Time": 30,
+      "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
+    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1, "Run Time": 30,
+     "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
+    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 2, "Run Time": 30,
+     "Job": 1, "IOPS": 9000, "BW": 36846960, "CR": 0.7, "CPU Mask": 0x1},
+    {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 4, "Run Time": 30,
+     "Job": 1, "IOPS": 14540, "BW": 58248396, "CR": 0.7, "CPU Mask": 0x1},
 )
 
 RW_4K_IOD1_JOB1 = (
-    {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 1, "Run Time": 30, "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
-    {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 1, "Run Time": 30, "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
+    {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 1, "Run Time": 30,
+     "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
+    {"RW Mode": "randwrite", "Block Size": "4k", "IO Depth": 1, "Run Time": 30,
+     "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
 )
 
 # 測試類別
@@ -58,7 +64,8 @@ class TestPerformanceIODepth:
         # 模擬執行 I/O 操作
         target_system.run_io_operation(rw_mode, '4k', io_depth, 1, 30, 4)
         # 檢查 I/O 操作是否被正確執行
-        target_system.run_io_operation.assert_called_with(rw_mode, '4k', io_depth, 1, 30, 4)
+        target_system.run_io_operation.assert_called_with(rw_mode, '4k',
+                                                          io_depth, 1, 30, 4)
 
     @pytest.mark.parametrize("rr_table", RR_4K_IOD1_JOB1)
     def test_groupby_rr_mean(self, target_performance, rr_table):
@@ -73,10 +80,13 @@ class TestPerformanceIODepth:
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
         # 調用 groupby_io_mean 並獲取 IOPS 和 BW 均值
-        str_iops_mean = target_performance.groupby_io_mean(rr_table['IO Depth'], 'IOPS')
-        str_bw_mean = target_performance.groupby_io_mean(rr_table['IO Depth'], 'BW')
+        str_iops_mean = target_performance.groupby_io_mean(
+            rr_table['IO Depth'], 'IOPS')
+        str_bw_mean = target_performance.groupby_io_mean(rr_table['IO Depth'],
+                                                         'BW')
 
-        logger.info('IO Depth = %s, IOPS = %s, BW = %s', rr_table['IO Depth'], str_iops_mean, str_bw_mean)
+        logger.info('IO Depth = %s, IOPS = %s, BW = %s', rr_table['IO Depth'],
+                    str_iops_mean, str_bw_mean)
 
         # 驗證 IOPS 和 BW 的均值是否大於等於可信區間
         assert str_iops_mean >= rr_table['IOPS'] * rr_table['CR']
@@ -95,10 +105,13 @@ class TestPerformanceIODepth:
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
         # 調用 groupby_io_mean 並獲取 IOPS 和 BW 均值
-        str_iops_mean = target_performance.groupby_io_mean(rw_table['IO Depth'], 'IOPS')
-        str_bw_mean = target_performance.groupby_io_mean(rw_table['IO Depth'], 'BW')
+        str_iops_mean = target_performance.groupby_io_mean(
+            rw_table['IO Depth'], 'IOPS')
+        str_bw_mean = target_performance.groupby_io_mean(rw_table['IO Depth'],
+                                                         'BW')
 
-        logger.info('IO Depth = %s, IOPS = %s, BW = %s', rw_table['IO Depth'], str_iops_mean, str_bw_mean)
+        logger.info('IO Depth = %s, IOPS = %s, BW = %s', rw_table['IO Depth'],
+                    str_iops_mean, str_bw_mean)
 
         # 驗證 IOPS 和 BW 的均值是否大於等於可信區間
         assert str_iops_mean >= rw_table['IOPS'] * rw_table['CR']
@@ -106,13 +119,15 @@ class TestPerformanceIODepth:
 
 # 子類別繼承主測試類別
 class TestPerformanceCPUMask(TestPerformanceIODepth):
-    @pytest.mark.parametrize('cpu_mask', [hex(cpu_mask) for cpu_mask in range(1, 16)])
+    @pytest.mark.parametrize('cpu_mask',
+                             [hex(cpu_mask) for cpu_mask in range(1, 16)])
     @pytest.mark.parametrize('rw_mode', RW_MODE)
     def test_run_io_operation(self, target_system, rw_mode, cpu_mask):
         # 使用 CPU Mask 參數進行 I/O 操作測試
         target_system.run_io_operation(rw_mode, '4k', 128, 1, 30, cpu_mask)
         # 檢查 I/O 操作是否被正確執行
-        target_system.run_io_operation.assert_called_with(rw_mode, '4k', 128, 1, 30, cpu_mask)
+        target_system.run_io_operation.assert_called_with(rw_mode, '4k', 128,
+                                                        1, 30, cpu_mask)
 
     @pytest.mark.parametrize("rr_table", RR_4K_IOD1_JOB1)
     def test_groupby_rr_mean(self, target_performance, rr_table):
@@ -127,10 +142,13 @@ class TestPerformanceCPUMask(TestPerformanceIODepth):
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
         # 調用 groupby_io_mean 並獲取 IOPS 和 BW 均值
-        str_iops_mean = target_performance.groupby_io_mean(rr_table['CPU Mask'], 'IOPS')
-        str_bw_mean = target_performance.groupby_io_mean(rr_table['CPU Mask'], 'BW')
+        str_iops_mean = target_performance.groupby_io_mean(
+            rr_table['CPU Mask'], 'IOPS')
+        str_bw_mean = target_performance.groupby_io_mean(rr_table['CPU Mask'],
+                                                         'BW')
 
-        logger.info('CPU Mask = %s, IOPS = %s, BW = %s', rr_table['CPU Mask'], str_iops_mean, str_bw_mean)
+        logger.info('CPU Mask = %s, IOPS = %s, BW = %s', rr_table['CPU Mask'],
+                    str_iops_mean, str_bw_mean)
 
         # 驗證 IOPS 和 BW 的均值是否大於等於可信區間
         assert str_iops_mean >= rr_table['IOPS'] * rr_table['CR']
