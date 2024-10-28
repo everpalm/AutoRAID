@@ -1,16 +1,16 @@
 # Contents of test_gpio.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import pytest
-import RPi.GPIO as gpio
 from unittest.mock import MagicMock
-from unit.gpio import OperateGPIO as og
 
+import RPi.GPIO as gpio
+from unit.gpio import OperateGPIO as og
 
 class TestOperateGPIO(object):
     @pytest.fixture(scope="class", autouse=True)
     def setup_gpio(self, my_pins):
         print('\n=====================Set Board Mode=====================')
-    
+
         # Mock behavior of RPi.GPIO
         gpio.setmode = MagicMock()
         gpio.setup = MagicMock()
