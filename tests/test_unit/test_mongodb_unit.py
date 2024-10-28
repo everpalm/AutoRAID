@@ -38,8 +38,15 @@ AGGREGATE_RESULTS = [{
 
 
 class TestMongoDB:
+    """Test cases for MongoDB class methods, covering log writing, reading,
+    updating, deleting, and aggregation operations with mocked MongoDB behavior.
+    """
+
     @pytest.fixture(scope="module")
     def mongo_db(self):
+        """Fixture to set up a MongoDB instance and collection, with teardown
+        after all module tests. Uses mocks to simulate MongoDB client.
+        """
         print('\n\033[32m=============== Setup MongoDB ==============\033[0m')
         # Mock MongoDB client
         mock_client = patch('unit.mongodb.MongoClient').start()
@@ -56,6 +63,9 @@ class TestMongoDB:
 
     @pytest.mark.parametrize("attr", MDB_ATTR)
     def test_write_log_and_report(self, mongo_db, attr):
+        """Test the write_log_and_report method to verify that log and report
+        files are read and their contents are correctly inserted into MongoDB.
+        """
         mongo_db_instance, mock_collection = mongo_db
         log_path = attr["Log Path"]
         report_path = attr["Report Path"]
@@ -82,6 +92,9 @@ class TestMongoDB:
             mock_collection.insert_one.assert_called_once_with(expected_document)
 
     def test_read_result(self, mongo_db):
+        """Test the read_result method to check if documents are retrieved from
+        MongoDB and written to a specified JSON file.
+        """
         mongo_db_instance, mock_collection = mongo_db
         # Mock documents returned by MongoDB
         mock_documents = [{"key1": "value1"}, {"key2": "value2"}]
@@ -105,6 +118,9 @@ class TestMongoDB:
             assert written_json == mock_documents
 
     def test_update_document(self, mongo_db):
+        """Test the update_document method to confirm that specified documents
+        are updated with the provided values in MongoDB.
+        """
         mongo_db_instance, mock_collection = mongo_db
         filter_query = {"key": "value"}
         update_values = {"key": "new_value"}
@@ -131,6 +147,9 @@ class TestMongoDB:
         mock_collection.delete_one.assert_called_once_with(filter_query)
 
     def test_find_document(self, mongo_db):
+        """Test the delete_document method to ensure the specified document
+        is deleted from MongoDB based on the filter query.
+        """
         mongo_db_instance, mock_collection = mongo_db
         filter_query = {"key": "value"}
         mock_document = {"key": "value"}
@@ -145,6 +164,9 @@ class TestMongoDB:
 
     @pytest.mark.parametrize("mock_aggregate_result", [AGGREGATE_RESULTS])
     def test_aggregate_random_metrics(self, mongo_db, mock_aggregate_result):
+        """Test the find_document method to verify if a document is correctly
+        retrieved from MongoDB based on the filter query.
+        """
         mongo_db_instance, mock_collection = mongo_db
 
         mock_collection.aggregate.return_value = mock_aggregate_result
@@ -159,4 +181,5 @@ class TestMongoDB:
         assert result == mock_aggregate_result[0]
 
         if result:
-            logger.debug(f'metrics = {json.dumps(result, indent=4)}')
+            # logger.debug(f'metrics = {json.dumps(result, indent=4)}')
+            logger.debug('metrics = %s', json.dumps(result, indent=4))
