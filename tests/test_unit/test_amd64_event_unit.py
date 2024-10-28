@@ -9,7 +9,7 @@ from amd_desktop.amd64_event import WindowsEvent
 def mock_platform():
     # 模擬 AMD64NVMe 的 platform 和 api 行為
     mock_platform = MagicMock(spec=AMD64NVMe)
-    
+
     # 模擬 error_features
     mock_platform.error_features = defaultdict(set)
 
@@ -26,7 +26,7 @@ def test_find_error_match_found(mock_platform):
     mock_platform.api.command_line._original.return_value = [
         'Disk 1 has been surprise removed.'
     ]
-    
+
     # 初始化 WindowsEvent
     win_event = WindowsEvent(mock_platform)
 
