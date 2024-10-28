@@ -1,11 +1,14 @@
 # Contents of test_win10_mongodb.py
 '''Copyright (c) 2024 Jaron Cheng'''
+# Standard library
 import json
-import pytest
 import logging
-from unit.mongodb import MongoDB
 from unittest.mock import patch
 from unittest.mock import mock_open
+# 3rd party library
+import pytest
+# Self-defined library
+from unit.mongodb import MongoDB
 
 # import pytest
 
