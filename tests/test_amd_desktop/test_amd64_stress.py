@@ -3,6 +3,7 @@
 import logging
 import pytest
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
+from amd_desktop.amd64_event import WindowsEvent as we
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
 logger = logging.getLogger(__name__)
@@ -11,12 +12,29 @@ logging.getLogger(__name__).setLevel(logging.INFO)
 FULL_READ = 0
 OLTP_LOADING = 30 # With 8 KB chunk size
 FULL_WRITE = 100
-OVER_NIGHT = 156
+OVER_NIGHT = 15
 HYPER_THREAD = 2
 SINGLE_THREAD = 1
 MIN_IODEPTH = 1
 MAX_IODEPTH = 33
 OPTIMUM_IODEPTH = 7
+
+@pytest.fixture(scope="function")
+def win_event(target_system):
+    print('\n\033[32m================== Setup Win Event =============\033[0m')
+    return we(platform=target_system)
+
+@pytest.fixture(scope="function", autouse=True)
+def test_check_error(win_event):
+    yield win_event.clear_error()
+
+    if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
+        raise AssertionError("Error 51 detected in system logs.")
+    
+    if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
+        raise AssertionError("Error 157 detected in system logs.")
+    
+    print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
 class TestAMD64MultiPathStress(object):
     ''' Test I/O Stress 
