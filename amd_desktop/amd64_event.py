@@ -48,7 +48,7 @@ class WindowsEvent(SystemLogging):
                             match_found = True  # 匹配成功
                             value = str(match.group(1))
                             self._error_features[event_id].add(value)
-                            # raise MatchFoundException(f"Match found for event ID {event_id}: {value}")
+
                 logger.debug(f"self._error_features = {self._error_features}")
                 
             
