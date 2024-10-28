@@ -73,9 +73,6 @@ pipeline {
             }
         }
         failure {
-            // mail to: 'everpalm@yahoo.com.tw',
-            //      subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-            //      body: 'Please check the Jenkins console output for details.'
             emailext(
                 to: 'everpalm@yahoo.com.tw',
                 subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
