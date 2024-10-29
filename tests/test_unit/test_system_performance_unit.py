@@ -1,14 +1,13 @@
 # Contents of test_system_performance_unit.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+
+import pytest
 
 # 模擬的 SystemPerformance 和 SystemUnderTesting 模組
 from unit.system_performance import SystemPerformance as perf
 from unit.system_under_testing import SystemUnderTesting as sut
-
-import pytest
-
 
 # Set up logger
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
