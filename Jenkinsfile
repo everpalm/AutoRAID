@@ -67,6 +67,7 @@ pipeline {
                     """
                     sh('git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging')
                 } catch (e) {
+                    // 錯誤處理
                     echo "An error occurred during the post-build process: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                 }
