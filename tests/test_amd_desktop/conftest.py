@@ -4,8 +4,6 @@ import logging
 import paramiko
 import pytest
 
-# from amd_desktop.amd64_event import WindowsEvent as we
-# from amd_desktop.amd64_event import WindowsEventConfig as wec
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from unit.application_interface import ApplicationInterface as api
@@ -50,11 +48,6 @@ def test_open_uart(drone):
     yield drone.open_uart()
     print('\n\033[32m================== Teardown UART ===============\033[0m')
     drone.close_uart()
-
-# @pytest.fixture(scope="module")
-# def win_event_config(target_system):
-#     print('\n\033[32m================== Setup Win Event =============\033[0m')
-#     return wec(platform=target_system, config_file='config/win_events.json')
 
 @pytest.fixture(scope="function")
 def target_perf(target_system):

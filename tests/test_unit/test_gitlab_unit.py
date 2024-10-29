@@ -216,11 +216,3 @@ class TestGitLabAPI:
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.list.assert_called_once_with(all=True)
 
-    def test_get_case1(self):
-        """Dummy test to ensure a simple assertion passes."""
-        assert 1 == 1
-
-    def test_get_case2(self):
-        """Dummy test to ensure an assertion failure occurs."""
-        with pytest.raises(AssertionError):
-            assert 1 == 2
