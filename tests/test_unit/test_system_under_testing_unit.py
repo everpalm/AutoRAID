@@ -35,7 +35,7 @@ def mock_api(mocker):
 
 
 @pytest.fixture(scope="function")
-def target_system():
+def target_system(mock_api):
     """Fixture that initializes a SystemUnderTesting object with a mock 
     manufacturer, making use of the mock_api fixture.
     
