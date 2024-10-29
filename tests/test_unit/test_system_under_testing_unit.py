@@ -54,7 +54,7 @@ class TestSystemUnderTesting:
     system information, including CPU, NVMe device details, and NVMe 
     SMART logs.
     """
-    def testget_cpu_info(self, target_system, mock_api):
+    def test_get_cpu_info(self, target_system, mock_api):
         """Test the get_cpu_info method to verify correct CPU information 
         retrieval by simulating an 'lscpu' command response.
         
