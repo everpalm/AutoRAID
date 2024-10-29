@@ -8,7 +8,7 @@ import re
 
 logger = logging.getLogger(__name__)
 
-class AMD64MultiPathStress(object):
+class AMD64MultiPathStress:
     """
     Class to perform multi-path I/O stress testing on AMD64 systems.
 
