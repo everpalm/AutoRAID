@@ -1,5 +1,10 @@
 # Contents of test_amd64_stress.py
-'''Copyright (c) 2024 Jaron Cheng'''
+'''Unit tests for the AMD64MultiPathStress class. This module includes tests 
+   for I/O stress operations on the AMD64 system to verify endurance and 
+   performance stability under stress conditions.
+   
+   Copyright (c) 2024 Jaron Cheng
+'''
 import logging
 import pytest
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
@@ -21,11 +26,29 @@ OPTIMUM_IODEPTH = 7
 
 @pytest.fixture(scope="function")
 def win_event(target_system):
+    """Fixture for setting up Windows Event monitoring for system errors.
+    
+    Args:
+        target_system: The system instance to monitor for Windows Event logs.
+    
+    Returns:
+        WindowsEvent: An instance of WindowsEvent for error logging.
+    """
     print('\n\033[32m================== Setup Win Event =============\033[0m')
     return we(platform=target_system)
 
 @pytest.fixture(scope="function", autouse=True)
 def test_check_error(win_event):
+    """Fixture to clear previous Windows event logs and check for specific errors
+    after each test function.
+    
+    Yields:
+        Clears event logs and checks for errors upon test completion.
+    
+    Raises:
+        AssertionError: If specific errors (ID 51 or 157) are detected in logs.
+    """
+
     yield win_event.clear_error()
 
     if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
@@ -48,6 +71,14 @@ class TestAMD64MultiPathStress(object):
     '''
     @pytest.fixture(scope="function")
     def target_stress(self, target_system):
+        """Fixture for setting up an AMD64MultiPathStress instance for I/O stress tests.
+        
+        Args:
+            target_system: The system instance to run stress tests on.
+        
+        Returns:
+            AMD64MultiPathStress: Instance for executing stress test operations.
+        """
         print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
         return amps(platform=target_system)
 
@@ -56,6 +87,18 @@ class TestAMD64MultiPathStress(object):
     @pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
     def test_run_io_operation(self, target_stress, write_pattern, iodepth,
                               my_mdb):
+        """Runs parameterized I/O operations to test system stress with varying
+        I/O depths and write patterns.
+        
+        Args:
+            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+            write_pattern (int): Write pattern defining the read/write ratio.
+            iodepth (int): I/O depth level for stress testing.
+            my_mdb: Mock database for storing and comparing test metrics.
+        
+        Assertions:
+            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+        """
         read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
             SINGLE_THREAD, iodepth, '4k', '4k', write_pattern, OVER_NIGHT)
     

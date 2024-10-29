@@ -1,14 +1,14 @@
 # Contents of test_application_interface.py
-'''Copyright (c) 2024 Jaron Cheng'''
+'''Unit tests for the ApplicationInterface class, which includes testing the 
+   execution of Windows commands to verify system responses and configurations.
+   
+   Copyright (c) 2024 Jaron Cheng
+'''
 
 import logging
 import pytest
-# from unit.application_interface import ApplicationInterface as api
 
 ''' Set up logger '''
-# logging.basicConfig(
-#     format='%(asctime)s %(levelname)-8s %(message)s',
-#     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
 WINDOWS_CMD_TABLE = ({
@@ -31,6 +31,20 @@ class TestApplicationInterface(object):
     
     @pytest.mark.parametrize("windows_cmd", WINDOWS_CMD_TABLE)
     def test_command_line(self, my_app, windows_cmd):
+        """Tests the command_line method of the ApplicationInterface class
+        by sending Windows commands and comparing the output with the expected 
+        results from the WINDOWS_CMD_TABLE.
+        
+        Args:
+            my_app (ApplicationInterface): The ApplicationInterface instance used 
+                for testing, typically provided as a fixture.
+            windows_cmd (dict): A dictionary representing a command and expected
+                return value for the test case.
+        
+        Assertions:
+            - Checks that the output from executing the command matches the expected
+              return value in WINDOWS_CMD_TABLE.
+        """
         list_executed = my_app.command_line(windows_cmd["Command"])
         logger.debug("my_app.command_line = %s, type %s",
                     list_executed, type(list_executed))
