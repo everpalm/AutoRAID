@@ -18,8 +18,8 @@ class SystemLogging(ABC):
         pass
 
 
-class MatchFoundException(Exception):
-    pass
+# class MatchFoundException(Exception):
+#     pass
 
 
 # Windows 平台的日誌處理器
@@ -48,14 +48,14 @@ class WindowsEvent(SystemLogging):
                             match_found = True  # 匹配成功
                             value = str(match.group(1))
                             self._error_features[event_id].add(value)
-                            raise MatchFoundException(f"Match found for event ID {event_id}: {value}")
+
                 logger.debug(f"self._error_features = {self._error_features}")
                 
             
             return match_found  # 根據是否有匹配模式來返回
-        except MatchFoundException as e:
-            logger.info(f"Process stopped due to: {e}")
-            raise  # 如果需要在外部捕捉這個異常，可以選擇重新拋出
+        # except MatchFoundException as e:
+            # logger.info(f"Process stopped due to: {e}")
+            # raise  # 如果需要在外部捕捉這個異常，可以選擇重新拋出
 
         except Exception as e:
             logger.error(f'find_error_event: {e}')

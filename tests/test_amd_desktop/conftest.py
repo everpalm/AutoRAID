@@ -12,12 +12,12 @@ from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
-logging.getLogger('amd_desktop.amd64_event').setLevel(logging.DEBUG)
+logging.getLogger('amd_desktop.amd64_event').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_nvme').setLevel(logging.INFO)
 logging.getLogger('amd_desktop.amd64_perf').setLevel(logging.INFO)
-logging.getLogger('unit.application_interface').setLevel(logging.INFO)
-logging.getLogger('unit.mongodb').setLevel(logging.INFO)
-logging.getLogger('unit.system_under_testing').setLevel(logging.INFO)
+logging.getLogger('unit.application_interface').setLevel(logging.CRITICAL)
+logging.getLogger('unit.mongodb').setLevel(logging.CRITICAL)
+logging.getLogger('unit.system_under_testing').setLevel(logging.CRITICAL)
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 

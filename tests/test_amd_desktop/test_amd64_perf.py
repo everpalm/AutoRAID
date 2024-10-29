@@ -115,11 +115,17 @@ def win_event(target_system):
 @pytest.fixture(scope="function", autouse=True)
 def test_check_error(win_event):
     yield win_event.clear_error()
-    win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)')
-    win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.')
+    if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
+        raise AssertionError("Error 51 detected in system logs.")
+    
+    if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
+        raise AssertionError("Error 157 detected in system logs.")
+    
+    print('\n\033[32m================== Teardown Win Event ==========\033[0m')
+
 
 class TestSequentialReadWrite(object):
-    ''' Test AMD64 NVM Sequential Read Write Performance
+    ''' Test AMD64 NVM Sequential Read Write Performanceutdown -h
         Performance of the AMD64 system
         Attributes:
             os: Operation System
