@@ -35,7 +35,6 @@ def mock_api(mocker):
 
 
 @pytest.fixture(scope="function")
-# def target_system(mock_api):
 def target_system():
     """Fixture that initializes a SystemUnderTesting object with a mock 
     manufacturer, making use of the mock_api fixture.
@@ -55,8 +54,8 @@ class TestSystemUnderTesting:
     system information, including CPU, NVMe device details, and NVMe 
     SMART logs.
     """
-    def test_get_cpu_info(self, target_system, mock_api):
-        """Test the _get_cpu_info method to verify correct CPU information 
+    def testget_cpu_info(self, target_system, mock_api):
+        """Test the get_cpu_info method to verify correct CPU information 
         retrieval by simulating an 'lscpu' command response.
         
         Args:
@@ -70,7 +69,7 @@ class TestSystemUnderTesting:
         }
 
         # Call the method to get CPU info
-        cpu_info = target_system._get_cpu_info()
+        cpu_info = target_system.get_cpu_info()
 
         # Assertions to verify correct CPU info is returned
         assert cpu_info['CPU(s)'] == "4"
@@ -92,7 +91,7 @@ class TestSystemUnderTesting:
         }
 
         # Call the method to get NVMe device info
-        nvme_info = target_system._get_nvme_device()
+        nvme_info = target_system.get_nvme_device()
 
         # Assertions to verify correct NVMe device info is returned
         assert nvme_info['Node'] == "nvme0n1"
