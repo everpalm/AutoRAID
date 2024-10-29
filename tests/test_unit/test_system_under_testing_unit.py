@@ -5,7 +5,6 @@
     Copyright (c) 2024 Jaron Cheng
 '''
 import pytest
-from unittest.mock import MagicMock
 from unit.system_under_testing import SystemUnderTesting
 
 

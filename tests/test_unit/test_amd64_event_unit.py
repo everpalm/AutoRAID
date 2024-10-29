@@ -1,5 +1,13 @@
-import pytest
+'''Unit tests for WindowsEvent class methods related to log management.
+   This module verifies the behavior of methods within the WindowsEvent 
+   class, including the ability to find error logs based on patterns and 
+   clear system event logs, using mocked platform interactions to simulate 
+   command-line responses.
+
+   Copyright (c) 2024 Jaron Cheng
+'''
 from unittest.mock import MagicMock
+import pytest
 from collections import defaultdict
 from amd_desktop.amd64_nvme import AMD64NVMe
 from amd_desktop.amd64_event import WindowsEvent
@@ -7,6 +15,13 @@ from amd_desktop.amd64_event import WindowsEvent
 # 定義一個 fixture 來設置 mock_platform 及其 api 屬性
 @pytest.fixture
 def mock_platform():
+    """Fixture that sets up a mocked platform, including mock attributes for
+    the AMD64NVMe class with simulated `api` and `command_line` attributes.
+
+    Returns:
+        MagicMock: A mock object simulating AMD64NVMe platform behavior with
+                   error_features and command-line interaction.
+    """
     # 模擬 AMD64NVMe 的 platform 和 api 行為
     mock_platform = MagicMock(spec=AMD64NVMe)
 
@@ -22,6 +37,17 @@ def mock_platform():
 
 # 測試 find_error 方法匹配成功的情況
 def test_find_error_match_found(mock_platform):
+    """Tests the `find_error` method of the WindowsEvent class for a case 
+    where a matching pattern is found in the command output.
+
+    Args:
+        mock_platform (MagicMock): Mocked platform fixture with simulated
+                                   command-line response.
+
+    Verifies:
+        - `find_error` returns True when pattern matches.
+        - Matching event details are added to error_features.
+    """
     # 模擬 _original 方法的返回值
     mock_platform.api.command_line._original.return_value = [
         'Disk 1 has been surprise removed.'
@@ -44,6 +70,16 @@ def test_find_error_match_found(mock_platform):
 
 # 測試 find_error 方法沒有匹配的情況
 def test_find_error_no_match(mock_platform):
+    """Tests the `find_error` method for a case where no matching pattern
+    is found in the command output.
+
+    Args:
+        mock_platform (MagicMock): Mocked platform with no matching pattern.
+
+    Verifies:
+        - `find_error` returns False when there is no match.
+        - error_features dictionary remains unchanged.
+    """
     # 模擬沒有匹配的輸出
     mock_platform.api.command_line._original.return_value = [
         'Event 158: Another event.'
@@ -64,6 +100,14 @@ def test_find_error_no_match(mock_platform):
 
 # 測試 find_error 方法在輸出為空的情況下
 def test_find_error_empty_output(mock_platform):
+    """Tests the `find_error` method with an empty command output.
+
+    Args:
+        mock_platform (MagicMock): Mocked platform with empty command output.
+
+    Verifies:
+        - `find_error` returns False when the output is empty.
+    """
     # 模擬 PowerShell 沒有返回任何輸出
     mock_platform.api.command_line._original.return_value = []
 
@@ -81,6 +125,16 @@ def test_find_error_empty_output(mock_platform):
 
 # 測試 clear_error 方法
 def test_clear_error_success(mock_platform):
+    """Tests the `clear_error` method for successful log clearing.
+
+    Args:
+        mock_platform (MagicMock): Mocked platform where `clear_error` simulates
+                                   a successful log clearing operation.
+
+    Verifies:
+        - `clear_error` returns True when log clearing is successful.
+        - Correct command is sent to the command line once.
+    """
     # 模擬 PowerShell 成功清除日誌
     mock_platform.api.command_line._original.return_value = "Log cleared."
 
@@ -96,6 +150,17 @@ def test_clear_error_success(mock_platform):
 
 # 測試 clear_error 方法的異常情況
 def test_clear_error_failure(mock_platform):
+    """Tests the `clear_error` method for a failure scenario where an exception
+    is raised during log clearing.
+
+    Args:
+        mock_platform (MagicMock): Mocked platform with `clear_error` command
+                                   triggering an exception.
+
+    Verifies:
+        - `clear_error` returns False when an exception is raised.
+        - Correct command is sent to the command line once.
+    """
     # 模擬 PowerShell 命令執行失敗
     mock_platform.api.command_line._original.side_effect = Exception("Command failed")
 

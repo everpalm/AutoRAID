@@ -138,6 +138,9 @@ class TestMongoDB:
         mock_collection.update_one.assert_called_once_with(filter_query, {'$set': update_values})
 
     def test_delete_document(self, mongo_db):
+        """Test the delete_document method to confirm that specified documents
+        are deleted in MongoDB.
+        """
         mongo_db_instance, mock_collection = mongo_db
         filter_query = {"key": "value"}
 
@@ -150,8 +153,8 @@ class TestMongoDB:
         mock_collection.delete_one.assert_called_once_with(filter_query)
 
     def test_find_document(self, mongo_db):
-        """Test the delete_document method to ensure the specified document
-        is deleted from MongoDB based on the filter query.
+        """Test the find_document method to verify if a document is correctly
+        retrieved from MongoDB based on the filter query.
         """
         mongo_db_instance, mock_collection = mongo_db
         filter_query = {"key": "value"}
@@ -167,8 +170,8 @@ class TestMongoDB:
 
     @pytest.mark.parametrize("mock_aggregate_result", [AGGREGATE_RESULTS])
     def test_aggregate_random_metrics(self, mongo_db, mock_aggregate_result):
-        """Test the find_document method to verify if a document is correctly
-        retrieved from MongoDB based on the filter query.
+        """Test the aggregate_document method to verify if a document is correctly
+        aggregated from MongoDB based on the filter query.
         """
         mongo_db_instance, mock_collection = mongo_db
 
