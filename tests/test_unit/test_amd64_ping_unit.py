@@ -17,11 +17,11 @@ logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.DEBUG)
 
 
-class TestPing(object):
+class TestPing:
     """Test suite for the LinuxPing and WindowsPing classes, which verify the
         ping command output parsing and response handling on Linux and Windows.
         """
-    
+
     @pytest.fixture(scope="module")
     def mock_api(self):
         """Fixture to mock the remote IP and API for ping commands.
@@ -51,15 +51,15 @@ class TestPing(object):
 
         result = ping_instance.ping()
 
-        logger.info(f'ping_instance.sent = {ping_instance.sent}')
-        logger.info(f'ping_instance.received = {ping_instance.received}')
-        logger.info(f'ping_instance.lost = {ping_instance.lost}')
-        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
-        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
-        logger.info(f'ping_instance.average = {ping_instance.average}')
-        logger.info(f'ping_instance.deviation = {ping_instance.deviation}')
+        logger.info('ping_instance.sent = %s', ping_instance.sent)
+        logger.info('ping_instance.received = %s', ping_instance.received)
+        logger.info('ping_instance.lost = %s', ping_instance.lost)
+        logger.info('ping_instance.minimum = %s', ping_instance.minimum)
+        logger.info('ping_instance.maximum = %s', ping_instance.maximum)
+        logger.info('ping_instance.average = %s', ping_instance.average)
+        logger.info('ping_instance.deviation = %s', ping_instance.deviation)
 
-        assert result == True
+        assert result is True
         assert ping_instance.sent == 4
         assert ping_instance.received == 4
         assert ping_instance.lost == 0
@@ -90,16 +90,16 @@ class TestPing(object):
 
         result = ping_instance.ping()
 
-        logger.info(f'ping_instance.sent = {ping_instance.sent}')
-        logger.info(f'ping_instance.received = {ping_instance.received}')
-        logger.info(f'ping_instance.lost = {ping_instance.lost}')
-        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
-        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
-        logger.info(f'ping_instance.average = {ping_instance.average}')
-        logger.info(f'ping_instance.deviation = {ping_instance.deviation}')
+        logger.info('ping_instance.sent = %s', ping_instance.sent)
+        logger.info('ping_instance.received = %s', ping_instance.received)
+        logger.info('ping_instance.lost = %s', ping_instance.lost)
+        logger.info('ping_instance.minimum = %s', ping_instance.minimum)
+        logger.info('ping_instance.maximum = %s', ping_instance.maximum)
+        logger.info('ping_instance.average = %s', ping_instance.average)
+        logger.info('ping_instance.deviation = %s', ping_instance.deviation)
 
         # 检查返回值是否为False，表示ping失败
-        assert result == False
+        assert result is False
         # 验证解析结果
         assert ping_instance.sent == 4
         assert ping_instance.received == 0
@@ -113,7 +113,7 @@ class TestPing(object):
         """Tests WindowsPing.ping() with a successful ping response on a
         Windows system, verifying that packet and latency details are 
         correctly parsed.
-        
+
         Args:
             mock_api (MagicMock): The mocked API with simulated command output.
         """
@@ -127,14 +127,14 @@ class TestPing(object):
 
         result = ping_instance.ping()
 
-        logger.info(f'ping_instance.sent = {ping_instance.sent}')
-        logger.info(f'ping_instance.received = {ping_instance.received}')
-        logger.info(f'ping_instance.lost = {ping_instance.lost}')
-        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
-        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
-        logger.info(f'ping_instance.average = {ping_instance.average}')
+        logger.info('ping_instance.sent = %s', ping_instance.sent)
+        logger.info('ping_instance.received = %s', ping_instance.received)
+        logger.info('ping_instance.lost = %s', ping_instance.lost)
+        logger.info('ping_instance.minimum = %s', ping_instance.minimum)
+        logger.info('ping_instance.maximum = %s', ping_instance.maximum)
+        logger.info('ping_instance.average = %s', ping_instance.average)
 
-        assert result == True
+        assert result is True
         assert ping_instance.sent == 4
         assert ping_instance.received == 4
         assert ping_instance.lost == 0
@@ -164,15 +164,15 @@ class TestPing(object):
 
         result = ping_instance.ping()
 
-        logger.info(f'ping_instance.sent = {ping_instance.sent}')
-        logger.info(f'ping_instance.received = {ping_instance.received}')
-        logger.info(f'ping_instance.lost = {ping_instance.lost}')
-        logger.info(f'ping_instance.minimum = {ping_instance.minimum}')
-        logger.info(f'ping_instance.maximum = {ping_instance.maximum}')
-        logger.info(f'ping_instance.average = {ping_instance.average}')
+        logger.info('ping_instance.sent = %s', ping_instance.sent)
+        logger.info('ping_instance.received = %s', ping_instance.received)
+        logger.info('ping_instance.lost = %s', ping_instance.lost)
+        logger.info('ping_instance.minimum = %s', ping_instance.minimum)
+        logger.info('ping_instance.maximum = %s', ping_instance.maximum)
+        logger.info('ping_instance.average = %s', ping_instance.average)
 
         # 检查返回值是否为False，表示ping失败
-        assert result == False
+        assert result is False
         # 验证解析结果
         assert ping_instance.sent == 4
         assert ping_instance.received == 0

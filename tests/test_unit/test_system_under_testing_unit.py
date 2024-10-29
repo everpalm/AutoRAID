@@ -1,3 +1,9 @@
+# Contents of test_system_under_testing_unit.py
+'''Unit tests for the SystemUnderTesting class. This module includes tests
+   for various methods within SystemUnderTesting, verifying system functionality
+   and configurations.
+    Copyright (c) 2024 Jaron Cheng
+'''
 import pytest
 from unittest.mock import MagicMock
 from unit.system_under_testing import SystemUnderTesting
@@ -29,7 +35,8 @@ def mock_api(mocker):
 
 
 @pytest.fixture(scope="function")
-def target_system(mock_api):
+# def target_system(mock_api):
+def target_system():
     """Fixture that initializes a SystemUnderTesting object with a mock 
     manufacturer, making use of the mock_api fixture.
     
@@ -43,7 +50,7 @@ def target_system(mock_api):
     return SystemUnderTesting('Marvell')
 
 
-class TestSystemUnderTesting(object):
+class TestSystemUnderTesting:
     """Test suite for SystemUnderTesting methods related to retrieving 
     system information, including CPU, NVMe device details, and NVMe 
     SMART logs.
