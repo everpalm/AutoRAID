@@ -34,7 +34,7 @@ class AMD64NVMe(object):
         self.manufacturer = interface.config_file.replace('.json', '')
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
-        self.cpu_num, self.cpu_name = self._get_cpu_info().values()
+        self.cpu_num, self.cpu_name = self.get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.disk_num, self.serial_num = self._get_disk_num().values()
         self.disk_info = self._get_volume()
@@ -110,7 +110,7 @@ class AMD64NVMe(object):
 
         return self._mac_address
 
-    def _get_cpu_info(self) -> dict[str, str]:
+    def get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
             Grep CPU information from system call 'lscpu'
             Args: None
@@ -127,7 +127,7 @@ class AMD64NVMe(object):
             logger.debug('cpu_num = %d, cpu_name = %s',
                          int_cpu_num, str_cpu_name)
         except Exception as e:
-            logger.error('error occurred in _get_cpu_info: %s', e)
+            logger.error('error occurred in get_cpu_info: %s', e)
         
         return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 

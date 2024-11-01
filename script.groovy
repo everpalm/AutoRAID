@@ -33,6 +33,7 @@ def test_application_interface() {
 }
 
 def test_pep8() {
-    sh 'pipenv run pylint ${TEST_UNIT} --exit-zero'
+    // sh 'pipenv run pylint ${TEST_UNIT} --exit-zero' //Forcibly pass
+    sh 'pipenv run pylint ${TEST_UNIT} --fail-under=7.0'
 }
 return this

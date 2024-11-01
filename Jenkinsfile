@@ -67,15 +67,13 @@ pipeline {
                     """
                     sh('git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging')
                 } catch (e) {
+                    // 錯誤處理
                     echo "An error occurred during the post-build process: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                 }
             }
         }
         failure {
-            // mail to: 'everpalm@yahoo.com.tw',
-            //      subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-            //      body: 'Please check the Jenkins console output for details.'
             emailext(
                 to: 'everpalm@yahoo.com.tw',
                 subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",

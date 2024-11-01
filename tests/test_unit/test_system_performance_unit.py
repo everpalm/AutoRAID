@@ -1,12 +1,15 @@
-import pytest
+# Contents of test_system_performance_unit.py
+'''Copyright (c) 2024 Jaron Cheng'''
 import logging
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+
+import pytest
 
 # 模擬的 SystemPerformance 和 SystemUnderTesting 模組
 from unit.system_performance import SystemPerformance as perf
 from unit.system_under_testing import SystemUnderTesting as sut
 
-''' Set up logger '''
+# Set up logger
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
@@ -93,10 +96,10 @@ class TestPerformanceIODepth:
         interval threshold.
         """
         # 根據參數決定返回 IOPS 或 BW 的值
-        def mock_groupby_io_mean(io_depth, metric):
+        def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            elif metric == 'BW':
+            if metric == 'BW':
                 return rr_table['BW']
             return None
 
@@ -122,10 +125,10 @@ class TestPerformanceIODepth:
         interval threshold.
         """
         # 根據參數決定返回 IOPS 或 BW 的值
-        def mock_groupby_io_mean(io_depth, metric):
+        def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rw_table['IOPS']
-            elif metric == 'BW':
+            if metric == 'BW':
                 return rw_table['BW']
             return None
 
@@ -169,10 +172,10 @@ class TestPerformanceCPUMask(TestPerformanceIODepth):
         using CPU Mask parameter. Verifies mean values meet confidence interval.
         """
         # 根據參數決定返回 IOPS 或 BW 的值
-        def mock_groupby_io_mean(io_depth, metric):
+        def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            elif metric == 'BW':
+            if metric == 'BW':
                 return rr_table['BW']
             return None
 

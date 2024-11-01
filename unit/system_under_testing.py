@@ -145,13 +145,13 @@ class SystemUnderTesting(api):
         self.bdf, self.sdid = self._get_pcie_info().values()
         self.node, self.sn, self.model, self.namespace_id, \
             self.namespace_usage, self.fw_rev = \
-            self._get_nvme_device().values()
+            self.get_nvme_device().values()
         self.critical_warning, self.temperature, self.power_cycles, \
             self.unsafe_shutdowns = self._get_nvme_smart_log().values()
-        self.cpu_num, self.cpu_name = self._get_cpu_info().values()
+        self.cpu_num, self.cpu_name = self.get_cpu_info().values()
         self.version, self.serial = self._get_desktop_info().values()
 
-    def _get_cpu_info(self) -> dict[str, str]:
+    def get_cpu_info(self) -> dict[str, str]:
         ''' Get CPU information
             Grep CPU information from system call 'lscpu'
             Args: None
@@ -166,7 +166,7 @@ class SystemUnderTesting(api):
             logger.debug('str_cpu_num = %s, str_cpu_name = %s',
                          str_cpu_num, str_cpu_name)
         except Exception as e:
-            logger.error('error occurred in _get_cpu_info: %s', e)
+            logger.error('error occurred in get_cpu_info: %s', e)
             raise
         # finally:
         return {"CPU(s)": str_cpu_num, "Model Name": str_cpu_name}
@@ -229,7 +229,7 @@ class SystemUnderTesting(api):
         logger.debug('str_msg = %s', str_msg)
         return str_msg
 
-    def _get_nvme_device(self) -> dict[str, str]:
+    def get_nvme_device(self) -> dict[str, str]:
         ''' Get NVMe device name
             Args:
             Returns:
@@ -258,7 +258,7 @@ class SystemUnderTesting(api):
                     str_namespace_usage,
                     str_fw_rev)
         except Exception as e:
-            logger.error(f"Error occurred in _get_nvme_device: {e}")
+            logger.error(f"Error occurred in get_nvme_device: {e}")
             raise
         finally:
             return {
