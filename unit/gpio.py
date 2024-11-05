@@ -91,7 +91,7 @@ class OperateGPIO:
         switch_pin (int): The physical pin number for the power switch.
         _board_mode (int): The GPIO board mode (e.g., BOARD or BCM).
     """
-    RELAY_ACTIVE_TIME = 1
+    RELAY_ACTIVE_TIME = 0.75
     HOLD_BUTTON_TIME = 5
 
     def __init__(self, pin_define, board_mode):
