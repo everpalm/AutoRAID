@@ -117,7 +117,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
 
-class TestRandomReadWrite(object):
+class TestRandomReadWrite:
     ''' Test AMD64 NVM Random Read Write Performance
         Performance of the AMD64 system
         Attributes:
@@ -188,7 +188,7 @@ def test_check_error(win_event):
     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
 
-class TestSequentialReadWrite(object):
+class TestSequentialReadWrite:
     ''' Test AMD64 NVM Sequential Read Write Performanceutdown -h
         Performance of the AMD64 system
         Attributes:
@@ -221,7 +221,7 @@ class TestSequentialReadWrite(object):
         
         validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
-class TestRampTimeReadWrite(object):
+class TestRampTimeReadWrite:
     ''' Test AMD64 NVM Ramp-up Time Read Write
         Performance of the AMD64 system
         Fixtures:

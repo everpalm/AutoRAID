@@ -59,7 +59,7 @@ def test_check_error(win_event):
     
     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
-class TestAMD64MultiPathStress(object):
+class TestAMD64MultiPathStress:
     ''' Test I/O Stress 
         Endurance of the AMD64 system
         Attributes:
