@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 # PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
-class RaspBerryPins(object):
+class RaspBerryPins:
     """
     Singleton class for defining Raspberry Pi GPIO pins.
 
@@ -65,21 +65,19 @@ class RaspBerryPins(object):
             handled appropriately in the calling context.
         """
         try:
-            # print(f'self._pin_define = {self._pin_define}')
-            # with open(f'{PROJECT_PATH}/config/{self.pin_define_file}', 'r') as f:
             with open(f'config/{self.pin_define_file}', 'r') as f:
                 dict_pin_define = json.load(f)
-                logger.debug(f'dict_pin_define = {dict_pin_define}')
+                logger.debug('dict_pin_define = %s', dict_pin_define)
                 temp = dict_pin_define.get(self._pin_define)
-                logger.debug(f'temp["physical_pin"] = {temp["physical_pin"]}')
+                logger.debug('temp["physical_pin"] = %s', temp["physical_pin"])
                 return temp["physical_pin"]
-                # return dict_config_list
+                
         except IOError:
-            logger.error(f'Cannot open/read file: {self.pin_define_file}')
+            logger.error('Cannot open/read file: %s', self.pin_define_file)
             raise
 
 
-class OperateGPIO(object):
+class OperateGPIO:
     """
     Class for operating GPIO pins on a Raspberry Pi.
 
@@ -93,7 +91,7 @@ class OperateGPIO(object):
         switch_pin (int): The physical pin number for the power switch.
         _board_mode (int): The GPIO board mode (e.g., BOARD or BCM).
     """
-    RELAY_ACTIVE_TIME = 1
+    RELAY_ACTIVE_TIME = 0.75
     HOLD_BUTTON_TIME = 5
 
     def __init__(self, pin_define, board_mode):
@@ -110,7 +108,7 @@ class OperateGPIO(object):
             process is robust and any configuration errors are surfaced immediately.
         """
         self.switch_pin = pin_define.power_switch
-        logger.debug(f'self.switch_pin = {self.switch_pin}')
+        logger.debug('self.switch_pin = %s', self.switch_pin)
         self._board_mode = board_mode
         gpio.setmode(self._board_mode)
 
@@ -146,7 +144,7 @@ class OperateGPIO(object):
                 self._board_mode = gpio.getmode()
 
             except ValueError as e:
-                logger.error(f'Invalid GPIO mode: {e}')
+                logger.error('Invalid GPIO mode: %s', {e})
                 raise
 
     def _set_switch_mode(self):
@@ -171,7 +169,7 @@ class OperateGPIO(object):
             time.sleep(self.RELAY_ACTIVE_TIME)
 
         except RuntimeError as e:
-            logger.error(f'Failed to set switch mode: {e}')
+            logger.error('Failed to set switch mode: %s', {e})
             raise
     
     def switch_handler(self):
@@ -187,7 +185,7 @@ class OperateGPIO(object):
             gpio.setmode(gpio.BOARD)
             gpio.setup(self.switch_pin, gpio.OUT)
         except RuntimeError as e:
-            logger.error(f'Failed to handle switch: {e}')
+            logger.error('Failed to handle switch: %s', {e})
             raise
 
     def hold_power_button(self):
@@ -213,7 +211,7 @@ class OperateGPIO(object):
             gpio.output(self.switch_pin, gpio.HIGH)
 
         except RuntimeError as e:
-            logger.error(f'Failed to hold power button: {e}')
+            logger.error('Failed to hold power button: %s', {e})
             raise
     
     def press_power_button(self):
@@ -239,7 +237,7 @@ class OperateGPIO(object):
             gpio.output(self.switch_pin, gpio.HIGH)
 
         except RuntimeError as e:
-            logger.error(f'Failed to press power button: {e}')
+            logger.error('Failed to press power button: %s', {e})
             raise
 
     def clear_gpio(self):
@@ -259,7 +257,7 @@ class OperateGPIO(object):
             gpio.cleanup()
 
         except RuntimeError as e:
-            logger.error(f'Failed to clear GPIO: {e}')
+            logger.error('Failed to clear GPIO: %s', {e})
             raise
 
     

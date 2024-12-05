@@ -11,7 +11,7 @@ from unit.system_under_testing import convert_size
 logger = logging.getLogger(__name__)
 
 
-class AMD64NVMe(object):
+class AMD64NVMe:
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 

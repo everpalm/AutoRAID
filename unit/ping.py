@@ -63,9 +63,11 @@ class PingBase(ABC):
             self.sent = int(match.group(1))
             self.received = int(match.group(2))
             self.lost = self.sent - self.received  # Calculate packet loss
+            if self.sent == self.lost:
+                return False
             return True
-        else:
-            logger.warning(f"Packet statistics parsing failed: {output}")
+        # else:
+        #     logger.warning(f"Packet statistics parsing failed: {output}")
         return False
 
 
@@ -85,11 +87,9 @@ class LinuxPing(PingBase):
         deviation (float): The standard deviation of RTT.
     """
 
-    LINUX_PACKET_MSG = (r"(\d+) packets transmitted, (\d+) received, "
-                        r"(\d+)% packet loss")
-    LINUX_STATISTICS = (r"rtt min/avg/max/mdev ="
-                        r" ([\d\.]+)/([\d\.]+)/([\d\.]+)/([\d\.]+) ms")
-
+    LINUX_PACKET_MSG = (r"(\d+) packets transmitted, (\d+) received, (\d+)% packet loss, time (\d+)ms")
+    LINUX_STATISTICS = (r"rtt min/avg/max/mdev = ([\d\.]+)/([\d\.]+)/([\d\.]+)/([\d\.]+) ms")
+    
     def __init__(self, api):
         """
         Initializes the LinuxPing class with an API object.
@@ -113,16 +113,31 @@ class LinuxPing(PingBase):
             bool: True if both packet and RTT statistics were successfully parsed, False otherwise.
         """
         try:
-            dict_return = self._api.command_line(
+            list_return = self._api.command_line._original(self._api,
                 f'ping -c {count} {self._ip_address}')
-            logger.debug(f'dict_return = {dict_return}')
-            if dict_return:
-                bool_msg = self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
-                bool_sts = self._parse_statistics(dict_return.get(7),
-                                       self.LINUX_STATISTICS)
-                return bool_msg and bool_sts
+            logger.debug('list_return = %s',list_return)
+            # if list_return:
+                # bool_msg = self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
+                # bool_sts = self._parse_statistics(dict_return.get(7),
+                #                        self.LINUX_STATISTICS)
+                # return bool_msg and bool_sts
+            if list_return:
+                bool_msg, bool_sts = False, False
+                for line in list_return:
+                    # Check for packet statistics line
+                    if not bool_msg:
+                        bool_msg = self._parse_packets(line, self.LINUX_PACKET_MSG)
+                    
+                    # Check for RTT statistics line
+                    if not bool_sts:
+                        bool_sts = self._parse_statistics(line, self.LINUX_STATISTICS)
+                    
+                    # If both are parsed, no need to continue
+                    if bool_msg and bool_sts:
+                        break
             
-            raise ValueError("Failed to get ping response.")
+            return bool_msg and bool_sts 
+            # raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
         except Exception as e:
@@ -142,14 +157,16 @@ class LinuxPing(PingBase):
             bool: True if the RTT statistics were successfully parsed, False otherwise.
         """
         match = re.search(rtt_regex, output)
+        logger.debug('output = %s', output)
+        logger.debug('match = %s', match)
         if match:
             self.minimum = float(match.group(1))
             self.average = float(match.group(2))
             self.maximum = float(match.group(3))
             self.deviation = float(match.group(4))
             return True
-        else:
-            logger.warning(f"RTT statistics parsing failed: {output}")
+        # else:
+        #     logger.warning(f"RTT statistics parsing failed: {output}")
         return False
 
 class WindowsPing(PingBase):
@@ -167,10 +184,8 @@ class WindowsPing(PingBase):
         _ip_address (str): The remote IP address to ping.
     """
 
-    WINDOWS_PACKET_MSG = (r"Packets: Sent = (\d+), Received ="
-                          r" (\d+), Lost = (\d+)")
-    WINDOWS_STATISTICS = (r"Minimum = (\d+)ms, Maximum = (\d+)ms,"
-                          r" Average = (\d+)ms")
+    WINDOWS_PACKET_MSG = (r"Packets: Sent = (\d+), Received = (\d+), Lost = (\d+) \((\d+)% loss\),")
+    WINDOWS_STATISTICS = (r"Minimum = (\d+)ms, Maximum = (\d+)ms, Average = (\d+)ms")
 
     def __init__(self, api):
         """
@@ -186,23 +201,35 @@ class WindowsPing(PingBase):
     def ping(self, count=4):
         """
         Sends a ping request to a remote IP address and parses the results.
-
-        Args:
-            count (int): The number of ping requests to send. Default is 4.
-
-        Returns:
-            bool: True if the ping response was successfully parsed, False otherwise.
         """
         try:
-            dict_return = self._api.command_line(
-                f'ping -n {count} {self._ip_address}')
-            logger.debug(f'dict_return = {dict_return}')
-            if dict_return:
-                self._parse_packets(dict_return.get(6),
-                                    self.WINDOWS_PACKET_MSG)
-                self._parse_statistics(dict_return.get(7),
-                                       self.WINDOWS_STATISTICS)
-                return True
+            list_return = self._api.command_line._original(
+                f'ping -c {count} {self._ip_address}'
+            )
+            logger.debug(f'list_return = {list_return}')
+            
+            if list_return:
+                bool_msg, bool_sts = False, False
+                for line in list_return:
+                    logger.debug(f'Processing line: {line}')
+                    
+                    # Check for packet statistics line
+                    if not bool_msg:
+                        bool_msg = self._parse_packets(line, self.WINDOWS_PACKET_MSG)
+                        logger.debug(f'Packet parse result for "{line}": {bool_msg}')
+                    
+                    # Check for RTT statistics line
+                    if not bool_sts:
+                        bool_sts = self._parse_statistics(line, self.WINDOWS_STATISTICS)
+                        logger.debug(f'Statistics parse result for "{line}": {bool_sts}')
+                    
+                    # If both are parsed, no need to continue
+                    if bool_msg and bool_sts:
+                        break
+                
+                # Ensure both parsing conditions are met
+                if bool_msg and bool_sts:
+                    return True
             
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
@@ -211,6 +238,7 @@ class WindowsPing(PingBase):
             logger.error(f'Error: {e}')
             raise
         return False
+
     
     def _parse_statistics(self, output, rtt_regex):
         """
@@ -224,10 +252,14 @@ class WindowsPing(PingBase):
             bool: True if the RTT statistics were successfully parsed, False otherwise.
         """
         match = re.search(rtt_regex, output)
+        logger.debug('output = %s', output)
+        logger.debug('match = %s', match)
         if match:
             self.minimum = float(match.group(1))
             self.average = float(match.group(2))
             self.maximum = float(match.group(3))
+            return True
 
-        else:
-            logger.warning(f"RTT statistics parsing failed: {output}")
+        # else:
+        #     logger.warning(f"RTT statistics parsing failed: {output}")
+        return False

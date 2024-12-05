@@ -7,13 +7,11 @@
 '''
 import logging
 import pytest
-# from unit.application_interface import ApplicationInterface as api
-# from amd_desktop.amd64_ping import AMD64Ping as aping
 
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).setLevel(logging.INFO)
 
-class TestAMD64Ping(object):
+class TestAMD64Ping:
     """Test suite for AMD64Ping class, verifying ping response metrics and
     overall functionality.
 

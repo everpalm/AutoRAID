@@ -7,7 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class AMD64Perf(object):
+class AMD64Perf:
 
     def __init__(self, platform, io_file):
         self._io_file = io_file

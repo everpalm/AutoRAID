@@ -22,6 +22,7 @@ pytest-dependency = "*"
 zipp = "*"
 "rpi.gpio" = "*"
 pylint = "*"
+pytest-order = "*"
 
 [dev-packages]
 

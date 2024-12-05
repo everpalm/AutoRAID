@@ -8,7 +8,7 @@ import re
 
 logger = logging.getLogger(__name__)
 
-class AMD64MultiPathStress(object):
+class AMD64MultiPathStress:
     """
     Class to perform multi-path I/O stress testing on AMD64 systems.
 
@@ -68,14 +68,14 @@ class AMD64MultiPathStress(object):
                        it is logged and then re-raised to be handled by the
                        caller.
         """
-        logger.info(f'thread = {thread}')
-        logger.info(f'iodepth = {iodepth}')
-        logger.info(f'block_size = {block_size}')
-        logger.info(f'random_size = {random_size}')
-        logger.info(f'write_pattern = {write_pattern}')
-        logger.info(f'duration = {duration}')
-        logger.debug(f'self._io_file = {self.io_paths}')
-        logger.debug(f'self._file_size = {self._file_size}')
+        logger.info('thread = %s', thread)
+        logger.info('iodepth = %s', iodepth)
+        logger.info('block_size = %s', block_size)
+        logger.info('random_size = %s', random_size)
+        logger.info('write_pattern = %s', write_pattern)
+        logger.info('duration = %s', duration)
+        logger.debug('self._io_file = %s', self.io_paths)
+        logger.debug('self._file_size = %s', self._file_size)
 
         read_iops = read_bw = write_iops = write_bw = None
         list_io_path = [f'{drive_letter}:\\IO.dat' for drive_letter,
@@ -126,7 +126,7 @@ class AMD64MultiPathStress(object):
                     logger.debug('write_bw = %s', write_bw)
 
         except Exception as e:
-            logger.error(f"Error occurred in run_io_operation: {e}")
+            logger.error("Error occurred in run_io_operation: %s", e)
             raise
 
         finally:
