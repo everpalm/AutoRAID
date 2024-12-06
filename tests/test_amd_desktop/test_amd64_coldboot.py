@@ -45,13 +45,27 @@ def test_check_error(win_event):
         AssertionError: If specific errors (ID 51 or 157) are detected in logs.
     """
 
+    # yield win_event.clear_error()
+
+    # if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
+    #     raise AssertionError("Error 51 detected in system logs.")
+    
+    # if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
+    #     raise AssertionError("Error 157 detected in system logs.")
     yield win_event.clear_error()
 
+    errors = []
     if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
-        raise AssertionError("Error 51 detected in system logs.")
+        # raise AssertionError("Error 51 detected in system logs.")
+        errors.append("Error 51 detected in system logs.")
     
     if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
-        raise AssertionError("Error 157 detected in system logs.")
+        # raise AssertionError("Error 157 detected in system logs.")
+        errors.append("Error 157 detected: Disk surprise removal.")
+    
+    if errors:
+        logger.error(f"Windows event errors detected: {errors}")
+        raise AssertionError(f"Detected errors: {errors}")  
     
     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
