@@ -1,5 +1,6 @@
 # from collections import defaultdict
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 import logging
 import re

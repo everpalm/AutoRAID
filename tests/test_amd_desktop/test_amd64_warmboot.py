@@ -6,11 +6,10 @@ import pytest
 import RPi.GPIO as gpio
 
 from tests.test_amd_desktop.test_amd64_stress import TestAMD64MultiPathStress
-from tests.test_raspberry.test_pi3_gpio import TestPowerOnSUT
-from tests.test_raspberry.test_pi3_gpio import TestPowerOffSUT
-from unit.gpio import OperateGPIO as og
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 from amd_desktop.amd64_event import WindowsEvent as we
+from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
+from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 
 logger = logging.getLogger(__name__)
 
@@ -45,13 +44,6 @@ def test_check_error(win_event):
         AssertionError: If specific errors (ID 51 or 157) are detected in logs.
     """
 
-    # yield win_event.clear_error()
-
-    # if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
-    #     raise AssertionError("Error 51 detected in system logs.")
-    
-    # if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
-    #     raise AssertionError("Error 157 detected in system logs.")
     yield win_event.clear_error()
 
     errors = []
@@ -65,40 +57,45 @@ def test_check_error(win_event):
     
     if errors:
         logger.error(f"Windows event errors detected: {errors}")
-        raise AssertionError(f"Detected errors: {errors}")  
+        raise AssertionError(f"Detected errors: {errors}")    
     
     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
-@pytest.fixture(scope="module")
-def rpi_gpio(my_pins):
-    print('\n================== Setup Relay ================================')
-    amd_mgi = og(my_pins, gpio.BOARD)
-    
-    yield amd_mgi
-    print('\n================== Teardown Relay =============================')
+@pytest.fixture(scope="module", autouse=True)
+def win_warmboot(target_system):
+    return wwb(platform=target_system)
 
-    # Clear GPIO
-    amd_mgi.clear_gpio()
 
 @pytest.mark.order(1)
-class TestWindowsPowerCycle:
-    def test_power_cycle(self, target_ping, rpi_gpio):
-        """Run all TestPowerOffSUT tests to ensure SUT powers off correctly."""
-        power_off = TestPowerOffSUT()
-        power_off.test_power_on(target_ping)  # Confirm SUT starts powered on and responsive
-        power_off.test_press_power_button(rpi_gpio)  # Power off SUT
+class TestWindowsWarmBoot:
+
+    def test_execute(self, win_warmboot):
+        """Run <Warm Boot> tests to ensure SUT reset correctly."""
+        result = win_warmboot.execute()
+        assert result, "Windows Warm Boot execution failed. Check logs for details."
+        logger.info("Windows Warm Boot executed successfully.")
         
         time.sleep(15)
 
-        power_on = TestPowerOnSUT()
-        power_on.test_ping_loss(target_ping)  # Ensure it starts in the off state
-        power_on.test_press_power_button(rpi_gpio)  # Power on SUT
-        power_on.test_ping_loss(target_ping)  # Confirm SUT starts powered on and responsive
+    @pytest.mark.flaky(reruns=3, reruns_delay=10)
+    def test_power_on(self, target_ping):
+        result = target_ping.ping()
+        logger.info(f'target_ping.sent = {target_ping.sent}')
+        logger.info(f'target_ping.received = {target_ping.received}')
+        logger.info(f'target_ping.lost = {target_ping.lost}')
+        logger.info(f'target_ping.minimum = {target_ping.minimum}')
+        logger.info(f'target_ping.maximum = {target_ping.maximum}')
+        logger.info(f'target_ping.average = {target_ping.average}')
+        logger.info(f'ping_instance.deviation = {target_ping.deviation}')
+
+        # 检查返回值是否为True，表示ping成功
+        assert result is True
 
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(2)
 @pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
-class TestWindowsRunTimeIO(TestAMD64MultiPathStress):
+# class TestWindowsRunTimeIO(TestAMD64MultiPathStress):
+class TestWindowsRunTimeIO:
     def test_run_io_operation(self, target_stress, write_pattern, my_mdb):
         read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
             SINGLE_THREAD, OPTIMUM_IODEPTH, '4k', '4k', FULL_READ, ONE_SHOT)
