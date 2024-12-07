@@ -91,7 +91,6 @@ class TestWindowsWarmBoot:
         # 检查返回值是否为True，表示ping成功
         assert result is True
 
-@pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(2)
 @pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
 # class TestWindowsRunTimeIO(TestAMD64MultiPathStress):
