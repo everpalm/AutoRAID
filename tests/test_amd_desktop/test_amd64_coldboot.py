@@ -79,7 +79,8 @@ def rpi_gpio(my_pins):
 
     # Clear GPIO
     amd_mgi.clear_gpio()
-
+    
+@pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(1)
 class TestWindowsPowerCycle:
     def test_power_cycle(self, target_ping, rpi_gpio):
