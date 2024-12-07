@@ -5,11 +5,11 @@ import time
 import pytest
 import RPi.GPIO as gpio
 
-from tests.test_amd_desktop.test_amd64_stress import TestAMD64MultiPathStress
+# from tests.test_amd_desktop.test_amd64_stress import TestAMD64MultiPathStress
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 from amd_desktop.amd64_event import WindowsEvent as we
 from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
-from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
+# from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,7 @@ FULL_WRITE = 100
 ONE_SHOT = 15
 SINGLE_THREAD = 1
 OPTIMUM_IODEPTH = 7
+RESET_DURATION = 30
 
 @pytest.fixture(scope="session")
 def win_event(target_system):
@@ -66,19 +67,19 @@ def win_warmboot(target_system):
     return wwb(platform=target_system)
 
 
-@pytest.mark.order(1)
+# @pytest.mark.order(1)
 class TestWindowsWarmBoot:
 
-    def test_execute(self, win_warmboot):
+    def test_warmboot_execute(self, win_warmboot):
         """Run <Warm Boot> tests to ensure SUT reset correctly."""
         result = win_warmboot.execute()
         assert result, "Windows Warm Boot execution failed. Check logs for details."
         logger.info("Windows Warm Boot executed successfully.")
         
-        time.sleep(15)
+        time.sleep(RESET_DURATION)
 
     @pytest.mark.flaky(reruns=3, reruns_delay=10)
-    def test_power_on(self, target_ping):
+    def test_ping_after_warmboot(self, target_ping):
         result = target_ping.ping()
         logger.info(f'target_ping.sent = {target_ping.sent}')
         logger.info(f'target_ping.received = {target_ping.received}')
@@ -91,16 +92,25 @@ class TestWindowsWarmBoot:
         # 检查返回值是否为True，表示ping成功
         assert result is True
 
-@pytest.mark.order(2)
-@pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
-# class TestWindowsRunTimeIO(TestAMD64MultiPathStress):
-class TestWindowsRunTimeIO:
-    def test_run_io_operation(self, target_stress, write_pattern, my_mdb):
-        read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
-            SINGLE_THREAD, OPTIMUM_IODEPTH, '4k', '4k', FULL_READ, ONE_SHOT)
+    def test_io_oneshot(self, target_stress,my_mdb):
+        """Runs oneshot I/O operations to test system stress with optimum
+        I/O depths and write patterns.
+        
+        Args:
+            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+            write_pattern (int): Write pattern defining full read.
+            iodepth (int): Optimum I/O depth level for stress testing is 7.
+            my_mdb: Mock database for storing and comparing test metrics.
+        
+        Assertions:
+            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+        """
+        read_bw, read_iops, write_bw, write_iops = \
+        target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
+                                       '4k', FULL_READ, ONE_SHOT)
     
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
-        criteria = my_mdb.aggregate_stress_metrics(write_pattern, OPTIMUM_IODEPTH)
+        criteria = my_mdb.aggregate_stress_metrics(FULL_READ, OPTIMUM_IODEPTH)
 
-        logger.debug('criteria = %s', criteria)
+        logger.debug(f'criteria = {criteria}')

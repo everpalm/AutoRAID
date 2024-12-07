@@ -6,6 +6,7 @@ import pytest
 
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
+from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
@@ -53,5 +54,18 @@ def test_open_uart(drone):
 def target_perf(target_system):
     print('\n\033[32m================== Setup Performance ===========\033[0m')
     return amd64perf(platform=target_system, io_file='D:\\IO.dat')
+
+@pytest.fixture(scope="function")
+def target_stress(target_system):
+    """Fixture for setting up an AMD64MultiPathStress instance for I/O stress tests.
+    
+    Args:
+        target_system: The system instance to run stress tests on.
+    
+    Returns:
+        AMD64MultiPathStress: Instance for executing stress test operations.
+    """
+    print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
+    return amps(platform=target_system)
 
 

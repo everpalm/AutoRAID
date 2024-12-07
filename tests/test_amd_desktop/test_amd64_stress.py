@@ -7,7 +7,7 @@
 '''
 import logging
 import pytest
-from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
+# from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from amd_desktop.amd64_event import WindowsEvent as we
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
@@ -18,6 +18,7 @@ FULL_READ = 0
 OLTP_LOADING = 30 # With 8 KB chunk size
 FULL_WRITE = 100
 OVER_NIGHT = 15
+ONE_SHOT = 15
 HYPER_THREAD = 2
 SINGLE_THREAD = 1
 MIN_IODEPTH = 1
@@ -51,11 +52,23 @@ def test_check_error(win_event):
 
     yield win_event.clear_error()
 
+    # if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
+    #     raise AssertionError("Error 51 detected in system logs.")
+    
+    # if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
+    #     raise AssertionError("Error 157 detected in system logs.")
+    errors = []
     if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
-        raise AssertionError("Error 51 detected in system logs.")
+        # raise AssertionError("Error 51 detected in system logs.")
+        errors.append("Error 51 detected in system logs.")
     
     if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
-        raise AssertionError("Error 157 detected in system logs.")
+        # raise AssertionError("Error 157 detected in system logs.")
+        errors.append("Error 157 detected: Disk surprise removal.")
+    
+    if errors:
+        logger.error(f"Windows event errors detected: {errors}")
+        raise AssertionError(f"Detected errors: {errors}")  
     
     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
@@ -69,18 +82,18 @@ class TestAMD64MultiPathStress:
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in
             advance
     '''
-    @pytest.fixture(scope="function")
-    def target_stress(self, target_system):
-        """Fixture for setting up an AMD64MultiPathStress instance for I/O stress tests.
+    # @pytest.fixture(scope="function")
+    # def target_stress(self, target_system):
+    #     """Fixture for setting up an AMD64MultiPathStress instance for I/O stress tests.
         
-        Args:
-            target_system: The system instance to run stress tests on.
+    #     Args:
+    #         target_system: The system instance to run stress tests on.
         
-        Returns:
-            AMD64MultiPathStress: Instance for executing stress test operations.
-        """
-        print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
-        return amps(platform=target_system)
+    #     Returns:
+    #         AMD64MultiPathStress: Instance for executing stress test operations.
+    #     """
+    #     print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
+    #     return amps(platform=target_system)
 
     # @pytest.mark.parametrize('iodepth', list(range(MIN_IODEPTH, MAX_IODEPTH)))
     @pytest.mark.parametrize('iodepth', [2**power for power in range(6)])
