@@ -7,7 +7,7 @@
 '''
 import logging
 import pytest
-from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
+# from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from amd_desktop.amd64_event import WindowsEvent as we
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
@@ -82,18 +82,18 @@ class TestAMD64MultiPathStress:
             sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in
             advance
     '''
-    @pytest.fixture(scope="function")
-    def target_stress(self, target_system):
-        """Fixture for setting up an AMD64MultiPathStress instance for I/O stress tests.
+    # @pytest.fixture(scope="function")
+    # def target_stress(self, target_system):
+    #     """Fixture for setting up an AMD64MultiPathStress instance for I/O stress tests.
         
-        Args:
-            target_system: The system instance to run stress tests on.
+    #     Args:
+    #         target_system: The system instance to run stress tests on.
         
-        Returns:
-            AMD64MultiPathStress: Instance for executing stress test operations.
-        """
-        print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
-        return amps(platform=target_system)
+    #     Returns:
+    #         AMD64MultiPathStress: Instance for executing stress test operations.
+    #     """
+    #     print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
+    #     return amps(platform=target_system)
 
     # @pytest.mark.parametrize('iodepth', list(range(MIN_IODEPTH, MAX_IODEPTH)))
     @pytest.mark.parametrize('iodepth', [2**power for power in range(6)])
@@ -118,29 +118,6 @@ class TestAMD64MultiPathStress:
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
         criteria = my_mdb.aggregate_stress_metrics(write_pattern, iodepth)
-
-        logger.debug(f'criteria = {criteria}')
-        
-    def test_oneshot_operation(self, target_stress,my_mdb):
-        """Runs oneshot I/O operations to test system stress with optimum
-        I/O depths and write patterns.
-        
-        Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
-            write_pattern (int): Write pattern defining full read.
-            iodepth (int): Optimum I/O depth level for stress testing is 7.
-            my_mdb: Mock database for storing and comparing test metrics.
-        
-        Assertions:
-            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
-        """
-        read_bw, read_iops, write_bw, write_iops = \
-        target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
-                                       '4k', FULL_READ, ONE_SHOT)
-    
-        log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
-
-        criteria = my_mdb.aggregate_stress_metrics(FULL_READ, OPTIMUM_IODEPTH)
 
         logger.debug(f'criteria = {criteria}')
         
