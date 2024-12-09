@@ -5,7 +5,7 @@ import time
 import pytest
 import RPi.GPIO as gpio
 
-# from tests.test_amd_desktop.test_amd64_stress import TestAMD64MultiPathStress
+from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress as toss
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 from amd_desktop.amd64_event import WindowsEvent as we
 from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 FULL_READ = 0
 FULL_WRITE = 100
+HALF_RW = 50
 ONE_SHOT = 15
 SINGLE_THREAD = 1
 OPTIMUM_IODEPTH = 7
@@ -92,25 +93,28 @@ class TestWindowsWarmBoot:
         # 检查返回值是否为True，表示ping成功
         assert result is True
 
-    def test_io_oneshot(self, target_stress,my_mdb):
-        """Runs oneshot I/O operations to test system stress with optimum
-        I/O depths and write patterns.
+    # def test_io_oneshot(self, target_stress,my_mdb):
+    #     """Runs oneshot I/O operations to test system stress with optimum
+    #     I/O depths and write patterns.
         
-        Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
-            write_pattern (int): Write pattern defining full read.
-            iodepth (int): Optimum I/O depth level for stress testing is 7.
-            my_mdb: Mock database for storing and comparing test metrics.
+    #     Args:
+    #         target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+    #         write_pattern (int): Write pattern defining full read.
+    #         iodepth (int): Optimum I/O depth level for stress testing is 7.
+    #         my_mdb: Mock database for storing and comparing test metrics.
         
-        Assertions:
-            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
-        """
-        read_bw, read_iops, write_bw, write_iops = \
-        target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
-                                       '4k', FULL_READ, ONE_SHOT)
+    #     Assertions:
+    #         - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+    #     """
+    #     read_bw, read_iops, write_bw, write_iops = \
+    #     target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
+    #                                    '4k', HALF_RW, ONE_SHOT)
     
-        log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
+    #     log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
-        criteria = my_mdb.aggregate_stress_metrics(FULL_READ, OPTIMUM_IODEPTH)
+    #     criteria = my_mdb.aggregate_stress_metrics(HALF_RW, OPTIMUM_IODEPTH)
 
-        logger.debug(f'criteria = {criteria}')
+    #     logger.debug(f'criteria = {criteria}')
+
+class TestWindowsOneshotStress(toss):
+    pass
