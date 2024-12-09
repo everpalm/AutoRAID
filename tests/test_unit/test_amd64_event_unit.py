@@ -23,17 +23,17 @@ def mock_platform():
                    error_features and command-line interaction.
     """
     # 模擬 AMD64NVMe 的 platform 和 api 行為
-    mock_platform = MagicMock(spec=AMD64NVMe)
+    mocked = MagicMock(spec=AMD64NVMe)
 
     # 模擬 error_features
-    mock_platform.error_features = defaultdict(set)
+    mocked.error_features = defaultdict(set)
 
     # 手動設置 mock 的 api 和 command_line
-    mock_platform.api = MagicMock()  # 添加 api 屬性
-    mock_platform.api.command_line = MagicMock()  # 添加 command_line 屬性
-    mock_platform.api.command_line._original = MagicMock()  # 添加 _original 方法
+    mocked.api = MagicMock()  # 添加 api 屬性
+    mocked.api.command_line = MagicMock()  # 添加 command_line 屬性
+    mocked.api.command_line._original = MagicMock()  # 添加 _original 方法
 
-    return mock_platform
+    return mocked
 
 # 測試 find_error 方法匹配成功的情況
 def test_find_error_match_found(mock_platform):
