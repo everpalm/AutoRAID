@@ -30,12 +30,19 @@ pipeline {
                 }
             }
         }
-        stage('Testing') {
+        stage('Unit Testing') {
             steps {
                 script {
                     gv.test_pep8()
                     gv.test_unit()
-                    gv.test_amd64_nvme()
+                    // gv.test_amd64_nvme()
+                }
+            }
+        }
+        stage('Sanity Testing') {
+            steps {
+                script {
+                    gv.test_sanity()
                 }
             }
         }
@@ -66,6 +73,8 @@ pipeline {
                     git merge origin/development
                     """
                     sh('git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging')
+                    // Trigger another pipeline after success
+                    build job: 'AutoRAID_Staging', wait: false
                 } catch (e) {
                     // 錯誤處理
                     echo "An error occurred during the post-build process: ${e.getMessage()}"
@@ -78,7 +87,8 @@ pipeline {
                 to: 'everpalm@yahoo.com.tw',
                 subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                 body: 'The build has failed. Please check the Jenkins console output for details.',
-                mimeType: 'text/html'
+                mimeType: 'text/html',
+                attachmentsPattern: '**/htmlcov/index.html'
             )
         }
     }

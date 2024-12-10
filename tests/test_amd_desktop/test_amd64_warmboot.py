@@ -116,5 +116,6 @@ class TestWindowsWarmBoot:
 
     #     logger.debug(f'criteria = {criteria}')
 
-class TestWindowsOneshotStress(toss):
+# @pytest.mark.order(2)
+class TestWindowsWarmBootStress(toss):
     pass
