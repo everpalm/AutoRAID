@@ -40,6 +40,10 @@ def test_sanity() {
     sh 'pipenv run pytest ${TEST_AMD_DESKTOP} --testmon --cov-report=html'    
 }
 
+def test_regression() {
+    sh 'pipenv run pytest ${TEST_AMD_DESKTOP} --cov-report=html'    
+}
+
 def test_unit() {
     echo 'test_unit'
     sh 'pipenv run pytest ${TEST_UNIT} --private_token=$MY_PRIVATE_TOKEN --cov-report=html'

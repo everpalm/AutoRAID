@@ -39,13 +39,13 @@ pipeline {
                 }
             }
         }
-        // stage('Smoke Testing') {
-        //     steps {
-        //         script {
-        //             gv.test_smoke()
-        //         }
-        //     }
-        // }
+        stage('Sanity Testing') {
+            steps {
+                script {
+                    gv.test_sanity()
+                }
+            }
+        }
     }
     post {
         always {
