@@ -1,6 +1,6 @@
 # Contents of test_application_interface.py
 '''Unit tests for the ApplicationInterface class, which includes testing the 
-   execution of Windows commands to verify system responses and configurations.
+   execution of Windows commands to verify system responses and configurations
    
    Copyright (c) 2024 Jaron Cheng
 '''
@@ -42,8 +42,8 @@ class TestApplicationInterface(object):
                 return value for the test case.
         
         Assertions:
-            - Checks that the output from executing the command matches the expected
-              return value in WINDOWS_CMD_TABLE.
+            - Checks that the output from executing the command matches the
+            expected return value in WINDOWS_CMD_TABLE.
         """
         list_executed = my_app.command_line(windows_cmd["Command"])
         logger.debug("my_app.command_line = %s, type %s",
