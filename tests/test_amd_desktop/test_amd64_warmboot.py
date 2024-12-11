@@ -5,9 +5,9 @@ import time
 import pytest
 import RPi.GPIO as gpio
 
-from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress as Toss
-# from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
-# from amd_desktop.amd64_event import WindowsEvent as we
+from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress as toss
+from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
+from amd_desktop.amd64_event import WindowsEvent as we
 from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
 # from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 
@@ -21,18 +21,18 @@ SINGLE_THREAD = 1
 OPTIMUM_IODEPTH = 7
 RESET_DURATION = 30
 
-# @pytest.fixture(scope="session")
-# def win_event(target_system):
-#     """Fixture for setting up Windows Event monitoring for system errors.
+@pytest.fixture(scope="session")
+def win_event(target_system):
+    """Fixture for setting up Windows Event monitoring for system errors.
     
-#     Args:
-#         target_system: The system instance to monitor for Windows Event logs.
+    Args:
+        target_system: The system instance to monitor for Windows Event logs.
     
-#     Returns:
-#         WindowsEvent: An instance of WindowsEvent for error logging.
-#     """
-#     print('\n\033[32m================== Setup Win Event =============\033[0m')
-#     return we(platform=target_system)
+    Returns:
+        WindowsEvent: An instance of WindowsEvent for error logging.
+    """
+    print('\n\033[32m================== Setup Win Event =============\033[0m')
+    return we(platform=target_system)
 
 @pytest.fixture(scope="module", autouse=True)
 def test_check_error(win_event):
@@ -82,18 +82,40 @@ class TestWindowsWarmBoot:
     @pytest.mark.flaky(reruns=3, reruns_delay=10)
     def test_ping_after_warmboot(self, target_ping):
         result = target_ping.ping()
-        logger.info("target_ping.sent = %d", target_ping.sent)
-        logger.info("target_ping.received = %d", target_ping.received)
-        logger.info("target_ping.lost = %d", target_ping.lost)
-        logger.info("target_ping.minimum = %d", target_ping.minimum)
-        logger.info("target_ping.maximum = %d", target_ping.maximum)
-        logger.info("target_ping.average = %d", target_ping.average)
-        logger.info("ping_instance.deviation = %d", target_ping.deviation)
+        logger.info(f'target_ping.sent = {target_ping.sent}')
+        logger.info(f'target_ping.received = {target_ping.received}')
+        logger.info(f'target_ping.lost = {target_ping.lost}')
+        logger.info(f'target_ping.minimum = {target_ping.minimum}')
+        logger.info(f'target_ping.maximum = {target_ping.maximum}')
+        logger.info(f'target_ping.average = {target_ping.average}')
+        logger.info(f'ping_instance.deviation = {target_ping.deviation}')
 
         # 检查返回值是否为True，表示ping成功
         assert result is True
 
+    # def test_io_oneshot(self, target_stress,my_mdb):
+    #     """Runs oneshot I/O operations to test system stress with optimum
+    #     I/O depths and write patterns.
+        
+    #     Args:
+    #         target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+    #         write_pattern (int): Write pattern defining full read.
+    #         iodepth (int): Optimum I/O depth level for stress testing is 7.
+    #         my_mdb: Mock database for storing and comparing test metrics.
+        
+    #     Assertions:
+    #         - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+    #     """
+    #     read_bw, read_iops, write_bw, write_iops = \
+    #     target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
+    #                                    '4k', HALF_RW, ONE_SHOT)
+    
+    #     log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
+
+    #     criteria = my_mdb.aggregate_stress_metrics(HALF_RW, OPTIMUM_IODEPTH)
+
+    #     logger.debug(f'criteria = {criteria}')
 
 # @pytest.mark.order(2)
-class TestWindowsWarmBootStress(Toss):
-    '''This is a docstring'''
+class TestWindowsWarmBootStress(toss):
+    pass
