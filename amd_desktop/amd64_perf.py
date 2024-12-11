@@ -8,11 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AMD64Perf:
-    '''AMD64 Performance
-    Args:
-    Returns
-    Raise:
-    '''
+
     def __init__(self, platform, io_file):
         self._io_file = io_file
         self._platform = platform
@@ -39,14 +35,14 @@ class AMD64Perf:
             Returns: read bw, read iops, write bw, write iops
             Raises: Any errors occurs while invoking diskspd
         '''
-        logger.info("self._thread = %d", self._thread)
-        logger.info("iodepth = %d", iodepth)
-        logger.info("block_size = %d", block_size)
-        logger.info("random_size = %d", random_size)
-        logger.info("write_pattern = %d", write_pattern)
-        logger.info("duration = %d", duration)
-        logger.info("self._io_file = %d", self._io_file)
-        logger.info("self._file_size = %d", self._file_size)
+        logger.info(f'self._thread = {self._thread}')
+        logger.info(f'iodepth = {iodepth}')
+        logger.info(f'block_size = {block_size}')
+        logger.info(f'random_size = {random_size}')
+        logger.info(f'write_pattern = {write_pattern}')
+        logger.info(f'duration = {duration}')
+        logger.info(f'self._io_file = {self._io_file}')
+        logger.info(f'self._file_size = {self._file_size}')
         
         read_iops = read_bw = write_iops = write_bw = None
         try:
