@@ -1,51 +1,66 @@
+def safe_sh(String command) {
+    try {
+        sh command
+    } catch (Exception e) {
+        echo "Command failed: ${command}"
+        error "Stopping pipeline due to failure."
+    }
+}
+
 def build_app() {
-    sh 'pipenv sync'
+    safe_sh 'pipenv sync'
 }
 
-def test_amd_desktop() {
-    echo 'test_amd_desktop'
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP} --testmon --private_token=$MY_PRIVATE_TOKEN --cov-report=html'
+def run_test(String path, String key = '', String additional_args = '') {
+    safe_sh "pipenv run pytest '${path}' --private_token='${key}' ${additional_args}"
 }
 
-def test_raspberry() {
-    echo 'test_raspberry'
-    sh 'pipenv run pytest --private_token=$MY_PRIVATE_TOKEN --cov-report=html'
+def test_amd_desktop(String path) {
+    run_test(path, '', '--testmon --cov-report=html')
 }
 
-def test_amd64_nvme() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP}/test_amd64_nvme.py --private_token=$MY_PRIVATE_TOKEN --cov-report=html'
+def test_raspberry(String path) {
+    run_test(path, '', '--cov-report=html')
 }
 
-def test_amd64_perf() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP}/test_amd64_perf.py --private_token=$MY_PRIVATE_TOKEN --cov-report=html'
+def test_amd64_nvme(String path) {
+    run_test(path + '/test_amd64_nvme.py', '', '--cov-report=html')
 }
 
-def test_amd64_stress() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP}/test_amd64_stress.py --private_token=$MY_PRIVATE_TOKEN --cov-report=html'
-}
-def test_application_interface() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP}/test_application_interface.py --private_token=$MY_PRIVATE_TOKEN'
+def test_amd64_perf(String path) {
+    run_test(path + '/test_amd64_perf.py', '', '--cov-report=html')
 }
 
-def test_pep8() {
-    // sh 'pipenv run pylint ${TEST_UNIT} --exit-zero' //Forcibly pass
-    sh 'pipenv run pylint ${TEST_UNIT} --fail-under=7.0'
+def test_amd64_stress(String path) {
+    run_test(path + '/test_amd64_stress.py', '', '--cov-report=html')
 }
 
-def test_smoke() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP}/test_amd64_warmboot.py --testmon --private_token=$MY_PRIVATE_TOKEN --cov-report=html --count=3 --repeat-scope=module'    
+def test_application_interface(String path) {
+    run_test(path + '/test_application_interface.py', '')
 }
 
-def test_sanity() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP} --testmon --cov-report=html'    
+def test_pep8(String path) {
+    safe_sh "pipenv run pylint '${path}' --fail-under=7.0"
 }
 
-def test_regression() {
-    sh 'pipenv run pytest ${TEST_AMD_DESKTOP} --cov-report=html'    
+def test_smoke(String path, int rep_number, String key, String scope) {
+    run_test(path + '/test_amd64_warmboot.py', key, "--count=${rep_number} --repeat-scope=${scope} --testmon --cov-report=html")
 }
 
-def test_unit() {
-    echo 'test_unit'
-    sh 'pipenv run pytest ${TEST_UNIT} --private_token=$MY_PRIVATE_TOKEN --cov-report=html'
+def test_sanity(String path) {
+    run_test(path, '', '--testmon --cov-report=html')
+}
+
+def test_regression(String path) {
+    run_test(path, '', '--cov-report=html')
+}
+
+def test_unit(String path, String key) {
+    run_test(path, key, '--cov-report=html')
+}
+
+def purge_temp_file() {
+    safe_sh "sudo apt-get clean && sudo apt-get autoremove --purge"
+    safe_sh "sudo rm -rf /var/cache/apt/archives/*"
 }
 return this

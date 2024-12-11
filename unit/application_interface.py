@@ -1,8 +1,8 @@
 # Contents of application_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
-from abc import ABC
-from abc import abstractmethod
+# from abc import ABC
+# from abc import abstractmethod
 from typing import Tuple
 from typing import List
 from typing import Dict
@@ -17,12 +17,21 @@ import paramiko
 
 SSH_PORT = '22'
 
-''' Define NevoX application interface '''
+''' Define Device application interface '''
 
 logger = logging.getLogger(__name__)
 
 
 def dict_format(callback):
+    ''' Translate List into Dictionary 
+
+        This decorator translate list into dictionary
+
+        Attributes:
+            Callback
+        Returns:
+            Wrapper
+    '''
     def wrapper(*args, **kwargs):
         dict_result = callback(*args, **kwargs)
         logger.debug("Result to be transformed = %s", dict_result)
@@ -36,7 +45,8 @@ def dict_format(callback):
 #     return warp
 
 
-class ApplicationInterface(ABC):
+# class ApplicationInterface(ABC):
+class ApplicationInterface():
     ''' Application Interface
 
         This interface distinguish operations between the test script and
@@ -60,6 +70,11 @@ class ApplicationInterface(ABC):
         self.os = self.get_os()
 
     def __import_config(self) -> Dict[str, str]:
+        ''' Get OS version
+            Args: None
+            Returns: OS type
+            Raises: None
+        '''
         try:
             with open(f'config/{self.config_file}', 'r') as f:
                 list_config = json.load(f)
@@ -72,6 +87,11 @@ class ApplicationInterface(ABC):
 
     @staticmethod
     def _get_local_ip(str_if_name: str) -> str:
+        ''' Get OS version
+            Args: None
+            Returns: OS type
+            Raises: None
+        '''
         # Create a socket instance
         my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
@@ -89,6 +109,11 @@ class ApplicationInterface(ABC):
         return local_ip
 
     def _get_remote_ip(self) -> Tuple[str]:
+        ''' Get OS version
+            Args: None
+            Returns: OS type
+            Raises: None
+        '''
         remote_ip = None
         for dict_element in self.__import_config():
             # remote_ip = None
@@ -112,13 +137,38 @@ class ApplicationInterface(ABC):
             str_remote_dir
 
     def get_ip_address(self) -> str:
+        """
+        Retrieve the IP address based on the access mode.
+
+        Returns:
+            str: The IP address of the target system (local or remote).
+
+        Raises:
+            ValueError: If an invalid access mode is set.
+        """
         if self.mode == 'remote':
-            return self._get_remote_ip()
+            logger.debug("Fetching remote IP address")
+            remote_ip = self._get_remote_ip()
+            if not remote_ip:
+                raise ValueError("Failed to retrieve remote IP address")
+            return remote_ip
         elif self.mode == 'local':
-            return self._get_local_ip()
+            logger.debug("Fetching local IP address")
+            local_ip = self._get_local_ip(self.if_name)
+            if not local_ip:
+                raise ValueError("Failed to retrieve local IP address")
+            return local_ip
+        else:
+            raise ValueError(f"Invalid mode '{self.mode}' in get_ip_address")
+
 
     @staticmethod
     def my_command(str_ssh_command: str) -> List[str]:
+        ''' Get OS version
+            Args: None
+            Returns: OS type
+            Raises: None
+        '''
         __list_msg = []
         messages = subprocess.Popen(
             str_ssh_command, shell=True, stdout=subprocess.PIPE,
@@ -129,7 +179,7 @@ class ApplicationInterface(ABC):
             if str(message, 'utf8') != '\n':
                 log_msg = str(message, 'utf8').replace(
                     '\n', '').replace('\x08', '')
-                logger.debug(f'{log_msg}')
+                logger.debug("log_msg = %s", log_msg)
                 response_msg = ' '.join(str(message, 'utf8').split())
                 __list_msg.append(response_msg.replace('\x08', ''))
         return __list_msg
@@ -149,14 +199,16 @@ class ApplicationInterface(ABC):
             os_info = ""
 
             # Try Linux uname command
-            stdin, stdout, stderr = ssh.exec_command("uname -s")
+            # stdin, stdout, stderr = ssh.exec_command("uname -s")
+            _, stdout, _ = ssh.exec_command("uname -s")
             uname_output = stdout.read().decode('utf-8').strip()
             if uname_output:
                 # os_info = f"Linux/Unix: {uname_output}"
                 os_info = "Linux"
             else:
                 # Try Windows systeminfo command
-                stdin, stdout, stderr = ssh.exec_command("systeminfo")
+                # stdin, stdout, stderr = ssh.exec_command("systeminfo")
+                _, stdout, _ = ssh.exec_command("systeminfo")
                 systeminfo_output = stdout.read().decode('utf-8').strip()
                 if systeminfo_output:
                     # os_info = "Windows: " + "\n".join(systeminfo_output.split("\n")[:10])  # 只取前几行作为示例
@@ -167,13 +219,18 @@ class ApplicationInterface(ABC):
             return os_info
             
         except Exception as e:
-            logger.error(f"Error: {e}")
+            logger.error("Error: %s", e)
             return None
         finally:
             ssh.close()
     
     # @dict_format
     def io_command(self, str_ssh_command: str) -> bool:
+        ''' Issue IO command
+            Args: String SSH command
+            Returns: 
+            Raises: None
+        '''
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(self.remote_ip, username=self.account,
@@ -197,35 +254,58 @@ class ApplicationInterface(ABC):
             raise ValueError('Unknown mode setting in set_access_mode')
 
     @dict_format
-    @abstractmethod
+    # @abstractmethod
     def command_line(self, str_cli_cmd: str) -> list[str]:
-        logger.debug('str_cli_cmd = %s', str_cli_cmd)
-        logger.debug('self.mode = %s', self.mode)
-        logger.debug('self.account = %s', self.account)
-        logger.debug('self.password = %s', self.password)
-        logger.debug('self.local_dir = %s', self.local_dir)
-        logger.debug('self.remote_dir = %s', self.remote_dir)
-        str_sshpass = (f'sshpass -p \"{self.password}\"'
-                ' ssh -o \"StrictHostKeyChecking=no\"')
-        logger.debug('str_sshpass = %s', str_sshpass)
+        """
+        Executes a shell command locally or remotely based on the access mode.
+
+        Args:
+            str_cli_cmd (str): The command to be executed.
+
+        Returns:
+            list[str]: The output of the executed command as a list of strings.
+
+        Raises:
+            ValueError: If an unknown mode is set.
+        """
+        logger.debug("Command: %s", str_cli_cmd)
+        logger.debug("Mode: %s", self.mode)
+        logger.debug("Account: %s", self.account)
+        logger.debug("Password: %s", self.password)
+        logger.debug("Local Directory: %s", self.local_dir)
+        logger.debug("Remote Directory: %s", self.remote_dir)
+
+        # Construct SSH command prefix for remote execution
+        str_sshpass = (
+            f'sshpass -p "{self.password}" '
+            'ssh -o "StrictHostKeyChecking=no"'
+        )
+        logger.debug("SSH Pass Command: %s", str_sshpass)
+
+        # Determine the command to execute based on mode
         if self.mode == 'remote':
-            logger.debug('===Remote access mode===')
+            logger.debug("=== Remote Access Mode ===")
             if self.os == 'Linux':
-                logger.debug('===Linux===')
-                str_command_line = (f'{str_sshpass}'
-                    f' {self.account}@{self.remote_ip}'
-                    f' \"cd {self.remote_dir};{str_cli_cmd}"')
+                logger.debug("=== Linux ===")
+                str_command_line = (
+                    f'{str_sshpass} {self.account}@{self.remote_ip} '
+                    f'"cd {self.remote_dir} && {str_cli_cmd}"'
+                )
             elif self.os == 'Windows':
-                logger.debug('===Windows===')
-                str_command_line = (f"{str_sshpass}"
-                    f" {self.account}@{self.remote_ip}"
-                    # f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
-                    f" 'cd {self.remote_dir}&&{str_cli_cmd}'")
+                logger.debug("=== Windows ===")
+                str_command_line = (
+                    f'{str_sshpass} {self.account}@{self.remote_ip} '
+                    f"'cd {self.remote_dir} && {str_cli_cmd}'"
+                )
+            else:
+                raise ValueError("Unsupported OS for remote mode")
         elif self.mode == 'local':
-            logger.debug('===Local access mode===')
-            # str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
-            str_command_line = f'{str_cli_cmd}'
+            logger.debug("=== Local Access Mode ===")
+            str_command_line = str_cli_cmd
         else:
-            raise ValueError('Unknown mode setting in command_line')
-        logger.debug('str_command_line = %s', str_command_line)
+            raise ValueError("Unknown mode setting in command_line")
+
+        logger.debug("Final Command Line: %s", str_command_line)
+
+        # Execute the command and return the output
         return self.my_command(str_command_line)
