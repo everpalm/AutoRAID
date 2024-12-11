@@ -3,8 +3,7 @@ pipeline {
         label 'test_my_node'
     }
     triggers {
-        // Poll SCM every 5 minutes for new commits on development branch
-        pollSCM('H/5 * * * *')
+        pollSCM('H/5 * * * *')  // Every 5 minutes
     }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
@@ -15,7 +14,7 @@ pipeline {
         PATH = "/home/pi/.pyenv/shims:/home/pi/.pyenv/bin:${env.PATH}"
     }
     stages {
-        stage('Init') {
+        stage('Initialize') {
             steps {
                 script {
                     echo 'Initializing development pipeline...'
@@ -34,15 +33,14 @@ pipeline {
             steps {
                 script {
                     gv.test_pep8()
-                    gv.test_unit()
-                    // gv.test_amd64_nvme()
+                    gv.test_unit(env.TEST_UNIT, env.MY_PRIVATE_TOKEN)
                 }
             }
         }
         stage('Sanity Testing') {
             steps {
                 script {
-                    gv.test_sanity()
+                    gv.test_sanity(env.TEST_AMD_DESKTOP)
                 }
             }
         }
@@ -50,8 +48,7 @@ pipeline {
     post {
         always {
             script {
-                // 總是將測試報告存檔
-                archiveArtifacts artifacts: '**/htmlcov/**', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'htmlcov/**', allowEmptyArchive: true
             }
         }
         success {
@@ -61,23 +58,20 @@ pipeline {
                 body: """<p>All tests passed successfully!</p>
                          <p>Please check the attached test coverage report.</p>""",
                 mimeType: 'text/html',
-                attachmentsPattern: '**/htmlcov/index.html'
+                attachmentsPattern: 'htmlcov/index.html'
             )
             script {
                 try {
-                    // 合併 development 到 staging
                     sh """
                     git fetch origin
                     git checkout staging
                     git merge origin/staging
                     git merge origin/development
+                    git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging
                     """
-                    sh('git push https://everpalm:$GIT_TOKEN@github.com/everpalm/AutoRAID.git staging')
-                    // Trigger another pipeline after success
                     build job: 'AutoRAID_Staging', wait: false
                 } catch (e) {
-                    // 錯誤處理
-                    echo "An error occurred during the post-build process: ${e.getMessage()}"
+                    echo "An error occurred: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                 }
             }
@@ -88,7 +82,7 @@ pipeline {
                 subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                 body: 'The build has failed. Please check the Jenkins console output for details.',
                 mimeType: 'text/html',
-                attachmentsPattern: '**/htmlcov/index.html'
+                attachmentsPattern: 'htmlcov/index.html'
             )
         }
     }
