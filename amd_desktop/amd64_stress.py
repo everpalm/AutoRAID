@@ -81,19 +81,19 @@ class AMD64MultiPathStress:
         read_iops = read_bw = write_iops = write_bw = None
         list_io_path = [f'{drive_letter}:\\IO.dat' for drive_letter,
                         _ in self.io_paths]
-        logger.info(f'_io_file = {" ".join(list_io_path)}')
+        logger.info('_io_file = %s', " ".join(list_io_path))
 
         try:
             str_command = (f'diskspd -c1 -t{thread} -L -Sh -D'
             f' -o{iodepth} -b{block_size} -r{random_size}'
             f' -w{write_pattern} -d{duration} -c{self._file_size}G'
             f' {" ".join(list_io_path)}')
-            
+
             str_output = self._api.io_command(str_command)
-            
+
             if not str_output:
                 raise RuntimeError("No output returned from io_command.")
-        
+
             read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
                 re.S)
             write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)',
@@ -129,7 +129,9 @@ class AMD64MultiPathStress:
         except Exception as e:
             logger.error("Error occurred in run_io_operation: %s", e)
             raise
-
-        finally:
-            return (float(read_bw), float(read_iops), float(write_bw),
-                    float(write_iops))
+        return (
+            float(read_bw),
+            float(read_iops),
+            float(write_bw),
+            float(write_iops)
+        )
