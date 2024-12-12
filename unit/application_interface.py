@@ -76,7 +76,7 @@ class ApplicationInterface():
             Raises: None
         '''
         try:
-            with open(f'config/{self.config_file}', 'r') as f:
+            with open(f'config/{self.config_file}', 'r', encoding='utf-8') as f:
                 list_config = json.load(f)
                 if not isinstance(list_config, list):
                     raise ValueError(f"Expected dict in config file, got {type(list_config)}")

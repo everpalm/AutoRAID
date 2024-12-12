@@ -9,7 +9,7 @@ import logging
 import pytest
 
 logger = logging.getLogger(__name__)
-logging.getLogger(__name__).setLevel(logging.INFO)
+# logging.getLogger(__name__).setLevel(logging.INFO)
 
 class TestAMD64Ping:
     """Test suite for AMD64Ping class, verifying ping response metrics and

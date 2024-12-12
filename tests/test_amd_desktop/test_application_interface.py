@@ -8,7 +8,7 @@
 import logging
 import pytest
 
-''' Set up logger '''
+# Set up logger
 logger = logging.getLogger(__name__)
 
 WINDOWS_CMD_TABLE = ({

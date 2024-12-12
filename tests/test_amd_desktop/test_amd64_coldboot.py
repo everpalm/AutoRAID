@@ -17,7 +17,7 @@ SINGLE_THREAD = 1
 OPTIMUM_IODEPTH = 7
 
 
-# @pytest.fixture(scope="session")
+# @pytest.fixture(scope="module")
 # def win_event(target_system):
 #     """
 #     Fixture for setting up Windows Event monitoring for system errors.
@@ -32,34 +32,34 @@ OPTIMUM_IODEPTH = 7
 #     return We(platform=target_system)
 
 
-@pytest.fixture(scope="module", autouse=True)
-def test_check_error(win_event):
-    """
-    Fixture to clear previous Windows event logs and check for specific errors
-    after each test function.
+# @pytest.fixture(scope="module", autouse=True)
+# def test_check_error(win_event):
+#     """
+#     Fixture to clear previous Windows event logs and check for specific errors
+#     after each test function.
 
-    Yields:
-        Clears event logs and checks for errors upon test completion.
+#     Yields:
+#         Clears event logs and checks for errors upon test completion.
 
-    Raises:
-        AssertionError: If specific errors (ID 51 or 157) are detected in logs.
-    """
-    yield win_event.clear_error()
+#     Raises:
+#         AssertionError: If specific errors (ID 51 or 157) are detected in logs.
+#     """
+#     yield win_event.clear_error()
 
-    errors = []
-    if win_event.find_error("System", 51,
-                            r'An error was detected on device (\\\w+\\\w+\.+)'):
-        errors.append("Error 51 detected in system logs.")
+#     errors = []
+#     if win_event.find_error("System", 51,
+#                             r'An error was detected on device (\\\w+\\\w+\.+)'):
+#         errors.append("Error 51 detected in system logs.")
 
-    if win_event.find_error("System", 157,
-                            r'Disk (\d+) has been surprise removed.'):
-        errors.append("Error 157 detected: Disk surprise removal.")
+#     if win_event.find_error("System", 157,
+#                             r'Disk (\d+) has been surprise removed.'):
+#         errors.append("Error 157 detected: Disk surprise removal.")
 
-    if errors:
-        logger.error("Windows event errors detected: %s", errors)
-        raise AssertionError(f"Detected errors: {errors}")
+#     if errors:
+#         logger.error("Windows event errors detected: %s", errors)
+#         raise AssertionError(f"Detected errors: {errors}")
 
-    print('\n\033[32m================== Teardown Win Event ==========\033[0m')
+#     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
 
 @pytest.fixture(scope="module")

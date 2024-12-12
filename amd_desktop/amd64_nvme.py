@@ -1,17 +1,13 @@
 # Contents of amd_64_nvme.py
-"""Copyright (c) 2024 Jaron Cheng"""
+# Copyright (c) 2024 Jaron Cheng
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
-
-# import os
 import re
+from unit.log_handler import get_logger
+# import os
 
-# from unit.system_under_testing import convert_size
-
-
-logger = logging.getLogger(__name__)
-
+logger = get_logger(__name__, logging.INFO)
 
 class AMD64NVMe:
     """AMD 64 NVMe System
@@ -115,10 +111,13 @@ class AMD64NVMe:
                 self._mac_address = mac_address
             else:
                 raise ValueError("No matching Ethernet adapter found.")
-        except ValueError as e:
-            logger.error("Value Error in mac_address: %s", e)
+        except AttributeError as e:
+            logger.error("AttributeError in mac_address: %s", e)
+        except re.error as e:
+            logger.error("Invalid regex pattern in mac_address: %s", e)
+            return False
         except Exception as e:
-            logger.error("Error: %s", e)
+            logger.error("An unexpected error in mac_address: %s", e)
             self._mac_address = None
 
         return self._mac_address
@@ -135,7 +134,6 @@ class AMD64NVMe:
             str_return = self.api.command_line("wmic cpu get NumberOfCores")
             int_cpu_num = int(str_return.get(1).split(" ")[0])
             str_return = self.api.command_line("wmic cpu get name")
-            # str_cpu_num = str_return.get(1).split(' ')[4]
             str_cpu_name = " ".join(str_return.get(1).split(" ")[0:3])
             logger.debug("cpu_num = %d, cpu_name = %s", int_cpu_num, str_cpu_name)
         except ValueError as e:

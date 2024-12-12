@@ -9,9 +9,6 @@ import pytest
 from unit.system_performance import SystemPerformance as perf
 from unit.system_under_testing import SystemUnderTesting as sut
 
-# Set up logger
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
 # 測試所用的資料
