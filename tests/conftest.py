@@ -1,9 +1,9 @@
 # Content of tests.conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
 
-import pytest
 import logging
 import os
+import pytest
 import paramiko
 from amd_desktop.amd64_ping import AMD64Ping as aping
 from unit.application_interface import ApplicationInterface as api
@@ -17,9 +17,9 @@ MDB_ATTR = [{
     "Report Path": ".report.json"
 }]
 
-logging.getLogger("pymongo").setLevel(logging.CRITICAL)
-logging.getLogger("amd_desktop.amd64_ping").setLevel(logging.INFO)
-logging.getLogger("unit.application_interface").setLevel(logging.INFO)
+# logging.getLogger("pymongo").setLevel(logging.CRITICAL)
+# logging.getLogger("amd_desktop.amd64_ping").setLevel(logging.INFO)
+# logging.getLogger("unit.application_interface").setLevel(logging.INFO)
 logging.getLogger("unit.gitlab").setLevel(logging.CRITICAL)
 logging.getLogger("unit.gpio").setLevel(logging.INFO)
 logging.getLogger("unit.mongodb").setLevel(logging.INFO)

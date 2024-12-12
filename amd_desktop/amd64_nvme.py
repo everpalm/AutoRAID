@@ -1,14 +1,13 @@
 # Contents of amd_64_nvme.py
-"""Copyright (c) 2024 Jaron Cheng"""
+# Copyright (c) 2024 Jaron Cheng
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
 import re
+from unit.log_handler import get_logger
 # import os
 
-# from unit.system_under_testing import convert_size
-logger = logging.getLogger(__name__)
-
+logger = get_logger(__name__, logging.INFO)
 
 class AMD64NVMe:
     """AMD 64 NVMe System

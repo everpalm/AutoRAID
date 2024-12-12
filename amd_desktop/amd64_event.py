@@ -1,3 +1,4 @@
+# Copyright (c) 2024 Jaron Cheng
 # from collections import defaultdict
 import logging
 import re
@@ -6,7 +7,7 @@ from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 # 抽象基類，定義通用的日誌處理器接口
 class SystemLogging(ABC):

@@ -5,14 +5,13 @@
    
    Copyright (c) 2024 Jaron Cheng
 '''
-
 import logging
+import pytest
 from unittest.mock import MagicMock
 from unit.ping import LinuxPing, WindowsPing
-import pytest
 
 logger = logging.getLogger(__name__)
-logging.getLogger(__name__).setLevel(logging.INFO)
+# logging.getLogger(__name__).setLevel(logging.INFO)
 
 
 class TestPing:

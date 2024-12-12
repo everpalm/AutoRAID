@@ -1,9 +1,12 @@
-'''Copyright (c) 2024 Jaron Cheng'''
+# Copyright (c) 2024 Jaron Cheng
 import re
 import logging
-from typing import Tuple, Optional
+from typing import Optional
+from typing import Tuple
+from unit.log_handler import get_logger
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
+logger = get_logger(__name__, logging.INFO)
 
 class AMD64Perf:
     '''AMD64 Performance
