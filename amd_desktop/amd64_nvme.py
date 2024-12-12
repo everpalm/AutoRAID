@@ -3,13 +3,10 @@
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
-
-# import os
 import re
+# import os
 
 # from unit.system_under_testing import convert_size
-
-
 logger = logging.getLogger(__name__)
 
 
