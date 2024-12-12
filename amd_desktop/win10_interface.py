@@ -7,7 +7,7 @@ import logging
 from typing import List
 # from typing import Dict
 
-''' Define Win10 interface '''
+# Define Win10 interface
 logger = logging.getLogger(__name__)
 
 

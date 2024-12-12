@@ -10,10 +10,10 @@ import json
 import logging
 import pytest
 
-''' Set up logger '''
+# Set up logger
 logger = logging.getLogger(__name__)
 
-with open('config/amd64_nvme.json', 'r') as f:
+with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
     AMD64_NVM = [json.load(f)]
 
 
@@ -33,7 +33,7 @@ class TestAMD64NVMe:
             target_system: The system instance being tested.
             amd64_nvm (dict): Expected configuration data for validation.
         """
-        logger.info(f'hyperthreading = {target_system.hyperthreading}')
+        logger.info("hyperthreading = %s", target_system.hyperthreading)
         assert (target_system.hyperthreading == 
             amd64_nvm['CPU Information']['Hyperthreading'])
 
@@ -46,7 +46,7 @@ class TestAMD64NVMe:
             amd64_nvm (dict): Expected configuration data for validation.
         """
         memory_size = target_system.memory_size
-        logger.info(f'Memory Size = {memory_size} GB')
+        logger.info("Memory Size = %s GB", memory_size)
 
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_mac_address(self, target_system, amd64_nvm):
