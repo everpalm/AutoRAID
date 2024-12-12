@@ -21,7 +21,8 @@ def get_logger(module_name: str, level: int = logging.DEBUG) -> logging.Logger:
 
     # Define a formatter and attach it to the handler
     formatter = logging.Formatter(
-        "%(asctime)s %(name)s %(levelname)s %(message)s"
+        # "%(asctime)s %(name)s %(levelname)s %(message)s"
+        "%(asctime)s %(levelname)s %(message)s"
     )
     console_handler.setFormatter(formatter)
 

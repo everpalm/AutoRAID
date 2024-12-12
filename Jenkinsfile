@@ -3,7 +3,7 @@ pipeline {
         label 'test_my_node'
     }
     triggers {
-        pollSCM('H/5 * * * *')  // Every 5 minutes
+        pollSCM('H/5 * * * *')  // 每5分鐘檢查更新
     }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
@@ -14,7 +14,7 @@ pipeline {
         PATH = "/home/pi/.pyenv/shims:/home/pi/.pyenv/bin:${env.PATH}"
     }
     stages {
-        stage('Initialize') {
+        stage('Init') {
             steps {
                 script {
                     echo 'Initializing development pipeline...'
@@ -32,7 +32,7 @@ pipeline {
         stage('Unit Testing') {
             steps {
                 script {
-                    gv.test_pep8()
+                    gv.test_pep8(env.TEST_AMD_DESKTOP)
                     gv.test_unit(env.TEST_UNIT, env.MY_PRIVATE_TOKEN)
                 }
             }

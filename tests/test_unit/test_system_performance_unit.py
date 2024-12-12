@@ -96,9 +96,10 @@ class TestPerformanceIODepth:
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            if metric == 'BW':
+            elif metric == 'BW':
                 return rr_table['BW']
-            return None
+            else:
+                return None
 
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
@@ -125,9 +126,10 @@ class TestPerformanceIODepth:
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rw_table['IOPS']
-            if metric == 'BW':
+            elif metric == 'BW':
                 return rw_table['BW']
-            return None
+            else:
+                return None
 
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
@@ -172,9 +174,10 @@ class TestPerformanceCPUMask(TestPerformanceIODepth):
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            if metric == 'BW':
+            elif metric == 'BW':
                 return rr_table['BW']
-            return None
+            else:
+                return None
 
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
