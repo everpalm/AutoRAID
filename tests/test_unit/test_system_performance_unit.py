@@ -9,9 +9,6 @@ import pytest
 from unit.system_performance import SystemPerformance as perf
 from unit.system_under_testing import SystemUnderTesting as sut
 
-# Set up logger
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
 # 測試所用的資料
@@ -99,9 +96,10 @@ class TestPerformanceIODepth:
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            if metric == 'BW':
+            elif metric == 'BW':
                 return rr_table['BW']
-            return None
+            else:
+                return None
 
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
@@ -128,9 +126,10 @@ class TestPerformanceIODepth:
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rw_table['IOPS']
-            if metric == 'BW':
+            elif metric == 'BW':
                 return rw_table['BW']
-            return None
+            else:
+                return None
 
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 
@@ -175,9 +174,10 @@ class TestPerformanceCPUMask(TestPerformanceIODepth):
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            if metric == 'BW':
+            elif metric == 'BW':
                 return rr_table['BW']
-            return None
+            else:
+                return None
 
         target_performance.groupby_io_mean.side_effect = mock_groupby_io_mean
 

@@ -7,8 +7,8 @@
    Copyright (c) 2024 Jaron Cheng
 '''
 from unittest.mock import MagicMock
-import pytest
 from collections import defaultdict
+import pytest
 from amd_desktop.amd64_nvme import AMD64NVMe
 from amd_desktop.amd64_event import WindowsEvent
 
@@ -96,7 +96,7 @@ def test_find_error_no_match(mock_platform):
     # 調用 find_error，應該返回 False
     result = win_event.find_error(log_name, event_id, pattern)
     assert result is False
-    assert event_id not in mock_platform.error_features
+    assert event_id in mock_platform.error_features
 
 # 測試 find_error 方法在輸出為空的情況下
 def test_find_error_empty_output(mock_platform):

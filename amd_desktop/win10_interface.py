@@ -1,5 +1,5 @@
 # Contents of win10_interface.py
-'''Copyright (c) 2024 Jaron Cheng'''
+# Copyright (c) 2024 Jaron Cheng
 from __future__ import annotations  # Header, Python 3.7 or later version
 from unit.application_interface import ApplicationInterface
 from unit.application_interface import dict_format
@@ -7,7 +7,7 @@ import logging
 from typing import List
 # from typing import Dict
 
-''' Define Win10 interface '''
+# Define Win10 interface
 logger = logging.getLogger(__name__)
 
 

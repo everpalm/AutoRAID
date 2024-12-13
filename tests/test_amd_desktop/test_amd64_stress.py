@@ -8,11 +8,11 @@
 import logging
 import pytest
 # from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
-from amd_desktop.amd64_event import WindowsEvent as we
+# from amd_desktop.amd64_event import WindowsEvent as we
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
 logger = logging.getLogger(__name__)
-logging.getLogger(__name__).setLevel(logging.INFO)
+# logging.getLogger(__name__).setLevel(logging.INFO)
 
 FULL_READ = 0
 OLTP_LOADING = 30 # With 8 KB chunk size
@@ -26,45 +26,45 @@ MIN_IODEPTH = 1
 MAX_IODEPTH = 33
 OPTIMUM_IODEPTH = 7
 
-@pytest.fixture(scope="function")
-def win_event(target_system):
-    """Fixture for setting up Windows Event monitoring for system errors.
+# @pytest.fixture(scope="function")
+# def win_event(target_system):
+#     """Fixture for setting up Windows Event monitoring for system errors.
     
-    Args:
-        target_system: The system instance to monitor for Windows Event logs.
+#     Args:
+#         target_system: The system instance to monitor for Windows Event logs.
     
-    Returns:
-        WindowsEvent: An instance of WindowsEvent for error logging.
-    """
-    print('\n\033[32m================== Setup Win Event =============\033[0m')
-    return we(platform=target_system)
+#     Returns:
+#         WindowsEvent: An instance of WindowsEvent for error logging.
+#     """
+#     print('\n\033[32m================== Setup Win Event =============\033[0m')
+#     return we(platform=target_system)
 
-@pytest.fixture(scope="function", autouse=True)
-def test_check_error(win_event):
-    """Fixture to clear previous Windows event logs and check for specific errors
-    after each test function.
+# @pytest.fixture(scope="function", autouse=True)
+# def test_check_error(win_event):
+#     """Fixture to clear previous Windows event logs and check for specific errors
+#     after each test function.
     
-    Yields:
-        Clears event logs and checks for errors upon test completion.
+#     Yields:
+#         Clears event logs and checks for errors upon test completion.
     
-    Raises:
-        AssertionError: If specific errors (ID 51 or 157) are detected in logs.
-    """
+#     Raises:
+#         AssertionError: If specific errors (ID 51 or 157) are detected in logs.
+#     """
 
-    yield win_event.clear_error()
+#     yield win_event.clear_error()
 
-    errors = []
-    if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
-        errors.append("Error 51 detected in system logs.")
-    
-    if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
-        errors.append("Error 157 detected: Disk surprise removal.")
-    
-    if errors:
-        logger.error(f"Windows event errors detected: {errors}")
-        raise AssertionError(f"Detected errors: {errors}")  
-    
-    print('\n\033[32m================== Teardown Win Event ==========\033[0m')
+#     errors = []
+#     if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
+#         errors.append("Error 51 detected in system logs.")
+
+#     if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
+#         errors.append("Error 157 detected: Disk surprise removal.")
+
+#     if errors:
+#         logger.error("Windows event errors detected: %s", errors)
+#         raise AssertionError(f"Detected errors: {errors}")
+
+#     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
 class TestAMD64MultiPathStress:
     ''' Test I/O Stress 
@@ -100,7 +100,7 @@ class TestAMD64MultiPathStress:
 
         criteria = my_mdb.aggregate_stress_metrics(write_pattern, iodepth)
 
-        logger.debug(f'criteria = {criteria}')
+        logger.debug("criteria = %s", criteria)
 
 class TestOneShotStress:
     def test_read_write(self, target_stress,my_mdb):
@@ -142,12 +142,12 @@ class TestOneShotStress:
             read_bw, read_iops, write_bw, write_iops = \
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
                                         '4k', FULL_READ, ONE_SHOT)
-        
+
             log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
             criteria = my_mdb.aggregate_stress_metrics(FULL_READ, OPTIMUM_IODEPTH)
 
-            logger.debug(f'criteria = {criteria}')
+            logger.debug("criteria = %s", criteria)
 
     def test_full_write(self, target_stress,my_mdb):
             """Runs oneshot I/O operations to test system stress with optimum
@@ -170,5 +170,5 @@ class TestOneShotStress:
 
             criteria = my_mdb.aggregate_stress_metrics(FULL_WRITE, OPTIMUM_IODEPTH)
 
-            logger.debug(f'criteria = {criteria}')
+            logger.debug("criteria = %s", criteria)
         

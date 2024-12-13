@@ -3,8 +3,7 @@ pipeline {
         label 'test_my_node'
     }
     triggers {
-        // Poll SCM every 5 minutes for new commits on development branch
-        pollSCM('H/5 * * * *')
+        pollSCM('H/5 * * * *')  // 每5分鐘檢查更新
     }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
@@ -33,9 +32,8 @@ pipeline {
         stage('Unit Testing') {
             steps {
                 script {
-                    gv.test_pep8()
-                    gv.test_unit()
-                    // gv.test_amd64_nvme()
+                    gv.test_pep8(env.TEST_AMD_DESKTOP)
+                    gv.test_unit(env.TEST_UNIT, env.MY_PRIVATE_TOKEN)
                 }
             }
         }
