@@ -3,7 +3,7 @@
 
 import logging
 import json
-from system_under_testing import SystemUnderTasting as sut
+from unit.system_under_testing import SystemUnderTesting as sut
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ def export_json_file(callback):
         result = callback(*args, **kwargs)
         logger.debug("Dictionary to be exported = %s", result)
         json_data = json.dumps(result)
-        with open("MY_DEVICE_INFO.json", "w") as file:
+        with open("MY_DEVICE_INFO.json", "w", encoding='utf-8') as file:
             try:
                 rtn = file.write(json_data)
             except IOError:

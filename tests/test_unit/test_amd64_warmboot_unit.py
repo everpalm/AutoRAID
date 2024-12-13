@@ -10,7 +10,6 @@ def mock_api(mocker):
     api.command_line._original = mocker.Mock()
     return api
 
-
 # WindowsWarmBoot Tests
 def test_windows_execute_success(mock_api, mocker):
     """Test successful execution of Windows warm boot."""
@@ -23,7 +22,6 @@ def test_windows_execute_success(mock_api, mocker):
     assert windows_warmboot.execute() is True
     mock_api.command_line._original.assert_called_once_with(mock_api, 'shutdown /r /t 0')
 
-
 def test_windows_execute_failure(mock_api, mocker):
     """Test failure during Windows warm boot execution."""
     platform = mocker.Mock(api=mock_api)
@@ -34,7 +32,6 @@ def test_windows_execute_failure(mock_api, mocker):
     
     assert windows_warmboot.execute() is False
     mock_api.command_line._original.assert_called_once_with(mock_api, 'shutdown /r /t 0')
-
 
 # LinuxWarmBoot Tests
 def test_linux_execute_success(mock_api, mocker):

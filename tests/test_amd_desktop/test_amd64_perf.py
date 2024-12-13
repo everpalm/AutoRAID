@@ -5,10 +5,10 @@
 
    Copyright (c) 2024 Jaron Cheng
 '''
-import pytest
 import logging
-import os
-from amd_desktop.amd64_event import WindowsEvent as we
+import pytest
+# import os
+# from amd_desktop.amd64_event import WindowsEvent as we
 
 logger = logging.getLogger(__name__)
 # logging.getLogger(__name__).setLevel(logging.DEBUG)
@@ -28,10 +28,10 @@ def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
         lower_bw (float): Lower limit of bandwidth.
         prefix (str, optional): Prefix for log message to distinguish read/write metrics.
     """
-    logger.debug(f'upper_{prefix}iops = {upper_iops}')
-    logger.debug(f'lower_{prefix}iops = {lower_iops}')
-    logger.debug(f'upper_{prefix}bw = {upper_bw}')
-    logger.debug(f'lower_{prefix}bw = {lower_bw}')
+    logger.debug('upper_%siops = %s', prefix, upper_iops)
+    logger.debug('lower_%siops = %s', prefix, lower_iops)
+    logger.debug('upper_%sbw = %s', prefix, upper_bw)
+    logger.debug('lower_%sbw = %s', prefix, lower_bw)
 
 def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
     """Logs the I/O metrics for read and write bandwidth and IOPS.
@@ -43,10 +43,14 @@ def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
         write_iops (float): Write IOPS.
         prefix (str, optional): Prefix for log message to distinguish random/sequential metrics.
     """
-    logger.info(f'{prefix}read_bw = {read_bw}')
-    logger.info(f'{prefix}read_iops = {read_iops}')
-    logger.info(f'{prefix}write_bw = {write_bw}')
-    logger.info(f'{prefix}write_iops = {write_iops}')
+    # logger.info(f'{prefix}read_bw = {read_bw}')
+    # logger.info(f'{prefix}read_iops = {read_iops}')
+    # logger.info(f'{prefix}write_bw = {write_bw}')
+    # logger.info(f'{prefix}write_iops = {write_iops}')
+    logger.info('%sread_bw = %.2f', prefix, read_bw)  # 保留兩位小數
+    logger.info('%sread_iops = %d', prefix, read_iops)
+    logger.info('%swrite_bw = %.2f', prefix, write_bw)  # 保留兩位小數
+    logger.info('%swrite_iops = %d', prefix, write_iops)
 
 def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
     """Validates the I/O performance metrics against given criteria.
@@ -73,7 +77,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
                                  READ_L_CFL)
         if lower_limit_read_iops < 0:
             lower_limit_read_iops = min_read_iops
-        
+
         pct_read_bw = criteria['percentile_read_bw'][0]
         min_read_bw = criteria['min_read_bw']
         std_dev_read_bw = criteria['std_dev_read_bw']
@@ -85,7 +89,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
 
         log_target_limit(upper_limit_read_iops, lower_limit_read_iops,
                         upper_limit_read_bw, lower_limit_read_bw, 'read_')
-        
+
         assert upper_limit_read_iops > read_iops > lower_limit_read_iops
         assert upper_limit_read_bw > read_bw > lower_limit_read_bw
 
@@ -104,7 +108,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
         pct_write_bw = criteria['percentile_write_bw'][0]
         min_write_bw = criteria['min_write_bw']
         std_dev_write_bw = criteria['std_dev_write_bw']
-    
+
         upper_limit_write_bw = pct_write_bw + std_dev_write_bw * WRITE_R_CFL
         lower_limit_write_bw = pct_write_bw - std_dev_write_bw * WRITE_L_CFL
         if lower_limit_write_bw < 0:
@@ -112,7 +116,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
 
         log_target_limit(upper_limit_write_iops, lower_limit_write_iops,
                         upper_limit_write_bw, lower_limit_write_bw, 'write_')
-       
+
         assert upper_limit_write_iops > write_iops > lower_limit_write_iops
         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
@@ -134,58 +138,56 @@ class TestRandomReadWrite:
 
         Args:
             target_perf (object): The performance target instance.
-            write_pattern (int): Write pattern, 0 for full read, 100 for full write.
-            io_depth (int): The I/O depth, ranging from 1 to 32.
+            write_pattern (int): Write pattern, 0 for full read, 100 for full
+            write io_depth (int): The I/O depth, ranging from 1 to 32.
             my_mdb (object): Database instance for aggregating metrics.
         """
         read_bw, read_iops, write_bw, write_iops = \
             target_perf.run_io_operation(io_depth, '4k', '4k', write_pattern,
                                          156)
-      
+
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'random_')
-        
+
         criteria = my_mdb.aggregate_random_metrics(write_pattern, io_depth)
-        logger.debug(f'write_pattern = {write_pattern}')
-        logger.debug(f'io_depth = {io_depth}')
-        logger.debug(f'result = {criteria}')
+        logger.debug('write_pattern = %s', write_pattern)
+        logger.debug('io_depth = %s', io_depth)
+        logger.debug('result = %s', criteria)  # 注意：這裡的變數名是 criteria
 
         validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
-@pytest.fixture(scope="module")
-def win_event(target_system):
-    """Fixture for setting up WindowsEvent instance and initializing 
-    the Windows event log environment.
+# @pytest.fixture(scope="module")
+# def win_event(target_system):
+#     """Fixture for setting up WindowsEvent instance and initializing 
+#     the Windows event log environment.
 
-    Args:
-        target_system (object): The target system object.
+#     Args:
+#         target_system (object): The target system object.
 
-    Returns:
-        WindowsEvent: Instance of WindowsEvent for handling event logs.
-    """
-    print('\n\033[32m================== Setup Win Event =============\033[0m')
-    return we(platform=target_system)
+#     Returns:
+#         WindowsEvent: Instance of WindowsEvent for handling event logs.
+#     """
+#     print('\n\033[32m================== Setup Win Event =============\033[0m')
+#     return we(platform=target_system)
 
-@pytest.fixture(scope="function", autouse=True)
-def test_check_error(win_event):
-    """Fixture for clearing and checking system error logs for each test.
+# @pytest.fixture(scope="function", autouse=True)
+# def test_check_error(win_event):
+#     """Fixture for clearing and checking system error logs for each test.
 
-    Checks for specific errors (Error 51 and Error 157) after each test run,
-    raising AssertionError if found.
+#     Checks for specific errors (Error 51 and Error 157) after each test run,
+#     raising AssertionError if found.
 
-    Args:
-        win_event (WindowsEvent): Instance for managing event logs.
+#     Args:
+#         win_event (WindowsEvent): Instance for managing event logs.
 
-    Raises:
-        AssertionError: If specific errors are found in the system logs.
-    """
-    yield win_event.clear_error()
-    if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
-        raise AssertionError("Error 51 detected in system logs.")
-    
-    if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
-        raise AssertionError("Error 157 detected in system logs.")
-    
-    print('\n\033[32m================== Teardown Win Event ==========\033[0m')
+#     Raises:
+#         AssertionError: If specific errors are found in the system logs.
+#     """
+#     yield win_event.clear_error()
+#     if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
+#         raise AssertionError("Error 51 detected in system logs.")
+#     if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
+#         raise AssertionError("Error 157 detected in system logs.")
+#     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
 
 class TestSequentialReadWrite:
@@ -213,12 +215,12 @@ class TestSequentialReadWrite:
         read_bw, read_iops, write_bw, write_iops = target_perf.run_io_operation(
             32, block_size, None, write_pattern, 156)
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'sequential_')
-    
+
         criteria = my_mdb.aggregate_sequential_metrics(write_pattern, block_size)
-        logger.debug(f'write_pattern = {write_pattern}')
-        logger.debug(f'block_size = {block_size}')
-        logger.debug(f'criteria = {criteria}')
-        
+        logger.debug('write_pattern = %s', write_pattern)
+        logger.debug('block_size = %s', block_size)
+        logger.debug('criteria = %s', criteria)
+
         validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
 class TestRampTimeReadWrite:
@@ -251,6 +253,6 @@ class TestRampTimeReadWrite:
 
         result = my_mdb.aggregate_ramp_metrics(write_pattern,
             ramp_times)
-        logger.debug(f'write_pattern = {write_pattern}')
-        logger.debug(f'ramp_times = {ramp_times}')
-        logger.debug(f'result = {result}')
+        logger.debug('write_pattern = %s', write_pattern)
+        logger.debug('ramp_times = %s', ramp_times)
+        logger.debug('result = %s', result)

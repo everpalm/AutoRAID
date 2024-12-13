@@ -1,3 +1,6 @@
+
+# Contents of device_under_testing.py
+# Copyright (c) 2024 Jaron Cheng
 import RPi.GPIO as gpio
 import logging
 import time

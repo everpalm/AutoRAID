@@ -60,20 +60,20 @@ class MongoDB(object):
             with open(log_path, 'r') as log_file:
                 log_data = log_file.read()
         except FileNotFoundError:
-            logger.error(f"Error: The file {log_path} was not found.")
+            logger.error("Error: The file %s was not found", log_path)
             return
         except IOError as e:
-            logger.critical(f"Error reading {log_path}: {e}")
+            logger.critical("Error reading %s: %s", log_path, e)
             return
 
         try:
             with open(report_path, 'r') as report_file:
                 report_data = json.load(report_file)
         except FileNotFoundError:
-            logger.error(f"Error: The file {report_path} was not found.")
+            logger.error("Error: The file %s was not found", report_path)
             return
         except json.JSONDecodeError as e:
-            logger.critical(f"Error decoding JSON from {report_path}: {e}")
+            logger.critical("Error decoding JSON from %s: %s", report_path, e)
             return
 
         document = {
@@ -801,7 +801,8 @@ class MongoDB(object):
         """
         try:
             # with open('config/pipeline_ramp_times.json', 'r') as file:
-            with open(f'{PROJECT_PATH}/config/pipeline_ramp_times.json', 'r') as file:
+            with open(f'{PROJECT_PATH}/config/pipeline_ramp_times.json', 'r',
+                      encoding='utf-8') as file:
                 pipeline = json.load(file)
         except FileNotFoundError:
             logger.error("Pipeline configuration file not found.")
@@ -851,7 +852,8 @@ class MongoDB(object):
         """
         try:
             # with open('config/pipeline_stress.json', 'r') as file:
-            with open(f'{PROJECT_PATH}/config/pipeline_stress.json', 'r') as file:
+            with open(f'{PROJECT_PATH}/config/pipeline_stress.json', 'r',
+                      encoding='utf-8') as file:
             # with open('/home/pi/Projects/AutoRAID/workspace/AutoRAID/config/pipeline_stress.json', 'r') as file:
                 pipeline = json.load(file)
         except FileNotFoundError:
