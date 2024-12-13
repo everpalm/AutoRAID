@@ -10,8 +10,8 @@ from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress as Toss
 from tests.test_raspberry.test_pi3_gpio import TestPowerOnSUT
 from tests.test_raspberry.test_pi3_gpio import TestPowerOffSUT
 from unit.gpio import OperateGPIO as og
-from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
-from amd_desktop.amd64_event import WindowsEvent as we
+# from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
+# from amd_desktop.amd64_event import WindowsEvent as we
 
 logger = logging.getLogger(__name__)
 
