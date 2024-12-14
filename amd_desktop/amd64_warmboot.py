@@ -1,4 +1,5 @@
 # Contents of amd64_warmboot.py
+'''Copyright (c) 2024 Jaron Cheng'''
 from abc import ABC, abstractmethod
 import logging
 from amd_desktop.amd64_nvme import AMD64NVMe

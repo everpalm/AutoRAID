@@ -1,5 +1,5 @@
 # Contents of amd_64_nvme.py
-# Copyright (c) 2024 Jaron Cheng
+'''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
