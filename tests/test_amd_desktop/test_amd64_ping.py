@@ -19,7 +19,6 @@ class TestAMD64Ping:
         target_ping (AMD64Ping): Instance used to perform ping operations, 
         measuring sent, received, and lost packets, as well as latency metrics.
     """
-
     @pytest.mark.flaky(reruns=3, reruns_delay=10)
     # @pytest.mark.xfail(reason="Cannot be used with flaky")
     def test_ping_ok(self, target_ping):
@@ -43,16 +42,16 @@ class TestAMD64Ping:
             - target_ping.average: Average RTT should be 0 or greater.
             - target_ping.maximum: Maximum RTT should be 0 or greater.
             - target_ping.deviation: Deviation of RTT should be 0 or greater.
-        """     
+        """
         result = target_ping.ping()
 
         logger.info('target_ping.sent = %s', target_ping.sent)
         logger.info('target_ping.received = %s', target_ping.received)
-        logger.info(f'target_ping.lost = %s', target_ping.lost)
-        logger.info(f'target_ping.minimum = %s', target_ping.minimum)
-        logger.info(f'target_ping.maximum = %s', target_ping.maximum)
-        logger.info(f'target_ping.average = %s', target_ping.average)
-        logger.info(f'target_ping.deviation = %s', target_ping.deviation)
+        logger.info('target_ping.lost = %s', target_ping.lost)
+        logger.info('target_ping.minimum = %s', target_ping.minimum)
+        logger.info('target_ping.maximum = %s', target_ping.maximum)
+        logger.info('target_ping.average = %s', target_ping.average)
+        logger.info('target_ping.deviation = %s', target_ping.deviation)
 
         assert result is True, "Ping should succeed"
         assert target_ping.sent > 0, "Packets sent should be greater than 0"
@@ -64,5 +63,3 @@ class TestAMD64Ping:
         assert target_ping.maximum >= 0, "Maximum RTT should be 0 or greater"
         assert target_ping.deviation >= 0, ("Deviation RTT should be 0 or"
                                             " greater")
-        
-

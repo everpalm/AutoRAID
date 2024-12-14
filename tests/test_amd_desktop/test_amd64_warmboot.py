@@ -159,3 +159,4 @@ class TestWindowsWarmBoot:
 # @pytest.mark.order(2)
 class TestWindowsWarmBootStress(Toss):
     """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)"""
+    ...

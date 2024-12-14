@@ -157,7 +157,7 @@ class TestRandomReadWrite:
 
 # @pytest.fixture(scope="module")
 # def win_event(target_system):
-#     """Fixture for setting up WindowsEvent instance and initializing 
+#     """Fixture for setting up WindowsEvent instance and initializing
 #     the Windows event log environment.
 
 #     Args:

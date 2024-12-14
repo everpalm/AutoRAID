@@ -194,7 +194,7 @@ class TestAMD64NVMe:
         #     amd64_nvm['Disk Information']["O"])
         # assert (target_system.disk_info[11][1] ==
         #     amd64_nvm['Disk Information']["P"])
- 
+
         disk_letters = ["D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
                         "P"]
         for i, letter in enumerate(disk_letters):

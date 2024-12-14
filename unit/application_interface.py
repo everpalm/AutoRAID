@@ -1,8 +1,8 @@
 # Contents of application_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
-from abc import ABC
-from abc import abstractmethod
+# from abc import ABC
+# from abc import abstractmethod
 from typing import Tuple
 from typing import List
 from typing import Dict
@@ -36,7 +36,7 @@ def dict_format(callback):
 #     return warp
 
 
-class ApplicationInterface(ABC):
+class ApplicationInterface:
     ''' Application Interface
 
         This interface distinguish operations between the test script and
@@ -197,7 +197,7 @@ class ApplicationInterface(ABC):
             raise ValueError('Unknown mode setting in set_access_mode')
 
     @dict_format
-    @abstractmethod
+    # @abstractmethod
     def command_line(self, str_cli_cmd: str) -> list[str]:
         logger.debug('str_cli_cmd = %s', str_cli_cmd)
         logger.debug('self.mode = %s', self.mode)

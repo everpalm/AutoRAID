@@ -27,8 +27,8 @@ WINDOWS_CMD_TABLE = ({
                         }
                     })
 
-class TestApplicationInterface(object):
-    
+class TestApplicationInterface:
+    '''This is a docstring'''
     @pytest.mark.parametrize("windows_cmd", WINDOWS_CMD_TABLE)
     def test_command_line(self, my_app, windows_cmd):
         """Tests the command_line method of the ApplicationInterface class
