@@ -2,9 +2,9 @@ pipeline {
     agent {
         label 'test_my_node'
     }
-    triggers {
-        pollSCM('H/5 * * * *')
-    }
+    // triggers {
+    //     pollSCM('H/5 * * * *')
+    // }
     environment {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
         VERSION_FILE = "${WORKSPACE}/version.txt"
