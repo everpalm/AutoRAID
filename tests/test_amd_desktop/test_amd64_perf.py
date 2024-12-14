@@ -43,10 +43,6 @@ def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
         write_iops (float): Write IOPS.
         prefix (str, optional): Prefix for log message to distinguish random/sequential metrics.
     """
-    # logger.info(f'{prefix}read_bw = {read_bw}')
-    # logger.info(f'{prefix}read_iops = {read_iops}')
-    # logger.info(f'{prefix}write_bw = {write_bw}')
-    # logger.info(f'{prefix}write_iops = {write_iops}')
     logger.info('%sread_bw = %.2f', prefix, read_bw)  # 保留兩位小數
     logger.info('%sread_iops = %d', prefix, read_iops)
     logger.info('%swrite_bw = %.2f', prefix, write_bw)  # 保留兩位小數
