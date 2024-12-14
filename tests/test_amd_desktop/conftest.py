@@ -12,24 +12,15 @@ from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
-# logging.getLogger("amd_desktop.amd64_event").setLevel(logging.INFO)
-# logging.getLogger("amd_desktop.amd64_nvme").setLevel(logging.DEBUG)
-# logging.getLogger("amd_desktop.amd64_perf").setLevel(logging.INFO)
-# logging.getLogger("unit.application_interface").setLevel(logging.CRITICAL)
-# logging.getLogger("unit.mongodb").setLevel(logging.CRITICAL)
-# logging.getLogger("unit.system_under_testing").setLevel(logging.CRITICAL)
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
 @pytest.fixture(scope="session")
 def my_app(cmdopt):
+    '''This is a docstring'''
     print('\n\033[32m================== Setup API ===================\033[0m')
     return api(cmdopt.get('mode'), cmdopt.get('if_name'),
         cmdopt.get('config_file'))
 
-# @pytest.fixture(scope="session")
-# def target_system(my_app):
-#     print("\n\033[32m================== Setup Platform ==============\033[0m")
-#     return amd64(interface=my_app)
 
 @pytest.fixture(scope="session")
 def my_mdb():
@@ -97,7 +88,7 @@ def test_open_uart(drone):
     drone.close_uart()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="package")
 def target_system(my_app):
     """
     Fixture to set up the target system (AMD64 platform).

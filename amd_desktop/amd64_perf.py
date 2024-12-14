@@ -1,4 +1,4 @@
-# Copyright (c) 2024 Jaron Cheng
+'''Copyright (c) 2024 Jaron Cheng'''
 import re
 import logging
 from typing import Optional

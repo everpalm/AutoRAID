@@ -1,5 +1,5 @@
 # Contents of amd64_stress.py
-# Copyright (c) 2024 Jaron Cheng
+'''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import re
 from unit.log_handler import get_logger

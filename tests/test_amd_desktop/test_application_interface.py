@@ -22,13 +22,13 @@ WINDOWS_CMD_TABLE = ({
                         "Return": {
                             "remote": {
                                 0: '',
-                                1: 'Microsoft Windows [Version 10.0.19045.5131]'
+                                1: 'Microsoft Windows [Version 10.0.19045.5247]'
                             }
                         }
                     })
 
-class TestApplicationInterface(object):
-    
+class TestApplicationInterface:
+    '''This is a docstring'''
     @pytest.mark.parametrize("windows_cmd", WINDOWS_CMD_TABLE)
     def test_command_line(self, my_app, windows_cmd):
         """Tests the command_line method of the ApplicationInterface class
