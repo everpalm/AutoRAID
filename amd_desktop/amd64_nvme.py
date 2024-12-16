@@ -41,36 +41,79 @@ class AMD64NVMe:
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
-    
+
     def _get_hyperthreading(self):
+        """
+        Checks if hyperthreading is enabled on the system.
+
+        Retrieves the number of logical processors and compares it to the
+        number of physical cores to determine if hyperthreading is enabled.
+
+        Returns:
+            bool: True if hyperthreading is enabled, False otherwise.
+        Raises:
+            subprocess.CalledProcessError: If there is a problem executing the
+                subprocess command
+            re.error: If there is an error with regular expression
+            ValueError: If the wmic command output can't be processed
+        """
         try:
             output = self.api.command_line._original(self.api,
                 'wmic cpu Get NumberOfCores,NumberOfLogicalProcessors /Format:List')
-            logger.debug(f'output = {output}')
+            logger.debug('output = %s', output)
             output_string = "".join(output)
-            logger.debug(f'output_string = {output_string}')
+            logger.debug('output_string = %s', output_string)
             match = re.search(r'NumberOfLogicalProcessors=(\d+)', output_string)
 
             if match:
                 int_logical_processor = int(match.group(1))
-                logger.debug(f"int_logical_processor = {int_logical_processor}")
+                logger.debug("int_logical_processor = %d", int_logical_processor)
             else:
                 raise ValueError("No matching logical processor found.")
+
             if int_logical_processor/self.cpu_num == 2:
                 return True
+        except re.error as e:
+            logger.error("Invalid regex pattern: %s", e)
+            raise
         except Exception as e:
-            logger.error(f'_get_hyperthreading: {e}')
+            logger.error('_get_hyperthreading: %s', e)
+            raise
         return False
-    
+
     def _get_memory_size(self):
+        """
+        Retrieves the total physical memory size in GB.
+
+        Uses the 'wmic' command to query system information and parses the
+        output to get the total physical memory size.
+
+        Returns:
+            Optional[int]: The total physical memory size in GB, or None if an error occurred.
+
+        Raises:
+            subprocess.CalledProcessError: If there is a problem executing the
+                subprocess command
+            ValueError: If the wmic command output can't be converted to int
+            AttributeError: If there is no 1-index in the return dictionary
+        """
+        int_memory_size = None
         try:
             dict_memory_size = self.api.command_line(
                 'wmic ComputerSystem get TotalPhysicalMemory')
-            logger.debug(f'dict_memory_size = {dict_memory_size}')
-            int_memory_size = int(dict_memory_size.get(1))//(1024 ** 3)
-            logger.debug(f'int_memory_size = {int_memory_size}')
-        except:
-            pass
+            logger.debug('dict_memory_size = %s', dict_memory_size)
+            if dict_memory_size and len(dict_memory_size) > 1:
+                int_memory_size = int(dict_memory_size.get(1))//(1024 ** 3)
+                logger.debug('int_memory_size = %d', int_memory_size)
+            else:
+                raise ValueError("Invalid output format from wmic.")
+
+        except (ValueError, TypeError): # 在轉換為數字時可能會出錯
+            logger.error('Invalid memory value: %s', dict_memory_size)
+            raise
+        except Exception as e:
+            logger.exception('An unexpected error occurred: %s', e)
+            raise
         return int_memory_size
 
     @property
@@ -86,30 +129,32 @@ class AMD64NVMe:
 
         try:
             output = self.api.command_line('powershell Get-NetAdapter')
-            logger.debug(f'output = {output}')
+            logger.debug('output = %s', output)
 
             filtered = output.get(3)
-            logger.debug(f'filtered = {filtered}')
+            logger.debug('filtered = %s', filtered)
             if not filtered:
                 raise ValueError(
                     "Failed to retrieve the expected output from command.")
-        
-            match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s", filtered)
+
+            match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s",
+                              filtered)
             if match:
                 mac_address = match.group(1)
-                logger.debug(f"Found: {mac_address}")
+                logger.debug("Found: %s", mac_address)
                 self._mac_address = mac_address
             else:
                 raise ValueError("No matching Ethernet adapter found.")
         except AttributeError as e:
             logger.error("AttributeError in mac_address: %s", e)
+            raise
         except re.error as e:
             logger.error("Invalid regex pattern in mac_address: %s", e)
             return False
         except Exception as e:
             logger.error("An unexpected error in mac_address: %s", e)
             self._mac_address = None
-
+            raise
         return self._mac_address
 
     def get_cpu_info(self) -> dict[str, str]:
@@ -128,52 +173,71 @@ class AMD64NVMe:
             logger.debug("cpu_num = %d, cpu_name = %s", int_cpu_num, str_cpu_name)
         except ValueError as e:
             logger.error("Value Error in get_cpu_info: %s", e)
+            raise
         except Exception as e:
             logger.error('error occurred in get_cpu_info: %s', e)
-        
+            raise
         return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 
     def _get_disk_num(self):
+        """
+        Retrieves disk information (number and serial number).
+
+        Uses powershell and findstr to retrieve disk information, with target
+        depending on vendor, and parses the output to get the disk number and 
+        serial number.
+
+        Returns:
+            dict[str, str | int | None]: A dictionary containing the disk number 
+            (as an integer) and serial number (as a string), or None for both if
+            an error occurred.
+
+        Raises:
+            subprocess.CalledProcessError: If there is a problem executing the
+                subprocess command
+            ValueError: If the powershell output is not found or can't be converted
+                to an integer
+            IndexError: If parsing fails
+        """
+        str_return = int_disk_num = None
+
+        if self.manufacturer == 'VEN_1B4B':
+            str_target = 'Marvell'
+        else:
+            str_target = 'CT500P5SSD8'
+
         try:
-            str_return = int_disk_num = None
-            if self.manufacturer == "VEN_1B4B":
-                str_target = "Marvell"
-            else:
-                str_target = "CT500P5SSD8"
             str_return = self.api.command_line(
                     f'powershell Get-PhysicalDisk|findstr {str_target}')
             logger.debug('str_return = %s', str_return)
-            
+
             # Check if str_return is None
             if str_return is None:
                 raise ValueError("Received None from command_line")
-            
+
             int_disk_num = int(str_return.get(0).split(' ')[0].lstrip())
             str_serial_num = str_return.get(0).split(' ')[2].lstrip()
             logger.debug('disk_num = %d', int_disk_num)
             logger.debug('serial_num = %s', str_serial_num)
-            
+
         except Exception as e:
             logger.error('Error occurred in _get_disk_num: %s', e)
             raise
-        # finally:
-            # return int(str_disk_num)
         return {"Number": int_disk_num, "SerialNumber": str_serial_num}
-            
 
-    def _get_desktop_info(self) -> dict[str, str]:
+
+    def _get_desktop_info(self) -> dict[str, str|any]:
         ''' Get Desktop Computer information
             Grep HW information from system call 'lshw'
             Args: None
             Returns: A dictionary consists of Version and Serial
             Raises: Logger error
         '''
-        str_return = str_version = str_serial = None
+        str_return = str_model = str_name = None
         try:
-            # str_return = self.api.command_line('lshw|grep "Desktop" -A 4CA')
             str_return = self.api.command_line(
                 'wmic computersystem get Name, Manufacturer, Model')
-            if str_return:
+            if str_return and len(str_return) > 1:
                 str_vendor = ' '.join(str_return.get(1).split(' ')[0:1])
                 str_model = ' '.join(str_return.get(1).split(' ')[2:4])
                 str_name = str_return.get(1).split(' ')[5].lstrip()
@@ -182,10 +246,11 @@ class AMD64NVMe:
             logger.debug('vendor = %s', str_vendor)
             logger.debug('model = %s', str_model)
             logger.debug('name = %s', str_name)
-    
+
         except Exception as e:
             logger.error('Error occurred in _get_desktop_info: %s', e)
-        # finally:
+            raise
+
         return {"Manufacturer": str_vendor,
                 "Model": str_model,
                 "Name": str_name}
@@ -197,17 +262,18 @@ class AMD64NVMe:
             Returns: A dictionary consists of BDF and SDID
             Raises: None
         '''
-        str_return = str_bdf = str_sdid = None
+        dict_return = str_vid = str_did = str_sdid = str_rev = None
         try:
             dict_return = self.api.command_line(
                 f"wmic path win32_pnpentity get deviceid,"
                 f" name|findstr {self.manufacturer}")
-            logger.debug(f'dict_return{type(dict_return)} = {dict_return}')
-            
+            logger.debug('dict_return type(%s) = %s', type(dict_return),
+                         dict_return)
+
             # Check if str_return is None
             if dict_return is None:
                 raise ValueError("Received None from command_line")
-            
+
             pattern = r"VEN_(\w+)&DEV_(\w+)&SUBSYS_(\w+)&REV_(\w+)"
             match = re.search(pattern, dict_return.get(0))
             if match:
@@ -216,7 +282,7 @@ class AMD64NVMe:
                     'manufacturer = %s, vid = %s, did = %s',
                     self.manufacturer, str_vid, str_did)
             logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
-                   
+
         except Exception as e:
             logger.error('Device not found: %s', e)
             raise
@@ -255,7 +321,7 @@ class AMD64NVMe:
 
                 # 使用日志记录器记录统计结果
                 total_disks = len(list_disk_info)
-                logger.debug(f"Total number of disks: {total_disks}")
+                logger.debug("Total number of disks: %s", total_disks)
             else:
                 raise ValueError(
                     "Unexpected None value returned from command line")
