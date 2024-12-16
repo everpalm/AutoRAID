@@ -5,8 +5,10 @@ import re
 from abc import ABC
 from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
+from unit.log_handler import get_logger
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
+logger = get_logger(__name__, logging.INFO)
 # logging.basicConfig(level=logging.DEBUG)
 
 # 抽象基類，定義通用的日誌處理器接口
@@ -169,9 +171,21 @@ class WindowsEvent(SystemLogging):
             return False
         except Exception as e:
             logger.error("An unexpected error: %s", e)
-            return False
+            raise
 
     def clear_error(self):
+        """
+        Clears the system event log.
+
+        Uses powershell to execute command 'Clear-EventLog -LogName system'
+
+        Returns:
+            bool: True if the system event log was cleared successfully, False otherwise.
+
+        Raises:
+            subprocess.CalledProcessError: If there is a problem executing the
+                subprocess command
+        """
         try:
             result = self._api.command_line._original(self._api,
                 'powershell "Clear-EventLog -LogName system"'
