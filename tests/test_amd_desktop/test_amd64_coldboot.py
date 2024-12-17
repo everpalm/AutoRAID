@@ -45,7 +45,5 @@ class TestRelayOn(TestPowerOnSUT):
 
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(3)
-# @pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
-# class TestWindowsRunTimeIO(TestAMD64MultiPathStress):
 class TestWindowsColdBootStress(Toss):
     '''This is a docstring'''

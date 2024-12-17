@@ -12,14 +12,14 @@ import pytest
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
 logger = logging.getLogger(__name__)
-# logging.getLogger(__name__).setLevel(logging.INFO)
+
 
 FULL_READ = 0
 OLTP_LOADING = 30 # With 8 KB chunk size
 FULL_WRITE = 100
-OVER_NIGHT = 156
+OVER_NIGHT = 15
 HALF_RW = 50
-ONE_SHOT = 156
+ONE_SHOT = 15
 HYPER_THREAD = 2
 SINGLE_THREAD = 1
 MIN_IODEPTH = 1

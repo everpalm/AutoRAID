@@ -37,7 +37,7 @@ class TestPing:
         """
         ping_instance = LinuxPing(mock_api)
         # 設定返回一個實際的 list，而不是 MagicMock
-        mock_api.command_line._original.return_value = [
+        mock_api.command_line.original.return_value = [
             'PING 192.168.0.128 (192.168.0.128) 56(84) bytes of data.',
             '64 bytes from 192.168.0.128: icmp_seq=1 ttl=128 time=0.448 ms',
             '64 bytes from 192.168.0.128: icmp_seq=2 ttl=128 time=0.456 ms',
@@ -73,7 +73,7 @@ class TestPing:
         """
         ping_instance = LinuxPing(mock_api)
         # 模拟ping失败的返回数据（list 格式）
-        mock_api.command_line._original.return_value = [
+        mock_api.command_line.original.return_value = [
             'PING 192.168.0.128 (192.168.0.128) 56(84) bytes of data.',
             'From 192.168.0.1 icmp_seq=1 Destination Host Unreachable',
             'From 192.168.0.1 icmp_seq=2 Destination Host Unreachable',
@@ -110,7 +110,7 @@ class TestPing:
         """
         ping_instance = WindowsPing(mock_api)
         # 使用 list 格式的返回数据
-        mock_api.command_line._original.return_value = [
+        mock_api.command_line.original.return_value = [
             'Pinging 192.168.0.128 with 32 bytes of data:',
             'Reply from 192.168.0.128: bytes=32 time=1ms TTL=128',
             r'Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),',
@@ -140,7 +140,7 @@ class TestPing:
         """
         ping_instance = WindowsPing(mock_api)
         # 模拟ping失败的返回数据（list 格式）
-        mock_api.command_line._original.return_value = [
+        mock_api.command_line.original.return_value = [
             'Pinging 192.168.0.128 with 32 bytes of data:',
             'Request timed out.',
             'Request timed out.',

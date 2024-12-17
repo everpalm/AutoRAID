@@ -113,7 +113,7 @@ class LinuxPing(PingBase):
             bool: True if both packet and RTT statistics were successfully parsed, False otherwise.
         """
         try:
-            list_return = self._api.command_line._original(self._api,
+            list_return = self._api.command_line.original(self._api,
                 f'ping -c {count} {self._ip_address}')
             logger.debug('list_return = %s',list_return)
             # if list_return:
@@ -203,7 +203,7 @@ class WindowsPing(PingBase):
         Sends a ping request to a remote IP address and parses the results.
         """
         try:
-            list_return = self._api.command_line._original(
+            list_return = self._api.command_line.original(
                 f'ping -c {count} {self._ip_address}'
             )
             logger.debug(f'list_return = {list_return}')

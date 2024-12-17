@@ -31,7 +31,7 @@ def mock_platform():
     # 手動設置 mock 的 api 和 command_line
     mocked.api = MagicMock()  # 添加 api 屬性
     mocked.api.command_line = MagicMock()  # 添加 command_line 屬性
-    mocked.api.command_line._original = MagicMock()  # 添加 _original 方法
+    mocked.api.command_line.original = MagicMock()  # 添加 original 方法
 
     return mocked
 
@@ -48,8 +48,8 @@ def test_find_error_match_found(mock_platform):
         - `find_error` returns True when pattern matches.
         - Matching event details are added to error_features.
     """
-    # 模擬 _original 方法的返回值
-    mock_platform.api.command_line._original.return_value = [
+    # 模擬 original 方法的返回值
+    mock_platform.api.command_line.original.return_value = [
         'Disk 1 has been surprise removed.'
     ]
 
@@ -81,7 +81,7 @@ def test_find_error_no_match(mock_platform):
         - error_features dictionary remains unchanged.
     """
     # 模擬沒有匹配的輸出
-    mock_platform.api.command_line._original.return_value = [
+    mock_platform.api.command_line.original.return_value = [
         'Event 158: Another event.'
     ]
 
@@ -109,7 +109,7 @@ def test_find_error_empty_output(mock_platform):
         - `find_error` returns False when the output is empty.
     """
     # 模擬 PowerShell 沒有返回任何輸出
-    mock_platform.api.command_line._original.return_value = []
+    mock_platform.api.command_line.original.return_value = []
 
     # 初始化 WindowsEvent
     win_event = WindowsEvent(mock_platform)
@@ -136,7 +136,7 @@ def test_clear_error_success(mock_platform):
         - Correct command is sent to the command line once.
     """
     # 模擬 PowerShell 成功清除日誌
-    mock_platform.api.command_line._original.return_value = "Log cleared."
+    mock_platform.api.command_line.original.return_value = "Log cleared."
 
     # 初始化 WindowsEvent
     win_event = WindowsEvent(mock_platform)
@@ -144,7 +144,7 @@ def test_clear_error_success(mock_platform):
     # 調用 clear_error 方法
     result = win_event.clear_error()
     assert result is True
-    mock_platform.api.command_line._original.assert_called_once_with(
+    mock_platform.api.command_line.original.assert_called_once_with(
         mock_platform.api, 'powershell "Clear-EventLog -LogName system"'
     )
 
@@ -162,7 +162,7 @@ def test_clear_error_failure(mock_platform):
         - Correct command is sent to the command line once.
     """
     # 模擬 PowerShell 命令執行失敗
-    mock_platform.api.command_line._original.side_effect = Exception("Command failed")
+    mock_platform.api.command_line.original.side_effect = Exception("Command failed")
 
     # 初始化 WindowsEvent
     win_event = WindowsEvent(mock_platform)
@@ -170,6 +170,6 @@ def test_clear_error_failure(mock_platform):
     # 調用 clear_error 方法，應該返回 False
     result = win_event.clear_error()
     assert result is False
-    mock_platform.api.command_line._original.assert_called_once_with(
+    mock_platform.api.command_line.original.assert_called_once_with(
         mock_platform.api, 'powershell "Clear-EventLog -LogName system"'
     )

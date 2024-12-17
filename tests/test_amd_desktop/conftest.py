@@ -9,6 +9,7 @@ from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from unit.application_interface import ApplicationInterface as api
+from unit.application_interface import WindowsAPI as Wapi
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
@@ -18,8 +19,7 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 def my_app(cmdopt):
     '''This is a docstring'''
     print('\n\033[32m================== Setup API ===================\033[0m')
-    return api(cmdopt.get('mode'), cmdopt.get('if_name'),
-        cmdopt.get('config_file'))
+    return api(cmdopt.get('mode'), cmdopt.get('if_name'), cmdopt.get('config_file'), Wapi)
 
 
 @pytest.fixture(scope="session")
