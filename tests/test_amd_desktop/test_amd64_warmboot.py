@@ -3,13 +3,9 @@
 import logging
 import time
 import pytest
-# import RPi.GPIO as gpio
-
 from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress as Toss
-# from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
-# from amd_desktop.amd64_event import WindowsEvent as We
 from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
-# from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
+
 
 logger = logging.getLogger(__name__)
 
@@ -159,4 +155,4 @@ class TestWindowsWarmBoot:
 # @pytest.mark.order(2)
 class TestWindowsWarmBootStress(Toss):
     """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)"""
-    ...
+

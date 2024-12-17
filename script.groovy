@@ -45,7 +45,6 @@ def test_pep8(String path) {
 
 def test_smoke(String path, int rep_number, String key, String scope) {
     run_test(path + '/test_amd64_warmboot.py', key, "--count=${rep_number} --repeat-scope=${scope} --cov-report=html")
-    // run_test(path + '/test_amd64_coldboot.py', key, "--count=${rep_number} --repeat-scope=${scope} --cov-report=html")
 }
 
 def test_sanity(String path) {

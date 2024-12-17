@@ -140,7 +140,7 @@ class WindowsEvent(SystemLogging):
             Exception: If there are issues executing the PowerShell command
         """
         try:
-            output = self._api.command_line._original(self._api,
+            output = self._api.command_line.original(self._api,
                 f'powershell "Get-EventLog -LogName {log_name} | Where-Object'
                 f' {{ $_.EventID -eq {event_id} }}"'
             )
@@ -187,7 +187,7 @@ class WindowsEvent(SystemLogging):
                 subprocess command
         """
         try:
-            result = self._api.command_line._original(self._api,
+            result = self._api.command_line.original(self._api,
                 'powershell "Clear-EventLog -LogName system"'
             )
             logger.debug("result = %s", result)

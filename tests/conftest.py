@@ -7,6 +7,7 @@ import pytest
 import paramiko
 from amd_desktop.amd64_ping import AMD64Ping as aping
 from unit.application_interface import ApplicationInterface as api
+from unit.application_interface import LinuxAPI as Lapi
 from unit.gitlab import GitLabAPI as glapi
 from unit.gpio import RaspBerryPins as rbp
 from unit.mongodb import MongoDB
@@ -89,7 +90,7 @@ def store_gitlab_api_in_config(cmdopt, request):
 @pytest.fixture(scope="session")
 def drone_api():
     print('\n\033[32m================== Setup RPi API ===============\033[0m')
-    return api('local', 'wlan0', 'app_map.json')
+    return api('local', 'wlan0', 'app_map.json', Lapi)
 
 @pytest.fixture(scope="session")
 def target_ping(drone_api):

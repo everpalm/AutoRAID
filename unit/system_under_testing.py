@@ -8,6 +8,7 @@ import re
 # import pandas as pd
 # import time
 from unit.application_interface import ApplicationInterface as api
+from unit.application_interface import GenericAPI
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -139,7 +140,8 @@ class SystemUnderTesting(api):
         super().__init__(
                 str_mode='remote',
                 str_if_name='eth0',
-                str_config_file='app_map.json')
+                str_config_file='app_map.json',
+                interface=GenericAPI)
         self.os = self.get_os()
         self.manufacturer = str_manufacturer
         self.bdf, self.sdid = self._get_pcie_info().values()
