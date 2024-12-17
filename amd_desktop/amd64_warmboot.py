@@ -14,7 +14,6 @@ class WarmBoot(ABC):
     @abstractmethod
     def execute(self) -> bool:
         """Execute the warm boot process."""
-        ...
 
 
 class WindowsWarmBoot(WarmBoot):
@@ -26,12 +25,12 @@ class WindowsWarmBoot(WarmBoot):
         logger.info("Executing warm boot for Windows...")
         try:
             # Execute the warm boot command
-            self._api.command_line._original(self._api, 'shutdown /r /t 0')
+            self._api.command_line.original(self._api, 'shutdown /r /t 0')
             logger.info("Warm boot executed successfully for Windows.")
             return True
-        
+
         except Exception as e:
-            logger.error(f"Error during Windows warm boot execution: {e}")
+            logger.error("Error during Windows warm boot execution: %s", e)
             return False
 
 
@@ -49,5 +48,5 @@ class LinuxWarmBoot(WarmBoot):
             return True
             
         except Exception as e:
-            logger.error(f"Error during Linux warm boot execution: {e}")
+            logger.error("Error during Linux warm boot execution: %s", e)
             return False
