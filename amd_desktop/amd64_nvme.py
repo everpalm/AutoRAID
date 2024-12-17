@@ -5,6 +5,7 @@ from collections import defaultdict
 import logging
 import re
 from unit.log_handler import get_logger
+from unit.application_interface import GenericAPI as Gapi
 # import os
 
 logger = get_logger(__name__, logging.INFO)
@@ -26,7 +27,7 @@ class AMD64NVMe:
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    def __init__(self, interface):
+    def __init__(self, interface: Gapi):
         self.api = interface
         self.os = self.api.get_os()
         self.manufacturer = interface.config_file.replace('.json', '')
@@ -58,7 +59,7 @@ class AMD64NVMe:
             ValueError: If the wmic command output can't be processed
         """
         try:
-            output = self.api.command_line._original(self.api,
+            output = self.api.command_line.original(self.api,
                 'wmic cpu Get NumberOfCores,NumberOfLogicalProcessors /Format:List')
             logger.debug('output = %s', output)
             output_string = "".join(output)

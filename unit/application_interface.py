@@ -1,8 +1,8 @@
 # Contents of application_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
-# from abc import ABC
-# from abc import abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from typing import Tuple
 from typing import List
 from typing import Dict
@@ -14,27 +14,155 @@ import os
 import struct
 import json
 import paramiko
+from unit.log_handler import get_logger
 
 SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
 
-logger = logging.getLogger(__name__)
-
+logger = get_logger(__name__, logging.INFO)
 
 def dict_format(callback):
+    """
+    Decorator to convert the result of a function (which should return an iterable) 
+    to a dictionary with integer keys (index).
+
+    This decorator wraps a given function, executes it, logs the result,
+    and then converts the iterable returned by the original function to a dictionary
+    where keys are the integer indices of the iterable's elements.
+
+    Args:
+        original_function: The function to be wrapped.
+
+    Returns:
+        Callable: The wrapped function.
+        dict:  A dictionary where the keys are integer indices of the input list.
+             Returns None if an error occurs during the dictionary creation.
+    Raises:
+         TypeError: If the input is not iterable
+
+    """
     def wrapper(*args, **kwargs):
-        dict_result = callback(*args, **kwargs)
-        logger.debug("Result to be transformed = %s", dict_result)
-        return dict(enumerate(dict_result))
-    wrapper._original = callback
+        """
+        Wrapper function that executes the original function and formats the result as a dictionary.
+
+        Args:
+            *args: Variable length argument list of the original function.
+            **kwargs: Arbitrary keyword arguments of the original function.
+            
+
+        Returns:
+            Dict[int, Any] | None: A dictionary where the keys are integer indices of
+                                  the original function's iterable result.
+                                  Returns None if an error occurs during processing
+                                  or the input is not iterable.
+
+        Raises:
+            TypeError: If the input function result is not iterable
+        """
+        try:
+            dict_result = callback(*args, **kwargs)
+            logger.debug("Result to be transformed = %s", dict_result)
+            return dict(enumerate(dict_result))
+        except TypeError as e:
+            logger.error("TypeError occurred in wrapper: %s", e)
+        except Exception as e:
+            logger.exception("An unexpected error occurred in wrapper: %s", e)
+            raise
+    wrapper.original = callback
     return wrapper
 
 # def json_format(callback):
 #     def warp(*args, **kwargs):
 #         return json.dumps(callback(*args, **kwargs))
 #     return warp
+class GenericAPI(ABC):
+    '''Placeholder'''
+    @abstractmethod
+    def cmd_transformer(self, str_cli_cmd: str,
+                        mode: str, account: str,
+                        password: str,
+                        remote_dir: str,
+                        remote_ip: str) -> str:
+        '''Placeholder'''
 
+
+class WindowsAPI(GenericAPI):
+    '''This is a docstring'''
+    @staticmethod
+    def cmd_transformer(str_cli_cmd: str,
+                        mode: str,
+                        account: str,
+                        password: str,
+                        remote_dir: str,
+                        remote_ip: str) -> str:
+        """
+        Executes a Windows command using subprocess and returns the output.
+
+        Args:
+        command: A list of string representing the command to execute.
+
+        Returns:
+            List[str]: A list of strings representing the command's output.
+        Raises:
+            subprocess.CalledProcessError: If the command returns non zero exit code
+        """
+        # str_command_line = None
+        logger.debug('str_cli_cmd = %s', str_cli_cmd)
+        logger.debug('mode = %s', mode)
+        logger.debug('account = %s', account)
+        logger.debug('password = %s', password)
+        # logger.debug('local_dir = %s', local_dir)
+        logger.debug('remote_dir = %s', remote_dir)
+        try:
+            str_sshpass = (f'sshpass -p \"{password}\"'
+                    ' ssh -o \"StrictHostKeyChecking=no\"')
+            logger.debug('str_sshpass = %s', str_sshpass)
+            if mode == 'remote':
+                logger.debug('===Remote access mode===')
+                str_command_line = (f"{str_sshpass}"
+                    f" {account}@{remote_ip}"
+                    f" 'cd {remote_dir}&&{str_cli_cmd}'")
+            elif mode == 'local':
+                logger.debug('===Local access mode===')
+                str_command_line = f'{str_cli_cmd}'
+            else:
+                raise ValueError('Unknown mode setting in command_line')
+            logger.debug('str_command_line = %s', str_command_line)
+            return str_command_line
+        except Exception as e:
+            logger.error('An unexpected error occurred: %s', e)
+            raise
+
+
+class LinuxAPI(GenericAPI):
+    '''This is a docstring'''
+    @staticmethod
+    def cmd_transformer(str_cli_cmd: str,
+                        mode: str,
+                        account: str,
+                        password: str,
+                        remote_dir: str,
+                        remote_ip: str) -> str:
+        try:
+            str_sshpass = (f'sshpass -p \"{password}\"'
+                    ' ssh -o \"StrictHostKeyChecking=no\"')
+            logger.debug('str_sshpass = %s', str_sshpass)
+            if mode == 'remote':
+                logger.debug('===Remote access mode===')
+                str_command_line = (f'{str_sshpass}'
+                        f' {account}@{remote_ip}'
+                        f' \"cd {remote_dir};{str_cli_cmd}"')
+            elif mode == 'local':
+                logger.debug('===Local access mode===')
+                str_command_line = f'{str_cli_cmd}'
+            else:
+                raise ValueError('Unknown mode setting in command_line')
+            logger.debug('str_command_line = %s', str_command_line)
+            return str_command_line
+        except Exception as e:
+            logger.error('An unexpected error occurred: %s', e)
+            raise
 
 class ApplicationInterface:
     ''' Application Interface
@@ -50,7 +178,9 @@ class ApplicationInterface:
             password: Input the password in SSH
             dir: The folder where lionapp is locationed
     '''
-    def __init__(self, str_mode: str, str_if_name: str, str_config_file: str):
+    def __init__(self, str_mode: str, str_if_name: str, str_config_file: str,
+        interface: GenericAPI):
+        '''This is a docstring'''
         self.mode = str_mode
         self.config_file = str_config_file
         self.if_name = str_if_name
@@ -58,8 +188,10 @@ class ApplicationInterface:
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir = self._get_remote_ip()
         self.os = self.get_os()
+        self.interface = interface
 
     def __import_config(self) -> Dict[str, str]:
+        '''This is a docstring'''
         try:
             with open(f'config/{self.config_file}', 'r', encoding='utf-8') as f:
                 list_config = json.load(f)
@@ -72,6 +204,7 @@ class ApplicationInterface:
 
     @staticmethod
     def _get_local_ip(str_if_name: str) -> str:
+        '''This is a docstring'''
         # Create a socket instance
         my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
@@ -89,6 +222,7 @@ class ApplicationInterface:
         return local_ip
 
     def _get_remote_ip(self) -> Tuple[str]:
+        '''This is a docstring'''
         remote_ip = None
         for dict_element in self.__import_config():
             # remote_ip = None
@@ -101,17 +235,17 @@ class ApplicationInterface:
                 str_remote_dir = dict_element.get('Remote Directory')
                 logger.debug('remote_ip = %s', remote_ip)
                 break
-            else:
-                logger.debug('Not target dict_element = %s', dict_element)
-                continue
+
+            logger.debug('Not target dict_element = %s', dict_element)
+            continue
         if remote_ip is None:
             # raise ValueError('Remote network is disconnected')
-            pass
             logger.debug('Local Mode Only')
-        return remote_ip, str_account, str_password, str_local_dir, \
-            str_remote_dir
+        return (remote_ip, str_account, str_password, str_local_dir,
+                str_remote_dir)
 
     def get_ip_address(self) -> str:
+        '''This is a docstring'''
         if self.mode == 'remote':
             return self._get_remote_ip()
         elif self.mode == 'local':
@@ -129,7 +263,7 @@ class ApplicationInterface:
             if str(message, 'utf8') != '\n':
                 log_msg = str(message, 'utf8').replace(
                     '\n', '').replace('\x08', '')
-                logger.debug(f'{log_msg}')
+                logger.debug('%s', log_msg)
                 response_msg = ' '.join(str(message, 'utf8').split())
                 __list_msg.append(response_msg.replace('\x08', ''))
         return __list_msg
@@ -142,11 +276,11 @@ class ApplicationInterface:
         '''
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    
+
         try:
         # 連線到遠端主機，使用預設的 SSH 端口（22）
             ssh.connect(self.remote_ip, SSH_PORT, self.account, self.password)
-            os_info = ""
+            os_info = None
 
             # Try Linux uname command
             stdin, stdout, stderr = ssh.exec_command("uname -s")
@@ -156,22 +290,21 @@ class ApplicationInterface:
                 os_info = "Linux"
             else:
                 # Try Windows systeminfo command
-                stdin, stdout, stderr = ssh.exec_command("systeminfo")
+                _, stdout, _ = ssh.exec_command("systeminfo")
                 systeminfo_output = stdout.read().decode('utf-8').strip()
                 if systeminfo_output:
-                    # os_info = "Windows: " + "\n".join(systeminfo_output.split("\n")[:10])  # 只取前几行作为示例
                     os_info = "Windows"
             if not os_info:
                 raise Exception("Failed to retrieve OS information")
             logger.debug('os_info = %s', os_info)
             return os_info
-            
+
         except Exception as e:
             logger.error(f"Error: {e}")
             return None
         finally:
             ssh.close()
-    
+
     # @dict_format
     def io_command(self, str_ssh_command: str) -> bool:
         client = paramiko.SSHClient()
@@ -186,46 +319,67 @@ class ApplicationInterface:
         output = stdout.read().decode()
         # bool_status = stdout.channel.recv_exit_status()
         if not stdout.channel.recv_exit_status():
-                client.close()
+            client.close()
         # client.close()
         # return bool_status
         return output
 
     def set_access_mode(self, str_mode: str):
+        '''This is a docstring'''
         self.mode = str_mode
         if self.mode != 'local' and self.mode != 'remote':
             raise ValueError('Unknown mode setting in set_access_mode')
 
     @dict_format
-    # @abstractmethod
-    def command_line(self, str_cli_cmd: str) -> list[str]:
+    def command_line(self, str_cli_cmd: str) -> str:
+        """
+        Executes a command using subprocess and returns the output.
+
+        Args:
+        command: A list of string representing the command to execute.
+
+        Returns:
+            List[str]: A list of strings representing the command's output.
+        Raises:
+            subprocess.CalledProcessError: If the command returns non zero exit code
+        """
+        # str_command_line = None
         logger.debug('str_cli_cmd = %s', str_cli_cmd)
         logger.debug('self.mode = %s', self.mode)
         logger.debug('self.account = %s', self.account)
         logger.debug('self.password = %s', self.password)
         logger.debug('self.local_dir = %s', self.local_dir)
         logger.debug('self.remote_dir = %s', self.remote_dir)
-        str_sshpass = (f'sshpass -p \"{self.password}\"'
-                ' ssh -o \"StrictHostKeyChecking=no\"')
-        logger.debug('str_sshpass = %s', str_sshpass)
-        if self.mode == 'remote':
-            logger.debug('===Remote access mode===')
-            if self.os == 'Linux':
-                logger.debug('===Linux===')
-                str_command_line = (f'{str_sshpass}'
-                    f' {self.account}@{self.remote_ip}'
-                    f' \"cd {self.remote_dir};{str_cli_cmd}"')
-            elif self.os == 'Windows':
-                logger.debug('===Windows===')
-                str_command_line = (f"{str_sshpass}"
-                    f" {self.account}@{self.remote_ip}"
-                    # f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
-                    f" 'cd {self.remote_dir}&&{str_cli_cmd}'")
-        elif self.mode == 'local':
-            logger.debug('===Local access mode===')
-            # str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
-            str_command_line = f'{str_cli_cmd}'
-        else:
-            raise ValueError('Unknown mode setting in command_line')
-        logger.debug('str_command_line = %s', str_command_line)
-        return self.my_command(str_command_line)
+        logger.debug('self.remote_ip = %s', self.remote_ip)
+        # try:
+            # str_sshpass = (f'sshpass -p \"{self.password}\"'
+            #         ' ssh -o \"StrictHostKeyChecking=no\"')
+            # logger.debug('str_sshpass = %s', str_sshpass)
+            # if self.mode == 'remote':
+            #     logger.debug('===Remote access mode===')
+            #     if self.os == 'Linux':
+            #         logger.debug('===Linux===')
+            #         str_command_line = (f'{str_sshpass}'
+            #             f' {self.account}@{self.remote_ip}'
+            #             f' \"cd {self.remote_dir};{str_cli_cmd}"')
+            #     elif self.os == 'Windows':
+            #         logger.debug('===Windows===')
+            #         str_command_line = (f"{str_sshpass}"
+            #             f" {self.account}@{self.remote_ip}"
+            #             # f' \"cd {self.remote_dir}&&{str_cli_cmd}"')
+            #             f" 'cd {self.remote_dir}&&{str_cli_cmd}'")
+            # elif self.mode == 'local':
+            #     logger.debug('===Local access mode===')
+            #     # str_command_line = f'cd {self.local_dir};{str_cli_cmd}'
+            #     str_command_line = f'{str_cli_cmd}'
+            # else:
+            #     raise ValueError('Unknown mode setting in command_line')
+            # logger.debug('str_command_line = %s', str_command_line)
+            # return self.my_command(str_command_line)
+        list_result = self.interface.cmd_transformer(str_cli_cmd, self.mode,
+            self.account, self.password, self.remote_dir, self.remote_ip)
+        return self.my_command(list_result)
+            # self.remote_dir))
+        # except Exception as e:
+        #     logger.error('An unexpected error occurred: %s', e)
+        #     raise
