@@ -253,6 +253,7 @@ class ApplicationInterface:
 
     @staticmethod
     def my_command(str_ssh_command: str) -> List[str]:
+        '''Placeholder'''
         __list_msg = []
         messages = subprocess.Popen(
             str_ssh_command, shell=True, stdout=subprocess.PIPE,
@@ -307,6 +308,7 @@ class ApplicationInterface:
 
     # @dict_format
     def io_command(self, str_ssh_command: str) -> bool:
+        '''Placeholder'''
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(self.remote_ip, username=self.account,
