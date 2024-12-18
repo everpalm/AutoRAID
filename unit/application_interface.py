@@ -72,111 +72,34 @@ def dict_format(callback):
     wrapper.original = callback
     return wrapper
 
-# def json_format(callback):
-#     def warp(*args, **kwargs):
-#         return json.dumps(callback(*args, **kwargs))
-#     return warp
-# class GenericAPI(ABC):
-#     '''Placeholder'''
-#     @abstractmethod
-#     def cmd_transformer(self, str_cli_cmd: str,
-#                         mode: str,
-#                         account: str,
-#                         password: str,
-#                         remote_dir: str,
-#                         remote_ip: str) -> str:
+
+# class CommandContext:
+#     '''This is a docstring'''
+#     def __init__(
+#             self, str_cli_cmd: str,
+#             mode: str, account: str,
+#             password: str,
+#             remote_dir: str,
+#             remote_ip: str
+#             ):
 #         '''Placeholder'''
+#         self.str_cli_cmd = str_cli_cmd
+#         self.mode = mode
+#         self.account = account
+#         self.password = password
+#         self.remote_dir = remote_dir
+#         self.remote_ip = remote_ip
+from dataclasses import dataclass
 
-# class WindowsAPI(GenericAPI):
-#     '''This is a docstring'''
-#     @staticmethod
-#     def cmd_transformer(str_cli_cmd: str,
-#                         mode: str,
-#                         account: str,
-#                         password: str,
-#                         remote_dir: str,
-#                         remote_ip: str) -> str:
-#         """
-#         Executes a Windows command using subprocess and returns the output.
-
-#         Args:
-#         command: A list of string representing the command to execute.
-
-#         Returns:
-#             List[str]: A list of strings representing the command's output.
-#         Raises:
-#             subprocess.CalledProcessError: If the command returns non zero exit code
-#         """
-#         logger.debug('str_cli_cmd = %s', str_cli_cmd)
-#         logger.debug('mode = %s', mode)
-#         logger.debug('account = %s', account)
-#         logger.debug('password = %s', password)
-#         logger.debug('remote_dir = %s', remote_dir)
-#         try:
-#             str_sshpass = (f'sshpass -p \"{password}\"'
-#                     ' ssh -o \"StrictHostKeyChecking=no\"')
-#             logger.debug('str_sshpass = %s', str_sshpass)
-#             if mode == 'remote':
-#                 logger.debug('===Remote access mode===')
-#                 str_command_line = (f"{str_sshpass}"
-#                     f" {account}@{remote_ip}"
-#                     f" 'cd {remote_dir}&&{str_cli_cmd}'")
-#             elif mode == 'local':
-#                 logger.debug('===Local access mode===')
-#                 str_command_line = f'{str_cli_cmd}'
-#             else:
-#                 raise ValueError('Unknown mode setting in command_line')
-#             logger.debug('str_command_line = %s', str_command_line)
-#             return str_command_line
-#         except Exception as e:
-#             logger.error('An unexpected error occurred: %s', e)
-#             raise
-
-
-# class LinuxAPI(GenericAPI):
-#     '''This is a docstring'''
-#     @staticmethod
-#     def cmd_transformer(str_cli_cmd: str,
-#                         mode: str,
-#                         account: str,
-#                         password: str,
-#                         remote_dir: str,
-#                         remote_ip: str) -> str:
-#         try:
-#             str_sshpass = (f'sshpass -p \"{password}\"'
-#                     ' ssh -o \"StrictHostKeyChecking=no\"')
-#             logger.debug('str_sshpass = %s', str_sshpass)
-#             if mode == 'remote':
-#                 logger.debug('===Remote access mode===')
-#                 str_command_line = (f'{str_sshpass}'
-#                         f' {account}@{remote_ip}'
-#                         f' \"cd {remote_dir};{str_cli_cmd}"')
-#             elif mode == 'local':
-#                 logger.debug('===Local access mode===')
-#                 str_command_line = f'{str_cli_cmd}'
-#             else:
-#                 raise ValueError('Unknown mode setting in command_line')
-#             logger.debug('str_command_line = %s', str_command_line)
-#             return str_command_line
-#         except Exception as e:
-#             logger.error('An unexpected error occurred: %s', e)
-#             raise
+@dataclass
 class CommandContext:
-    '''This is a docstring'''
-    def __init__(
-            self, str_cli_cmd: str,
-            mode: str, account: str,
-            password: str,
-            remote_dir: str,
-            remote_ip: str
-            ):
-        '''Placeholder'''
-        self.str_cli_cmd = str_cli_cmd
-        self.mode = mode
-        self.account = account
-        self.password = password
-        self.remote_dir = remote_dir
-        self.remote_ip = remote_ip
+    '''Context of an API command'''
+    str_cli_cmd: str
+    mode: str
+    account: str
+    password: str
+    remote_dir: str
+    remote_ip: str
 
 
 class GenericAPI(ABC):
@@ -186,29 +109,6 @@ class GenericAPI(ABC):
         '''Placeholder'''
 
 
-# class WindowsAPI(GenericAPI):
-#     '''This is a docstring'''
-#     @staticmethod
-#     def cmd_transformer(context: CommandContext) -> str:
-#         """
-#         Executes a Windows command using subprocess and returns the output.
-
-#         Args:
-#         context: CommandContext object containing execution details.
-
-#         Returns:
-#             str: A transformed command string ready for execution.
-#         """
-#         logger.debug('Executing Windows cmd_transformer')
-#         sshpass = f'sshpass -p "{context.password}" ssh -o "StrictHostKeyChecking=no"'
-#         if context.mode == 'remote':
-#             logger.debug('===Remote access mode===')
-#             return f'{sshpass} {context.account}@{context.remote_ip} "cd {context.remote_dir} && {context.str_cli_cmd}"'
-#         elif context.mode == 'local':
-#             logger.debug('===Local access mode===')
-#             return context.str_cli_cmd
-#         else:
-#             raise ValueError('Unknown mode setting in command_line')
 class WindowsAPI(GenericAPI):
     @staticmethod
     def cmd_transformer(context: CommandContext) -> str:
@@ -224,29 +124,6 @@ class WindowsAPI(GenericAPI):
             raise ValueError('Unknown mode setting in command_line')
 
 
-# class LinuxAPI(GenericAPI):
-#     '''This is a docstring'''
-#     @staticmethod
-#     def cmd_transformer(context: CommandContext) -> str:
-#         """
-#         Executes a Linux command using subprocess and returns the output.
-
-#         Args:
-#         context: CommandContext object containing execution details.
-
-#         Returns:
-#             str: A transformed command string ready for execution.
-#         """
-#         logger.debug('Executing Linux cmd_transformer')
-#         sshpass = f'sshpass -p "{context.password}" ssh -o "StrictHostKeyChecking=no"'
-#         if context.mode == 'remote':
-#             logger.debug('===Remote access mode===')
-#             return f'{sshpass} {context.account}@{context.remote_ip} "cd {context.remote_dir}; {context.str_cli_cmd}"'
-#         elif context.mode == 'local':
-#             logger.debug('===Local access mode===')
-#             return context.str_cli_cmd
-#         else:
-#             raise ValueError('Unknown mode setting in command_line')
 class LinuxAPI(GenericAPI):
     '''This is a docstring'''
     @staticmethod
@@ -262,7 +139,7 @@ class LinuxAPI(GenericAPI):
             return context.str_cli_cmd
         else:
             raise ValueError('Unknown mode setting in command_line')
-        
+
 
 class ApplicationInterface:
     ''' Application Interface
