@@ -1,4 +1,4 @@
-# Contents of test_win10_mongodb.py
+# Contents of test_mongodb_unit.py
 '''Copyright (c) 2024 Jaron Cheng'''
 # Standard library
 import json
@@ -10,35 +10,20 @@ import pytest
 # Self-defined library
 from unit.mongodb import MongoDB
 
-# import pytest
-
 logger = logging.getLogger(__name__)
 
 MDB_ATTR = [{
-    "Log Path": '/home/pi/uart.log',
+    "Log Path": 'logs/uart.log',
     "Report Path": ".report.json"
 }]
 
-# 模拟的聚合结果数据
+# Simulated aggregate result data
 AGGREGATE_RESULTS = [{
     "avg_read_bw": 115.0,
-    # "max_read_bw": 130,
-    # "min_read_bw": 100,
-    # "std_read_bw": 12.909944,
     "avg_read_iops": 215.0,
-    # "max_read_iops": 230,
-    # "min_read_iops": 200,
-    # "std_read_iops": 12.909944,
     "avg_write_bw": 165.0,
-    # "max_write_bw": 180,
-    # "min_write_bw": 150,
-    # "std_write_bw": 12.909944,
     "avg_write_iops": 265.0
-    # "max_write_iops": 280,
-    # "min_write_iops": 250,
-    # "std_write_iops": 12.909944
 }]
-
 
 class TestMongoDB:
     """Test cases for MongoDB class methods, covering log writing, reading,
@@ -77,14 +62,18 @@ class TestMongoDB:
         mock_log_data = "Sample log data"
         mock_report_data = {"key": "value"}
 
-        with patch("builtins.open",
-                   mock_open(read_data=mock_log_data)) as mock_log_file, \
+        with patch("builtins.open", mock_open(read_data=mock_log_data)) as mock_log_file, \
              patch("json.load", return_value=mock_report_data):
+
+            # Adjust the `open` function to mock encoding-specific behavior
+            mock_log_file.side_effect = lambda path, mode, *args, **kwargs: (
+                mock_open(read_data=mock_log_data).return_value if 'r' in mode else None
+            )
 
             mongo_db_instance.write_log_and_report(log_path, report_path)
 
-            # Verify the file open calls
-            mock_log_file.assert_any_call(log_path, 'r')
+            # Verify the file open calls with encoding
+            mock_log_file.assert_any_call(log_path, 'r', encoding='iso-8859-1')
             mock_log_file.assert_any_call(report_path, 'r')
 
             # Verify the document insertion into MongoDB
@@ -187,5 +176,4 @@ class TestMongoDB:
         assert result == mock_aggregate_result[0]
 
         if result:
-            # logger.debug(f'metrics = {json.dumps(result, indent=4)}')
             logger.debug('metrics = %s', json.dumps(result, indent=4))
