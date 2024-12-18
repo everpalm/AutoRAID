@@ -57,8 +57,11 @@ class MongoDB(object):
             PyMongoError: If there is an error inserting the document into MongoDB.
         """
         try:
-            with open(log_path, 'r') as log_file:
+            with open(log_path, 'r', encoding='iso-8859-1') as log_file:
                 log_data = log_file.read()
+        except UnicodeDecodeError as e:
+            logger.error("Decoding error at position %s: %s", e.start, e.reason)
+            raise
         except FileNotFoundError:
             logger.error("Error: The file %s was not found", log_path)
             return
