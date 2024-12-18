@@ -138,8 +138,10 @@ class AMD64NVMe:
                 raise ValueError(
                     "Failed to retrieve the expected output from command.")
 
-            match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s",
-                              filtered)
+            # match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s",
+            #                   filtered)
+            match = re.search(r"([0-9A-Fa-f]{2}(-[0-9A-Fa-f]{2}){5})",
+                filtered)
             if match:
                 mac_address = match.group(1)
                 logger.debug("Found: %s", mac_address)
