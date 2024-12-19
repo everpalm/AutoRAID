@@ -170,7 +170,7 @@ class ApplicationInterface:
     def __import_config(self) -> Dict[str, str]:
         '''This is a docstring'''
         try:
-            with open(f'config/{self.config_file}', 'r', encoding='utf-8') as f:
+            with open(f'config/{self.config_file}', 'r', encoding='us-ascii') as f:
                 list_config = json.load(f)
                 if not isinstance(list_config, list):
                     raise ValueError(f"Expected dict in config file, got {type(list_config)}")
