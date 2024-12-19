@@ -23,40 +23,41 @@ SSH_PORT = '22'
 
 logger = get_logger(__name__, logging.INFO)
 
+
 def dict_format(callback):
     """
-    Decorator to convert the result of a function (which should return an iterable) 
-    to a dictionary with integer keys (index).
+    Decorator to convert the result of a function (which should return an
+    iterable) to a dictionary with integer keys (index).
 
     This decorator wraps a given function, executes it, logs the result,
-    and then converts the iterable returned by the original function to a dictionary
-    where keys are the integer indices of the iterable's elements.
+    and then converts the iterable returned by the original function to a
+    dictionary where keys are the integer indices of the iterable's elements.
 
     Args:
         original_function: The function to be wrapped.
 
     Returns:
         Callable: The wrapped function.
-        dict:  A dictionary where the keys are integer indices of the input list.
-             Returns None if an error occurs during the dictionary creation.
+        dict:  A dictionary where the keys are integer indices of the input
+        list. Returns None if an error occurs during the dictionary creation.
     Raises:
          TypeError: If the input is not iterable
 
     """
     def wrapper(*args, **kwargs):
         """
-        Wrapper function that executes the original function and formats the result as a dictionary.
+        Wrapper function that executes the original function and formats the
+        result as a dictionary.
 
         Args:
             *args: Variable length argument list of the original function.
             **kwargs: Arbitrary keyword arguments of the original function.
-            
 
         Returns:
-            Dict[int, Any] | None: A dictionary where the keys are integer indices of
-                                  the original function's iterable result.
-                                  Returns None if an error occurs during processing
-                                  or the input is not iterable.
+            Dict[int, Any] | None: A dictionary where the keys are integer
+            indices of the original function's iterable result.
+            Returns None if an error occurs during processing or the input is
+            not iterable.
 
         Raises:
             TypeError: If the input function result is not iterable
@@ -96,10 +97,16 @@ class WindowsAPI(GenericAPI):
     @staticmethod
     def cmd_transformer(context: CommandContext) -> str:
         logger.debug('Executing Windows cmd_transformer')
-        sshpass = f'sshpass -p "{context.password}" ssh -o "StrictHostKeyChecking=no"'
+        sshpass = (
+            f'sshpass -p "{context.password}" ssh -o '
+            f'"StrictHostKeyChecking=no"'
+        )
         if context.mode == 'remote':
             logger.debug('===Remote access mode===')
-            return f'{sshpass} {context.account}@{context.remote_ip} "cd {context.remote_dir} && {context.str_cli_cmd}"'
+            return (
+                f'{sshpass} {context.account}@{context.remote_ip} '
+                f'"cd {context.remote_dir} && {context.str_cli_cmd}"'
+            )
         elif context.mode == 'local':
             logger.debug('===Local access mode===')
             return context.str_cli_cmd
@@ -113,10 +120,16 @@ class LinuxAPI(GenericAPI):
     def cmd_transformer(context: CommandContext) -> str:
         '''Placeholder'''
         logger.debug('Executing Linux cmd_transformer')
-        sshpass = f'sshpass -p "{context.password}" ssh -o "StrictHostKeyChecking=no"'
+        sshpass = (
+            f'sshpass -p "{context.password}" ssh -o '
+            f'"StrictHostKeyChecking=no"'
+        )
         if context.mode == 'remote':
             logger.debug('===Remote access mode===')
-            return f'{sshpass} {context.account}@{context.remote_ip} "cd {context.remote_dir}; {context.str_cli_cmd}"'
+            return (
+                f'{sshpass} {context.account}@{context.remote_ip} '
+                f'"cd {context.remote_dir}; {context.str_cli_cmd}"'
+            )
         elif context.mode == 'local':
             logger.debug('===Local access mode===')
             return context.str_cli_cmd
@@ -139,7 +152,7 @@ class ApplicationInterface:
             dir: The folder where lionapp is locationed
     '''
     def __init__(self, str_mode: str, str_if_name: str, str_config_file: str,
-        interface: GenericAPI):
+                 interface: GenericAPI):
         '''This is a docstring'''
         self.mode = str_mode
         self.config_file = str_config_file
@@ -153,10 +166,12 @@ class ApplicationInterface:
     def __import_config(self) -> Dict[str, str]:
         '''This is a docstring'''
         try:
-            with open(f'config/{self.config_file}', 'r', encoding='us-ascii') as f:
+            with open(f'config/{self.config_file}', 'r',
+                      encoding='us-ascii') as f:
                 list_config = json.load(f)
                 if not isinstance(list_config, list):
-                    raise ValueError(f"Expected dict in config file, got {type(list_config)}")
+                    raise ValueError("Expected dict in config file, got %s",
+                                     type(list_config))
                 return list_config
         except Exception:
             logger.error('Cannot open/read file: %s', self.config_file)
@@ -240,7 +255,7 @@ class ApplicationInterface:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-        # 連線到遠端主機，使用預設的 SSH 端口（22）
+            # 連線到遠端主機，使用預設的 SSH 端口（22）
             ssh.connect(self.remote_ip, SSH_PORT, self.account, self.password)
             os_info = None
 
@@ -277,7 +292,7 @@ class ApplicationInterface:
                        password=self.password)
 
         _, stdout, _ = client.exec_command(str_ssh_command,
-                                                    get_pty=True)
+                                           get_pty=True)
 
         output = stdout.read().decode()
 

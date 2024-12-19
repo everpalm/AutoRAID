@@ -3,10 +3,13 @@ import json
 import logging
 from pymongo import MongoClient, errors
 from pymongo import DESCENDING
+from unit.log_handler import get_logger
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
+logger = get_logger(__name__, logging.INFO)
 
-PROJECT_PATH = "/home/pi/Projects/AutoRAID"
+# PROJECT_PATH = "/home/pi/Projects/AutoRAID"
+
 
 class MongoDB(object):
     """
@@ -23,17 +26,20 @@ class MongoDB(object):
     """
     def __init__(self, host, port, db_name, collection_name):
         """
-        Initializes the MongoDB class with a connection to the specified MongoDB
-        database and collection.
+        Initializes the MongoDB class with a connection to the specified
+        MongoDB database and collection.
 
         Args:
             host (str): The hostname or IP address of the MongoDB server.
-            port (int): The port number on which the MongoDB server is listening.
+            port (int): The port number on which the MongoDB server is
+            listening.
             db_name (str): The name of the database to connect to.
-            collection_name (str): The name of the collection within the database.
+            collection_name (str): The name of the collection within the
+            database.
 
         Raises:
-            PyMongoError: If there is an error connecting to the MongoDB server.
+            PyMongoError: If there is an error connecting to the MongoDB
+            server.
         """
         self.client = MongoClient(f'mongodb://{host}:{port}')
         self.db = self.client[db_name]
@@ -51,16 +57,19 @@ class MongoDB(object):
             report_path (str): The file path to the report JSON file.
 
         Raises:
-            FileNotFoundError: If the specified log or report file is not found.
+            FileNotFoundError: If the specified log or report file is not
+            found.
             IOError: If there is an error reading the log file.
             JSONDecodeError: If the report file cannot be decoded as JSON.
-            PyMongoError: If there is an error inserting the document into MongoDB.
+            PyMongoError: If there is an error inserting the document into
+            MongoDB.
         """
         try:
             with open(log_path, 'r', encoding='iso-8859-1') as log_file:
                 log_data = log_file.read()
         except UnicodeDecodeError as e:
-            logger.error("Decoding error at position %s: %s", e.start, e.reason)
+            logger.error("Decoding error at position %s: %s", e.start,
+                         e.reason)
             raise
         except FileNotFoundError:
             logger.error("Error: The file %s was not found", log_path)
@@ -128,12 +137,15 @@ class MongoDB(object):
             update_values (dict): The values to update in the document.
 
         Raises:
-            PyMongoError: If there is an error updating the document in MongoDB.
+            PyMongoError: If there is an error updating the document in
+            MongoDB.
         """
         try:
-            result = self.collection.update_one(filter_query, {'$set': update_values})
+            result = self.collection.update_one(filter_query,
+                                                {'$set': update_values})
             if result.matched_count:
-                logger.debug(f"Document updated successfully: {result.modified_count} document(s) modified.")
+                logger.debug("Document updated successfully: %s "
+                             "document(s) modified.", result.modified_count)
             else:
                 logger.debug("No document matches the given query.")
         except errors.PyMongoError as e:
@@ -141,8 +153,8 @@ class MongoDB(object):
 
     def delete_document(self, filter_query):
         """
-        Deletes a document from the MongoDB collection based on the given filter
-        query.
+        Deletes a document from the MongoDB collection based on the given
+        filter query.
 
         Args:
             filter_query (dict): The query to filter the document that needs to
@@ -155,7 +167,8 @@ class MongoDB(object):
         try:
             result = self.collection.delete_one(filter_query)
             if result.deleted_count:
-                logger.debug(f"Document deleted successfully: {result.deleted_count} document(s) deleted.")
+                logger.debug("Document deleted successfully: %s "
+                             "document(s) deleted.", result.deleted_count)
             else:
                 logger.debug("No document matches the given query.")
         except errors.PyMongoError as e:
@@ -185,7 +198,7 @@ class MongoDB(object):
         except errors.PyMongoError as e:
             logger.critical(f"Error finding document: {e}")
             return None
-        
+
     def aggregate_random_metrics(self, write_pattern, io_depth):
         """
         Aggregates random I/O metrics from the MongoDB collection.
@@ -200,264 +213,281 @@ class MongoDB(object):
             io_depth (int): The I/O depth to filter the metrics.
 
         Returns:
-            dict or None: A dictionary containing the aggregated metrics, or None
-            if no data is found.
+            dict or None: A dictionary containing the aggregated metrics, or
+            None if no data is found.
 
         Raises:
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
-        pipeline = [
-            {
-                "$project": {
-                "_id": 0,
-                "report.tests.keywords": 1,
-                "report.tests.call.log.msg": 1,
-                "report.collectors": 1
-                }
-            },
-            {
-                "$match": {
-                "report.tests.keywords": {
-                    "$regex": "TestRandomReadWrite"
-                }
-                }
-            },
-            {
-                "$match": {
-                "report.collectors.outcome": {
-                    "$regex": "passed"
-                }
-                }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests"
-                }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests.keywords"
-                }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests.call"
-                }
-            },
-            {
-                "$unwind": {
-                "path": "$report.tests.call.log"
-                }
-            },
-            {
-                "$project": {
-                "write_pattern_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.keywords",
-                    "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
-                    }
-                },
-                "read_iops_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_read_iops\\s*=\\s*(\\d+.\\d+)"
-                    }
-                },
-                "read_bw_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_read_bw\\s*=\\s*(\\d+.\\d+)"
-                    }
-                },
-                "write_iops_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_write_iops\\s*=\\s*(\\d+.\\d+)"
-                    }
-                },
-                "write_bw_string": {
-                    "$regexFind": {
-                    "input": "$report.tests.call.log.msg",
-                    "regex": "random_write_bw\\s*=\\s*(\\d+.\\d+)"
-                    }
-                }
-                }
-            },
-            {
-                "$project": {
-                "write_pattern": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$write_pattern_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "int",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "io_depth": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$write_pattern_string.captures",
-                        1
-                        ]
-                    },
-                    "to": "int",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "read_iops": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$read_iops_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "read_bw": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$read_bw_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "write_iops": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$write_iops_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                },
-                "write_bw": {
-                    "$convert": {
-                    "input": {
-                        "$arrayElemAt": [
-                        "$write_bw_string.captures",
-                        0
-                        ]
-                    },
-                    "to": "double",
-                    "onError": None,
-                    "onNull": None
-                    }
-                }
-                }
-            },
-            {
-                "$match": {
-                "write_pattern": write_pattern,
-                "io_depth": io_depth
-                }
-            },
-            {
-                "$group": {
-                "_id": {
-                    "write_pattern": "$write_pattern",
-                    "io_depth": "$io_depth"
-                },
-                "percentile_read_iops": {
-                    "$percentile": {
-                    "input": "$read_iops",
-                    "p": [0.99],
-                    "method": "approximate"
-                    }
-                },
-                "percentile_write_iops": {
-                    "$percentile": {
-                    "input": "$write_iops",
-                    "p": [0.99],
-                    "method": "approximate"
-                    }
-                },
-                "percentile_read_bw": {
-                    "$percentile": {
-                    "input": "$read_bw",
-                    "p": [0.99],
-                    "method": "approximate"
-                    }
-                },
-                "percentile_write_bw": {
-                    "$percentile": {
-                    "input": "$write_bw",
-                    "p": [0.99],
-                    "method": "approximate"
-                    }
-                },
-                "avg_read_iops": {
-                    "$avg": "$read_iops"
-                },
-                "max_read_iops": {
-                    "$max": "$read_iops"
-                },
-                "min_read_iops": {
-                    "$min": "$read_iops"
-                },
-                "std_dev_read_iops": {
-                    "$stdDevPop": "$read_iops"
-                },
-                "avg_read_bw": {
-                    "$avg": "$read_bw"
-                },
-                "max_read_bw": {
-                    "$max": "$read_bw"
-                },
-                "min_read_bw": {
-                    "$min": "$read_bw"
-                },
-                "std_dev_read_bw": {
-                    "$stdDevPop": "$read_bw"
-                },
-                "avg_write_iops": {
-                    "$avg": "$write_iops"
-                },
-                "max_write_iops": {
-                    "$max": "$write_iops"
-                },
-                "min_write_iops": {
-                    "$min": "$write_iops"
-                },
-                "std_dev_write_iops": {
-                    "$stdDevPop": "$write_iops"
-                },
-                "avg_write_bw": {
-                    "$avg": "$write_bw"
-                },
-                "max_write_bw": {
-                    "$max": "$write_bw"
-                },
-                "min_write_bw": {
-                    "$min": "$write_bw"
-                },
-                "std_dev_write_bw": {
-                    "$stdDevPop": "$write_bw"
-                }
-                }
-            }
-        ]
+        # pipeline = [
+        #     {
+        #         "$project": {
+        #             "_id": 0,
+        #             "report.tests.keywords": 1,
+        #             "report.tests.call.log.msg": 1,
+        #             "report.collectors": 1
+        #         }
+        #     },
+        #     {
+        #         "$match": {
+        #             "report.tests.keywords": {
+        #                 "$regex": "TestRandomReadWrite"
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$match": {
+        #             "report.collectors.outcome": {
+        #                 "$regex": "passed"
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #             "path": "$report.tests"
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #             "path": "$report.tests.keywords"
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #             "path": "$report.tests.call"
+        #         }
+        #     },
+        #     {
+        #         "$unwind": {
+        #             "path": "$report.tests.call.log"
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "write_pattern_string": {
+        #                 "$regexFind": {
+        #                     "input": "$report.tests.keywords",
+        #                     "regex": "test_run_io_operation\\[(\\d+)-(\\d+)"
+        #                 }
+        #             },
+        #             "read_iops_string": {
+        #                 "$regexFind": {
+        #                     "input": "$report.tests.call.log.msg",
+        #                     "regex": "random_read_iops\\s*=\\s*(\\d+.\\d+)"
+        #                 }
+        #             },
+        #             "read_bw_string": {
+        #                 "$regexFind": {
+        #                     "input": "$report.tests.call.log.msg",
+        #                     "regex": "random_read_bw\\s*=\\s*(\\d+.\\d+)"
+        #                 }
+        #             },
+        #             "write_iops_string": {
+        #                 "$regexFind": {
+        #                     "input": "$report.tests.call.log.msg",
+        #                     "regex": "random_write_iops\\s*=\\s*(\\d+.\\d+)"
+        #                 }
+        #             },
+        #             "write_bw_string": {
+        #                 "$regexFind": {
+        #                     "input": "$report.tests.call.log.msg",
+        #                     "regex": "random_write_bw\\s*=\\s*(\\d+.\\d+)"
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "write_pattern": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_pattern_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "int",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "io_depth": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_pattern_string.captures",
+        #                             1
+        #                         ]
+        #                     },
+        #                     "to": "int",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "read_iops": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$read_iops_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "read_bw": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$read_bw_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "write_iops": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_iops_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             },
+        #             "write_bw": {
+        #                 "$convert": {
+        #                     "input": {
+        #                         "$arrayElemAt": [
+        #                             "$write_bw_string.captures",
+        #                             0
+        #                         ]
+        #                     },
+        #                     "to": "double",
+        #                     "onError": None,
+        #                     "onNull": None
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     {
+        #         "$match": {
+        #             "write_pattern": write_pattern,
+        #             "io_depth": io_depth
+        #         }
+        #     },
+        #     {
+        #         "$group": {
+        #             "_id": {
+        #                 "write_pattern": "$write_pattern",
+        #                 "io_depth": "$io_depth"
+        #             },
+        #             "percentile_read_iops": {
+        #                 "$percentile": {
+        #                     "input": "$read_iops",
+        #                     "p": [0.99],
+        #                     "method": "approximate"
+        #                 }
+        #             },
+        #             "percentile_write_iops": {
+        #                 "$percentile": {
+        #                     "input": "$write_iops",
+        #                     "p": [0.99],
+        #                     "method": "approximate"
+        #                 }
+        #             },
+        #             "percentile_read_bw": {
+        #                 "$percentile": {
+        #                     "input": "$read_bw",
+        #                     "p": [0.99],
+        #                     "method": "approximate"
+        #                 }
+        #             },
+        #             "percentile_write_bw": {
+        #                 "$percentile": {
+        #                     "input": "$write_bw",
+        #                     "p": [0.99],
+        #                     "method": "approximate"
+        #                 }
+        #             },
+        #             "avg_read_iops": {
+        #                 "$avg": "$read_iops"
+        #             },
+        #             "max_read_iops": {
+        #                 "$max": "$read_iops"
+        #             },
+        #             "min_read_iops": {
+        #                 "$min": "$read_iops"
+        #             },
+        #             "std_dev_read_iops": {
+        #                 "$stdDevPop": "$read_iops"
+        #             },
+        #             "avg_read_bw": {
+        #                 "$avg": "$read_bw"
+        #             },
+        #             "max_read_bw": {
+        #                 "$max": "$read_bw"
+        #             },
+        #             "min_read_bw": {
+        #                 "$min": "$read_bw"
+        #             },
+        #             "std_dev_read_bw": {
+        #                 "$stdDevPop": "$read_bw"
+        #             },
+        #             "avg_write_iops": {
+        #                 "$avg": "$write_iops"
+        #             },
+        #             "max_write_iops": {
+        #                 "$max": "$write_iops"
+        #             },
+        #             "min_write_iops": {
+        #                 "$min": "$write_iops"
+        #             },
+        #             "std_dev_write_iops": {
+        #                 "$stdDevPop": "$write_iops"
+        #             },
+        #             "avg_write_bw": {
+        #                 "$avg": "$write_bw"
+        #             },
+        #             "max_write_bw": {
+        #                 "$max": "$write_bw"
+        #             },
+        #             "min_write_bw": {
+        #                 "$min": "$write_bw"
+        #             },
+        #             "std_dev_write_bw": {
+        #                 "$stdDevPop": "$write_bw"
+        #             }
+        #         }
+        #     }
+        # ]
+        try:
+            with open('config/pipeline_rdn_perf.json', 'r',
+                      encoding='us-ascii') as file:
+                pipeline = json.load(file)
+        except FileNotFoundError:
+            logger.error("Pipeline configuration file not found.")
+            return None
+        except json.JSONDecodeError as e:
+            logger.critical("Error decoding JSON from pipeline "
+                            "configuration: %s", e)
+            return None
 
+        # Update the pipeline with the specific filter values
+        for stage in pipeline:
+            if "$match" in stage and "write_pattern" in stage["$match"]:
+                stage["$match"]["write_pattern"]["$eq"] = write_pattern
+            if "$match" in stage and "io_depth" in stage["$match"]:
+                stage["$match"]["io_depth"]["$eq"] = io_depth
         try:
             result = list(self.collection.aggregate(pipeline))
             if result:
@@ -474,8 +504,8 @@ class MongoDB(object):
         Aggregates sequential I/O metrics from the MongoDB collection.
 
         The aggregation pipeline processes documents to extract and compute
-        average and standard deviation metrics for sequential IOPS and bandwidth
-        based on the write pattern and block size.
+        average and standard deviation metrics for sequential IOPS and
+        bandwidth based on the write pattern and block size.
 
         Args:
             write_pattern (int): The write pattern to filter the metrics (e.g.,
@@ -483,292 +513,31 @@ class MongoDB(object):
             io_depth (int): The I/O depth to filter the metrics.
 
         Returns:
-            dict or None: A dictionary containing the aggregated metrics, or None
-            if no data is found.
+            dict or None: A dictionary containing the aggregated metrics, or
+            None if no data is found.
 
         Raises:
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
-        pipeline = [
-                        # Stage 1
-                        {
-                            "$project": {
-                                "_id": 0,
-                                "report.tests.keywords": 1,
-                                "report.tests.call.log.msg": 1,
-                                "report.collectors": 1
-                            }
-                        },
-                        # Stage 2
-                        {
-                            "$match": {
-                                "$and": [
-                                    {
-                                        "report.tests.keywords": {
-                                            "$regex": "TestSequentialReadWrite"
-                                        }
-                                    },
-                                    {
-                                        "report.collectors.outcome": {
-                                            "$regex": "passed"
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        # Stage 3
-                        { "$unwind": { "path": "$report.tests" } },
-                        # Stage 4
-                        { "$unwind": { "path": "$report.tests.keywords" } },
-                        # Stage 5
-                        {
-                            "$project": {
-                                "write_pattern_string": {
-                                    "$regexFind": {
-                                        "input": "$report.tests.keywords",
-                                        "regex": "test_run_io_operation\\[(\\d+)-([\\dk]+)"
-                                    }
-                                },
-                                "msg": "$report.tests.call.log.msg"
-                            }
-                        },
-                        # Stage 6
-                        {
-                            "$match": {
-                                "$or": [
-                                    {
-                                        "write_pattern_string.match": {
-                                            "$regex": "test_run_io_operation"
-                                        }
-                                    },
-                                    {
-                                        "report.tests.call.log.msg": {
-                                            "$regex": "write_pattern"
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        # Stage 7
-                        {
-                            "$project": {
-                                "write_pattern": {
-                                    "$convert": {
-                                        "input": {
-                                            "$arrayElemAt": [
-                                                "$write_pattern_string.captures",
-                                                0
-                                            ]
-                                        },
-                                        "to": "int",
-                                        "onError": None,
-                                        "onNull": None
-                                    }
-                                },
-                                "block_size": {
-                                    "$convert": {
-                                        "input": {
-                                            "$arrayElemAt": [
-                                                "$write_pattern_string.captures",
-                                                1
-                                            ]
-                                        },
-                                        "to": "string",
-                                        "onError": None,
-                                        "onNull": None
-                                    }
-                                },
-                                "msg": 1
-                            }
-                        },
-                        # Stage 8
-                        { "$unwind": { "path": "$msg" } },
-                        # Stage 9
-                        { "$match": { "msg": { "$regex": "sequential" } } },
-                        # Stage 10
-                        {
-                            "$project": {
-                                "write_pattern": 1,
-                                "block_size": 1,
-                                "read_iops_string": {
-                                    "$regexFind": {
-                                        "input": "$msg",
-                                        "regex": "sequential_read_iops\\s*=\\s*([\\d\\.]+)"
-                                    }
-                                },
-                                "read_bw_string": {
-                                    "$regexFind": {
-                                        "input": "$msg",
-                                        "regex": "sequential_read_bw\\s*=\\s*([\\d\\.]+)"
-                                    }
-                                },
-                                "write_iops_string": {
-                                    "$regexFind": {
-                                        "input": "$msg",
-                                        "regex": "sequential_write_iops\\s*=\\s*([\\d\\.]+)"
-                                    }
-                                },
-                                "write_bw_string": {
-                                    "$regexFind": {
-                                        "input": "$msg",
-                                        "regex": "sequential_write_bw\\s*=\\s*([\\d\\.]+)"
-                                    }
-                                }
-                            }
-                        },
-                        # Stage 11
-                        {
-                            "$project": {
-                                "write_pattern": 1,
-                                "block_size": 1,
-                                "read_iops": {
-                                    "$convert": {
-                                        "input": {
-                                            "$arrayElemAt": [
-                                                "$read_iops_string.captures",
-                                                0
-                                            ]
-                                        },
-                                        "to": "double",
-                                        "onError": None,
-                                        "onNull": None
-                                    }
-                                },
-                                "read_bw": {
-                                    "$convert": {
-                                        "input": {
-                                            "$arrayElemAt": [
-                                                "$read_bw_string.captures",
-                                                0
-                                            ]
-                                        },
-                                        "to": "double",
-                                        "onError": None,
-                                        "onNull": None
-                                    }
-                                },
-                                "write_iops": {
-                                    "$convert": {
-                                        "input": {
-                                            "$arrayElemAt": [
-                                                "$write_iops_string.captures",
-                                                0
-                                            ]
-                                        },
-                                        "to": "double",
-                                        "onError": None,
-                                        "onNull": None
-                                    }
-                                },
-                                "write_bw": {
-                                    "$convert": {
-                                        "input": {
-                                            "$arrayElemAt": [
-                                                "$write_bw_string.captures",
-                                                0
-                                            ]
-                                        },
-                                        "to": "double",
-                                        "onError": None,
-                                        "onNull": None
-                                    }
-                                }
-                            }
-                        },
-                        # Stage 12
-                        { 
-                            "$match": {
-                                "write_pattern": write_pattern ,
-                                "block_size": block_size
-                            } 
-                        },
-                        # Stage 13
-                        {
-                            "$group": {
-                                "_id": {
-                                    "write_pattern": "$write_pattern",
-                                    "block_size": "$block_size"
-                                },
-                                "percentile_read_iops": {
-                                    "$percentile": {
-                                    "input": "$read_iops",
-                                    "p": [0.99],
-                                    "method": "approximate"
-                                    }
-                                },
-                                "percentile_write_iops": {
-                                    "$percentile": {
-                                    "input": "$write_iops",
-                                    "p": [0.99],
-                                    "method": "approximate"
-                                    }
-                                },
-                                "percentile_read_bw": {
-                                    "$percentile": {
-                                    "input": "$read_bw",
-                                    "p": [0.99],
-                                    "method": "approximate"
-                                    }
-                                },
-                                "percentile_write_bw": {
-                                    "$percentile": {
-                                    "input": "$write_bw",
-                                    "p": [0.99],
-                                    "method": "approximate"
-                                    }
-                                },
-                                "avg_read_iops": {
-                                    "$avg": "$read_iops"
-                                },
-                                "avg_read_bw": {
-                                    "$avg": "$read_bw"
-                                },
-                                "avg_write_iops": {
-                                    "$avg": "$write_iops"
-                                },
-                                "avg_write_bw": {
-                                    "$avg": "$write_bw"
-                                },
-                                "max_read_iops": {
-                                    "$max": "$read_iops"
-                                },
-                                "min_read_iops": {
-                                    "$min": "$read_iops"
-                                },
-                                "std_dev_read_iops": {
-                                    "$stdDevPop": "$read_iops"
-                                },
-                                "max_write_iops": {
-                                    "$max": "$write_iops"
-                                },
-                                "min_write_iops": {
-                                    "$min": "$write_iops"
-                                },
-                                "std_dev_write_iops": {
-                                    "$stdDevPop": "$write_iops"
-                                },
-                                "max_read_bw": {
-                                    "$max": "$read_bw"
-                                },
-                                "min_read_bw": {
-                                    "$min": "$read_bw"
-                                },
-                                "std_dev_read_bw": {
-                                    "$stdDevPop": "$read_bw"
-                                },
-                                "max_write_bw": {
-                                    "$max": "$write_bw"
-                                },
-                                "min_write_bw": {
-                                    "$min": "$write_bw"
-                                },
-                                "std_dev_write_bw": {
-                                    "$stdDevPop": "$write_bw"
-                                }
-                            }
-                        }
-                    ]
+        try:
+            with open('config/pipeline_seq_perf.json', 'r',
+                      encoding='utf-8') as file:
+                pipeline = json.load(file)
+        except FileNotFoundError:
+            logger.error("Pipeline configuration file not found.")
+            return None
+        except json.JSONDecodeError as e:
+            logger.critical("Error decoding JSON from pipeline "
+                            "configuration: %s", e)
+            return None
+
+        # Update the pipeline with the specific filter values
+        for stage in pipeline:
+            if "$match" in stage and "write_pattern" in stage["$match"]:
+                stage["$match"]["write_pattern"]["$eq"] = write_pattern
+            if "$match" in stage and "block_size" in stage["$match"]:
+                stage["$match"]["block_size"]["$eq"] = block_size
 
         try:
             result = list(self.collection.aggregate(pipeline))
@@ -780,7 +549,7 @@ class MongoDB(object):
         except errors.PyMongoError as e:
             logger.critical(f"Error performing aggregation: {e}")
             return None
-        
+
     def aggregate_ramp_metrics(self, write_pattern, ramp_times):
         """
         Aggregates ramp I/O metrics from the MongoDB collection.
@@ -790,30 +559,30 @@ class MongoDB(object):
         based on the write pattern and ramp times.
 
         Args:
-            write_pattern (int): The write pattern to filter the metrics (e.g.,
-            50 for 50% writes).
+            write_pattern (int): The write pattern to filter the metrics (e.g.
+            ,50 for 50% writes).
             ramp_times (int): The ramp times to filter the metrics.
 
         Returns:
-            dict or None: A dictionary containing the aggregated metrics, or None
-            if no data is found.
+            dict or None: A dictionary containing the aggregated metrics, or
+            None if no data is found.
 
         Raises:
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
         try:
-            # with open('config/pipeline_ramp_times.json', 'r') as file:
-            with open(f'{PROJECT_PATH}/config/pipeline_ramp_times.json', 'r',
+            with open('config/pipeline_ramp_times.json', 'r',
                       encoding='utf-8') as file:
                 pipeline = json.load(file)
         except FileNotFoundError:
             logger.error("Pipeline configuration file not found.")
             return None
         except json.JSONDecodeError as e:
-            logger.critical(f"Error decoding JSON from pipeline configuration: {e}")
+            logger.critical("Error decoding JSON from pipeline "
+                            "configuration: %s", e)
             return None
-        
+
         # Update the pipeline with the specific filter values
         for stage in pipeline:
             if "$match" in stage and "write_pattern" in stage["$match"]:
@@ -831,7 +600,7 @@ class MongoDB(object):
         except errors.PyMongoError as e:
             logger.critical(f"Error performing aggregation: {e}")
             return None
-        
+
     def aggregate_stress_metrics(self, write_pattern, iodepth):
         """
         Aggregates I/O stress metrics from the MongoDB collection.
@@ -841,31 +610,30 @@ class MongoDB(object):
         based on the write pattern and I/O depth.
 
         Args:
-            write_pattern (int): The write pattern to filter the metrics (e.g.,
-            50 for 50% writes).
+            write_pattern (int): The write pattern to filter the metrics (e.g.
+            , 50 for 50% writes).
             io_depth (int): The I/O depth to filter the metrics.
 
         Returns:
-            dict or None: A dictionary containing the aggregated metrics, or None
-            if no data is found.
+            dict or None: A dictionary containing the aggregated metrics, or
+            None if no data is found.
 
         Raises:
             PyMongoError: If there is an error performing the aggregation in
             MongoDB.
         """
         try:
-            # with open('config/pipeline_stress.json', 'r') as file:
-            with open(f'{PROJECT_PATH}/config/pipeline_stress.json', 'r',
+            with open('config/pipeline_stress.json', 'r',
                       encoding='utf-8') as file:
-            # with open('/home/pi/Projects/AutoRAID/workspace/AutoRAID/config/pipeline_stress.json', 'r') as file:
                 pipeline = json.load(file)
         except FileNotFoundError:
             logger.error("Pipeline configuration file not found.")
             return None
         except json.JSONDecodeError as e:
-            logger.critical(f"Error decoding JSON from pipeline configuration: {e}")
+            logger.critical("Error decoding JSON from pipeline configuration:"
+                            " %s", e)
             return None
-        
+
         # Update the pipeline with the specific filter values
         for stage in pipeline:
             if "$match" in stage and "write_pattern" in stage["$match"]:
@@ -881,5 +649,5 @@ class MongoDB(object):
                 logger.error("No data found for aggregation.")
                 return None
         except errors.PyMongoError as e:
-            logger.error(f"Error performing aggregation: {e}")
+            logger.error("Error performing aggregation: %s", e)
             return None
