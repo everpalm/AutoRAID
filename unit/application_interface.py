@@ -3,6 +3,7 @@
 from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
+from dataclasses import dataclass
 from typing import Tuple
 from typing import List
 from typing import Dict
@@ -72,24 +73,6 @@ def dict_format(callback):
     wrapper.original = callback
     return wrapper
 
-
-# class CommandContext:
-#     '''This is a docstring'''
-#     def __init__(
-#             self, str_cli_cmd: str,
-#             mode: str, account: str,
-#             password: str,
-#             remote_dir: str,
-#             remote_ip: str
-#             ):
-#         '''Placeholder'''
-#         self.str_cli_cmd = str_cli_cmd
-#         self.mode = mode
-#         self.account = account
-#         self.password = password
-#         self.remote_dir = remote_dir
-#         self.remote_ip = remote_ip
-from dataclasses import dataclass
 
 @dataclass
 class CommandContext:
