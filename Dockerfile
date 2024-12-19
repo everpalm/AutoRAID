@@ -1,41 +1,50 @@
-FROM arm32v7/python:3
+# 使用更稳定的 Python 版本
+FROM arm32v7/python:3.10-slim
 
-# 更新並安裝必要的系統工具和依賴
+# 安装系统依赖
 RUN apt-get update && apt-get install -y \
     python3-dev \
     build-essential \
     libffi-dev \
     libssl-dev \
-    libjpeg-dev \
-    zlib1g-dev \
     curl \
     pkg-config \
-    bash
+    && apt-get clean
 
-# 安装 rustup 并设置环境变量
+# 安装 Rust 工具链，用于构建 cryptography
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y \
     && /root/.cargo/bin/rustup install 1.65.0 \
     && /root/.cargo/bin/rustup default 1.65.0 \
     && echo 'export PATH=$HOME/.cargo/bin:$PATH' >> /etc/profile
 
-# 确保 PATH 包含 Cargo
+# 确保 PATH 包含 Cargo（Rust 工具链）
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # 升级 pip、setuptools 和 wheel
 RUN pip install --upgrade pip setuptools wheel
 
-# 安装 Python 依赖
-RUN pip install bcrypt==3.1.7 cryptography
+# 安装兼容版本的 Python 包
+RUN pip install --no-cache-dir \
+    cffi==1.15.1 \
+    cryptography==38.0.4 \
+    paramiko
 
-# 設定工作目錄，並將腳本代碼複製進容器
+# 设置工作目录
 WORKDIR /script
+
+# 复制依赖文件和代码
 COPY requirements.txt /script/
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Prior to execution
 COPY . /script
-RUN touch /script/logs/uart.log
-# ENV PYTHONPATH="/script:${PYTHONPATH}"
+
+# 创建日志目录
+RUN mkdir -p /script/logs && touch /script/logs/uart.log
+
+# 设置环境变量
 ENV PYTHONPATH="/script"
+
+# 暴露端口
 EXPOSE 80
+
+# 运行默认命令
 CMD ["pytest"]
