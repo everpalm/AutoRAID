@@ -48,7 +48,7 @@ def test_smoke(String path, int rep_number, String key, String scope) {
 }
 
 def test_sanity(String path) {
-    run_test(path, '', '--testmon --cov-report=html')
+    run_test(path, '', '-m "not PERFORMANCE and not STRESS" --testmon --cov-report=html')
 }
 
 def test_regression(String path) {

@@ -10,6 +10,7 @@ import pytest
 # import os
 # from amd_desktop.amd64_event import WindowsEvent as we
 
+# Mark entire module
 logger = logging.getLogger(__name__)
 # logging.getLogger(__name__).setLevel(logging.DEBUG)
 
@@ -116,7 +117,7 @@ def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
         assert upper_limit_write_iops > write_iops > lower_limit_write_iops
         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
-
+@pytest.mark.PERFORMANCE
 class TestRandomReadWrite:
     ''' Test AMD64 NVM Random Read Write Performance
         Performance of the AMD64 system
@@ -185,7 +186,7 @@ class TestRandomReadWrite:
 #         raise AssertionError("Error 157 detected in system logs.")
 #     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
-
+@pytest.mark.PERFORMANCE
 class TestSequentialReadWrite:
     ''' Test AMD64 NVM Sequential Read Write Performanceutdown -h
         Performance of the AMD64 system
@@ -219,6 +220,7 @@ class TestSequentialReadWrite:
 
         validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
 
+@pytest.mark.PERFORMANCE
 class TestRampTimeReadWrite:
     ''' Test AMD64 NVM Ramp-up Time Read Write
         Performance of the AMD64 system
