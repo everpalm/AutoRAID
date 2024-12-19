@@ -11,8 +11,8 @@ import pytest
 # from amd_desktop.amd64_event import WindowsEvent as we
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
+# Mark entire module
 logger = logging.getLogger(__name__)
-
 
 FULL_READ = 0
 OLTP_LOADING = 30 # With 8 KB chunk size
@@ -27,6 +27,7 @@ MAX_IODEPTH = 33
 OPTIMUM_IODEPTH = 7
 
 
+@pytest.mark.STRESS
 class TestAMD64MultiPathStress:
     ''' Test I/O Stress 
         Endurance of the AMD64 system
@@ -63,6 +64,8 @@ class TestAMD64MultiPathStress:
 
         logger.debug("criteria = %s", criteria)
 
+
+@pytest.mark.STRESS
 class TestOneShotStress:
     ''' Oneshot I/O Stress Test'''
     def test_read_write(self, target_stress,my_mdb):

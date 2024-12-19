@@ -37,8 +37,6 @@ class TestAMD64NVMe:
         assert (target_system.hyperthreading ==
             amd64_nvm['CPU Information']['Hyperthreading'])
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
-    # def test_memory_size(self, target_system, amd64_nvm):
     def test_memory_size(self, target_system):
         """Test for verifying memory size of the system.
 
