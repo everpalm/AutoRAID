@@ -25,7 +25,7 @@ class AMD64MultiPathStress:
         api (Win10Interface): An instance of the Win10Interface class used to
                               execute commands on the Windows 10 environment.
     """
-    CPU_GROUP = '0,0'
+    CPU_GROUP = None
     def __init__(self, platform):
         """
         Initializes the AMD64MultiPathStress class with test parameters.
@@ -36,10 +36,23 @@ class AMD64MultiPathStress:
             io_paths (List[str]): List of I/O paths (drive letters) where the
                                   stress test will be executed.
         """
+        if AMD64MultiPathStress.CPU_GROUP is None:
+            AMD64MultiPathStress.CPU_GROUP = "0,0" #Default CPU group 0, CPU0
         self._platform = platform
         self.io_paths = self._platform.disk_info
         self._api = platform.api
         self._file_size = self._platform.memory_size * 2
+    
+    @classmethod
+    def set_cpu_group(cls, cpu_group):
+        """
+        Sets the CPU affinity.
+
+        Args:
+            cpu_group (str): The CPU group to set (e.g., '0,1,2,3').
+        """
+        cls.CPU_GROUP = cpu_group
+        logger.info("Manually set CPU_GROUP: %s", cls.CPU_GROUP)
 
     def run_io_operation(self, thread, iodepth, block_size, random_size,
             write_pattern, duration):
@@ -87,7 +100,7 @@ class AMD64MultiPathStress:
         logger.info('_io_file = %s', " ".join(list_io_path))
 
         try:
-            str_command = (f'diskspd -c1 -ag0,0 -t{thread} -L -Sh -D'
+            str_command = (f'diskspd -c1 -ag{self.CPU_GROUP} -t{thread} -L -Sh -D'
             f' -o{iodepth} -b{block_size} -r{random_size}'
             f' -w{write_pattern} -d{duration} -c{self._file_size}G'
             f' {" ".join(list_io_path)}')
