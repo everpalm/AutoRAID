@@ -144,7 +144,7 @@ class TestRandomReadWrite:
             write io_depth (int): The I/O depth, ranging from 1 to 32.
             my_mdb (object): Database instance for aggregating metrics.
         """
-        read_bw, read_iops, write_bw, write_iops = \
+        read_bw, read_iops, write_bw, write_iops, _ = \
             target_perf.run_io_operation(io_depth, '4k', '4k', write_pattern,
                                          156)
 
@@ -156,40 +156,6 @@ class TestRandomReadWrite:
         logger.debug('result = %s', criteria)  # 注意：這裡的變數名是 criteria
 
         validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
-
-# @pytest.fixture(scope="module")
-# def win_event(target_system):
-#     """Fixture for setting up WindowsEvent instance and initializing
-#     the Windows event log environment.
-
-#     Args:
-#         target_system (object): The target system object.
-
-#     Returns:
-#         WindowsEvent: Instance of WindowsEvent for handling event logs.
-#     """
-#     print('\n\033[32m================== Setup Win Event =============\033[0m')
-#     return we(platform=target_system)
-
-# @pytest.fixture(scope="function", autouse=True)
-# def test_check_error(win_event):
-#     """Fixture for clearing and checking system error logs for each test.
-
-#     Checks for specific errors (Error 51 and Error 157) after each test run,
-#     raising AssertionError if found.
-
-#     Args:
-#         win_event (WindowsEvent): Instance for managing event logs.
-
-#     Raises:
-#         AssertionError: If specific errors are found in the system logs.
-#     """
-#     yield win_event.clear_error()
-#     if win_event.find_error("System", 51, r'An error was detected on device (\\\w+\\\w+\.+)'):
-#         raise AssertionError("Error 51 detected in system logs.")
-#     if win_event.find_error("System", 157, r'Disk (\d+) has been surprise removed.'):
-#         raise AssertionError("Error 157 detected in system logs.")
-#     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
 
 
 @pytest.mark.PERFORMANCE
@@ -218,7 +184,7 @@ class TestSequentialReadWrite:
             block_size (str): Block size in kilobytes, ranging from 4k to 128k.
             my_mdb (object): Database instance for aggregating metrics.
         """
-        read_bw, read_iops, write_bw, write_iops = \
+        read_bw, read_iops, write_bw, write_iops, _ = \
             target_perf.run_io_operation(32, block_size, None, write_pattern,
                                          156)
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'sequential_')
@@ -257,7 +223,7 @@ class TestRampTimeReadWrite:
             ramp_times (int): Ramp-up time in seconds.
             my_mdb (object): Database instance for aggregating metrics.
         """
-        read_bw, read_iops, write_bw, write_iops = \
+        read_bw, read_iops, write_bw, write_iops, _ = \
             target_perf.run_io_operation(1, '4k', '4k', write_pattern,
                                          ramp_times)
 
