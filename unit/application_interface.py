@@ -96,6 +96,7 @@ class GenericAPI(ABC):
 class WindowsAPI(GenericAPI):
     @staticmethod
     def cmd_transformer(context: CommandContext) -> str:
+        '''Placeholder'''
         logger.debug('Executing Windows cmd_transformer')
         sshpass = (
             f'sshpass -p "{context.password}" ssh -o '
@@ -170,8 +171,8 @@ class ApplicationInterface:
                       encoding='us-ascii') as f:
                 list_config = json.load(f)
                 if not isinstance(list_config, list):
-                    raise ValueError("Expected dict in config file, got %s",
-                                     type(list_config))
+                    raise ValueError(f"Expected dict in config file, got "
+                                     f"{type(list_config)}")
                 return list_config
         except Exception:
             logger.error('Cannot open/read file: %s', self.config_file)
