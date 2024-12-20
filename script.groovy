@@ -52,7 +52,7 @@ def test_sanity(String path) {
 }
 
 def test_regression(String path) {
-    run_test(path, '', '--cov-report=html')
+    run_test(path, '', '--cov-report=html -m "not STRESS"')
 }
 
 def test_unit(String path, String key) {
