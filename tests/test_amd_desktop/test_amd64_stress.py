@@ -55,7 +55,7 @@ class TestAMD64MultiPathStress:
         Assertions:
             - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
         """
-        read_bw, read_iops, write_bw, write_iops = target_stress.run_io_operation(
+        read_bw, read_iops, write_bw, write_iops, cpu_usage = target_stress.run_io_operation(
             SINGLE_THREAD, iodepth, '4k', '4k', write_pattern, OVER_NIGHT)
 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
@@ -63,6 +63,7 @@ class TestAMD64MultiPathStress:
         criteria = my_mdb.aggregate_stress_metrics(write_pattern, iodepth)
 
         logger.debug("criteria = %s", criteria)
+        logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
 
 @pytest.mark.STRESS
@@ -81,7 +82,7 @@ class TestOneShotStress:
         Assertions:
             - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
         """
-        read_bw, read_iops, write_bw, write_iops = \
+        read_bw, read_iops, write_bw, write_iops, cpu_usage = \
         target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
                                     '4k', HALF_RW, ONE_SHOT)
 
@@ -90,6 +91,7 @@ class TestOneShotStress:
         criteria = my_mdb.aggregate_stress_metrics(HALF_RW, OPTIMUM_IODEPTH)
 
         logger.debug('criteria = %s', criteria)
+        logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
     def test_full_read(self, target_stress,my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
@@ -104,7 +106,7 @@ class TestOneShotStress:
         Assertions:
             - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
         """
-        read_bw, read_iops, write_bw, write_iops = \
+        read_bw, read_iops, write_bw, write_iops, cpu_usage = \
         target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
                                     '4k', FULL_READ, ONE_SHOT)
 
@@ -113,6 +115,7 @@ class TestOneShotStress:
         criteria = my_mdb.aggregate_stress_metrics(FULL_READ, OPTIMUM_IODEPTH)
 
         logger.debug("criteria = %s", criteria)
+        logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
     def test_full_write(self, target_stress,my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
@@ -127,7 +130,7 @@ class TestOneShotStress:
         Assertions:
             - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
         """
-        read_bw, read_iops, write_bw, write_iops = \
+        read_bw, read_iops, write_bw, write_iops, cpu_usage = \
         target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
                                     '4k', FULL_WRITE, ONE_SHOT)
 
@@ -136,3 +139,4 @@ class TestOneShotStress:
         criteria = my_mdb.aggregate_stress_metrics(FULL_WRITE, OPTIMUM_IODEPTH)
 
         logger.debug("criteria = %s", criteria)
+        logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
