@@ -10,3 +10,4 @@ workspace/
 .pytest_cache/
 .report.json
 .testmondata*
+settings.json
