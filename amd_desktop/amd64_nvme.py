@@ -3,6 +3,7 @@
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
+import math
 import re
 from unit.log_handler import get_logger
 from unit.application_interface import GenericAPI as Gapi
@@ -42,6 +43,7 @@ class AMD64NVMe:
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
+        self._partition_size = None
 
     def _get_hyperthreading(self):
         """
@@ -334,3 +336,14 @@ class AMD64NVMe:
             raise
 
         return list_disk_info
+
+    @property
+    def partition_size(self):
+        '''Returns the partition size as the next power of 2 based on memory size.'''
+        if self._partition_size is None:
+            self._partition_size = self._next_power_of_2(self.memory_size * 2)
+        return self._partition_size
+
+    def _next_power_of_2(self, x):
+        '''Returns the next power of 2 greater than or equal to x.'''
+        return 1 if x == 0 else 2**math.ceil(math.log2(x))
