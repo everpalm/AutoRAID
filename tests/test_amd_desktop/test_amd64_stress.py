@@ -7,8 +7,6 @@
 '''
 import logging
 import pytest
-# from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
-# from amd_desktop.amd64_event import WindowsEvent as we
 from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
 # Mark entire module
@@ -140,6 +138,7 @@ class TestOneShotStress:
 
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
+
 
 @pytest.mark.STRESS
 class TestOLTP:
