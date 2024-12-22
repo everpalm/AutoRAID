@@ -9,11 +9,12 @@ from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from unit.application_interface import ApplicationInterface as api
-from unit.application_interface import WindowsAPI as Wapi
+# from unit.application_interface import WindowsAPI as Wapi
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
+
 
 @pytest.fixture(scope="session")
 def my_app(cmdopt):
@@ -28,13 +29,15 @@ def my_app(cmdopt):
                                 if_name=cmdopt.get('if_name'),
                                 config_file=cmdopt.get('config_file'))
 
+
 @pytest.fixture(scope="session")
 def my_mdb():
     """
     Fixture to establish a connection to a MongoDB database.
 
-    Establishes a connection to MongoDB with the specified parameters. This fixture
-    has a "session" scope, meaning it will be executed only once per test session.
+    Establishes a connection to MongoDB with the specified parameters. This
+    fixture has a "session" scope, meaning it will be executed only once per
+    test session.
 
     Returns:
         mdb: The MongoDB connection object.
@@ -53,9 +56,9 @@ def drone(drone_api):
     """
     Fixture to set up a Raspberry Pi (presumably for drone control).
 
-    Initializes an `rpi` object (presumably for interacting with a Raspberry Pi) 
-    with the specified UART parameters and drone API. This fixture has a "session"
-    scope, meaning it will be executed only once per test session.
+    Initializes an `rpi` object (presumably for interacting with a Raspberry
+    Pi) with the specified UART parameters and drone API. This fixture has a
+    "session" scope, meaning it will be executed only once per test session.
 
     Args:
         drone_api: The API object for interacting with the drone.
@@ -65,9 +68,9 @@ def drone(drone_api):
     """
     print("\n\033[32m================== Setup RSBPi =================\033[0m")
     return rpi(
-        str_uart_path="/dev/ttyUSB0",
-        int_baut_rate=115200,
-        str_file_name="logs/uart.log",
+        uart_path='/dev/ttyUSB0',
+        baud_rate=115200,
+        file_name='logs/uart.log',
         rpi_api=drone_api,
     )
 
@@ -77,10 +80,10 @@ def test_open_uart(drone):
     """
     Fixture to automatically open and close the UART connection.
 
-    This fixture opens the UART connection using the `drone` fixture, yields 
+    This fixture opens the UART connection using the `drone` fixture, yields
     control to the test functions, and then closes the UART connection after
-    the test functions have completed. It has a "module" scope and is automatically
-    used by all tests within the module due to `autouse=True`.
+    the test functions have completed. It has a "module" scope and is
+    automatically used by all tests within the module due to `autouse=True`.
 
     Args:
         drone: The Raspberry Pi interaction fixture.
@@ -103,7 +106,8 @@ def target_system(my_app):
     provided `my_app` interface. This fixture has a "session" scope.
 
     Args:
-        my_app: The application interface for interacting with the target system.
+        my_app: The application interface for interacting with the target
+        system.
 
     Returns:
         amd64: The target system object.
@@ -137,34 +141,36 @@ def target_stress(target_system):
 
     Args:
         target_system: The system instance to run stress tests on.
-    
+
     Returns:
         AMD64MultiPathStress: Instance for executing stress test operations.
     """
     print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
     return amps(platform=target_system)
 
+
 @pytest.fixture(scope="package")
 def win_event(target_system):
     """Fixture for setting up Windows Event monitoring for system errors.
-    
+
     Args:
         target_system: The system instance to monitor for Windows Event logs.
-    
+
     Returns:
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
     print('\n\033[32m================== Setup Win Event =============\033[0m')
     return We(platform=target_system)
 
+
 @pytest.fixture(scope="function", autouse=True)
 def test_check_error(win_event):
     """Fixture to clear previous Windows event logs and check for specific
     errors after each test function.
-    
+
     Yields:
         Clears event logs and checks for errors upon test completion.
-    
+
     Raises:
         AssertionError: If specific errors (ID 51 or 157) are detected in logs
     """
@@ -172,8 +178,11 @@ def test_check_error(win_event):
     yield win_event.clear_error()
 
     errors = []
-    if win_event.find_error("System", 51,
-                            r'An error was detected on device (\\\w+\\\w+\.+)'):
+    if win_event.find_error(
+        "System",
+        51,
+        r'An error was detected on device (\\\w+\\\w+\.+)'
+    ):
         errors.append("Error 51 detected in system logs.")
 
     if win_event.find_error("System", 157,

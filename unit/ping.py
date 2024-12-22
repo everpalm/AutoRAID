@@ -6,13 +6,15 @@ from abc import abstractmethod
 
 logger = logging.getLogger(__name__)
 
+
 class PingBase(ABC):
     """
     A base class for handling ping operations.
 
-    This class defines the basic structure for sending and processing ping commands
-    and parsing the results. It serves as an abstract base class that must be
-    extended by specific implementations for different operating systems.
+    This class defines the basic structure for sending and processing ping
+    commandd and parsing the results. It serves as an abstract base class that
+    must be extended by specific implementations for different operating
+    systems.
 
     Attributes:
         sent (int): The number of packets sent.
@@ -24,7 +26,8 @@ class PingBase(ABC):
     """
     def __init__(self):
         """
-        Initializes the PingBase class with default values for packet statistics.
+        Initializes the PingBase class with default values for packet
+        statistics.
         """
         self.sent = 0
         self.received = 0
@@ -53,10 +56,12 @@ class PingBase(ABC):
 
         Args:
             output (str): The output of the ping command.
-            packet_regex (str): The regular expression pattern to match packet statistics.
+            packet_regex (str): The regular expression pattern to match packet
+            statistics.
 
         Returns:
-            bool: True if the packet statistics were successfully parsed, False otherwise.
+            bool: True if the packet statistics were successfully parsed,
+            False otherwise.
         """
         match = re.search(packet_regex, output)
         if match:
@@ -80,22 +85,26 @@ class LinuxPing(PingBase):
     outputs to extract packet and RTT statistics.
 
     Attributes:
-        LINUX_PACKET_MSG (str): The regex pattern for parsing packet statistics.
+        LINUX_PACKET_MSG (str): The regex pattern for parsing packet
+        statistics.
         LINUX_STATISTICS (str): The regex pattern for parsing RTT statistics.
         _api (object): An API object for executing command-line operations.
         _ip_address (str): The remote IP address to ping.
         deviation (float): The standard deviation of RTT.
     """
 
-    LINUX_PACKET_MSG = (r"(\d+) packets transmitted, (\d+) received, (\d+)% packet loss, time (\d+)ms")
-    LINUX_STATISTICS = (r"rtt min/avg/max/mdev = ([\d\.]+)/([\d\.]+)/([\d\.]+)/([\d\.]+) ms")
-    
+    LINUX_PACKET_MSG = (r"(\d+) packets transmitted, (\d+) received, (\d+)% "
+                        r"packet loss, time (\d+)ms")
+    LINUX_STATISTICS = (r"rtt min/avg/max/mdev = "
+                        r"([\d\.]+)/([\d\.]+)/([\d\.]+)/([\d\.]+) ms")
+
     def __init__(self, api):
         """
         Initializes the LinuxPing class with an API object.
 
         Args:
-            api (object): An API object that provides access to remote system commands.
+            api (object): An API object that provides access to remote system
+            commands.
         """
         super().__init__()
         self._api = api
@@ -110,33 +119,40 @@ class LinuxPing(PingBase):
             count (int): The number of ping requests to send. Default is 4.
 
         Returns:
-            bool: True if both packet and RTT statistics were successfully parsed, False otherwise.
+            bool: True if both packet and RTT statistics were successfully
+            parsed, False otherwise.
         """
         try:
-            list_return = self._api.command_line.original(self._api,
-                f'ping -c {count} {self._ip_address}')
-            logger.debug('list_return = %s',list_return)
+            list_return = self._api.command_line.original(
+                self._api,
+                f'ping -c {count} {self._ip_address}'
+            )
+            logger.debug('list_return = %s', list_return)
             # if list_return:
-                # bool_msg = self._parse_packets(dict_return.get(6), self.LINUX_PACKET_MSG)
-                # bool_sts = self._parse_statistics(dict_return.get(7),
-                #                        self.LINUX_STATISTICS)
-                # return bool_msg and bool_sts
+            #   bool_msg = self._parse_packets(dict_return.get(6),
+            #       self.LINUX_PACKET_MSG)
+            #       bool_sts = self._parse_statistics(dict_return.get(7),
+            #                        self.LINUX_STATISTICS)
+            # r eturn bool_msg and bool_sts
             if list_return:
                 bool_msg, bool_sts = False, False
                 for line in list_return:
                     # Check for packet statistics line
                     if not bool_msg:
-                        bool_msg = self._parse_packets(line, self.LINUX_PACKET_MSG)
-                    
+                        bool_msg = self._parse_packets(line,
+                                                       self.LINUX_PACKET_MSG)
+
                     # Check for RTT statistics line
                     if not bool_sts:
-                        bool_sts = self._parse_statistics(line, self.LINUX_STATISTICS)
-                    
+                        bool_sts = self._parse_statistics(
+                            line,
+                            self.LINUX_STATISTICS
+                        )
                     # If both are parsed, no need to continue
                     if bool_msg and bool_sts:
                         break
-            
-            return bool_msg and bool_sts 
+
+            return bool_msg and bool_sts
             # raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
@@ -151,10 +167,12 @@ class LinuxPing(PingBase):
 
         Args:
             output (str): The output of the ping command.
-            rtt_regex (str): The regular expression pattern to match RTT statistics.
+            rtt_regex (str): The regular expression pattern to match RTT
+            statistics.
 
         Returns:
-            bool: True if the RTT statistics were successfully parsed, False otherwise.
+            bool: True if the RTT statistics were successfully parsed, False
+            otherwise.
         """
         match = re.search(rtt_regex, output)
         logger.debug('output = %s', output)
@@ -169,30 +187,38 @@ class LinuxPing(PingBase):
         #     logger.warning(f"RTT statistics parsing failed: {output}")
         return False
 
+
 class WindowsPing(PingBase):
     """
     A class for handling ping operations on Windows systems.
 
     This class extends PingBase to provide an implementation of ping operations
-    specifically for Windows-based systems. It parses Windows-specific ping command
-    outputs to extract packet and RTT statistics.
+    specifically for Windows-based systems. It parses Windows-specific ping
+    command outputs to extract packet and RTT statistics.
 
     Attributes:
-        WINDOWS_PACKET_MSG (str): The regex pattern for parsing packet statistics.
+        WINDOWS_PACKET_MSG (str): The regex pattern for parsing packet
+        statistics.
         WINDOWS_STATISTICS (str): The regex pattern for parsing RTT statistics.
         _api (object): An API object for executing command-line operations.
         _ip_address (str): The remote IP address to ping.
     """
 
-    WINDOWS_PACKET_MSG = (r"Packets: Sent = (\d+), Received = (\d+), Lost = (\d+) \((\d+)% loss\),")
-    WINDOWS_STATISTICS = (r"Minimum = (\d+)ms, Maximum = (\d+)ms, Average = (\d+)ms")
+    WINDOWS_PACKET_MSG = (
+        r"Packets: Sent = (\d+), "
+        r"Received = (\d+), "
+        r"Lost = (\d+) \((\d+)% loss\),"
+    )
+    WINDOWS_STATISTICS = (r"Minimum = (\d+)ms, Maximum = (\d+)ms, Average = "
+                          r"(\d+)ms")
 
     def __init__(self, api):
         """
         Initializes the WindowsPing class with an API object.
 
         Args:
-            api (object): An API object that provides access to remote system commands.
+            api (object): An API object that provides access to remote system
+            commands.
         """
         super().__init__()
         self._api = api
@@ -207,30 +233,38 @@ class WindowsPing(PingBase):
                 f'ping -c {count} {self._ip_address}'
             )
             logger.debug(f'list_return = {list_return}')
-            
+
             if list_return:
                 bool_msg, bool_sts = False, False
                 for line in list_return:
                     logger.debug(f'Processing line: {line}')
-                    
+
                     # Check for packet statistics line
                     if not bool_msg:
-                        bool_msg = self._parse_packets(line, self.WINDOWS_PACKET_MSG)
-                        logger.debug(f'Packet parse result for "{line}": {bool_msg}')
-                    
+                        bool_msg = self._parse_packets(line,
+                                                       self.WINDOWS_PACKET_MSG)
+                        logger.debug('Packet parse result for "%s": %s' % line,
+                                     bool_msg)
+
                     # Check for RTT statistics line
                     if not bool_sts:
-                        bool_sts = self._parse_statistics(line, self.WINDOWS_STATISTICS)
-                        logger.debug(f'Statistics parse result for "{line}": {bool_sts}')
-                    
+                        bool_sts = self._parse_statistics(
+                            line,
+                            self.WINDOWS_STATISTICS
+                        )
+                        logger.debug(
+                            'Statistics parse result for "%s: %s' % line,
+                            bool_sts
+                        )
+
                     # If both are parsed, no need to continue
                     if bool_msg and bool_sts:
                         break
-                
+
                 # Ensure both parsing conditions are met
                 if bool_msg and bool_sts:
                     return True
-            
+
             raise ValueError("Failed to get ping response.")
         except ValueError as w:
             logger.warning(f'Warning: {w}')
@@ -239,17 +273,17 @@ class WindowsPing(PingBase):
             raise
         return False
 
-    
     def _parse_statistics(self, output, rtt_regex):
         """
         Parses RTT statistics from the ping command output.
 
         Args:
             output (str): The output of the ping command.
-            rtt_regex (str): The regular expression pattern to match RTT statistics.
-
+            rtt_regex (str): The regular expression pattern to match RTT
+            statistics.
         Returns:
-            bool: True if the RTT statistics were successfully parsed, False otherwise.
+            bool: True if the RTT statistics were successfully parsed, False
+            otherwise.
         """
         match = re.search(rtt_regex, output)
         logger.debug('output = %s', output)
