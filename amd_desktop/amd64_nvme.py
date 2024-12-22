@@ -3,12 +3,14 @@
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
+import math
 import re
 from unit.log_handler import get_logger
 from unit.application_interface import GenericAPI as Gapi
 # import os
 
 logger = get_logger(__name__, logging.INFO)
+
 
 class AMD64NVMe:
     ''' AMD 64 NVMe System
@@ -42,6 +44,7 @@ class AMD64NVMe:
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
+        self._partition_size = None
 
     def _get_hyperthreading(self):
         """
@@ -59,16 +62,21 @@ class AMD64NVMe:
             ValueError: If the wmic command output can't be processed
         """
         try:
-            output = self.api.command_line.original(self.api,
-                'wmic cpu Get NumberOfCores,NumberOfLogicalProcessors /Format:List')
+            output = self.api.command_line.original(
+                self.api,
+                'wmic cpu Get NumberOfCores,NumberOfLogicalProcessors '
+                '/Format:List'
+            )
             logger.debug('output = %s', output)
             output_string = "".join(output)
             logger.debug('output_string = %s', output_string)
-            match = re.search(r'NumberOfLogicalProcessors=(\d+)', output_string)
+            match = re.search(r'NumberOfLogicalProcessors=(\d+)',
+                              output_string)
 
             if match:
                 int_logical_processor = int(match.group(1))
-                logger.debug("int_logical_processor = %d", int_logical_processor)
+                logger.debug("int_logical_processor = %d",
+                             int_logical_processor)
             else:
                 raise ValueError("No matching logical processor found.")
 
@@ -90,7 +98,8 @@ class AMD64NVMe:
         output to get the total physical memory size.
 
         Returns:
-            Optional[int]: The total physical memory size in GB, or None if an error occurred.
+            Optional[int]: The total physical memory size in GB, or None if an
+            error occurred.
 
         Raises:
             subprocess.CalledProcessError: If there is a problem executing the
@@ -109,7 +118,7 @@ class AMD64NVMe:
             else:
                 raise ValueError("Invalid output format from wmic.")
 
-        except (ValueError, TypeError): # 在轉換為數字時可能會出錯
+        except (ValueError, TypeError):  # 在轉換為數字時可能會出錯
             logger.error('Invalid memory value: %s', dict_memory_size)
             raise
         except Exception as e:
@@ -123,7 +132,7 @@ class AMD64NVMe:
             Parse MAC address from power shell 'Get-NetAdapter'
             Args: None
             Returns: Attribute _mac_address
-            Raises: Value
+            Raises: Attribute, Value, and re
         '''
         if hasattr(self, '_mac_address') and self._mac_address:
             return self._mac_address
@@ -141,7 +150,7 @@ class AMD64NVMe:
             # match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s",
             #                   filtered)
             match = re.search(r"([0-9A-Fa-f]{2}(-[0-9A-Fa-f]{2}){5})",
-                filtered)
+                              filtered)
             if match:
                 mac_address = match.group(1)
                 logger.debug("Found: %s", mac_address)
@@ -173,7 +182,8 @@ class AMD64NVMe:
             int_cpu_num = int(str_return.get(1).split(" ")[0])
             str_return = self.api.command_line("wmic cpu get name")
             str_cpu_name = " ".join(str_return.get(1).split(" ")[0:3])
-            logger.debug("cpu_num = %d, cpu_name = %s", int_cpu_num, str_cpu_name)
+            logger.debug("cpu_num = %d, cpu_name = %s", int_cpu_num,
+                         str_cpu_name)
         except ValueError as e:
             logger.error("Value Error in get_cpu_info: %s", e)
             raise
@@ -187,19 +197,19 @@ class AMD64NVMe:
         Retrieves disk information (number and serial number).
 
         Uses powershell and findstr to retrieve disk information, with target
-        depending on vendor, and parses the output to get the disk number and 
+        depending on vendor, and parses the output to get the disk number and
         serial number.
 
         Returns:
-            dict[str, str | int | None]: A dictionary containing the disk number 
-            (as an integer) and serial number (as a string), or None for both if
-            an error occurred.
+            dict[str, str | int | None]: A dictionary containing the disk
+            number (as an integer) and serial number (as a string), or None
+            for both if an error occurred.
 
         Raises:
             subprocess.CalledProcessError: If there is a problem executing the
                 subprocess command
-            ValueError: If the powershell output is not found or can't be converted
-                to an integer
+            ValueError: If the powershell output is not found or can't be
+                converted to an integer
             IndexError: If parsing fails
         """
         str_return = int_disk_num = None
@@ -228,8 +238,7 @@ class AMD64NVMe:
             raise
         return {"Number": int_disk_num, "SerialNumber": str_serial_num}
 
-
-    def _get_desktop_info(self) -> dict[str, str|any]:
+    def _get_desktop_info(self) -> dict[str]:
         ''' Get Desktop Computer information
             Grep HW information from system call 'lshw'
             Args: None
@@ -299,7 +308,7 @@ class AMD64NVMe:
             Raises: Any errors
         '''
         try:
-        # 获取命令输出
+            # 获取命令输出
             str_return = self.api.command_line(
                 f"powershell Get-Partition -DiskNumber {self.disk_num}")
 
@@ -334,3 +343,16 @@ class AMD64NVMe:
             raise
 
         return list_disk_info
+
+    @property
+    def partition_size(self):
+        '''Returns the partition size as the next power of 2 based on memory
+        size.
+        '''
+        if self._partition_size is None:
+            self._partition_size = self._next_power_of_2(self.memory_size * 2)
+        return self._partition_size
+
+    def _next_power_of_2(self, x):
+        '''Returns the next power of 2 greater than or equal to x.'''
+        return 1 if x == 0 else 2**math.ceil(math.log2(x))

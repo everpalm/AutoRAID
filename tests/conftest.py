@@ -7,7 +7,6 @@ import pytest
 import paramiko
 from amd_desktop.amd64_ping import AMD64Ping as aping
 from unit.application_interface import ApplicationInterface as api
-from unit.application_interface import LinuxAPI as Lapi
 from unit.gitlab import GitLabAPI as glapi
 from unit.gpio import RaspBerryPins as rbp
 from unit.mongodb import MongoDB
@@ -18,9 +17,9 @@ MDB_ATTR = [{
     "Report Path": ".report.json"
 }]
 
-# logging.getLogger("pymongo").setLevel(logging.CRITICAL)
-# logging.getLogger("amd_desktop.amd64_ping").setLevel(logging.INFO)
-# logging.getLogger("unit.application_interface").setLevel(logging.INFO)
+logging.getLogger("pymongo").setLevel(logging.CRITICAL)
+logging.getLogger("amd_desktop.amd64_ping").setLevel(logging.INFO)
+logging.getLogger("unit.application_interface").setLevel(logging.INFO)
 logging.getLogger("unit.gitlab").setLevel(logging.CRITICAL)
 logging.getLogger("unit.gpio").setLevel(logging.INFO)
 logging.getLogger("unit.mongodb").setLevel(logging.INFO)
@@ -60,7 +59,14 @@ def pytest_addoption(parser):
         default="/home/pi/Projects/AutoRAID/workspace/AutoRAID",
         help="In accordance with the setting in Jenkins"
     )
-    
+    parser.addoption(
+        "--os_type",
+        action="store",
+        default="Windows",
+        help="Defalt factory OS"
+    )
+
+
 @pytest.fixture(scope="session")
 def cmdopt(request):
     cmdopt_dic = {}
@@ -72,12 +78,15 @@ def cmdopt(request):
         {'private_token': request.config.getoption("--private_token")})
     cmdopt_dic.update(
         {'workspace': request.config.getoption("--workspace")})
+    cmdopt_dic.update({'os_type': request.config.getoption("--os_type")})
     return cmdopt_dic
+
 
 @pytest.fixture(scope="session")
 def my_pins():
     print('\n\033[32m================= Setup GPIO.2 =================\033[0m')
     return rbp('rpi3_gpio_pins.json', 'GPIO.2')
+
 
 @pytest.fixture(scope="session", autouse=True)
 def store_gitlab_api_in_config(cmdopt, request):
@@ -87,10 +96,15 @@ def store_gitlab_api_in_config(cmdopt, request):
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
 
+
 @pytest.fixture(scope="session")
 def drone_api():
     print('\n\033[32m================== Setup RPi API ===============\033[0m')
-    return api('local', 'wlan0', 'app_map.json', Lapi)
+    return api.create_interface(os_type='Linux',
+                                mode='local',
+                                if_name='wlan0',
+                                config_file='app_map.json')
+
 
 @pytest.fixture(scope="session")
 def target_ping(drone_api):
@@ -111,32 +125,44 @@ def target_ping(drone_api):
 
 #         test_case_name = item.name
 #         test_case_id = gitlab_api.get_test_case_id(test_case_name)
-#         logger.info(f'Test case name = {test_case_name}, ID = {test_case_id}')
+#         logger.info(f'Test case name = \
+#           {test_case_name}, ID = {test_case_id}')
 #         if test_case_id:
 #             if report.failed:
-#                 test_result = f"Test {test_case_name} failed:\n{report.longrepr}"
+#                 test_result = \
+#                   f"Test {test_case_name} failed:\n{report.longrepr}"
 #                 label = 'Test Status::Failed'
 #                 color = '#FF0000'  # Red
 #             if report.skipped:
-#                 test_result = f"Test {test_case_name} skippeed:\n{report.longrepr}"
+#                 test_result = \
+#                   f"Test {test_case_name} skippeed:\n{report.longrepr}"
 #                 label = 'Test Status::Skipped'
 #                 color = '#F0AD4E'  # Yellow
 #             else:
 #                 test_result = f"Test {test_case_name} passed."
 #                 label = 'Test Status::Passed'
 #                 color = '#00FF00'  # Green
-#             note = gitlab_api.push_test_result(test_case_id, test_result, label, color)
+#             note = gitlab_api.push_test_result(test_case_id, test_result,
+#                                                label, color)
 #             if note:
-#                 logger.debug(f'Successfully pushed test result to GitLab: {note.body}')
+#                 logger.debug('Successfully pushed test result to GitLab: %s',
+#                              note.body)
 #                 # Verify if successfully pushed test result
 #                 notes = gitlab_api.get_test_case_notes(test_case_id)
 #                 latest_note = notes[0] if notes else None
 #                 if latest_note and latest_note.body == test_result:
-#                     logger.debug(f'Test result verified in GitLab: {latest_note.body}')
+#                     logger.debug('Test result verified in GitLab: %s',
+#                                  latest_note.body)
 #                 else:
-#                     logger.error(f'Failed to verify test result in GitLab for test case {test_case_name}')
+#                     logger.error(
+#                       'Failed to verify test result in GitLab for test case '
+#                       '%s', test_case_name
+#                     )
 #             else:
-#                 logger.error(f'Failed to push test result to GitLab for test case {test_case_name}')
+#                 logger.error('Failed to push test result to GitLab for test '
+#                   'case %s', test_case_name
+#                 )
+
 
 def pytest_sessionfinish(session, exitstatus):
     for item in session.items:

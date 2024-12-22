@@ -11,14 +11,15 @@ from unit.log_handler import get_logger
 logger = get_logger(__name__, logging.INFO)
 # logging.basicConfig(level=logging.DEBUG)
 
+
 # 抽象基類，定義通用的日誌處理器接口
 class SystemLogging(ABC):
     """
     Abstract Base Class: System Logging Manager
 
-    This abstract base class defines a standard interface for system log management, 
-    specifically for finding and clearing system error logs.
-    Concrete implementations inheriting from this class should provide 
+    This abstract base class defines a standard interface for system log
+    management, specifically for finding and clearing system error logs.
+    Concrete implementations inheriting from this class should provide
     platform-specific log handling logic.
 
     Abstract Methods:
@@ -39,7 +40,8 @@ class SystemLogging(ABC):
 
     Notes:
     - Subclasses must implement both abstract methods
-    - Method implementations depend on specific operating systems or logging systems
+    - Method implementations depend on specific operating systems or logging
+    systems
     """
     @abstractmethod
     def find_error(self):
@@ -49,7 +51,8 @@ class SystemLogging(ABC):
         This method should:
         - Search system logs
         - Filter and return error-type logs
-        - Potentially return a list, dictionary, or other appropriate data structure of error logs
+        - Potentially return a list, dictionary, or other appropriate data
+        structure of error logs
 
         Returns:
             list or dict: Collection of system error logs
@@ -86,24 +89,25 @@ class WindowsEvent(SystemLogging):
     """
     Windows Event Log Management Class
 
-    This class provides functionality to find and clear Windows system event logs
-    by leveraging PowerShell commands through a platform-specific API.
+    This class provides functionality to find and clear Windows system event
+    logs by leveraging PowerShell commands through a platform-specific API.
 
     Attributes:
         _api (object): Platform-specific API for executing commands
         _error_features (dict): Dictionary to store discovered error features
 
     Args:
-        platform (AMD64NVMe): Platform object containing API and error feature configurations
+        platform (AMD64NVMe): Platform object containing API and error feature
+        configurations
 
     Example:
         ```python
         platform = AMD64NVMe()
         windows_event = WindowsEvent(platform)
-        
+
         # Find specific system events
         found = windows_event.find_error('System', 7, r'Error Pattern')
-        
+
         # Clear system event log
         windows_event.clear_error()
         ```
@@ -129,7 +133,8 @@ class WindowsEvent(SystemLogging):
         - Stores matched values in _error_features
 
         Args:
-            log_name (str): Name of the event log to search (e.g., 'System', 'Application')
+            log_name (str): Name of the event log to search (e.g., 'System',
+            'Application')
             event_id (int): Specific event ID to filter
             pattern (str): Regex pattern to match within event log entries
 
@@ -140,7 +145,8 @@ class WindowsEvent(SystemLogging):
             Exception: If there are issues executing the PowerShell command
         """
         try:
-            output = self._api.command_line.original(self._api,
+            output = self._api.command_line.original(
+                self._api,
                 f'powershell "Get-EventLog -LogName {log_name} | Where-Object'
                 f' {{ $_.EventID -eq {event_id} }}"'
             )
@@ -180,14 +186,16 @@ class WindowsEvent(SystemLogging):
         Uses powershell to execute command 'Clear-EventLog -LogName system'
 
         Returns:
-            bool: True if the system event log was cleared successfully, False otherwise.
+            bool: True if the system event log was cleared successfully, False
+            otherwise.
 
         Raises:
             subprocess.CalledProcessError: If there is a problem executing the
                 subprocess command
         """
         try:
-            result = self._api.command_line.original(self._api,
+            result = self._api.command_line.original(
+                self._api,
                 'powershell "Clear-EventLog -LogName system"'
             )
             logger.debug("result = %s", result)
