@@ -9,9 +9,10 @@ import re
 # import time
 from unit.application_interface import ApplicationInterface as api
 from unit.application_interface import GenericAPI
+from unit.log_handler import get_logger
 
 # logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__, logging.INFO)
 
 
 def convert_size(callback):
