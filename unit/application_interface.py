@@ -121,7 +121,7 @@ class LinuxAPI(GenericAPI):
     def cmd_transformer(context: CommandContext) -> str:
         '''Placeholder'''
         logger.debug('Executing Linux cmd_transformer, context.mode = %s',
-                     context.mode )
+                     context.mode)
         sshpass = (
             f'sshpass -p "{context.password}" ssh -o '
             f'"StrictHostKeyChecking=no"'
@@ -132,7 +132,7 @@ class LinuxAPI(GenericAPI):
                 f'{sshpass} {context.account}@{context.remote_ip} '
                 f'"cd {context.remote_dir}; {context.str_cli_cmd}"'
             )
-        elif context.mode == 'Local': # Workaround
+        elif context.mode == 'local':
             logger.debug('===Local access mode===')
             return context.str_cli_cmd
         else:
@@ -332,8 +332,7 @@ class ApplicationInterface:
     def create_interface(os_type: str,
                          mode: str,
                          if_name: str,
-                         config_file: str
-                        ) -> ApplicationInterface:
+                         config_file: str) -> ApplicationInterface:
         '''Factory method to create an interface based on OS type'''
         if os_type == 'Windows':
             api = WindowsAPI()
