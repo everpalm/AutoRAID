@@ -8,6 +8,7 @@ from unit.log_handler import get_logger
 # logger = logging.getLogger(__name__)
 logger = get_logger(__name__, logging.INFO)
 
+
 class AMD64Perf:
     '''AMD64 Performance
     Args:
@@ -55,13 +56,14 @@ class AMD64Perf:
             # 構建命令，根據是否有隨機大小參數
             if random_size:
                 str_command = (f'diskspd -c{self._cpu_num} -t{self._thread}'
-                               f' -o{iodepth} -b{block_size} -r{random_size} -Sh -D -L '
-                               f' -w{write_pattern} -d{duration} -c{self._file_size}G'
-                               f' {self._io_file}')
+                               f' -o{iodepth} -b{block_size} -r{random_size} '
+                               f'-Sh -D -L -w{write_pattern} -d{duration} '
+                               f'-c{self._file_size}G {self._io_file}')
             else:
                 str_command = (f'diskspd -c{self._cpu_num} -t{self._thread}'
-                               f' -o{iodepth} -b{block_size} -w{write_pattern} -Sh -D '
-                               f' -d{duration} -L -c{self._file_size}G {self._io_file}')
+                               f' -o{iodepth} -b{block_size} '
+                               f'-w{write_pattern} -Sh -D -d{duration} -L '
+                               f'-c{self._file_size}G {self._io_file}')
 
             # 執行命令
             str_output = self._api.io_command(str_command)
@@ -70,8 +72,10 @@ class AMD64Perf:
                 raise RuntimeError("No output returned from io_command.")
 
             # 使用正則表達式提取讀寫IO信息
-            read_io_section = re.search(r'Read IO(.*?)Write IO', str_output, re.S)
-            write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output, re.S)
+            read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
+                                        re.S)
+            write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)', str_output,
+                                         re.S)
 
             # 解析讀取IO信息
             if read_io_section:
@@ -98,9 +102,10 @@ class AMD64Perf:
                     write_bw = write_values[2].strip()
                     logger.debug('write_iops = %s', write_iops)
                     logger.debug('write_bw = %s', write_bw)
-            
+
             cpu_pattern = re.compile(
-                r"\s+\d+\|\s+(\d+)\|\s+([\d\.]+)%\|\s+([\d\.]+)%\|\s+([\d\.]+)%\|\s+([\d\.]+)%"
+                r"\s+\d+\|\s+(\d+)\|\s+([\d\.]+)%\|\s+([\d\.]+)%\|\s+"
+                r"([\d\.]+)%\|\s+([\d\.]+)%"
             )
             for match in cpu_pattern.finditer(str_output):
                 cpu_id = int(match.group(1))

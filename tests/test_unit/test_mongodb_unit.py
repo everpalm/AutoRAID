@@ -25,9 +25,11 @@ AGGREGATE_RESULTS = [{
     "avg_write_iops": 265.0
 }]
 
+
 class TestMongoDB:
     """Test cases for MongoDB class methods, covering log writing, reading,
-    updating, deleting, and aggregation operations with mocked MongoDB behavior.
+    updating, deleting, and aggregation operations with mocked MongoDB
+    behavior.
     """
 
     @pytest.fixture(scope="module")

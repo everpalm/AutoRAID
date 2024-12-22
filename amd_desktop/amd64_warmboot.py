@@ -5,8 +5,8 @@ import logging
 from amd_desktop.amd64_nvme import AMD64NVMe
 from unit.log_handler import get_logger
 
-# logger = logging.getLogger(__name__)
 logger = get_logger(__name__, logging.INFO)
+
 
 class WarmBoot(ABC):
     """Abstract base class for warm boot operations."""

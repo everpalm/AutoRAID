@@ -132,7 +132,7 @@ class AMD64NVMe:
             Parse MAC address from power shell 'Get-NetAdapter'
             Args: None
             Returns: Attribute _mac_address
-            Raises: Value
+            Raises: Attribute, Value, and re
         '''
         if hasattr(self, '_mac_address') and self._mac_address:
             return self._mac_address

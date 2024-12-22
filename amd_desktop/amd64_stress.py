@@ -3,11 +3,9 @@
 import logging
 import re
 from unit.log_handler import get_logger
-# from amd_desktop.win10_interface import Win10Interface as win10
-# from typing import List
 
-# logger = logging.getLogger(__name__)
 logger = get_logger(__name__, logging.INFO)
+
 
 class AMD64MultiPathStress:
     """
@@ -20,29 +18,31 @@ class AMD64MultiPathStress:
     Attributes:
         write_pattern (str): The write pattern to be used in the stress test.
         duration (int): Duration of the stress test in seconds.
-        io_paths (List[str]): List of I/O paths (drive letters) where the stress
-                              test will be executed.
+        io_paths (List[str]): List of I/O paths (drive letters) where the
+        stress test will be executed.
         api (Win10Interface): An instance of the Win10Interface class used to
                               execute commands on the Windows 10 environment.
     """
     CPU_GROUP = None
+
     def __init__(self, platform):
         """
         Initializes the AMD64MultiPathStress class with test parameters.
 
         Args:
-            write_pattern (str): The write pattern to be used in the stress test.
+            write_pattern (str): The write pattern to be used in the stress
+            test.
             duration (int): Duration of the stress test in seconds.
             io_paths (List[str]): List of I/O paths (drive letters) where the
                                   stress test will be executed.
         """
         if AMD64MultiPathStress.CPU_GROUP is None:
-            AMD64MultiPathStress.CPU_GROUP = "0,0" #Default CPU group 0, CPU0
+            AMD64MultiPathStress.CPU_GROUP = "0,0"  # Default CPU group 0, CPU0
         self._platform = platform
         self.io_paths = self._platform.disk_info
         self._api = platform.api
         self._file_size = self._platform.memory_size * 2
-    
+
     @classmethod
     def set_cpu_group(cls, cpu_group):
         """
@@ -55,9 +55,9 @@ class AMD64MultiPathStress:
         logger.info("Manually set CPU_GROUP: %s", cls.CPU_GROUP)
 
     def run_io_operation(self, thread, iodepth, block_size, random_size,
-            write_pattern, duration):
+                         write_pattern, duration):
         """
-        Runs an I/O operation using the specified parameters and returns the 
+        Runs an I/O operation using the specified parameters and returns the
         IOPS and bandwidth for both read and write operations.
 
         Args:
@@ -65,7 +65,9 @@ class AMD64MultiPathStress:
             iodepth (int): I/O depth (queue depth) for the operation.
             block_size (str): Block size for the I/O operation (e.g., '4K').
             random_size (str): Random size for the I/O operation.
-            write_pattern (str): Write pattern percentage (e.g., '100' for write only).
+            write_pattern (str): Write pattern percentage (e.g., '100' for
+            write only).
+
             duration (int): Duration of the test in seconds.
 
         Returns:
@@ -100,10 +102,11 @@ class AMD64MultiPathStress:
         logger.info('_io_file = %s', " ".join(list_io_path))
 
         try:
-            str_command = (f'diskspd -c1 -ag{self.CPU_GROUP} -t{thread} -L -Sh -D'
-            f' -o{iodepth} -b{block_size} -r{random_size}'
-            f' -w{write_pattern} -d{duration} -c{self._file_size}G'
-            f' {" ".join(list_io_path)}')
+            str_command = (
+                f'diskspd -c1 -ag{self.CPU_GROUP} -t{thread} -L -Sh -D'
+                f' -o{iodepth} -b{block_size} -r{random_size}'
+                f' -w{write_pattern} -d{duration} -c{self._file_size}G'
+                f' {" ".join(list_io_path)}')
 
             str_output = self._api.io_command(str_command)
 
@@ -111,9 +114,9 @@ class AMD64MultiPathStress:
                 raise RuntimeError("No output returned from io_command.")
 
             read_io_section = re.search(r'Read IO(.*?)Write IO', str_output,
-                re.S)
+                                        re.S)
             write_io_section = re.search(r'Write IO(.*?)(\n\n|\Z)',
-                str_output, re.S)
+                                         str_output, re.S)
 
             if read_io_section:
                 read_io_text = read_io_section.group(1)
@@ -143,7 +146,8 @@ class AMD64MultiPathStress:
                     logger.debug('write_bw = %s', write_bw)
 
             cpu_pattern = re.compile(
-                r"\s+\d+\|\s+(\d+)\|\s+([\d\.]+)%\|\s+([\d\.]+)%\|\s+([\d\.]+)%\|\s+([\d\.]+)%"
+                r"\s+\d+\|\s+(\d+)\|\s+"
+                r"([\d\.]+)%\|\s+([\d\.]+)%\|\s+([\d\.]+)%\|\s+([\d\.]+)%"
             )
             for match in cpu_pattern.finditer(str_output):
                 cpu_id = int(match.group(1))

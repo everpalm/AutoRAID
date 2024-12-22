@@ -1,6 +1,6 @@
 # Contents of test_amd64_ping.py
-'''Unit tests for the AMD64Ping functionality, ensuring that network 
-   connectivity can be verified and that round-trip times (RTT) are correctly 
+'''Unit tests for the AMD64Ping functionality, ensuring that network
+   connectivity can be verified and that round-trip times (RTT) are correctly
    measured and reported.
 
    Copyright (c) 2024 Jaron Cheng
@@ -10,28 +10,29 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
+
 class TestAMD64Ping:
     """Test suite for AMD64Ping class, verifying ping response metrics and
     overall functionality.
 
     Attributes:
-        target_ping (AMD64Ping): Instance used to perform ping operations, 
+        target_ping (AMD64Ping): Instance used to perform ping operations,
         measuring sent, received, and lost packets, as well as latency metrics.
     """
     @pytest.mark.flaky(reruns=3, reruns_delay=10)
     # @pytest.mark.xfail(reason="Cannot be used with flaky")
     def test_ping_ok(self, target_ping):
-        """Tests the `ping` method of the AMD64Ping class for successful 
+        """Tests the `ping` method of the AMD64Ping class for successful
         connectivity and RTT metrics.
-        
-        Ensures that packets are sent, received, and that the round-trip 
-        times (RTT) are within reasonable ranges. If the ping fails, retries 
+
+        Ensures that packets are sent, received, and that the round-trip
+        times (RTT) are within reasonable ranges. If the ping fails, retries
         up to three times with a 10-second delay.
 
         Args:
-            target_ping (AMD64Ping): Mocked instance of AMD64Ping for 
+            target_ping (AMD64Ping): Mocked instance of AMD64Ping for
             performing the ping test.
-        
+
         Assertions:
             - result: Ping should succeed.
             - target_ping.sent: Packets sent should be greater than 0.
