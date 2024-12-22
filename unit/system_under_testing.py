@@ -91,33 +91,51 @@ def convert_size(callback):
 
 
 class RaspberryPi(object):
-    ''' Raspberry Pi
-        Any operations associated with Rasperberry Pi
+    """
+    Raspberry Pi UART Manager
 
-        API:
-            mode: local
-            network interface: eth0
-            config file: app_map.json
-    '''
-    def __init__(self, str_uart_path, int_baut_rate, str_file_name, rpi_api):
-        self.uart_path = str_uart_path
-        self.baut_rate = int_baut_rate
-        self.file_name = str_file_name
+    This class is responsible for opening and closing a UART session on
+    a Raspberry Pi using the 'screen' command.
+
+    Attributes:
+        uart_device (str): The UART device path, e.g. '/dev/ttyAMA0'.
+        baud_rate (int): The UART baud rate, e.g. 115200.
+        logfile_path (str): The path to the logfile for 'screen'.
+        api: An API interface to run command_line commands (e.g. SSH or local).
+    """
+    def __init__(self, uart_path, baud_rate, file_name, rpi_api):
+        self.uart_path = uart_path
+        self.baud_rate = baud_rate
+        self.file_name = file_name
         self.api = rpi_api
 
-    def open_uart(self):
+    def open_uart(self) -> None:
         logger.debug('self.file_name = %s', self.file_name)
-        self.api.command_line(f'pwd')
+        self.api.command_line('pwd')
         self.api.command_line(f"sudo screen -dm -L -Logfile {self.file_name}"
-                          f" {self.uart_path} {self.baut_rate}")
+                              f" {self.uart_path} {self.baud_rate}")
 
     def close_uart(self) -> int:
         str_return = self.api.command_line("sudo screen -ls")
         logger.debug('str_return = %s', str_return)
-        int_uart_port = str_return.get(1).split('..')[0]
-        logger.info(f'int_uart_port = {int_uart_port}')
-        self.api.command_line(f"sudo screen -X -S {int_uart_port} quit")
-        return int_uart_port
+        if not str_return:
+            logger.warning("No screen sessions found (screen -ls is empty).")
+            return -1
+        try:
+            uart_port = str_return.get(1).split('..')[0]
+            logger.info(f'uart_port = {uart_port}')
+            if not uart_port.isdigit():
+                logger.warning("Cannot parse a valid UART port from: %s",
+                               str_return)
+                return -1
+        except Exception as e:
+            logger.error("Failed to parse UART port: %s", e)
+            return -1
+
+        close_cmd = self.api.command_line(
+            f"sudo screen -X -S {uart_port} quit")
+        logger.debug("Closing UART session with command: %s", close_cmd)
+        return int(uart_port)
 
 
 class SystemUnderTesting(api):
