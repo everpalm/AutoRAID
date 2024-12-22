@@ -243,8 +243,7 @@ class WindowsPing(PingBase):
                     if not bool_msg:
                         bool_msg = self._parse_packets(line,
                                                        self.WINDOWS_PACKET_MSG)
-                        logger.debug('Packet parse result for "%s": %s' % line,
-                                     bool_msg)
+                        logger.debug('Packet parse result %s', bool_msg)
 
                     # Check for RTT statistics line
                     if not bool_sts:
@@ -253,8 +252,7 @@ class WindowsPing(PingBase):
                             self.WINDOWS_STATISTICS
                         )
                         logger.debug(
-                            'Statistics parse result for "%s: %s' % line,
-                            bool_sts
+                            'Statistics parse result for %s', bool_sts
                         )
 
                     # If both are parsed, no need to continue
