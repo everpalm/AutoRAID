@@ -60,6 +60,12 @@ def pytest_addoption(parser):
         default="/home/pi/Projects/AutoRAID/workspace/AutoRAID",
         help="In accordance with the setting in Jenkins"
     )
+    parser.addoption(
+        "--os_type",
+        action="store",
+        default="Windows",
+        help="Defalt factory OS"
+    )
     
 @pytest.fixture(scope="session")
 def cmdopt(request):
@@ -72,6 +78,7 @@ def cmdopt(request):
         {'private_token': request.config.getoption("--private_token")})
     cmdopt_dic.update(
         {'workspace': request.config.getoption("--workspace")})
+    cmdopt_dic.update({'os_type': request.config.getoption("--os_type")})
     return cmdopt_dic
 
 @pytest.fixture(scope="session")
@@ -90,7 +97,11 @@ def store_gitlab_api_in_config(cmdopt, request):
 @pytest.fixture(scope="session")
 def drone_api():
     print('\n\033[32m================== Setup RPi API ===============\033[0m')
-    return api('local', 'wlan0', 'app_map.json', Lapi)
+    # return api('local', 'wlan0', 'app_map.json', Lapi)
+    return api.create_interface(os_type='Linux',
+                                mode='Local',
+                                if_name='wlan0',
+                                config_file='app_map.json')
 
 @pytest.fixture(scope="session")
 def target_ping(drone_api):

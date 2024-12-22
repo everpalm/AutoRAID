@@ -120,7 +120,8 @@ class LinuxAPI(GenericAPI):
     @staticmethod
     def cmd_transformer(context: CommandContext) -> str:
         '''Placeholder'''
-        logger.debug('Executing Linux cmd_transformer')
+        logger.debug('Executing Linux cmd_transformer, context.mode = %s',
+                     context.mode )
         sshpass = (
             f'sshpass -p "{context.password}" ssh -o '
             f'"StrictHostKeyChecking=no"'
@@ -131,7 +132,7 @@ class LinuxAPI(GenericAPI):
                 f'{sshpass} {context.account}@{context.remote_ip} '
                 f'"cd {context.remote_dir}; {context.str_cli_cmd}"'
             )
-        elif context.mode == 'local':
+        elif context.mode == 'Local': # Workaround
             logger.debug('===Local access mode===')
             return context.str_cli_cmd
         else:
@@ -326,3 +327,18 @@ class ApplicationInterface:
         logger.debug('Transformed Command: %s', transformed_command)
 
         return self.my_command(transformed_command)
+
+    @staticmethod
+    def create_interface(os_type: str,
+                         mode: str,
+                         if_name: str,
+                         config_file: str
+                        ) -> ApplicationInterface:
+        '''Factory method to create an interface based on OS type'''
+        if os_type == 'Windows':
+            api = WindowsAPI()
+        elif os_type == 'Linux':
+            api = LinuxAPI()
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")
+        return ApplicationInterface(mode, if_name, config_file, api)

@@ -19,11 +19,14 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 def my_app(cmdopt):
     '''This is a docstring'''
     print('\n\033[32m================== Setup API ===================\033[0m')
-    return api(cmdopt.get('mode'),
-               cmdopt.get('if_name'),
-               cmdopt.get('config_file'),
-               Wapi)
-
+    # return api(cmdopt.get('mode'),
+    #            cmdopt.get('if_name'),
+    #            cmdopt.get('config_file'),
+    #            Wapi)
+    return api.create_interface(os_type=cmdopt.get('os_type'),
+                                mode=cmdopt.get('mode'),
+                                if_name=cmdopt.get('if_name'),
+                                config_file=cmdopt.get('config_file'))
 
 @pytest.fixture(scope="session")
 def my_mdb():
