@@ -3,6 +3,7 @@
 
 from unit.ping import LinuxPing
 
+
 class AMD64Ping(LinuxPing):
     """A class to represent the AMD64 Ping functionality.
 

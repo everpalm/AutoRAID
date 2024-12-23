@@ -26,7 +26,7 @@ def win_warmboot(target_system):
     This fixture creates and returns a `wwb` object (presumably for warm boot
     execution) initialized with the provided `target_system`.  It has a
     "module" scope, meaning it will be executed only once per test module,
-    before any test functions are run.  The `autouse=True` 
+    before any test functions are run.  The `autouse=True`
     parameter ensures that this fixture is automatically used by all test
     functions within the module, without needing to explicitly include it as a
     parameter.
@@ -67,11 +67,11 @@ class TestWindowsWarmBoot:
         """
         Verify network connectivity after a Windows Warm Boot.
 
-        This test pings the target system after a warm boot to ensure network 
-        connectivity is restored. It uses the `target_ping` fixture and logs 
-        various ping statistics. The test is marked as flaky and will be rerun 
-        up to 3 times with a 10-second delay between reruns if it initially fails, 
-        to account for potential network instability after a reboot.
+        This test pings the target system after a warm boot to ensure network
+        connectivity is restored. It uses the `target_ping` fixture and logs
+        various ping statistics. The test is marked as flaky and will be rerun
+        up to 3 times with a 10-second delay between reruns if it initially
+        fails, to account for potential network instability after a reboot.
 
         Args:
             target_ping: The ping fixture for the target system.
@@ -91,5 +91,5 @@ class TestWindowsWarmBoot:
 
 # @pytest.mark.order(2)
 class TestWindowsWarmBootStress(Toss):
-    """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)"""
-
+    """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
+    """

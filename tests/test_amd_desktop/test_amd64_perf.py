@@ -28,7 +28,8 @@ def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
         lower_iops (float): Lower limit of IOPS.
         upper_bw (float): Upper limit of bandwidth.
         lower_bw (float): Lower limit of bandwidth.
-        prefix (str, optional): Prefix for log message to distinguish read/write metrics.
+        prefix (str, optional): Prefix for log message to distinguish
+        read/write metrics.
     """
     logger.debug('upper_%siops = %s', prefix, upper_iops)
     logger.debug('lower_%siops = %s', prefix, lower_iops)
