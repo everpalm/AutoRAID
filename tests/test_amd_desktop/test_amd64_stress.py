@@ -85,8 +85,8 @@ class TestOneShotStress:
             criteria.
         """
         read_bw, read_iops, write_bw, write_iops, cpu_usage = \
-        target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
-                                    '4k', HALF_RW, ONE_SHOT)
+            target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
+                                           '4k', '4k', HALF_RW, ONE_SHOT)
 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
@@ -107,11 +107,12 @@ class TestOneShotStress:
             my_mdb: Mock database for storing and comparing test metrics.
 
         Assertions:
-            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+            - read_bw, read_iops, write_bw, write_iops metrics meet target
+            criteria.
         """
         read_bw, read_iops, write_bw, write_iops, cpu_usage = \
-        target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
-                                    '4k', FULL_READ, ONE_SHOT)
+            target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
+                                           '4k', '4k', FULL_READ, ONE_SHOT)
 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
@@ -120,22 +121,24 @@ class TestOneShotStress:
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
-    def test_full_write(self, target_stress,my_mdb):
+    def test_full_write(self, target_stress, my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
         I/O depths and write patterns.
-        
+
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            tests.
             write_pattern (int): Write pattern defining full write.
             iodepth (int): Optimum I/O depth level for stress testing is 7.
             my_mdb: Mock database for storing and comparing test metrics.
-        
+
         Assertions:
-            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+            - read_bw, read_iops, write_bw, write_iops metrics meet target
+            criteria.
         """
         read_bw, read_iops, write_bw, write_iops, cpu_usage = \
-        target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH, '4k',
-                                    '4k', FULL_WRITE, ONE_SHOT)
+            target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
+                                           '4k', '4k', FULL_WRITE, ONE_SHOT)
 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'stress_')
 
@@ -159,15 +162,17 @@ class TestOLTP:
     def test_run_io_operation(self, target_stress, iodepth, my_mdb):
         """Runs parameterized I/O operations to test system stress with varying
         I/O depths and write patterns.
-        
+
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            tests.
             write_pattern (int): Write pattern defining the read/write ratio.
             iodepth (int): I/O depth level for stress testing.
             my_mdb: Mock database for storing and comparing test metrics.
-        
+
         Assertions:
-            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+            - read_bw, read_iops, write_bw, write_iops metrics meet target
+            criteria.
         """
         read_bw, read_iops, write_bw, write_iops, cpu_usage = \
             target_stress.run_io_operation(SINGLE_THREAD, iodepth, '8k', '8k',
@@ -195,15 +200,17 @@ class TestOLAP:
     def test_run_io_operation(self, target_stress, write_pattern, my_mdb):
         """Runs parameterized I/O operations to test system stress with varying
         I/O depths and write patterns.
-        
+
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O tests.
+            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            tests.
             write_pattern (int): Write pattern defining the read/write ratio.
             iodepth (int): I/O depth level for stress testing.
             my_mdb: Mock database for storing and comparing test metrics.
-        
+
         Assertions:
-            - read_bw, read_iops, write_bw, write_iops metrics meet target criteria.
+            - read_bw, read_iops, write_bw, write_iops metrics meet target
+            criteria.
         """
         read_bw, read_iops, write_bw, write_iops, cpu_usage = \
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
