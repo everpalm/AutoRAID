@@ -94,7 +94,7 @@ class GenericAPI(ABC):
 
 
 class WindowsAPI(GenericAPI):
-    # @staticmethod
+    '''This is a docstring'''
     def cmd_transformer(self, context: CommandContext) -> str:
         '''Placeholder'''
         logger.debug('Executing Windows cmd_transformer')
@@ -117,7 +117,6 @@ class WindowsAPI(GenericAPI):
 
 class LinuxAPI(GenericAPI):
     '''This is a docstring'''
-    # @staticmethod
     def cmd_transformer(self, context: CommandContext) -> str:
         '''Placeholder'''
         logger.debug('Executing Linux cmd_transformer, context.mode = %s',
