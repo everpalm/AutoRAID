@@ -6,8 +6,9 @@ from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 from typing import List
 from unit.log_handler import get_logger
+import paramiko
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 class ParitionDisk(ABC):
@@ -22,29 +23,59 @@ class WindowsVolume(ParitionDisk):
     """Disk partitioning implementation for Windows systems."""
     def __init__(self, platform: AMD64NVMe):
         self._api = platform.api
+        self.remote_dir = platform.api.remote_dir
+        self.remote_ip = platform.api.remote_ip
+        self.account = platform.api.account
+        self.password = platform.api.password
+    # def startup(self) -> bool:
+    #     logger.info("Startup diskpart...")
+    #     try:
+    #         # Execute the warm boot command
+    #         self._api.command_line.original(self._api, 'diskpart')
+    #         logger.info("Start diskpart...")
+    #         return True
 
-    def startup(self) -> bool:
-        logger.info("Startup diskpart...")
+    #     except Exception as e:
+    #         logger.error("Error startup diskpart: %s", e)
+    #         return False
+
+    # def close(self) -> bool:
+    #     logger.info("Exit diskpart...")
+    #     try:
+    #         self._api.command_line.original(self._api, 'exit')
+    #         logger.info("Close diskpart...")
+    #         return True
+
+    #     except Exception as e:
+    #         logger.error("Error close diskpart: %s", e)
+    #         return False
+    def write_script(self, diskpart_script) -> bool:
+        logger.debug("diskpart_script = %s", diskpart_script)
         try:
-            # Execute the warm boot command
-            self._api.command_line.original(self._api, 'diskpart')
-            logger.info("Start diskpart...")
-            return True
+            with open("diskpart_script.txt", "w") as file:
+                file.write(diskpart_script)
+
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            logger.debug('remote_ip = %s', self.remote_ip)
+            logger.debug('account = %s', self.account)
+            logger.debug('password = %s', self.password)
+            logger.debug('remote_dir = %s', self.remote_dir)
+            remote_script_path = self.remote_dir.replace("\\", "/") + "/diskpart_script.txt"
+            logger.debug('remote_script_path = %s', remote_script_path)
+            client.connect(self.remote_ip, port=22, username=self.account, password=self.password)
+
+            sftp = client.open_sftp()
+            logger.debug('sftp = %s', sftp)
+            put_result = sftp.put("diskpart_script.txt", remote_script_path)
+            logger.debug('put_result = %s', put_result)
+            sftp.close()
+
+            client.close()
 
         except Exception as e:
-            logger.error("Error startup diskpart: %s", e)
-            return False
-
-    def close(self) -> bool:
-        logger.info("Exit diskpart...")
-        try:
-            self._api.command_line.original(self._api, 'exit')
-            logger.info("Close diskpart...")
-            return True
-
-        except Exception as e:
-            logger.error("Error close diskpart: %s", e)
-            return False
+            logger.error("Error during Windows disk partitioning: %s", e)
+            return -1
 
     def execute(self) -> List:
         logger.info("Disk partitioning for Windows...")

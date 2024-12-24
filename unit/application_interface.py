@@ -21,7 +21,7 @@ SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 def dict_format(callback):
@@ -340,3 +340,21 @@ class ApplicationInterface:
         else:
             raise ValueError(f"Unsupported OS type: {os_type}")
         return ApplicationInterface(mode, if_name, config_file, api)
+
+    def ftp_command(self, str_target_file: str) -> bool:
+        '''Placeholder'''
+        logger.debug('str_target_file: %s', str_target_file)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        logger.debug('remote_ip = %s', self.remote_ip)
+        logger.debug('account = %s', self.account)
+        logger.debug('password = %s', self.password)
+        client.connect(self.remote_ip, port=22, username=self.account, password=self.password)
+        remote_script_path = self.remote_dir.replace("\\", "/") + "/diskpart_script.txt"
+        sftp = client.open_sftp()
+        sftp.put(str_target_file, remote_script_path)
+        sftp.close()
+
+        client.close()
+
+        return True
