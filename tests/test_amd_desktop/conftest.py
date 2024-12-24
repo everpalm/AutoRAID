@@ -9,7 +9,6 @@ from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from unit.application_interface import ApplicationInterface as api
-# from unit.application_interface import WindowsAPI as Wapi
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
@@ -186,7 +185,6 @@ def test_check_error(win_event):
         errors.append("Error 157 detected: Disk surprise removal.")
 
     if errors:
-        # logger.error(f"Windows event errors detected: {errors}")
         raise AssertionError(f"Detected errors: {errors}")
 
     print('\n\033[32m================== Teardown Win Event ==========\033[0m')
