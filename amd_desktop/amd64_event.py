@@ -7,9 +7,7 @@ from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 from unit.log_handler import get_logger
 
-# logger = logging.getLogger(__name__)
 logger = get_logger(__name__, logging.INFO)
-# logging.basicConfig(level=logging.DEBUG)
 
 
 # 抽象基類，定義通用的日誌處理器接口
