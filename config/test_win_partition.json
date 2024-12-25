@@ -1,7 +1,12 @@
 {
-    "List Disk": {
+    "Select Disk": {
         "Script": "select disk 2",
         "Pattern": "Disk\\s(\\d+)",
         "Expected": 2
-    }   
+    },
+    "List Partition": {
+        "Script": "list partition",
+        "Pattern": "Partition\\s(\\d+)\\s+System",
+        "Expected": 2
+    }
 }

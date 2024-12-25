@@ -37,7 +37,7 @@ class TestWindowsVolume:
         #     exit
         #     """
         # logger.debug("diskpart = %s", diskpart['List Disk']['Script'])
-        result = win_partition.write_script(diskpart['List Disk']['Script'])
+        result = win_partition.write_script(diskpart['Select Disk']['Script'])
         logger.info('write_script = %s', result)
 
     @pytest.mark.parametrize('diskpart', DISKPART)
@@ -45,7 +45,7 @@ class TestWindowsVolume:
         """
         docstring
         """
-        exe_result = win_partition.execute(diskpart['List Disk']['Pattern'])
+        exe_result = win_partition.execute(diskpart['Select Disk']['Pattern'])
         logger.info('exe_result = %s', exe_result)
 
     def test_delete_script(self, win_partition: WindowsVolume):
