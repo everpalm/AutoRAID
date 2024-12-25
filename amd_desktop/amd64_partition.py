@@ -6,7 +6,7 @@ from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 from typing import List
 from unit.log_handler import get_logger
-import paramiko
+# import paramiko
 
 logger = get_logger(__name__, logging.DEBUG)
 
@@ -27,6 +27,7 @@ class WindowsVolume(ParitionDisk):
         self.remote_ip = platform.api.remote_ip
         self.account = platform.api.account
         self.password = platform.api.password
+        self.script_name = platform.api.script_name
     # def startup(self) -> bool:
     #     logger.info("Startup diskpart...")
     #     try:
@@ -55,23 +56,8 @@ class WindowsVolume(ParitionDisk):
             with open("diskpart_script.txt", "w") as file:
                 file.write(diskpart_script)
 
-            client = paramiko.SSHClient()
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            logger.debug('remote_ip = %s', self.remote_ip)
-            logger.debug('account = %s', self.account)
-            logger.debug('password = %s', self.password)
-            logger.debug('remote_dir = %s', self.remote_dir)
-            remote_script_path = self.remote_dir.replace("\\", "/") + "/diskpart_script.txt"
-            logger.debug('remote_script_path = %s', remote_script_path)
-            client.connect(self.remote_ip, port=22, username=self.account, password=self.password)
-
-            sftp = client.open_sftp()
-            logger.debug('sftp = %s', sftp)
-            put_result = sftp.put("diskpart_script.txt", remote_script_path)
-            logger.debug('put_result = %s', put_result)
-            sftp.close()
-
-            client.close()
+            logger.debug("self.script_name = ", self.script_name)
+            self._api.ftp_command(self.script_name)
 
         except Exception as e:
             logger.error("Error during Windows disk partitioning: %s", e)
@@ -81,8 +67,10 @@ class WindowsVolume(ParitionDisk):
         logger.info("Disk partitioning for Windows...")
         try:
             # Execute the warm boot command
-            parition_cmd = self._api.command_line.original(self._api,
-                                                           'dir')
+            parition_cmd = self._api.command_line.original(
+                self._api,
+                r"diskpart /s diskpart_script.txt"
+            )
             logger.info("Disk partitioning successfully for Windows.")
             return parition_cmd
 

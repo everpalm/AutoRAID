@@ -163,6 +163,7 @@ class ApplicationInterface:
             self.remote_dir = self._get_remote_ip()
         self.os = self.get_os()
         self.interface = interface
+        self.script_name = "diskpart_script.txt"
 
     def __import_config(self) -> Dict[str, str]:
         '''This is a docstring'''
@@ -344,17 +345,27 @@ class ApplicationInterface:
     def ftp_command(self, str_target_file: str) -> bool:
         '''Placeholder'''
         logger.debug('str_target_file: %s', str_target_file)
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        logger.debug('remote_ip = %s', self.remote_ip)
-        logger.debug('account = %s', self.account)
-        logger.debug('password = %s', self.password)
-        client.connect(self.remote_ip, port=22, username=self.account, password=self.password)
-        remote_script_path = self.remote_dir.replace("\\", "/") + "/diskpart_script.txt"
-        sftp = client.open_sftp()
-        sftp.put(str_target_file, remote_script_path)
-        sftp.close()
+        try:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            logger.debug('remote_ip = %s', self.remote_ip)
+            logger.debug('account = %s', self.account)
+            logger.debug('password = %s', self.password)
+            logger.debug('remote_dir = %s', self.remote_dir)
 
-        client.close()
+            remote_script_path = (
+                self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
+            logger.debug('remote_script_path = %s', remote_script_path)
+            client.connect(self.remote_ip, port=22, username=self.account,
+                           password=self.password)
 
+            sftp = client.open_sftp()
+            logger.debug('sftp = %s', sftp)
+            put_result = sftp.put(str_target_file, remote_script_path)
+            logger.debug('put_result = %s', put_result)
+            sftp.close()
+            client.close()
+        except Exception as e:
+            logger.error("Error occurred in ftp_command: %s", e)
+            raise
         return True
