@@ -1,11 +1,19 @@
 # Contents of test_win_partition.py
 '''Copyright (c) 2024 Jaron Cheng'''
+import json
 import logging
 import pytest
 from amd_desktop.amd64_nvme import AMD64NVMe
 from amd_desktop.amd64_partition import WindowsVolume
 
 logger = logging.getLogger(__name__)
+
+DISKPART = """
+    list disk
+    """
+
+with open('config/test_win_partition.json', 'r', encoding='utf-8') as f:
+    DISKPART = [json.load(f)]
 
 
 class TestWindowsVolume:
@@ -16,7 +24,8 @@ class TestWindowsVolume:
         """
         return WindowsVolume(platform=target_system)
 
-    def test_write_script(self, target_system, win_partition: WindowsVolume):
+    @pytest.mark.parametrize('diskpart', DISKPART)
+    def test_write_script(self, win_partition: WindowsVolume, diskpart):
         """
         docstring
         """
@@ -27,14 +36,21 @@ class TestWindowsVolume:
         #     assign
         #     exit
         #     """
-        DISKPART_SCRIPT = """list disk"""
-        result = win_partition.write_script(DISKPART_SCRIPT)
+        # logger.debug("diskpart = %s", diskpart['List Disk']['Script'])
+        result = win_partition.write_script(diskpart['List Disk']['Script'])
         logger.info('write_script = %s', result)
 
-    def test_execute(self, win_partition: WindowsVolume):
+    @pytest.mark.parametrize('diskpart', DISKPART)
+    def test_execute(self, win_partition: WindowsVolume, diskpart):
         """
         docstring
         """
-        result = win_partition.execute()
-        logger.info('result = %s', result)
+        exe_result = win_partition.execute(diskpart['List Disk']['Pattern'])
+        logger.info('exe_result = %s', exe_result)
 
+    def test_delete_script(self, win_partition: WindowsVolume):
+        '''
+        docstring
+        '''
+        del_result = win_partition.delete_script()
+        logger.info('del_result = %s', del_result)

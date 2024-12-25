@@ -1,0 +1,7 @@
+{
+    "List Disk": {
+        "Script": "select disk 2",
+        "Pattern": "Disk\\s(\\d+)",
+        "Expected": 2
+    }   
+}

@@ -46,7 +46,7 @@ class LinuxWarmBoot(WarmBoot):
             self._api.command_line(self._api, 'sudo reboot')
             logger.info("Warm boot executed successfully for Linux.")
             return True
-            
+
         except Exception as e:
             logger.error("Error during Linux warm boot execution: %s", e)
             return False
