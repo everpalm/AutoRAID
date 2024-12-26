@@ -21,7 +21,7 @@ JOB_NUM = [1, 2, 4, 8, 16, 32, 64, 128]
 
 RR_4K_IOD1_JOB1 = (
     {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1, "Run Time": 30,
-      "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
+     "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
     {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 1, "Run Time": 30,
      "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
     {"RW Mode": "randread", "Block Size": "4k", "IO Depth": 2, "Run Time": 30,
@@ -37,15 +37,16 @@ RW_4K_IOD1_JOB1 = (
      "Job": 1, "IOPS": 5315, "BW": 21768440, "CR": 0.7, "CPU Mask": 0x1},
 )
 
+
 # 測試類別
 class TestPerformanceIODepth:
-    """Test class for I/O depth-related performance testing. Uses mocked 
+    """Test class for I/O depth-related performance testing. Uses mocked
     instances of system performance and system under test (SUT) classes.
     """
 
     @pytest.fixture(scope="session", autouse=True)
     def target_system(self):
-        """Fixture to set up the SystemUnderTesting (SUT) instance with mocked 
+        """Fixture to set up the SystemUnderTesting (SUT) instance with mocked
         behavior. Auto-runs for each test session.
         """
         # 使用 mock 模擬 sut 類別
@@ -55,8 +56,8 @@ class TestPerformanceIODepth:
 
     @pytest.fixture(scope="session", autouse=True)
     def target_performance(self):
-        """Fixture to set up the SystemPerformance instance with mocked behavior. 
-        Auto-runs for each test session.
+        """Fixture to set up the SystemPerformance instance with mocked
+        behavior. Auto-runs for each test session.
         """
         # 使用 mock 模擬 perf 類別
         mock_perf = MagicMock(spec=perf)
@@ -65,8 +66,8 @@ class TestPerformanceIODepth:
 
     def test_groupby_io_mean_open_file(self, target_performance):
         # 模擬文件讀取失敗，檢查異常情況
-        """Test the groupby_io_mean method to simulate a FileNotFoundError 
-        exception. Confirms that the exception is correctly raised when a file 
+        """Test the groupby_io_mean method to simulate a FileNotFoundError
+        exception. Confirms that the exception is correctly raised when a file
         is missing.
         """
         target_performance.groupby_io_mean.side_effect = FileNotFoundError
@@ -76,9 +77,9 @@ class TestPerformanceIODepth:
     @pytest.mark.parametrize('rw_mode', RW_MODE)
     @pytest.mark.parametrize('io_depth', IO_DEPTH)
     def test_run_io_operation(self, target_system, rw_mode, io_depth):
-        """Parameterized test for running I/O operations with various read/write
-        modes and I/O depths. Checks that the run_io_operation method is called
-        with the correct parameters.
+        """Parameterized test for running I/O operations with various
+        read/write modes and I/O depths. Checks that the run_io_operation
+        method is called with the correct parameters.
         """
         # 模擬執行 I/O 操作
         target_system.run_io_operation(rw_mode, '4k', io_depth, 1, 30, 4)
@@ -146,6 +147,7 @@ class TestPerformanceIODepth:
         assert str_iops_mean >= rw_table['IOPS'] * rw_table['CR']
         assert str_bw_mean >= rw_table['BW'] * rw_table['CR']
 
+
 # 子類別繼承主測試類別
 class TestPerformanceCPUMask(TestPerformanceIODepth):
     """Subclass of TestPerformanceIODepth that adds CPU Mask parameterization.
@@ -155,20 +157,25 @@ class TestPerformanceCPUMask(TestPerformanceIODepth):
                              [hex(cpu_mask) for cpu_mask in range(1, 16)])
     @pytest.mark.parametrize('rw_mode', RW_MODE)
     def test_run_io_operation(self, target_system, rw_mode, cpu_mask):
-        """Parameterized test for running I/O operations with various CPU 
-        mask values and read/write modes. Verifies that run_io_operation 
+        """Parameterized test for running I/O operations with various CPU
+        mask values and read/write modes. Verifies that run_io_operation
         is called with correct parameters.
         """
         # 使用 CPU Mask 參數進行 I/O 操作測試
         target_system.run_io_operation(rw_mode, '4k', 128, 1, 30, cpu_mask)
         # 檢查 I/O 操作是否被正確執行
-        target_system.run_io_operation.assert_called_with(rw_mode, '4k', 128,
-                                                        1, 30, cpu_mask)
+        target_system.run_io_operation.assert_called_with(
+            rw_mode,
+            '4k',
+            128,
+            1, 30, cpu_mask
+        )
 
     @pytest.mark.parametrize("rr_table", RR_4K_IOD1_JOB1)
     def test_groupby_rr_mean(self, target_performance, rr_table):
-        """Extended test for calculating mean IOPS and BW for read operations (RR),
-        using CPU Mask parameter. Verifies mean values meet confidence interval.
+        """Extended test for calculating mean IOPS and BW for read operations
+        (RR), using CPU Mask parameter. Verifies mean values meet confidence
+        interval.
         """
         # 根據參數決定返回 IOPS 或 BW 的值
         def mock_groupby_io_mean(_io_depth, metric):

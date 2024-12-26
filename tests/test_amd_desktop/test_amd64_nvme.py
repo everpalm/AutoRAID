@@ -162,3 +162,13 @@ class TestAMD64NVMe:
         """
         partition_size = target_system.partition_size
         logger.info("Partition Size = %s GB", partition_size)
+
+    def test_disk_capacity(self, target_system):
+        """Test for verifying parition size of the disk.
+
+        Args:
+            target_system: The system instance being tested.
+            amd64_nvm (dict): Expected configuration data for validation.
+        """
+        disk_capacity = target_system.disk_capacity
+        logger.info("disk_capacity = %s", disk_capacity)

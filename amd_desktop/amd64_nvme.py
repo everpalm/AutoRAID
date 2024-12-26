@@ -9,7 +9,7 @@ from unit.log_handler import get_logger
 from unit.application_interface import GenericAPI as Gapi
 # import os
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 class AMD64NVMe:
@@ -45,6 +45,7 @@ class AMD64NVMe:
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
         self._partition_size = None
+        self._disk_capacity = None
 
     def _get_hyperthreading(self):
         """
@@ -356,3 +357,37 @@ class AMD64NVMe:
     def _next_power_of_2(self, x):
         '''Returns the next power of 2 greater than or equal to x.'''
         return 1 if x == 0 else 2**math.ceil(math.log2(x))
+
+    @property
+    def disk_capacity(self):
+        ''' Get Volume
+        Args: None
+        Returns: Volume, Size
+        Raises: Any errors
+        '''
+        try:
+            str_return = self.api.command_line(
+                "wmic diskdrive get size,caption")
+
+            pattern = r"Marvell_NVMe_Controller\s+(\d+)"
+
+            if str_return:
+                if isinstance(str_return, dict):
+                    output_string = "\n".join(str_return.values())
+                else:
+                    output_string = str_return
+
+            match = re.search(pattern, output_string)
+
+            if match:
+                disk_capacity = match.group(1)
+                logger.debug("disk_capacity = %s", disk_capacity)
+            else:
+                raise ValueError(
+                    "Unexpected None value returned from command line")
+
+        except Exception as e:
+            logger.error('Error occurred in disk_capacity: %s', e)
+            raise
+
+        return int(disk_capacity) / (2**30)

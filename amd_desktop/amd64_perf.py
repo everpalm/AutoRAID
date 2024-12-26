@@ -5,7 +5,6 @@ from typing import Optional
 from typing import Tuple
 from unit.log_handler import get_logger
 
-# logger = logging.getLogger(__name__)
 logger = get_logger(__name__, logging.INFO)
 
 

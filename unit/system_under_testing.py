@@ -2,9 +2,10 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 import logging
-import os
+# import os
 import re
 from unit.application_interface import ApplicationInterface as api
+from unit.application_interface import GenericAPI as Gapi
 from unit.application_interface import GenericAPI
 from unit.log_handler import get_logger
 
@@ -134,10 +135,11 @@ class RaspberryPi(object):
         return int(uart_port)
 
 
-class SystemUnderTesting(api):
+class SystemUnderTesting(GenericAPI):
     ''' System Under Testing
 
-        Any operations of the system that are not included in the DUT behavior
+        Any operations of the system that are not included in the DUT
+           behavior
 
         Attributes:
             os: Operation System
@@ -156,7 +158,8 @@ class SystemUnderTesting(api):
                 str_mode='remote',
                 str_if_name='eth0',
                 str_config_file='app_map.json',
-                interface=GenericAPI)
+                # interface=GenericAPI)
+                interface=Gapi)
         self.os = self.get_os()
         self.manufacturer = str_manufacturer
         self.bdf, self.sdid = self._get_pcie_info().values()
@@ -252,8 +255,8 @@ class SystemUnderTesting(api):
             Returns:
             Raises:
         '''
-        str_node = str_sn = str_model = str_namespace_id = str_namespace_usage\
-            = str_fw_rev = None
+        str_node = str_sn = str_model = str_namespace_id = \
+          str_namespace_usage = str_fw_rev = None
         try:
             str_return = self.command_line("nvme list|grep /dev/nvme")
             logger.debug('str_return = %s', str_return)
@@ -310,7 +313,8 @@ class SystemUnderTesting(api):
                     int_power_cycles,
                     int_unsafe_shutdowns)
         except ValueError as ve:
-            logger.error(f"Value error occurred in _get_nvme_smart_log: {ve}")
+            logger.error(
+              f"Value error occurred in _get_nvme_smart_log: {ve}")
             raise
         except Exception as e:
             logger.error(f"Error occurred in _get_nvme_smart_log: {e}")
@@ -342,7 +346,7 @@ class SystemUnderTesting(api):
         bool_return = str_iops_temp = str_iops = str_bw_temp = str_bw = None
         try:
             bool_return = self.io_command(f'fio --filename=/dev/{self.node} \
-                    --direct=1 --rw={str_rw} --bs={str_bs} --ioengine=libaio \
+                    --direct=1 --rw={str_rw} --bs={str_bs} --ioengine=libaio\
                     --iodepth={str_iodepth} --runtime={str_runtime} \
                     --numjobs={str_numjobs} --time_based --group_reporting \
                     --name=iops-test-job --eta-newline=1 \

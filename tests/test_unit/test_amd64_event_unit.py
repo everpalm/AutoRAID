@@ -1,7 +1,7 @@
 '''Unit tests for WindowsEvent class methods related to log management.
-   This module verifies the behavior of methods within the WindowsEvent 
-   class, including the ability to find error logs based on patterns and 
-   clear system event logs, using mocked platform interactions to simulate 
+   This module verifies the behavior of methods within the WindowsEvent
+   class, including the ability to find error logs based on patterns and
+   clear system event logs, using mocked platform interactions to simulate
    command-line responses.
 
    Copyright (c) 2024 Jaron Cheng
@@ -11,6 +11,7 @@ from collections import defaultdict
 import pytest
 from amd_desktop.amd64_nvme import AMD64NVMe
 from amd_desktop.amd64_event import WindowsEvent
+
 
 # 定義一個 fixture 來設置 mock_platform 及其 api 屬性
 @pytest.fixture
@@ -35,9 +36,10 @@ def mock_platform():
 
     return mocked
 
+
 # 測試 find_error 方法匹配成功的情況
 def test_find_error_match_found(mock_platform):
-    """Tests the `find_error` method of the WindowsEvent class for a case 
+    """Tests the `find_error` method of the WindowsEvent class for a case
     where a matching pattern is found in the command output.
 
     Args:
@@ -67,6 +69,7 @@ def test_find_error_match_found(mock_platform):
     # 驗證返回 True 並且正確添加匹配的值
     assert result is True
     assert '1' in mock_platform.error_features[event_id]
+
 
 # 測試 find_error 方法沒有匹配的情況
 def test_find_error_no_match(mock_platform):
@@ -98,6 +101,7 @@ def test_find_error_no_match(mock_platform):
     assert result is False
     assert event_id in mock_platform.error_features
 
+
 # 測試 find_error 方法在輸出為空的情況下
 def test_find_error_empty_output(mock_platform):
     """Tests the `find_error` method with an empty command output.
@@ -123,13 +127,14 @@ def test_find_error_empty_output(mock_platform):
     result = win_event.find_error(log_name, event_id, pattern)
     assert result is False
 
+
 # 測試 clear_error 方法
 def test_clear_error_success(mock_platform):
     """Tests the `clear_error` method for successful log clearing.
 
     Args:
-        mock_platform (MagicMock): Mocked platform where `clear_error` simulates
-                                   a successful log clearing operation.
+        mock_platform (MagicMock): Mocked platform where `clear_error`
+        simulates a successful log clearing operation.
 
     Verifies:
         - `clear_error` returns True when log clearing is successful.
@@ -148,6 +153,7 @@ def test_clear_error_success(mock_platform):
         mock_platform.api, 'powershell "Clear-EventLog -LogName system"'
     )
 
+
 # 測試 clear_error 方法的異常情況
 def test_clear_error_failure(mock_platform):
     """Tests the `clear_error` method for a failure scenario where an exception
@@ -162,7 +168,8 @@ def test_clear_error_failure(mock_platform):
         - Correct command is sent to the command line once.
     """
     # 模擬 PowerShell 命令執行失敗
-    mock_platform.api.command_line.original.side_effect = Exception("Command failed")
+    mock_platform.api.command_line.original.side_effect = Exception(
+        "Command failed")
 
     # 初始化 WindowsEvent
     win_event = WindowsEvent(mock_platform)
