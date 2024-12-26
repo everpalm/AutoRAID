@@ -58,8 +58,10 @@ class WindowsVolume(PartitionDisk):
         self.script_name = platform.api.script_name
         self.disk_num = platform.disk_num
         self.disk_info = platform.disk_info
-        self.partition_size = platform.partition_size
+        self.partition_size = platform.partition_size * 1024
         self.disk_capacity = platform.disk_capacity
+        self.partition_num = math.floor(
+            self.disk_capacity / platform.partition_size)
         self.disk_format = disk_format
         self.file_system = file_system
 
@@ -162,10 +164,11 @@ class WindowsVolume(PartitionDisk):
         ]
         logger.debug("self.partition_size = %s", self.partition_size)
         logger.debug("self.disk_capacity = %s", self.disk_capacity)
-        partition_num = math.floor(self.disk_capacity / self.partition_size)
+        # partition_num = math.floor(self.disk_capacity / self.partition_size)
+        partition_num = self.partition_num
         logger.debug("partition_num = %s", partition_num)
 
-        partition_size = self.partition_size * 1024
+        partition_size = self.partition_size
         for _ in range(partition_num):
             script_lines.append(
                 f"create partition primary size={partition_size}")
