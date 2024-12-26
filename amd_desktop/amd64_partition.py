@@ -1,5 +1,5 @@
 '''Copyright (c) 2024 Jaron Cheng'''
-
+import math
 import logging
 import re
 from abc import ABC
@@ -41,7 +41,8 @@ class WindowsVolume(PartitionDisk):
     on a Windows platform.
     """
 
-    def __init__(self, platform: AMD64NVMe):
+    def __init__(self, platform: AMD64NVMe, disk_format: str,
+                 file_system: str):
         """
         Initialize the WindowsVolume instance.
 
@@ -55,6 +56,12 @@ class WindowsVolume(PartitionDisk):
         self.account = platform.api.account
         self.password = platform.api.password
         self.script_name = platform.api.script_name
+        self.disk_num = platform.disk_num
+        self.disk_info = platform.disk_info
+        self.partition_size = platform.partition_size
+        self.disk_capacity = platform.disk_capacity
+        self.disk_format = disk_format
+        self.file_system = file_system
 
     def write_script(self, diskpart_script: str) -> bool:
         """
@@ -109,6 +116,7 @@ class WindowsVolume(PartitionDisk):
                 f"diskpart /s {self.script_name}"
             )
             result_string = ' '.join(partition_cmd)
+            logger.debug('result_string = %s', result_string)
             match = re.search(pattern, result_string)
             if match:
                 extracted_string = match.group(1)
@@ -119,7 +127,7 @@ class WindowsVolume(PartitionDisk):
                 raise ValueError("No matching disk found.")
 
         except Exception as e:
-            logger.error("Error during Windows disk partitioning: %s", e)
+            logger.error("Error during write script execution: %s", e)
             raise
 
     def delete_script(self) -> bool:
@@ -144,6 +152,38 @@ class WindowsVolume(PartitionDisk):
         except Exception as e:
             logger.error("Error during deletion of diskpart script: %s", e)
             raise Exception("Error during deletion of diskpart script") from e
+
+    def create_partition(self) -> bool:
+        '''This is a docstring'''
+        script_lines = [
+            f"select disk {self.disk_num}",
+            "clean",
+            f"convert {self.disk_format}"
+        ]
+        logger.debug("self.partition_size = %s", self.partition_size)
+        logger.debug("self.disk_capacity = %s", self.disk_capacity)
+        partition_num = math.floor(self.disk_capacity / self.partition_size)
+        logger.debug("partition_num = %s", partition_num)
+
+        partition_size = self.partition_size * 1024
+        for _ in range(partition_num):
+            script_lines.append(
+                f"create partition primary size={partition_size}")
+            script_lines.append("assign")
+            script_lines.append(f"format fs={self.file_system} quick")
+        logger.debug("script_lines = %s", script_lines)
+
+        try:
+            with open(self.script_name, "w") as file:
+                file.write("\n".join(script_lines))
+
+            print("DiskPart script generated: diskpart_script.txt")
+            self._api.ftp_command(self.script_name)
+            return True
+
+        except Exception as e:
+            logger.error("Error during creation of diskpart script: %s", e)
+            raise Exception("Error during creation of diskpart script") from e
 
 
 class LinuxVolume(PartitionDisk):

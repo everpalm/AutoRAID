@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from amd_desktop.amd64_partition import WindowsVolume, LinuxVolume
+from amd_desktop.amd64_partition import WindowsVolume
 from amd_desktop.amd64_nvme import AMD64NVMe
 
 
@@ -34,7 +34,7 @@ def test_write_script_success(mock_windows_platform):
     diskpart_script = "select disk 0\nclean\ncreate partition primary"
     mock_windows_platform.api.ftp_command = MagicMock()
 
-    windows_volume = WindowsVolume(mock_windows_platform)
+    windows_volume = WindowsVolume(mock_windows_platform, 'gpt', 'ntfs')
     result = windows_volume.write_script(diskpart_script)
 
     # Assert file writing and FTP upload were successful

@@ -8,45 +8,57 @@ from amd_desktop.amd64_partition import WindowsVolume
 
 logger = logging.getLogger(__name__)
 
-DISKPART = """
-    list disk
-    """
-
 with open('config/test_win_partition.json', 'r', encoding='utf-8') as f:
-    DISKPART = [json.load(f)]
+    SCENARIO = json.load(f)
+
+
+@pytest.fixture(scope="module")
+def win_partition(target_system: AMD64NVMe) -> WindowsVolume:
+    """
+    docstring
+    """
+    return WindowsVolume(platform=target_system, disk_format='gpt',
+                         file_system='ntfs')
 
 
 class TestWindowsVolume:
-    @pytest.fixture(scope="module")
-    def win_partition(self, target_system: AMD64NVMe) -> WindowsVolume:
-        """
-        docstring
-        """
-        return WindowsVolume(platform=target_system)
+    # @pytest.fixture(scope="module")
+    # def win_partition(self, target_system: AMD64NVMe) -> WindowsVolume:
+    #     """
+    #     docstring
+    #     """
+    #     return WindowsVolume(platform=target_system, disk_format='gpt',
+    #                          file_system='ntfs')
 
-    @pytest.mark.parametrize('diskpart', DISKPART)
-    def test_write_script(self, win_partition: WindowsVolume, diskpart):
+    @pytest.mark.parametrize('scenario', SCENARIO)
+    def test_write_script(self, win_partition: WindowsVolume, scenario):
         """
         docstring
         """
-        # DISKPART_SCRIPT = f"""
-        #     select disk {target_system.disk_num}
-        #     create partition primary
-        #     format fs=ntfs quick
-        #     assign
-        #     exit
-        #     """
-        # logger.debug("diskpart = %s", diskpart['List Disk']['Script'])
-        result = win_partition.write_script(diskpart['Select Disk']['Script'])
-        logger.info('write_script = %s', result)
+        write_result = win_partition.write_script(
+            scenario["Script"])
+        logger.info('write_script = %s', write_result)
+        assert write_result is True
 
-    @pytest.mark.parametrize('diskpart', DISKPART)
-    def test_execute(self, win_partition: WindowsVolume, diskpart):
-        """
-        docstring
-        """
-        exe_result = win_partition.execute(diskpart['Select Disk']['Pattern'])
+        exe_result = win_partition.execute(scenario["Pattern"])
         logger.info('exe_result = %s', exe_result)
+        assert exe_result == scenario["Expected"]
+
+    def test_create_partition(self, win_partition: WindowsVolume):
+        """
+        docstring
+        """
+        create_result = win_partition.create_partition()
+        assert create_result is True
+
+    def test_execute(self, win_partition: WindowsVolume):
+        """
+        docstring
+        """
+        exe_result = win_partition.execute(
+            r"(DiskPart successfully formatted the volume\.)")
+        logger.info('exe_result = %s', exe_result)
+        assert exe_result == "DiskPart successfully formatted the volume."
 
     def test_delete_script(self, win_partition: WindowsVolume):
         '''
@@ -54,3 +66,4 @@ class TestWindowsVolume:
         '''
         del_result = win_partition.delete_script()
         logger.info('del_result = %s', del_result)
+        assert del_result is True
