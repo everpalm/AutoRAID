@@ -9,7 +9,7 @@ from unit.log_handler import get_logger
 from unit.application_interface import GenericAPI as Gapi
 # import os
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 class AMD64NVMe:
