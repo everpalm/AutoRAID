@@ -1,6 +1,7 @@
 import pytest
 from amd_desktop.amd64_perf import AMD64Perf
 
+
 class MockPlatform:
     """Mock implementation of a platform object.
 
@@ -13,6 +14,7 @@ class MockPlatform:
         self.cpu_num = cpu_num
         self.memory_size = memory_size
         self.api = MockAPI()
+
 
 class MockAPI:
     """Mock implementation of an API for executing commands."""
@@ -136,15 +138,18 @@ Total latency distribution:
     max |    161.193 |        N/A |    161.193
         """
 
+
 @pytest.fixture
 def platform():
     """Fixture for creating a mock platform object."""
     return MockPlatform()
 
+
 @pytest.fixture
 def amd64_perf(platform):
     """Fixture for creating an AMD64Perf object with the mock platform."""
     return AMD64Perf(platform, "/mock/path/to/io.dat")
+
 
 def test_run_io_operation(amd64_perf):
     """Test the run_io_operation method of the AMD64Perf class.
@@ -156,7 +161,8 @@ def test_run_io_operation(amd64_perf):
         amd64_perf (AMD64Perf): AMD64Perf object initialized with mock data.
 
     Assertions:
-        - Validates that the read/write bandwidth and IOPS are correctly parsed.
+        - Validates that the read/write bandwidth and IOPS are correctly
+        parsed.
         - Validates that the CPU usage dictionary contains accurate data.
     """
     read_bw, read_iops, write_bw, write_iops, _ = amd64_perf.run_io_operation(

@@ -18,12 +18,13 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
+
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(1)
 class TestPowerOffSUT:
     """
     Test suite for verifying SUT behavior during power-on sequence.
-    
+
     This class contains tests that ensure the SUT powers on correctly,
     responds to pings, and can be powered off via GPIO.
     """
@@ -35,7 +36,7 @@ class TestPowerOffSUT:
         Args:
             target_ping (object): The ping object used to send and receive ping
                                   requests.
-        
+
         Asserts:
             The ping result should be True, indicating a successful ping
             response.
@@ -73,7 +74,7 @@ class TestPowerOffSUT:
         Args:
             target_ping (object): The ping object used to send and receive ping
                                   requests.
-        
+
         Asserts:
             The ping result should be False, indicating no ping response was
             received.
@@ -83,12 +84,13 @@ class TestPowerOffSUT:
         # 检查返回值是否为False，表示ping失败
         assert result is False
 
+
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(2)
 class TestPowerOnSUT:
     """
     Test suite for verifying SUT behavior during power-off sequence.
-    
+
     This class contains tests that ensure the SUT loses network connectivity
     when powered off and can respond to a power-on command via GPIO.
     """
@@ -97,7 +99,7 @@ class TestPowerOnSUT:
     def test_ping_loss(self, target_ping):
         """
         Test suite for verifying SUT behavior during power-off sequence.
-        
+
         This class contains tests that ensure the SUT loses network
         connectivity
 
@@ -112,7 +114,7 @@ class TestPowerOnSUT:
         logger.info('target_ping.maximum = %s', target_ping.maximum)
         logger.info('target_ping.average = %s', target_ping.average)
         logger.info('ping_instance.deviation = %s', target_ping.deviation)
-        
+
         # 检查返回值是否为False，表示ping失败
         assert result is False
         # 验证解析结果
@@ -138,7 +140,7 @@ class TestPowerOnSUT:
         Args:
             target_ping (object): The ping object used to send and receive ping
                                   requests.
-        
+
         Asserts:
             The ping result should be True, indicating a successful ping
             response.
@@ -152,4 +154,3 @@ class TestPowerOnSUT:
 # class TestSystemOperation(object):
 #     # Placeholder
 #     pass
-

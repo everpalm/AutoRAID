@@ -1,0 +1,14 @@
+[
+    {
+        "Description": "Check System Drive",
+        "Script": "select disk 0\nlist partition",
+        "Pattern": "Partition\\s(\\d+)\\s+System",
+        "Expected": "1"
+    },
+    {
+        "Description": "List Partition", 
+        "Script": "select disk 2\nlist partition",
+        "Pattern": "Partition\\s(\\d+)\\s+Reserved",
+        "Expected": "1"
+    }
+]

@@ -21,7 +21,7 @@ SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 def dict_format(callback):
@@ -94,8 +94,8 @@ class GenericAPI(ABC):
 
 
 class WindowsAPI(GenericAPI):
-    @staticmethod
-    def cmd_transformer(context: CommandContext) -> str:
+    '''This is a docstring'''
+    def cmd_transformer(self, context: CommandContext) -> str:
         '''Placeholder'''
         logger.debug('Executing Windows cmd_transformer')
         sshpass = (
@@ -117,8 +117,7 @@ class WindowsAPI(GenericAPI):
 
 class LinuxAPI(GenericAPI):
     '''This is a docstring'''
-    @staticmethod
-    def cmd_transformer(context: CommandContext) -> str:
+    def cmd_transformer(self, context: CommandContext) -> str:
         '''Placeholder'''
         logger.debug('Executing Linux cmd_transformer, context.mode = %s',
                      context.mode)
@@ -164,6 +163,7 @@ class ApplicationInterface:
             self.remote_dir = self._get_remote_ip()
         self.os = self.get_os()
         self.interface = interface
+        self.script_name = "diskpart_script.txt"
 
     def __import_config(self) -> Dict[str, str]:
         '''This is a docstring'''
@@ -341,3 +341,31 @@ class ApplicationInterface:
         else:
             raise ValueError(f"Unsupported OS type: {os_type}")
         return ApplicationInterface(mode, if_name, config_file, api)
+
+    def ftp_command(self, str_target_file: str) -> bool:
+        '''Placeholder'''
+        logger.debug('str_target_file: %s', str_target_file)
+        try:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            logger.debug('remote_ip = %s', self.remote_ip)
+            logger.debug('account = %s', self.account)
+            logger.debug('password = %s', self.password)
+            logger.debug('remote_dir = %s', self.remote_dir)
+
+            remote_script_path = (
+                self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
+            logger.debug('remote_script_path = %s', remote_script_path)
+            client.connect(self.remote_ip, port=22, username=self.account,
+                           password=self.password)
+
+            sftp = client.open_sftp()
+            logger.debug('sftp = %s', sftp)
+            put_result = sftp.put(str_target_file, remote_script_path)
+            logger.debug('put_result = %s', put_result)
+            sftp.close()
+            client.close()
+        except Exception as e:
+            logger.error("Error occurred in ftp_command: %s", e)
+            raise
+        return True

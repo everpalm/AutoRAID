@@ -11,3 +11,4 @@ workspace/
 .report.json
 .testmondata*
 settings.json
+diskpart_script.txt
