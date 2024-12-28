@@ -5,12 +5,12 @@ import paramiko
 import pytest
 
 from amd_desktop.amd64_event import WindowsEvent as We
-from amd_desktop.amd64_interface import AMD64X570
+from amd_desktop.amd64_x570 import AMD64X570
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
+from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
-from unit.application_interface import InterfaceFactory
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 

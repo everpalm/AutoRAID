@@ -1,4 +1,4 @@
-# Contents of test_amd64_interface.py
+# Contents of test_amd64x570.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 import logging
@@ -11,7 +11,7 @@ with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
     AMD64_NVM = [json.load(f)]
 
 
-class TestAMD64Interface:
+class TestAMD64X570:
     '''Duplicate of TestAMD64NVMe'''
     @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_hyperthreading(self, amd64x570, amd64_nvm):
