@@ -6,8 +6,8 @@ import os
 import pytest
 import paramiko
 from amd_desktop.amd64_ping import AMD64Ping as aping
+from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
-from unit.application_interface import InterfaceFactory
 from unit.gitlab import GitLabAPI as glapi
 from unit.gpio import RaspBerryPins as rbp
 from unit.mongodb import MongoDB
