@@ -5,10 +5,12 @@ import paramiko
 import pytest
 
 from amd_desktop.amd64_event import WindowsEvent as We
+from amd_desktop.amd64_interface import AMD64X570
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from unit.application_interface import ApplicationInterface as api
+from unit.application_interface import InterfaceFactory
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi as rpi
 
@@ -19,10 +21,26 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 def my_app(cmdopt):
     '''This is a docstring'''
     print('\n\033[32m================== Setup API ===================\033[0m')
-    return api.create_interface(os_type=cmdopt.get('os_type'),
-                                mode=cmdopt.get('mode'),
-                                if_name=cmdopt.get('if_name'),
-                                config_file=cmdopt.get('config_file'))
+    return api.create_interface(
+        os_type=cmdopt.get('os_type'),
+        mode=cmdopt.get('mode'),
+        if_name=cmdopt.get('if_name'),
+        config_file=cmdopt.get('config_file')
+    )
+
+
+@pytest.fixture(scope="session")
+def amd64x570_interface(cmdopt):
+    '''docstring'''
+    print('\n\033[32m================== Setup Interface =============\033[0m')
+    factory = InterfaceFactory()
+    return factory.create_interface(
+        os_type=cmdopt.get('os_type'),
+        mode=cmdopt.get('mode'),
+        if_name=cmdopt.get('if_name'),
+        ssh_port='22',
+        config_file=cmdopt.get('config_file')
+    )
 
 
 @pytest.fixture(scope="session")
@@ -109,6 +127,15 @@ def target_system(my_app):
     """
     print("\n\033[32m================== Setup Platform ==============\033[0m")
     return amd64(interface=my_app)
+
+
+@pytest.fixture(scope="package")
+def amd64x570(amd64x570_interface):
+    """
+    docstring
+    """
+    print("\n\033[32m================== Setup AMD System ============\033[0m")
+    return AMD64X570(interface=amd64x570_interface)
 
 
 @pytest.fixture(scope="function")
