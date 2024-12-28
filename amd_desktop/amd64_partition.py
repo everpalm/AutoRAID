@@ -1,6 +1,6 @@
 '''Copyright (c) 2024 Jaron Cheng'''
-import math
 import logging
+import math
 import re
 from abc import ABC
 from abc import abstractmethod
@@ -8,7 +8,7 @@ from amd_desktop.amd64_nvme import AMD64NVMe
 from typing import List
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 class PartitionDisk(ABC):

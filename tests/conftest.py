@@ -6,6 +6,7 @@ import os
 import pytest
 import paramiko
 from amd_desktop.amd64_ping import AMD64Ping as aping
+from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
 from unit.gitlab import GitLabAPI as glapi
 from unit.gpio import RaspBerryPins as rbp
@@ -104,6 +105,19 @@ def drone_api():
                                 mode='local',
                                 if_name='wlan0',
                                 config_file='app_map.json')
+
+
+@pytest.fixture(scope='session', autouse=True)
+def raspi_interface():
+    print('\n\033[32m================== Setup RPi Interface =========\033[0m')
+    factory = InterfaceFactory()
+    return factory.create_interface(
+        os_type='Linux',
+        mode='local',
+        if_name='wlan0',
+        ssh_port='22',
+        config_file='app_map.json'
+    )
 
 
 @pytest.fixture(scope="session")

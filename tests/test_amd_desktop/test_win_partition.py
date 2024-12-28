@@ -35,23 +35,23 @@ class TestWindowsVolume:
     This class includes tests for script writing, partition creation,
     partition execution, and script deletion.
     """
-    # @pytest.mark.dependency(name="not max partitions")
-    # @pytest.mark.xfail
-    # def test_partition_existance(self, target_system, win_partition):
-    #     """
-    #     Test that the partition count does not exceed the allowed number.
+    @pytest.mark.dependency(name="not max partitions")
+    @pytest.mark.xfail
+    def test_partition_existance(self, target_system, win_partition):
+        """
+        Test that the partition count does not exceed the allowed number.
 
-    #     Args:
-    #         target_system (AMD64NVMe): The NVMe target system.
-    #         win_partition (WindowsVolume): The WindowsVolume instance.
+        Args:
+            target_system (AMD64NVMe): The NVMe target system.
+            win_partition (WindowsVolume): The WindowsVolume instance.
 
-    #     Asserts:
-    #         The number of existing partitions should be less than the allowed
-    #         number.
-    #     """
-    #     assert len(target_system.disk_info) < win_partition.partition_num
+        Asserts:
+            The number of existing partitions should be less than the allowed
+            number.
+        """
+        assert len(target_system.disk_info) < win_partition.partition_num
 
-    # @pytest.mark.dependency(name="not system drive")
+    @pytest.mark.dependency(name="not system drive")
     @pytest.mark.parametrize('scenario', SCENARIO)
     def test_write_script(self, win_partition: WindowsVolume, scenario):
         """
@@ -74,7 +74,7 @@ class TestWindowsVolume:
         logger.info('exe_result = %s', exe_result)
         assert exe_result == scenario["Expected"]
 
-    # @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
+    @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
     def test_create_partition(self, win_partition: WindowsVolume):
         """
         Test creating a new partition.
@@ -88,7 +88,7 @@ class TestWindowsVolume:
         create_result = win_partition.create_partition()
         assert create_result is True
 
-    # @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
+    @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
     def test_execute(self, win_partition: WindowsVolume):
         """
         Test executing a DiskPart script on the partition.
@@ -104,7 +104,7 @@ class TestWindowsVolume:
         logger.info('exe_result = %s', exe_result)
         assert exe_result == "DiskPart successfully formatted the volume."
 
-    # @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
+    @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
     def test_delete_script(self, win_partition: WindowsVolume):
         """
         Test deleting a script from the partition.
