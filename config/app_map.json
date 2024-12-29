@@ -5,7 +5,8 @@
         "Local": "192.168.0.193",
         "Account": "ste",
         "Password": "123456",
-        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
+        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID",
+        "Local Directory": "/home/pi/Projects/AutoRAID"
     },
     {
         "Name": "MY-RASPI-02",
@@ -13,7 +14,8 @@
         "Local": "192.168.0.117",
         "Account": "ste",
         "Password": "123456",
-        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
+        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID",
+        "Local Directory": "/home/pi/Projects/AutoRAID"
     },
     {
         "Name": "MY-RASPI-03",
@@ -21,6 +23,7 @@
         "Local": "192.168.0.139",
         "Account": "ste",
         "Password": "123456",
-        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID"
+        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID",
+        "Local Directory": "/home/pi/Projects/AutoRAID"
     }
 ]

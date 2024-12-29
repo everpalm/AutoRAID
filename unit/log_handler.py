@@ -1,6 +1,7 @@
 # log_handler.py
 import logging
 
+
 def get_logger(module_name: str, level: int = logging.DEBUG) -> logging.Logger:
     """
     Configures and returns a logger for the specified module.
@@ -23,7 +24,7 @@ def get_logger(module_name: str, level: int = logging.DEBUG) -> logging.Logger:
     formatter = logging.Formatter(
         # "%(asctime)s %(name)s %(levelname)s %(message)s"
         # "%(asctime)s %(levelname)s %(message)s"
-        "%(asctime)s %(levelname)s %(message)s"
+        "%(asctime)s %(levelname)s %(filename)s %(message)s"
     )
     console_handler.setFormatter(formatter)
 

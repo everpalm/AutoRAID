@@ -1,4 +1,4 @@
-# Contents of amd_64_nvme.py
+# Contents of amd64_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
@@ -6,19 +6,18 @@ import logging
 import math
 import re
 from unit.log_handler import get_logger
-from unit.application_interface import GenericAPI as Gapi
+from unit.amd64_interface import BaseInterface
 # import os
 
 logger = get_logger(__name__, logging.INFO)
 
 
-class AMD64NVMe:
+class AMD64X570:
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 
         Attributes:
             interface: Pass object with the 1st argument
-            os: Operation System
             manufacturer: Any
             bdf: Bus-Device-Function in the format of xx:yy.zz
             sdid: The Sub-device ID
@@ -29,9 +28,8 @@ class AMD64NVMe:
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    def __init__(self, interface: Gapi):
+    def __init__(self, interface: BaseInterface):
         self.api = interface
-        self.os = self.api.get_os()
         self.manufacturer = interface.config_file.replace('.json', '')
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
