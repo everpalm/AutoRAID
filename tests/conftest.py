@@ -66,6 +66,12 @@ def pytest_addoption(parser):
         default="Windows",
         help="Defalt factory OS"
     )
+    parser.addoption(
+        "--io_file",
+        action="store",
+        default="D:\\IO.dat",
+        help="Defalt IO file"
+    )
 
 
 @pytest.fixture(scope="session")
@@ -80,6 +86,7 @@ def cmdopt(request):
     cmdopt_dic.update(
         {'workspace': request.config.getoption("--workspace")})
     cmdopt_dic.update({'os_type': request.config.getoption("--os_type")})
+    cmdopt_dic.update({'io_file': request.config.getoption("--io_file")})
     return cmdopt_dic
 
 

@@ -18,7 +18,7 @@ import json
 import paramiko
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 @dataclass
