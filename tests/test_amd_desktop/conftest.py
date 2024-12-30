@@ -5,9 +5,10 @@ import paramiko
 import pytest
 
 from amd_desktop.amd64_event import WindowsEvent as We
-from amd_desktop.amd64_x570 import AMD64X570
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
-from amd_desktop.amd64_perf import AMD64Perf as amd64perf
+from amd_desktop.amd64_os import PlatformFactory
+# from amd_desktop.amd64_perf import AMD64Perf as amd64perf
+from amd_desktop.amd64_perf import PerfFactory
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
@@ -30,7 +31,7 @@ def my_app(cmdopt):
 
 
 @pytest.fixture(scope="session")
-def amd64x570_interface(cmdopt):
+def network_api(cmdopt):
     '''docstring'''
     print('\n\033[32m================== Setup Interface =============\033[0m')
     factory = InterfaceFactory()
@@ -110,7 +111,7 @@ def test_open_uart(drone):
     drone.close_uart()
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="session")
 def target_system(my_app):
     """
     Fixture to set up the target system (AMD64 platform).
@@ -129,17 +130,19 @@ def target_system(my_app):
     return amd64(interface=my_app)
 
 
-@pytest.fixture(scope="package")
-def amd64x570(amd64x570_interface):
+@pytest.fixture(scope="session")
+def amd64_system(network_api):
     """
     docstring
     """
     print("\n\033[32m================== Setup AMD System ============\033[0m")
-    return AMD64X570(interface=amd64x570_interface)
+    factory = PlatformFactory()
+    return factory.create_platform(
+        platform_type='AMD64', interface=network_api)
 
 
 @pytest.fixture(scope="function")
-def target_perf(target_system):
+def target_perf(amd64_system, cmdopt):
     """
     Fixture to set up performance testing on the target system.
 
@@ -154,7 +157,28 @@ def target_perf(target_system):
         amd64perf: The performance testing object.
     """
     print("\n\033[32m================== Setup Performance ===========\033[0m")
-    return amd64perf(platform=target_system, io_file="D:\\IO.dat")
+    perf = PerfFactory()
+    return perf.initiate(os_type=cmdopt.get('os_type'),
+                         platform=amd64_system, io_file=cmdopt.get('io_file'))
+
+
+# @pytest.fixture(scope="function")
+# def target_perf(target_system):
+#     """
+#     Fixture to set up performance testing on the target system.
+
+#     Creates an `amd64perf` object for performance testing, initialized with
+#     the `target_system` and a specified I/O file. This fixture has a function
+#     scope, meaning it will be executed before each test function.
+
+#     Args:
+#         target_system: The target system fixture.
+
+#     Returns:
+#         amd64perf: The performance testing object.
+#     """
+#     print("\n\033[32m================== Setup Performance ==========\033[0m")
+#     return amd64perf(platform=target_system, io_file="D:\\IO.dat")
 
 
 @pytest.fixture(scope="function")
