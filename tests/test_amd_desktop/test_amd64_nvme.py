@@ -171,4 +171,4 @@ class TestAMD64NVMe:
             amd64_nvm (dict): Expected configuration data for validation.
         """
         disk_capacity = target_system.disk_capacity
-        logger.info("disk_capacity = %s", disk_capacity)
+        logger.info("disk_capacity = %s GB", disk_capacity)
