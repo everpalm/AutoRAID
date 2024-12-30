@@ -5,7 +5,7 @@ import paramiko
 import pytest
 
 from amd_desktop.amd64_event import WindowsEvent as We
-from amd_desktop.amd64_x570 import AMD64X570
+from amd_desktop.amd64_os import AMD64Windows
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
@@ -30,14 +30,14 @@ def my_app(cmdopt):
 
 
 @pytest.fixture(scope="session")
-def amd64x570_interface(cmdopt):
+def windows_api(cmdopt):
     '''docstring'''
     print('\n\033[32m================== Setup Interface =============\033[0m')
     factory = InterfaceFactory()
     return factory.create_interface(
-        os_type=cmdopt.get('os_type'),
-        mode=cmdopt.get('mode'),
-        if_name=cmdopt.get('if_name'),
+        os_type='Windows',
+        mode='remote',
+        if_name='wlan0',
         ssh_port='22',
         config_file=cmdopt.get('config_file')
     )
@@ -130,12 +130,12 @@ def target_system(my_app):
 
 
 @pytest.fixture(scope="package")
-def amd64x570(amd64x570_interface):
+def amd64_windows(windows_api):
     """
     docstring
     """
     print("\n\033[32m================== Setup AMD System ============\033[0m")
-    return AMD64X570(interface=amd64x570_interface)
+    return AMD64Windows(interface=windows_api)
 
 
 @pytest.fixture(scope="function")

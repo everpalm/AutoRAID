@@ -1,4 +1,4 @@
-# Contents of amd64_interface.py
+# Contents of amd64_os.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
@@ -12,7 +12,7 @@ from unit.amd64_interface import BaseInterface
 logger = get_logger(__name__, logging.INFO)
 
 
-class AMD64X570:
+class AMD64Windows:
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 
@@ -146,8 +146,6 @@ class AMD64X570:
                 raise ValueError(
                     "Failed to retrieve the expected output from command.")
 
-            # match = re.search(r"Ethernet 7\s+.*?\s+([A-F0-9-]{17})\s",
-            #                   filtered)
             match = re.search(r"([0-9A-Fa-f]{2}(-[0-9A-Fa-f]{2}){5})",
                               filtered)
             if match:
