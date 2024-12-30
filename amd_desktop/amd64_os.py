@@ -60,8 +60,8 @@ class AMD64Windows(BaseOS):
             serial: Used for indentifying system
     '''
     def __init__(self, interface: BaseInterface):
-        # self.api = interface
-        super().__init__(interface)
+        self.api = interface
+        # super().__init__(interface)
         self.manufacturer = interface.config_file.replace('.json', '')
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
