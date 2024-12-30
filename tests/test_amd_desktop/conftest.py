@@ -5,7 +5,6 @@ import paramiko
 import pytest
 
 from amd_desktop.amd64_event import WindowsEvent as We
-# from amd_desktop.amd64_os import AMD64Windows
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_os import PlatformFactory
 from amd_desktop.amd64_perf import AMD64Perf as amd64perf
@@ -131,12 +130,11 @@ def target_system(my_app):
 
 
 @pytest.fixture(scope="session")
-def amd64_windows(network_api):
+def amd64_system(network_api):
     """
     docstring
     """
     print("\n\033[32m================== Setup AMD System ============\033[0m")
-    # return AMD64Windows(interface=amd64_api)
     factory = PlatformFactory()
     return factory.create_platform(
         platform_type='AMD64', interface=network_api)
