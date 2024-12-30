@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class GitLabAPI:
     def __init__(self, private_token, project_id):
         self.gl = gitlab.Gitlab('https://gitlab.com',
@@ -17,16 +18,16 @@ class GitLabAPI:
     def push_test_result(self, test_case_id, test_result, label, color):
         project = self.gl.projects.get(self.project_id)
         test_case = project.issues.get(test_case_id)
-        
+
         # 創建測試結果筆記
         note = test_case.notes.create({'body': test_result})
         logger.debug(f'Pushed test result: {note.body}')
-        
+
         # 添加標籤
         labels = test_case.labels
         if label not in labels:
             labels.append(label)
-        
+
         # 創建或更新標籤
         try:
             project.labels.create({'name': label, 'color': color})
@@ -35,17 +36,17 @@ class GitLabAPI:
             existing_label = project.labels.get(label)
             existing_label.color = color
             existing_label.save()
-        
+
         test_case.labels = labels
         test_case.save()
-        
+
         logger.debug(f'Updated labels for test case: {test_case.labels}')
         return note
 
     def create_issue(self, title, description):
         project = self.gl.projects.get(self.project_id)
         issue = project.issues.create({'title': title,
-                                        'description': description})
+                                      'description': description})
         return issue
 
     def get_project_info(self):
@@ -71,7 +72,7 @@ class GitLabAPI:
         project = self.gl.projects.get(self.project_id)
         issue = project.issues.get(issue_id)
         issue.delete()
-    
+
     def get_test_case_id(self, test_case_name):
         project = self.gl.projects.get(self.project_id)
         issues = project.issues.list(all=True)
@@ -79,7 +80,7 @@ class GitLabAPI:
             if issue.title == test_case_name:
                 return issue.iid
         return None
-    
+
     def get_test_case_notes(self, test_case_id):
         project = self.gl.projects.get(self.project_id)
         test_case = project.issues.get(test_case_id)
