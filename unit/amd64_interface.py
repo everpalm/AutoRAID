@@ -1,4 +1,4 @@
-# Contents of amd64x570.py
+# Contents of amd64_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
