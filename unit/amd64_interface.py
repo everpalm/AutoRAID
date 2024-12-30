@@ -240,7 +240,6 @@ class WindowsInterface(BaseInterface):
         )
         logger.debug('CommandContext: %s', context.__dict__)
 
-        # transformed_command = self.interface.cmd_transformer(context)
         transformed_command = self.cmd_transformer(context)
         logger.debug('Transformed Command: %s', transformed_command)
 
@@ -363,13 +362,13 @@ class LinuxInterface(BaseInterface):
             raise ValueError('Unknown mode setting in set_access_mode')
 
 
-class BaseFactory(ABC):
+class BaseInterfaceFactory(ABC):
     '''docstring'''
     def create_interface(self) -> BaseInterface:
         pass
 
 
-class InterfaceFactory(BaseFactory):
+class InterfaceFactory(BaseInterfaceFactory):
     '''docstring'''
     def create_interface(self, os_type: str, **kwargs) -> BaseInterface:
         '''Factory method to create an interface based on OS type'''
