@@ -1,6 +1,8 @@
 # Contents of amd64_os.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
+from abc import ABC
+from abc import abstractmethod
 from collections import defaultdict
 import logging
 import math
@@ -12,7 +14,36 @@ from unit.amd64_interface import BaseInterface
 logger = get_logger(__name__, logging.INFO)
 
 
-class AMD64Windows:
+class BaseOS(ABC):
+    '''docstring'''
+    def __init__(self, interface: BaseInterface):
+        self.api = interface
+
+    @abstractmethod
+    def _get_hyperthreading(self):
+        pass
+
+    @abstractmethod
+    def _get_memory_size(self):
+        pass
+
+    @abstractmethod
+    def get_cpu_info(self) -> dict[str, str]:
+        pass
+
+    @abstractmethod
+    def _get_disk_num(self):
+        pass
+
+    @abstractmethod
+    def _get_desktop_info(self) -> dict[str]:
+        pass
+
+    def _get_pcie_info(self) -> dict[str, str]:
+        pass
+
+
+class AMD64Windows(BaseOS):
     ''' AMD 64 NVMe System
         Any operations of the system that are not included in the DUT behavior
 
@@ -29,7 +60,8 @@ class AMD64Windows:
             serial: Used for indentifying system
     '''
     def __init__(self, interface: BaseInterface):
-        self.api = interface
+        # self.api = interface
+        super().__init__(interface)
         self.manufacturer = interface.config_file.replace('.json', '')
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
@@ -387,3 +419,22 @@ class AMD64Windows:
             raise
 
         return int(disk_capacity) / (2**30)
+
+
+class BasePlatformFactory(ABC):
+    '''docstring'''
+    @abstractmethod
+    def create_platform(self) -> BaseOS:
+        pass
+
+
+class PlatformFactory(BasePlatformFactory):
+    '''docstring'''
+    def create_platform(self, platform_type: str, **kwargs) -> BaseOS:
+        '''Factory method to create an interface based on OS type'''
+        if platform_type == 'AMD64':
+            return AMD64Windows(**kwargs)
+        # elif platform_type == 'Intelx86':
+        #     return IntelWindows(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {platform_type}")

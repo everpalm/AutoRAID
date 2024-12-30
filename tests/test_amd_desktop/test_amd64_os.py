@@ -1,4 +1,4 @@
-# Contents of test_amd64_windows.py
+# Contents of test_amd64_os.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 import logging
