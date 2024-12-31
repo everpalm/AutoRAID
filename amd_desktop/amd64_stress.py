@@ -4,6 +4,7 @@ import logging
 import re
 from abc import ABC
 from abc import abstractmethod
+from unit.amd64_interface import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -194,16 +195,28 @@ class LinuxStress(BaseStress):
 
 class BaseStressFactory(ABC):
     '''docstring'''
+    def __init__(self, api: BaseInterface):
+        self.api = api
+        self.os_type = api.os_type
+
     @abstractmethod
-    def initiate(self, os_type: str, **kwargs) -> BaseStress:
+    # def initiate(self, os_type: str, **kwargs) -> BaseStress:
+    def initiate(self, **kwargs) -> BaseStress:
         pass
 
 
 class StressFactory(BaseStressFactory):
-    def initiate(self, os_type: str, **kwargs) -> BaseStress:
-        if os_type == 'Windows':
+    # def initiate(self, os_type: str, **kwargs) -> BaseStress:
+    #     if os_type == 'Windows':
+    #         return WindowsStress(**kwargs)
+    #     elif os_type == 'Linux':
+    #         return LinuxStress(**kwargs)
+    #     else:
+    #         raise ValueError(f"Unsupported OS type: {os_type}")
+    def initiate(self, **kwargs) -> BaseStress:
+        if self.os_type == 'Windows':
             return WindowsStress(**kwargs)
-        elif os_type == 'Linux':
+        elif self.os_type == 'Linux':
             return LinuxStress(**kwargs)
         else:
-            raise ValueError(f"Unsupported OS type: {os_type}")
+            raise ValueError(f"Unsupported OS type: {self.os_type}")
