@@ -6,7 +6,7 @@ import re
 from abc import ABC
 from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
-from amd_desktop.amd64_os import BaseOS
+from amd_desktop.amd64_system import BaseOS
 from typing import List
 from unit.log_handler import get_logger
 
