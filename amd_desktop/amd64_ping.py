@@ -1,7 +1,10 @@
 # Contents of amd64_ping.py
 '''Copyright (c) 2024 Jaron Cheng'''
-
+from abc import ABC
+from abc import abstractmethod
+from unit.ping import PingBase
 from unit.ping import LinuxPing
+from unit.ping import WindowsPing
 
 
 class AMD64Ping(LinuxPing):
@@ -18,3 +21,20 @@ class AMD64Ping(LinuxPing):
     Methods:
         Inherits all methods from the `LinuxPing` class.
     """
+
+
+class BasePingFactory(ABC):
+    '''docstring'''
+    @abstractmethod
+    def initiate(self, os_type: str, **kwargs) -> PingBase:
+        pass
+
+
+class PingFactory(BasePingFactory):
+    def initiate(self, os_type: str, **kwargs) -> PingBase:
+        if os_type == 'Windows':
+            return WindowsPing(**kwargs)
+        elif os_type == 'Linux':
+            return LinuxPing(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")

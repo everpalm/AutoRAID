@@ -5,7 +5,8 @@ import logging
 import os
 import pytest
 import paramiko
-from amd_desktop.amd64_ping import AMD64Ping as aping
+# from amd_desktop.amd64_ping import AMD64Ping as aping
+from amd_desktop.amd64_ping import PingFactory
 from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
 from unit.gitlab import GitLabAPI as glapi
@@ -127,10 +128,18 @@ def raspi_interface():
     )
 
 
+# @pytest.fixture(scope="session")
+# def target_ping(drone_api):
+#     print('\n\033[32m================== Setup Ping ==================\033[0m')
+#     return aping(drone_api)
+
+
 @pytest.fixture(scope="session")
-def target_ping(drone_api):
+def target_ping(raspi_interface):
     print('\n\033[32m================== Setup Ping ==================\033[0m')
-    return aping(drone_api)
+    ping = PingFactory()
+    return ping.initiate(os_type='Linux', api=raspi_interface)
+
 
 # @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 # def pytest_runtest_makereport(item, call):
