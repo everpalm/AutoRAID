@@ -40,7 +40,7 @@ def win_warmboot(target_system):
     return wwb(platform=target_system)
 
 
-# @pytest.mark.order(1)
+@pytest.mark.order(1)
 class TestWindowsWarmBoot:
     """
     Test suite for verifying Windows Warm Boot functionality.
@@ -89,7 +89,7 @@ class TestWindowsWarmBoot:
         assert result is True
 
 
-# @pytest.mark.order(2)
+@pytest.mark.order(2)
 class TestWindowsWarmBootStress(Toss):
     """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
     """
