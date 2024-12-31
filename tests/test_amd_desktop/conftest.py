@@ -10,7 +10,7 @@ from amd_desktop.amd64_os import PlatformFactory
 # from amd_desktop.amd64_perf import AMD64Perf as amd64perf
 from amd_desktop.amd64_perf import PerfFactory
 # from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
-from amd_desktop.amd64_stress import AMDStressFactory
+from amd_desktop.amd64_stress import StressFactory
 from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
@@ -163,20 +163,6 @@ def target_perf(amd64_system, cmdopt):
                          platform=amd64_system, io_file=cmdopt.get('io_file'))
 
 
-# @pytest.fixture(scope="function")
-# def target_stress(target_system):
-#     """Fixture to set up an AMD64MultiPathStress instance for I/O stresstests
-
-#     Args:
-#         target_system: The system instance to run stress tests on.
-
-#     Returns:
-#         AMD64MultiPathStress: Instance for executing stress test operations.
-#     """
-#     print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
-#     return amps(platform=target_system)
-
-
 @pytest.fixture(scope="function")
 def target_stress(amd64_system, cmdopt):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
@@ -188,7 +174,7 @@ def target_stress(amd64_system, cmdopt):
         AMD64MultiPathStress: Instance for executing stress test operations.
     """
     print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
-    stress = AMDStressFactory()
+    stress = StressFactory()
     return stress.initiate(os_type=cmdopt.get('os_type'),
                            platform=amd64_system)
 
