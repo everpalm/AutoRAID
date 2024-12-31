@@ -6,6 +6,7 @@ import re
 from abc import ABC
 from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
+from amd_desktop.amd64_os import BaseOS
 from typing import List
 from unit.log_handler import get_logger
 
@@ -42,7 +43,8 @@ class WindowsVolume(PartitionDisk):
     on a Windows platform.
     """
 
-    def __init__(self, platform: AMD64NVMe, disk_format: str,
+    # def __init__(self, platform: AMD64NVMe, disk_format: str,
+    def __init__(self, platform: BaseOS, disk_format: str,
                  file_system: str):
         """
         Initialize the WindowsVolume instance.
@@ -227,3 +229,20 @@ class LinuxVolume(PartitionDisk):
         except Exception as e:
             logger.error("Error during Linux partitioning: %s", e)
             return False
+
+
+class BasePartitionFactory(ABC):
+    '''docstring'''
+    @abstractmethod
+    def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
+        pass
+
+
+class PartitionFactory(BasePartitionFactory):
+    def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
+        if os_type == 'Windows':
+            return WindowsVolume(**kwargs)
+        elif os_type == 'Linux':
+            return LinuxVolume(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")

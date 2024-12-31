@@ -4,6 +4,9 @@ import json
 import logging
 import pytest
 from amd_desktop.amd64_nvme import AMD64NVMe
+from amd_desktop.amd64_os import BaseOS
+from amd_desktop.amd64_partition import PartitionFactory
+from amd_desktop.amd64_partition import PartitionDisk
 from amd_desktop.amd64_partition import WindowsVolume
 
 logger = logging.getLogger(__name__)
@@ -13,7 +16,8 @@ with open('config/test_win_partition.json', 'r', encoding='utf-8') as f:
 
 
 @pytest.fixture(scope="module")
-def win_partition(target_system: AMD64NVMe) -> WindowsVolume:
+# def win_partition(target_system: AMD64NVMe) -> WindowsVolume:
+def win_partition(amd64_system: BaseOS) -> PartitionDisk:
     """
     Pytest fixture to initialize a WindowsVolume instance for testing.
 
@@ -24,8 +28,11 @@ def win_partition(target_system: AMD64NVMe) -> WindowsVolume:
         WindowsVolume: An instance of the WindowsVolume class with the
         specified platform, disk format, and file system.
     """
-    return WindowsVolume(platform=target_system, disk_format='gpt',
-                         file_system='ntfs')
+    partition = PartitionFactory()
+    # return WindowsVolume(platform=amd64_system, disk_format='gpt',
+    #                      file_system='ntfs')
+    return partition.initiate(os_type='Windows', platform=amd64_system,
+                              disk_format='gpt', file_system='ntfs')
 
 
 class TestWindowsVolume:

@@ -54,6 +54,7 @@ class LinuxWarmBoot(WarmBoot):
 
 class BaseWarmBootFactory(ABC):
     '''docstring'''
+    @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> WarmBoot:
         pass
 

@@ -194,6 +194,7 @@ class LinuxStress(BaseStress):
 
 class BaseStressFactory(ABC):
     '''docstring'''
+    @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> BaseStress:
         pass
 
