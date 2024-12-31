@@ -3,9 +3,9 @@
 import logging
 import time
 import pytest
-from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress as Toss
-from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
-
+from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress
+# from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
+from amd_desktop.amd64_warmboot import WarmBootFactory
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,8 @@ RESET_DURATION = 30
 
 
 @pytest.fixture(scope="module", autouse=True)
-def win_warmboot(target_system):
+# def win_warmboot(target_system):
+def win_warmboot(amd64_system, cmdopt):
     """
     Fixture to automatically execute a Windows Warm Boot for the test module.
 
@@ -37,7 +38,10 @@ def win_warmboot(target_system):
     Returns:
         wwb: The warm boot execution object.
     """
-    return wwb(platform=target_system)
+    # return wwb(platform=target_system)
+    warmboot = WarmBootFactory()
+    return warmboot.initiate(os_type=cmdopt.get('os_type'),
+                             platform=amd64_system)
 
 
 @pytest.mark.order(1)
@@ -85,11 +89,11 @@ class TestWindowsWarmBoot:
         logger.info('target_ping.average = %s', target_ping.average)
         logger.info('ping_instance.deviation = %s', target_ping.deviation)
 
-        # 检查返回值是否为True，表示ping成功
+        # Check whether return value is True, which stands for the ping success
         assert result is True
 
 
 @pytest.mark.order(2)
-class TestWindowsWarmBootStress(Toss):
+class TestWindowsWarmBootStress(TestOneShotStress):
     """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
     """
