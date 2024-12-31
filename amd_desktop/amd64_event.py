@@ -4,7 +4,8 @@ import logging
 import re
 from abc import ABC
 from abc import abstractmethod
-from amd_desktop.amd64_nvme import AMD64NVMe
+# from amd_desktop.amd64_nvme import AMD64NVMe
+from amd_desktop.amd64_system import BaseOS
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -110,7 +111,7 @@ class WindowsEvent(SystemLogging):
         windows_event.clear_error()
         ```
     """
-    def __init__(self, platform: AMD64NVMe):
+    def __init__(self, platform: BaseOS):
         """
         Initialize WindowsEvent with platform-specific configurations.
 
@@ -201,3 +202,31 @@ class WindowsEvent(SystemLogging):
         except Exception as e:
             logger.error("Error clearing system event log: %s", e)
             return False
+
+
+class LinuxEvent(SystemLogging):
+    '''docstring'''
+    def find_error(self):
+        pass
+
+    def clear_error(self):
+        pass
+
+
+class BaseEventFactory(ABC):
+    '''docstring'''
+    @abstractmethod
+    def initiate(self) -> SystemLogging:
+        pass
+
+
+class EventFactory(BaseEventFactory):
+    '''docstring'''
+    def initiate(self, os_type: str, **kwargs) -> SystemLogging:
+        '''Factory method to create an interface based on OS type'''
+        if os_type == 'Windows':
+            return WindowsEvent(**kwargs)
+        elif os_type == 'Linux':
+            return LinuxEvent(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")
