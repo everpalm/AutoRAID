@@ -180,9 +180,9 @@ class TestOLTP:
 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'oltp_')
 
-        # criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD, iodepth)
+        criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD, iodepth)
 
-        # logger.debug("criteria = %s", criteria)
+        logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
 
@@ -219,7 +219,8 @@ class TestOLAP:
 
         log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'olap_')
 
-        # criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD, iodepth)
+        criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD,
+                                                   write_pattern)
 
-        # logger.debug("criteria = %s", criteria)
+        logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])

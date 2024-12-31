@@ -1,8 +1,8 @@
 # Contents of test_ping.py
-'''Unit tests for LinuxPing and WindowsPing classes for ping command functionality.
-   This module includes tests to verify successful and failed ping scenarios on both
-   Linux and Windows systems, using mock data.
-   
+'''Unit tests for LinuxPing and WindowsPing classes for ping command
+    functionality.
+   This module includes tests to verify successful and failed ping scenarios
+   on both Linux and Windows systems, using mock data.
    Copyright (c) 2024 Jaron Cheng
 '''
 import logging

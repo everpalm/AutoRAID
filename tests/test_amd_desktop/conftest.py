@@ -4,17 +4,16 @@ import logging
 import paramiko
 import pytest
 
-from amd_desktop.amd64_event import WindowsEvent as We
+# from amd_desktop.amd64_event import WindowsEvent as We
+from amd_desktop.amd64_event import EventFactory
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
-from amd_desktop.amd64_os import PlatformFactory
-# from amd_desktop.amd64_perf import AMD64Perf as amd64perf
+from amd_desktop.amd64_system import PlatformFactory
 from amd_desktop.amd64_perf import PerfFactory
-# from amd_desktop.amd64_stress import AMD64MultiPathStress as amps
 from amd_desktop.amd64_stress import StressFactory
 from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
-from unit.system_under_testing import RaspberryPi as rpi
+from unit.system_under_testing import RaspberryPi
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
@@ -67,26 +66,27 @@ def my_mdb():
 
 
 @pytest.fixture(scope="session")
-def drone(drone_api):
+def drone(raspi_interface):
     """
     Fixture to set up a Raspberry Pi (presumably for drone control).
 
-    Initializes an `rpi` object (presumably for interacting with a Raspberry
-    Pi) with the specified UART parameters and drone API. This fixture has a
-    "session" scope, meaning it will be executed only once per test session.
+    Initializes an `Raspberry` object (presumably for interacting with a
+    Raspberry Pi) with the specified UART parameters and drone API. This
+    fixture has a "session" scope, meaning it will be executed only once per
+    test session.
 
     Args:
         drone_api: The API object for interacting with the drone.
 
     Returns:
-        rpi: The Raspberry Pi interaction object.
+        RaspberryPi: The Raspberry Pi interaction object.
     """
     print("\n\033[32m================== Setup RSBPi =================\033[0m")
-    return rpi(
+    return RaspberryPi(
         uart_path='/dev/ttyUSB0',
         baud_rate=115200,
         file_name='logs/uart.log',
-        rpi_api=drone_api,
+        rpi_api=raspi_interface,
     )
 
 
@@ -136,14 +136,14 @@ def amd64_system(network_api):
     """
     docstring
     """
-    print("\n\033[32m================== Setup AMD System ============\033[0m")
-    factory = PlatformFactory()
-    return factory.create_platform(
-        platform_type='AMD64', interface=network_api)
+    print("\n\033[32m================== Setup AMD64 System ==========\033[0m")
+    factory = PlatformFactory(network_api)
+    return factory.create_platform(interface=network_api)
+    # platform_type='AMD64', interface=network_api)
 
 
 @pytest.fixture(scope="function")
-def target_perf(amd64_system, cmdopt):
+def target_perf(amd64_system, cmdopt, network_api):
     """
     Fixture to set up performance testing on the target system.
 
@@ -157,14 +157,15 @@ def target_perf(amd64_system, cmdopt):
     Returns:
         amd64perf: The performance testing object.
     """
-    print("\n\033[32m================== Setup Performance ===========\033[0m")
-    perf = PerfFactory()
-    return perf.initiate(os_type=cmdopt.get('os_type'),
-                         platform=amd64_system, io_file=cmdopt.get('io_file'))
+    print("\n\033[32m================== Setup Performance Test=======\033[0m")
+    perf = PerfFactory(api=network_api)
+    # return perf.initiate(os_type=cmdopt.get('os_type'),
+    # platform=amd64_system, io_file=cmdopt.get('io_file'))
+    return perf.initiate(platform=amd64_system, io_file=cmdopt.get('io_file'))
 
 
 @pytest.fixture(scope="function")
-def target_stress(amd64_system, cmdopt):
+def target_stress(amd64_system, network_api):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
@@ -173,14 +174,25 @@ def target_stress(amd64_system, cmdopt):
     Returns:
         AMD64MultiPathStress: Instance for executing stress test operations.
     """
-    print('\n\033[32m================ Setup I/O Stress ==========\033[0m')
-    stress = StressFactory()
-    return stress.initiate(os_type=cmdopt.get('os_type'),
-                           platform=amd64_system)
+    print('\n\033[32m================ Setup Stress Test==============\033[0m')
+    stress = StressFactory(network_api)
+    return stress.initiate(platform=amd64_system)
 
 
+# @pytest.fixture(scope="package")
+# def win_event(target_system):
+#     """Fixture for setting up Windows Event monitoring for system errors.
+
+#     Args:
+#         target_system: The system instance to monitor for Windows Event logs.
+
+#     Returns:
+#         WindowsEvent: An instance of WindowsEvent for error logging.
+#     """
+#    print('\n\033[32m================== Setup Win Event =============\033[0m')
+#     return We(platform=target_system)
 @pytest.fixture(scope="package")
-def win_event(target_system):
+def os_event(amd64_system, cmdopt):
     """Fixture for setting up Windows Event monitoring for system errors.
 
     Args:
@@ -189,12 +201,14 @@ def win_event(target_system):
     Returns:
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
-    print('\n\033[32m================== Setup Win Event =============\033[0m')
-    return We(platform=target_system)
+    print('\n\033[32m================== Setup Event Logging===========\033[0m')
+    event = EventFactory()
+    return event.initiate(os_type=cmdopt.get('os_type'),
+                          platform=amd64_system)
 
 
 @pytest.fixture(scope="function", autouse=True)
-def test_check_error(win_event):
+def test_check_error(os_event):
     """Fixture to clear previous Windows event logs and check for specific
     errors after each test function.
 
@@ -204,22 +218,22 @@ def test_check_error(win_event):
     Raises:
         AssertionError: If specific errors (ID 51 or 157) are detected in logs
     """
-
-    yield win_event.clear_error()
-
+    print('\n\033[32m================== Clear Event Log==============\033[0m')
+    yield os_event.clear_error()
+    print('\n\033[32m================== Check Event Log==============\033[0m')
     errors = []
-    if win_event.find_error(
+    if os_event.find_error(
         "System",
         51,
         r'An error was detected on device (\\\w+\\\w+\.+)'
     ):
         errors.append("Error 51 detected in system logs.")
 
-    if win_event.find_error("System", 157,
-                            r'Disk (\d+) has been surprise removed.'):
+    if os_event.find_error("System", 157,
+                           r'Disk (\d+) has been surprise removed.'):
         errors.append("Error 157 detected: Disk surprise removal.")
 
     if errors:
         raise AssertionError(f"Detected errors: {errors}")
 
-    print('\n\033[32m================== Teardown Win Event ==========\033[0m')
+    print('\n\033[32m================== Teardown Event Logging=======\033[0m')
