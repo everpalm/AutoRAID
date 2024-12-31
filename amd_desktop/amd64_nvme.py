@@ -6,7 +6,7 @@ import logging
 import math
 import re
 from unit.log_handler import get_logger
-from unit.application_interface import GenericAPI as Gapi
+from unit.application_interface import GenericAPI
 # import os
 
 logger = get_logger(__name__, logging.INFO)
@@ -29,7 +29,7 @@ class AMD64NVMe:
             version: System manufacturer
             serial: Used for indentifying system
     '''
-    def __init__(self, interface: Gapi):
+    def __init__(self, interface: GenericAPI):
         self.api = interface
         self.os = self.api.get_os()
         self.manufacturer = interface.config_file.replace('.json', '')
