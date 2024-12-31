@@ -2,12 +2,14 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import re
+from abc import ABC
+from abc import abstractmethod
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
 
 
-class AMD64MultiPathStress:
+class BaseStress(ABC):
     """
     Class to perform multi-path I/O stress testing on AMD64 systems.
 
@@ -36,8 +38,8 @@ class AMD64MultiPathStress:
             io_paths (List[str]): List of I/O paths (drive letters) where the
                                   stress test will be executed.
         """
-        if AMD64MultiPathStress.CPU_GROUP is None:
-            AMD64MultiPathStress.CPU_GROUP = "0,0"  # Default CPU group 0, CPU0
+        if BaseStress.CPU_GROUP is None:
+            BaseStress.CPU_GROUP = "0,0"  # Default CPU group 0, CPU0
         self._platform = platform
         self.io_paths = self._platform.disk_info
         self._api = platform.api
@@ -54,6 +56,13 @@ class AMD64MultiPathStress:
         cls.CPU_GROUP = cpu_group
         logger.info("Manually set CPU_GROUP: %s", cls.CPU_GROUP)
 
+    @abstractmethod
+    def run_io_operation(self, thread, iodepth, block_size, random_size,
+                         write_pattern, duration):
+        pass
+
+
+class WindowsStress(BaseStress):
     def run_io_operation(self, thread, iodepth, block_size, random_size,
                          write_pattern, duration):
         """
@@ -174,3 +183,27 @@ class AMD64MultiPathStress:
             float(write_iops),
             cpu_usage
         )
+
+
+class LinuxStress(BaseStress):
+    '''docstring'''
+    def run_io_operation(self, thread, iodepth, block_size, random_size,
+                         write_pattern, duration):
+        pass
+
+
+class BaseStressFactory(ABC):
+    '''docstring'''
+    @abstractmethod
+    def initiate(self, os_type: str, **kwargs) -> BaseStress:
+        pass
+
+
+class StressFactory(BaseStressFactory):
+    def initiate(self, os_type: str, **kwargs) -> BaseStress:
+        if os_type == 'Windows':
+            return WindowsStress(**kwargs)
+        elif os_type == 'Linux':
+            return LinuxStress(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")

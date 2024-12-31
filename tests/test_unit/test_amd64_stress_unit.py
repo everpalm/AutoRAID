@@ -1,5 +1,6 @@
 import pytest
-from amd_desktop.amd64_stress import AMD64MultiPathStress
+from amd_desktop.amd64_stress import WindowsStress
+
 
 class MockPlatform:
     """Mock implementation of a platform object for AMD64MultiPathStress."""
@@ -7,6 +8,7 @@ class MockPlatform:
         self.disk_info = [('C', 1024), ('D', 2048)]
         self.memory_size = 16
         self.api = MockAPI()
+
 
 class MockAPI:
     """Mock implementation of an API for executing commands."""
@@ -130,26 +132,30 @@ class MockAPI:
             max |    161.193 |        N/A |    161.193
         """
 
+
 @pytest.fixture
 def platform():
     """Fixture to create a mock platform for testing."""
     return MockPlatform()
 
+
 @pytest.fixture
 def amd64_stress(platform):
     """Fixture to create an AMD64MultiPathStress object."""
-    return AMD64MultiPathStress(platform)
+    return WindowsStress(platform)
+
 
 def test_run_io_operation(amd64_stress):
     """Test the run_io_operation method of AMD64MultiPathStress."""
-    read_bw, read_iops, write_bw, write_iops, cpu_usage = amd64_stress.run_io_operation(
-        thread=1,
-        iodepth=7,
-        block_size="4k",
-        random_size="4k",
-        write_pattern="0",
-        duration=30
-    )
+    read_bw, read_iops, write_bw, write_iops, cpu_usage = \
+        amd64_stress.run_io_operation(
+            thread=1,
+            iodepth=7,
+            block_size="4k",
+            random_size="4k",
+            write_pattern="0",
+            duration=30
+        )
 
     # Assert read/write metrics
     assert read_bw == pytest.approx(284.80)

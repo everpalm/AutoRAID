@@ -50,3 +50,20 @@ class LinuxWarmBoot(WarmBoot):
         except Exception as e:
             logger.error("Error during Linux warm boot execution: %s", e)
             return False
+
+
+class BaseWarmBootFactory(ABC):
+    '''docstring'''
+    @abstractmethod
+    def initiate(self, os_type: str, **kwargs) -> WarmBoot:
+        pass
+
+
+class WarmBootFactory(BaseWarmBootFactory):
+    def initiate(self, os_type: str, **kwargs) -> WarmBoot:
+        if os_type == 'Windows':
+            return WindowsWarmBoot(**kwargs)
+        elif os_type == 'Linux':
+            return LinuxWarmBoot(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")
