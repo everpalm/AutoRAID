@@ -156,6 +156,7 @@ class LinuxPerf(BasePerf):
 
 class BasePerfFactory(ABC):
     '''docstring'''
+    @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> BasePerf:
         pass
 
