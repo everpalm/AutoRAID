@@ -1,5 +1,5 @@
 import pytest
-from amd_desktop.amd64_stress import AMD64MultiPathStress
+from amd_desktop.amd64_stress import WindowsStress
 
 class MockPlatform:
     """Mock implementation of a platform object for AMD64MultiPathStress."""
@@ -138,7 +138,7 @@ def platform():
 @pytest.fixture
 def amd64_stress(platform):
     """Fixture to create an AMD64MultiPathStress object."""
-    return AMD64MultiPathStress(platform)
+    return WindowsStress(platform)
 
 def test_run_io_operation(amd64_stress):
     """Test the run_io_operation method of AMD64MultiPathStress."""
