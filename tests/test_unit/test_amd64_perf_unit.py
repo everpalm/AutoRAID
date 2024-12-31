@@ -1,5 +1,5 @@
 import pytest
-from amd_desktop.amd64_perf import AMD64Perf
+from amd_desktop.amd64_perf import WindowsPerf
 
 
 class MockPlatform:
@@ -148,7 +148,7 @@ def platform():
 @pytest.fixture
 def amd64_perf(platform):
     """Fixture for creating an AMD64Perf object with the mock platform."""
-    return AMD64Perf(platform, "/mock/path/to/io.dat")
+    return WindowsPerf(platform, "/mock/path/to/io.dat")
 
 
 def test_run_io_operation(amd64_perf):
