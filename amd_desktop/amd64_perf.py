@@ -6,6 +6,7 @@ from abc import ABC
 from abc import abstractmethod
 from typing import Optional
 from typing import Tuple
+from unit.amd64_interface import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -156,16 +157,22 @@ class LinuxPerf(BasePerf):
 
 class BasePerfFactory(ABC):
     '''docstring'''
+    def __init__(self, api: BaseInterface):
+        self.api = api
+        self.os_type = api.os_type
+
     @abstractmethod
-    def initiate(self, os_type: str, **kwargs) -> BasePerf:
+    # def initiate(self, os_type: str, **kwargs) -> BasePerf:
+    def initiate(self, **kwargs) -> BasePerf:
         pass
 
 
 class PerfFactory(BasePerfFactory):
-    def initiate(self, os_type: str, **kwargs) -> BasePerf:
-        if os_type == 'Windows':
+    # def initiate(self, os_type: str, **kwargs) -> BasePerf:
+    def initiate(self, **kwargs) -> BasePerf:
+        if self.os_type == 'Windows':
             return WindowsPerf(**kwargs)
-        elif os_type == 'Linux':
+        elif self.os_type == 'Linux':
             return LinuxPerf(**kwargs)
         else:
-            raise ValueError(f"Unsupported OS type: {os_type}")
+            raise ValueError(f"Unsupported OS type: {self.os_type}")

@@ -421,8 +421,33 @@ class AMD64Windows(BaseOS):
         return int(disk_capacity) / (2**30)
 
 
+class AMD64Linux(BaseOS):
+    '''docstring'''
+    def _get_hyperthreading(self):
+        pass
+
+    def _get_memory_size(self):
+        pass
+
+    def get_cpu_info(self) -> dict[str, str]:
+        pass
+
+    def _get_disk_num(self):
+        pass
+
+    def _get_desktop_info(self) -> dict[str]:
+        pass
+
+    def _get_pcie_info(self) -> dict[str, str]:
+        pass
+
+
 class BasePlatformFactory(ABC):
     '''docstring'''
+    def __init__(self, api: BaseInterface):
+        self.api = api
+        self.os_type = api.os_type
+
     @abstractmethod
     def create_platform(self) -> BaseOS:
         pass
@@ -430,11 +455,13 @@ class BasePlatformFactory(ABC):
 
 class PlatformFactory(BasePlatformFactory):
     '''docstring'''
-    def create_platform(self, platform_type: str, **kwargs) -> BaseOS:
+    # def create_platform(self, platform_type: str, **kwargs) -> BaseOS:
+    def create_platform(self, **kwargs) -> BaseOS:
         '''Factory method to create an interface based on OS type'''
-        if platform_type == 'AMD64':
+        # if platform_type == 'AMD64':
+        if self.os_type == 'Windows':
             return AMD64Windows(**kwargs)
-        # elif platform_type == 'Intelx86':
-        #     return IntelWindows(**kwargs)
+        elif self.os_type == 'Linux':
+            return AMD64Linux(**kwargs)
         else:
-            raise ValueError(f"Unsupported OS type: {platform_type}")
+            raise ValueError(f"Unsupported OS type: {self.os_type}")

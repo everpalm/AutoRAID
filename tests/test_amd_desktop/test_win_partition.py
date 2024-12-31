@@ -3,8 +3,8 @@
 import json
 import logging
 import pytest
-from amd_desktop.amd64_nvme import AMD64NVMe
-from amd_desktop.amd64_os import BaseOS
+# from amd_desktop.amd64_nvme import AMD64NVMe
+from amd_desktop.amd64_system import BaseOS
 from amd_desktop.amd64_partition import PartitionFactory
 from amd_desktop.amd64_partition import PartitionDisk
 from amd_desktop.amd64_partition import WindowsVolume
@@ -44,7 +44,7 @@ class TestWindowsVolume:
     """
     @pytest.mark.dependency(name="not max partitions")
     @pytest.mark.xfail
-    def test_partition_existance(self, target_system, win_partition):
+    def test_partition_existance(self, amd64_system, win_partition):
         """
         Test that the partition count does not exceed the allowed number.
 
@@ -56,7 +56,7 @@ class TestWindowsVolume:
             The number of existing partitions should be less than the allowed
             number.
         """
-        assert len(target_system.disk_info) < win_partition.partition_num
+        assert len(amd64_system.disk_info) < win_partition.partition_num
 
     @pytest.mark.dependency(name="not system drive")
     @pytest.mark.parametrize('scenario', SCENARIO)

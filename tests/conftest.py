@@ -5,11 +5,9 @@ import logging
 import os
 import pytest
 import paramiko
-# from amd_desktop.amd64_ping import AMD64Ping as aping
 from amd_desktop.amd64_ping import PingFactory
 from unit.amd64_interface import InterfaceFactory
-from unit.application_interface import ApplicationInterface as api
-from unit.gitlab import GitLabAPI as glapi
+from unit.gitlab import GitLabAPI
 from unit.gpio import RaspBerryPins as rbp
 from unit.mongodb import MongoDB
 
@@ -99,20 +97,11 @@ def my_pins():
 
 @pytest.fixture(scope="session", autouse=True)
 def store_gitlab_api_in_config(cmdopt, request):
-    gitlab_api = glapi(private_token=cmdopt.get('private_token'),
-                       project_id='storage7301426/AutoRAID')
+    gitlab_api = GitLabAPI(private_token=cmdopt.get('private_token'),
+                           project_id='storage7301426/AutoRAID')
     request.config._store['gitlab_api'] = gitlab_api
     # request.config.cache.set('gitlab_api', gitlab_api)
     # return gitlab_api
-
-
-@pytest.fixture(scope="session")
-def drone_api():
-    print('\n\033[32m================== Setup RPi API ===============\033[0m')
-    return api.create_interface(os_type='Linux',
-                                mode='local',
-                                if_name='wlan0',
-                                config_file='app_map.json')
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -126,12 +115,6 @@ def raspi_interface():
         ssh_port='22',
         config_file='app_map.json'
     )
-
-
-# @pytest.fixture(scope="session")
-# def target_ping(drone_api):
-#     print('\n\033[32m================== Setup Ping ==================\033[0m')
-#     return aping(drone_api)
 
 
 @pytest.fixture(scope="session")

@@ -13,8 +13,8 @@ with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
 
 class TestAMD64System:
     '''Duplicate of TestAMD64NVMe'''
-    @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
-    def test_get_hyperthreading(self, amd64_system, AMD64_SETTINGS):
+    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    def test_get_hyperthreading(self, amd64_system, amd64_settings):
         """Test for verifying hyperthreading setting.
 
         Args:
@@ -23,7 +23,7 @@ class TestAMD64System:
         """
         logger.info("hyperthreading = %s", amd64_system.hyperthreading)
         assert (amd64_system.hyperthreading ==
-                AMD64_SETTINGS['CPU Information']['Hyperthreading'])
+                amd64_settings['CPU Information']['Hyperthreading'])
 
     def test_memory_size(self, amd64_system):
         """Test for verifying memory size of the system.
@@ -35,7 +35,6 @@ class TestAMD64System:
         memory_size = amd64_system.memory_size
         logger.info("Memory Size = %s GB", memory_size)
 
-    # @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
     def test_mac_address(self, amd64_system):
         """Test for verifying MAC address of the system.
 
@@ -46,8 +45,8 @@ class TestAMD64System:
         mac_address = amd64_system.mac_address
         logger.info("MAC Address = %s", mac_address)
 
-    @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
-    def test_get_cpu_info(self, amd64_system, AMD64_SETTINGS):
+    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    def test_get_cpu_info(self, amd64_system, amd64_settings):
         """Test for verifying CPU model and core count.
 
         Args:
@@ -57,12 +56,12 @@ class TestAMD64System:
         logger.info('CPU(s) = %s, CPU model = %s', amd64_system.cpu_num,
                     amd64_system.cpu_name)
         assert (amd64_system.cpu_num ==
-                AMD64_SETTINGS['CPU Information']["CPU(s)"])
+                amd64_settings['CPU Information']["CPU(s)"])
         assert (amd64_system.cpu_name ==
-                AMD64_SETTINGS['CPU Information']["Model Name"])
+                amd64_settings['CPU Information']["Model Name"])
 
-    @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
-    def test_get_desktop_info(self, amd64_system, AMD64_SETTINGS):
+    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    def test_get_desktop_info(self, amd64_system, amd64_settings):
         """Test for verifying system manufacturer, model, and operating system.
 
         Args:
@@ -74,12 +73,12 @@ class TestAMD64System:
                     amd64_system.model,
                     amd64_system.name)
         assert (amd64_system.vendor ==
-                AMD64_SETTINGS['Desktop Information']["Manufacturer"])
+                amd64_settings['Desktop Information']["Manufacturer"])
         assert (amd64_system.model ==
-                AMD64_SETTINGS['Desktop Information']["Model"])
+                amd64_settings['Desktop Information']["Model"])
 
-    @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
-    def test_get_pcie_info(self, amd64_system, AMD64_SETTINGS):
+    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    def test_get_pcie_info(self, amd64_system, amd64_settings):
         """Test for verifying PCIe configuration, including VID, DID, SDID,
         and Rev.
 
@@ -93,16 +92,16 @@ class TestAMD64System:
         logger.info('Rev = %s', amd64_system.rev)
 
         assert (amd64_system.vid ==
-                AMD64_SETTINGS['PCIE Configuration']["VID"])
+                amd64_settings['PCIE Configuration']["VID"])
         assert (amd64_system.did ==
-                AMD64_SETTINGS['PCIE Configuration']["DID"])
+                amd64_settings['PCIE Configuration']["DID"])
         assert (amd64_system.sdid ==
-                AMD64_SETTINGS['PCIE Configuration']["SDID"])
+                amd64_settings['PCIE Configuration']["SDID"])
         assert (amd64_system.rev ==
-                AMD64_SETTINGS['PCIE Configuration']["Rev"])
+                amd64_settings['PCIE Configuration']["Rev"])
 
-    @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
-    def test_get_disk_num(self, amd64_system, AMD64_SETTINGS):
+    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    def test_get_disk_num(self, amd64_system, amd64_settings):
         """Test for verifying the number of disks and the serial number.
 
         Args:
@@ -112,10 +111,10 @@ class TestAMD64System:
         logger.info("Number = %s", amd64_system.disk_num)
         logger.info("SerialNumber = %s", amd64_system.serial_num)
         assert (amd64_system.disk_num ==
-                AMD64_SETTINGS['Disk Information']["Number"])
+                amd64_settings['Disk Information']["Number"])
 
-    @pytest.mark.parametrize('AMD64_SETTINGS', AMD64_SETTINGS)
-    def test_get_volume(self, amd64_system, AMD64_SETTINGS):
+    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    def test_get_volume(self, amd64_system, amd64_settings):
         """Test for verifying disk volume information.
 
         Args:
@@ -134,7 +133,7 @@ class TestAMD64System:
         for i, letter in enumerate(disk_letters):
             try:
                 assert amd64_system.disk_info[i][1] == \
-                    AMD64_SETTINGS['Disk Information'][letter]
+                    amd64_settings['Disk Information'][letter]
             except (IndexError, KeyError):  # 處理索引或鍵錯誤
                 pass  # 或是選擇其他處理方式，例如記錄錯誤訊息
 
@@ -156,4 +155,4 @@ class TestAMD64System:
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
         disk_capacity = amd64_system.disk_capacity
-        logger.info("disk_capacity = %s", disk_capacity)
+        logger.info("disk_capacity = %s GB", disk_capacity)

@@ -2,10 +2,9 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 import logging
-# import os
+import os
 import re
-from unit.application_interface import ApplicationInterface as api
-from unit.application_interface import GenericAPI as Gapi
+# from unit.application_interface import ApplicationInterface as api
 from unit.application_interface import GenericAPI
 from unit.log_handler import get_logger
 
@@ -53,38 +52,6 @@ def convert_size(callback):
                     str_result[key] = float(value)
         return str_result
     return wrapper
-
-
-# def dict_to_dataframe(callback):
-#     ''' Convert a dictionary to a Pandas dataframe
-#         Args: Any dictionary
-#         Returns: A dataframe
-#         Raises: ValueError, IOError
-#     '''
-#     def wrapper(*args, **kwargs):
-#         result_dict = callback(*args, **kwargs)
-#         if isinstance(result_dict, dict):
-#             df = pd.DataFrame([result_dict], index=[0])
-#             logger.debug("df = %s", df)
-#             try:
-#                 if os.path.exists('my_data.json'):
-#                     existing_data = pd.read_json('my_data.json',
-#                                                  orient='records',
-#                                                  lines=True)
-#                     combined_data = pd.concat([existing_data, df],
-#                                               ignore_index=True)
-#                 else:
-#                     combined_data = df
-#                 combined_data.to_json('my_data.json',
-#                                       orient='records',
-#                                       lines=True)
-#             except IOError as e:
-#                 logger.error(f"Error occurred in dict_to_dataframe: {e}")
-#                 raise
-#             return df
-#         else:
-#             raise ValueError("Input is not a dictionary!")
-#     return wrapper
 
 
 class RaspberryPi(object):
@@ -155,11 +122,11 @@ class SystemUnderTesting(GenericAPI):
     '''
     def __init__(self, str_manufacturer: str):
         super().__init__(
-                str_mode='remote',
-                str_if_name='eth0',
-                str_config_file='app_map.json',
-                # interface=GenericAPI)
-                interface=Gapi)
+            str_mode='remote',
+            str_if_name='eth0',
+            str_config_file='app_map.json',
+            interface=GenericAPI
+        )
         self.os = self.get_os()
         self.manufacturer = str_manufacturer
         self.bdf, self.sdid = self._get_pcie_info().values()
@@ -256,7 +223,7 @@ class SystemUnderTesting(GenericAPI):
             Raises:
         '''
         str_node = str_sn = str_model = str_namespace_id = \
-          str_namespace_usage = str_fw_rev = None
+            str_namespace_usage = str_fw_rev = None
         try:
             str_return = self.command_line("nvme list|grep /dev/nvme")
             logger.debug('str_return = %s', str_return)
