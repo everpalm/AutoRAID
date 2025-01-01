@@ -4,7 +4,6 @@ import logging
 import paramiko
 import pytest
 
-# from amd_desktop.amd64_event import WindowsEvent as We
 from amd_desktop.amd64_event import EventFactory
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
 from amd_desktop.amd64_system import PlatformFactory
@@ -127,7 +126,7 @@ def target_system(my_app):
     Returns:
         amd64: The target system object.
     """
-    print("\n\033[32m================== Setup Platform (Deprecated)=\033[0m")
+    print("\n\033[32m================== Setup Platform (Deprecated)==\033[0m")
     return amd64(interface=my_app)
 
 
@@ -139,7 +138,6 @@ def amd64_system(network_api):
     print("\n\033[32m================== Setup AMD64 System ==========\033[0m")
     factory = PlatformFactory(network_api)
     return factory.create_platform(interface=network_api)
-    # platform_type='AMD64', interface=network_api)
 
 
 @pytest.fixture(scope="function")
@@ -157,10 +155,8 @@ def target_perf(amd64_system, cmdopt, network_api):
     Returns:
         amd64perf: The performance testing object.
     """
-    print("\n\033[32m================== Setup Performance Test=======\033[0m")
+    print("\n\033[32m================== Setup Performance Test ======\033[0m")
     perf = PerfFactory(api=network_api)
-    # return perf.initiate(os_type=cmdopt.get('os_type'),
-    # platform=amd64_system, io_file=cmdopt.get('io_file'))
     return perf.initiate(platform=amd64_system, io_file=cmdopt.get('io_file'))
 
 
@@ -174,7 +170,7 @@ def target_stress(amd64_system, network_api):
     Returns:
         AMD64MultiPathStress: Instance for executing stress test operations.
     """
-    print('\n\033[32m================ Setup Stress Test==============\033[0m')
+    print('\n\033[32m================== Setup Stress Test ===========\033[0m')
     stress = StressFactory(network_api)
     return stress.initiate(platform=amd64_system)
 
@@ -189,7 +185,7 @@ def os_event(amd64_system, network_api):
     Returns:
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
-    print('\n\033[32m================== Setup Event Logging===========\033[0m')
+    print('\n\033[32m================== Setup Event Logging =========\033[0m')
     event = EventFactory(network_api)
     return event.initiate(platform=amd64_system)
 
@@ -205,9 +201,9 @@ def test_check_error(os_event):
     Raises:
         AssertionError: If specific errors (ID 51 or 157) are detected in logs
     """
-    print('\n\033[32m================== Clear Event Log==============\033[0m')
+    print('\n\033[32m================== Clear Event Log =============\033[0m')
     yield os_event.clear_error()
-    print('\n\033[32m================== Check Event Log==============\033[0m')
+    print('\n\033[32m================== Check Event Log =============\033[0m')
     errors = []
     if os_event.find_error(
         "System",
