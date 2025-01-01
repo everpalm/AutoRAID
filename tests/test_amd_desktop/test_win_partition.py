@@ -17,22 +17,20 @@ with open('config/test_win_partition.json', 'r', encoding='utf-8') as f:
 
 
 @pytest.fixture(scope="module")
-# def win_partition(target_system: AMD64NVMe) -> WindowsVolume:
 def win_partition(amd64_system: BaseOS,
                   network_api: BaseInterface) -> PartitionDisk:
     """
     Pytest fixture to initialize a WindowsVolume instance for testing.
 
     Args:
-        target_system (AMD64NVMe): The NVMe target system.
+        amd_system (AMD64NVMe): The NVMe target system.
 
     Returns:
         WindowsVolume: An instance of the WindowsVolume class with the
         specified platform, disk format, and file system.
     """
     partition = PartitionFactory(api=network_api)
-    # return WindowsVolume(platform=amd64_system, disk_format='gpt',
-    #                      file_system='ntfs')
+
     return partition.initiate(platform=amd64_system, disk_format='gpt',
                               file_system='ntfs')
 
@@ -51,7 +49,7 @@ class TestWindowsVolume:
         Test that the partition count does not exceed the allowed number.
 
         Args:
-            target_system (AMD64NVMe): The NVMe target system.
+            amd_system (AMD64NVMe): The NVMe target system.
             win_partition (WindowsVolume): The WindowsVolume instance.
 
         Asserts:

@@ -19,13 +19,12 @@ RESET_DURATION = 30
 
 
 @pytest.fixture(scope="module", autouse=True)
-# def win_warmboot(target_system):
 def win_warmboot(amd64_system, network_api):
     """
     Fixture to automatically execute a Windows Warm Boot for the test module.
 
     This fixture creates and returns a `wwb` object (presumably for warm boot
-    execution) initialized with the provided `target_system`.  It has a
+    execution) initialized with the provided `amd_system`.  It has a
     "module" scope, meaning it will be executed only once per test module,
     before any test functions are run.  The `autouse=True`
     parameter ensures that this fixture is automatically used by all test
@@ -33,7 +32,7 @@ def win_warmboot(amd64_system, network_api):
     parameter.
 
     Args:
-        target_system: The target system object for warm boot execution.
+        amd_system: The target system object for warm boot execution.
 
     Returns:
         wwb: The warm boot execution object.

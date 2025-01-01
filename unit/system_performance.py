@@ -18,7 +18,8 @@ class SystemPerformance(object):
             os: Operation System
             manufacturer: Any
             bdf: Bus-Device-Function in the format of xx:yy.zz
-            sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in advance
+            sdid: The Sub-device ID of PCIe, confirm SDID of PCI device in
+            advance
     '''
     # def __init__(self, str_file_path, str_group_key, str_key, str_group):
     def __init__(self, str_file_path: str, str_group_key: str):
