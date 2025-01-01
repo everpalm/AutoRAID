@@ -21,7 +21,7 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 @pytest.fixture(scope="session")
 def my_app(cmdopt):
     '''This is a docstring'''
-    print('\n\033[32m================== Setup API ===================\033[0m')
+    print('\n\033[32m================== Setup API (Deprecated)=======\033[0m')
     return api.create_interface(
         os_type=cmdopt.get('os_type'),
         mode=cmdopt.get('mode'),
@@ -81,7 +81,7 @@ def drone(raspi_interface):
     Returns:
         RaspberryPi: The Raspberry Pi interaction object.
     """
-    print("\n\033[32m================== Setup RSBPi =================\033[0m")
+    print("\n\033[32m================== Setup RPi System ============\033[0m")
     return RaspberryPi(
         uart_path='/dev/ttyUSB0',
         baud_rate=115200,
@@ -127,7 +127,7 @@ def target_system(my_app):
     Returns:
         amd64: The target system object.
     """
-    print("\n\033[32m================== Setup Platform ==============\033[0m")
+    print("\n\033[32m================== Setup Platform (Deprecated)=\033[0m")
     return amd64(interface=my_app)
 
 
@@ -148,11 +148,11 @@ def target_perf(amd64_system, cmdopt, network_api):
     Fixture to set up performance testing on the target system.
 
     Creates an `amd64perf` object for performance testing, initialized with
-    the `target_system` and a specified I/O file. This fixture has a function
+    the `amd64_system` and a specified I/O file. This fixture has a function
     scope, meaning it will be executed before each test function.
 
     Args:
-        target_system: The target system fixture.
+        amd64_system: The target system fixture.
 
     Returns:
         amd64perf: The performance testing object.
@@ -169,7 +169,7 @@ def target_stress(amd64_system, network_api):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
-        target_system: The system instance to run stress tests on.
+        amd64_system: The system instance to run stress tests on.
 
     Returns:
         AMD64MultiPathStress: Instance for executing stress test operations.
@@ -179,32 +179,19 @@ def target_stress(amd64_system, network_api):
     return stress.initiate(platform=amd64_system)
 
 
-# @pytest.fixture(scope="package")
-# def win_event(target_system):
-#     """Fixture for setting up Windows Event monitoring for system errors.
-
-#     Args:
-#         target_system: The system instance to monitor for Windows Event logs.
-
-#     Returns:
-#         WindowsEvent: An instance of WindowsEvent for error logging.
-#     """
-#    print('\n\033[32m================== Setup Win Event =============\033[0m')
-#     return We(platform=target_system)
 @pytest.fixture(scope="package")
-def os_event(amd64_system, cmdopt):
+def os_event(amd64_system, network_api):
     """Fixture for setting up Windows Event monitoring for system errors.
 
     Args:
-        target_system: The system instance to monitor for Windows Event logs.
+        amd64_system: The system instance to monitor for Windows Event logs.
 
     Returns:
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
     print('\n\033[32m================== Setup Event Logging===========\033[0m')
-    event = EventFactory()
-    return event.initiate(os_type=cmdopt.get('os_type'),
-                          platform=amd64_system)
+    event = EventFactory(network_api)
+    return event.initiate(platform=amd64_system)
 
 
 @pytest.fixture(scope="function", autouse=True)

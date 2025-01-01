@@ -450,15 +450,14 @@ class BasePlatformFactory(ABC):
 
     @abstractmethod
     def create_platform(self) -> BaseOS:
+        '''docstring'''
         pass
 
 
 class PlatformFactory(BasePlatformFactory):
     '''docstring'''
-    # def create_platform(self, platform_type: str, **kwargs) -> BaseOS:
     def create_platform(self, **kwargs) -> BaseOS:
         '''Factory method to create an interface based on OS type'''
-        # if platform_type == 'AMD64':
         if self.os_type == 'Windows':
             return AMD64Windows(**kwargs)
         elif self.os_type == 'Linux':

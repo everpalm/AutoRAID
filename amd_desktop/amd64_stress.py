@@ -196,24 +196,20 @@ class LinuxStress(BaseStress):
 class BaseStressFactory(ABC):
     '''docstring'''
     def __init__(self, api: BaseInterface):
+        '''docstring'''
         self.api = api
         self.os_type = api.os_type
 
     @abstractmethod
-    # def initiate(self, os_type: str, **kwargs) -> BaseStress:
     def initiate(self, **kwargs) -> BaseStress:
+        '''docstring'''
         pass
 
 
 class StressFactory(BaseStressFactory):
-    # def initiate(self, os_type: str, **kwargs) -> BaseStress:
-    #     if os_type == 'Windows':
-    #         return WindowsStress(**kwargs)
-    #     elif os_type == 'Linux':
-    #         return LinuxStress(**kwargs)
-    #     else:
-    #         raise ValueError(f"Unsupported OS type: {os_type}")
+    '''docstring'''
     def initiate(self, **kwargs) -> BaseStress:
+        '''docstring'''
         if self.os_type == 'Windows':
             return WindowsStress(**kwargs)
         elif self.os_type == 'Linux':
