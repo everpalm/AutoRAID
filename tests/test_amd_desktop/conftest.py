@@ -192,7 +192,7 @@ def target_stress(amd64_system, network_api):
 #    print('\n\033[32m================== Setup Win Event =============\033[0m')
 #     return We(platform=target_system)
 @pytest.fixture(scope="package")
-def os_event(amd64_system, cmdopt):
+def os_event(amd64_system, network_api):
     """Fixture for setting up Windows Event monitoring for system errors.
 
     Args:
@@ -202,9 +202,8 @@ def os_event(amd64_system, cmdopt):
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
     print('\n\033[32m================== Setup Event Logging===========\033[0m')
-    event = EventFactory()
-    return event.initiate(os_type=cmdopt.get('os_type'),
-                          platform=amd64_system)
+    event = EventFactory(network_api)
+    return event.initiate(platform=amd64_system)
 
 
 @pytest.fixture(scope="function", autouse=True)
