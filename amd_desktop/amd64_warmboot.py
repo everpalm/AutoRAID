@@ -1,8 +1,10 @@
 # Contents of amd64_warmboot.py
 '''Copyright (c) 2024 Jaron Cheng'''
-from abc import ABC, abstractmethod
 import logging
+
+from abc import ABC, abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
+from unit.amd64_interface import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -54,16 +56,21 @@ class LinuxWarmBoot(WarmBoot):
 
 class BaseWarmBootFactory(ABC):
     '''docstring'''
+    def __init__(self, api: BaseInterface):
+        self.api = api
+        self.os_type = api.os_type
+
     @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> WarmBoot:
         pass
 
 
 class WarmBootFactory(BaseWarmBootFactory):
-    def initiate(self, os_type: str, **kwargs) -> WarmBoot:
-        if os_type == 'Windows':
+    # def initiate(self, os_type: str, **kwargs) -> WarmBoot:
+    def initiate(self, **kwargs) -> WarmBoot:
+        if self.os_type == 'Windows':
             return WindowsWarmBoot(**kwargs)
-        elif os_type == 'Linux':
+        elif self.os_type == 'Linux':
             return LinuxWarmBoot(**kwargs)
         else:
-            raise ValueError(f"Unsupported OS type: {os_type}")
+            raise ValueError(f"Unsupported OS type: {self.os_type}")

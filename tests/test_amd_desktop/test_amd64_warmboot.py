@@ -20,7 +20,7 @@ RESET_DURATION = 30
 
 @pytest.fixture(scope="module", autouse=True)
 # def win_warmboot(target_system):
-def win_warmboot(amd64_system, cmdopt):
+def win_warmboot(amd64_system, network_api):
     """
     Fixture to automatically execute a Windows Warm Boot for the test module.
 
@@ -38,10 +38,8 @@ def win_warmboot(amd64_system, cmdopt):
     Returns:
         wwb: The warm boot execution object.
     """
-    # return wwb(platform=target_system)
-    warmboot = WarmBootFactory()
-    return warmboot.initiate(os_type=cmdopt.get('os_type'),
-                             platform=amd64_system)
+    warmboot = WarmBootFactory(network_api)
+    return warmboot.initiate(platform=amd64_system)
 
 
 @pytest.mark.order(1)
