@@ -104,7 +104,7 @@ def store_gitlab_api_in_config(cmdopt, request):
     # return gitlab_api
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def raspi_interface():
     print('\n\033[32m================== Setup RPi Interface =========\033[0m')
     factory = RaspberryInterfaceFactory()
