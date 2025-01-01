@@ -8,6 +8,7 @@ from abc import abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
 from amd_desktop.amd64_system import BaseOS
 from typing import List
+from unit.amd64_interface import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -233,16 +234,21 @@ class LinuxVolume(PartitionDisk):
 
 class BasePartitionFactory(ABC):
     '''docstring'''
+    def __init__(self, api: BaseInterface):
+        self.api = api
+        self.os_type = api.os_type
+
     @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
         pass
 
 
 class PartitionFactory(BasePartitionFactory):
-    def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
-        if os_type == 'Windows':
+    # def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
+    def initiate(self, **kwargs) -> PartitionDisk:
+        if self.os_type == 'Windows':
             return WindowsVolume(**kwargs)
-        elif os_type == 'Linux':
+        elif self.os_type == 'Linux':
             return LinuxVolume(**kwargs)
         else:
-            raise ValueError(f"Unsupported OS type: {os_type}")
+            raise ValueError(f"Unsupported OS type: {self.os_type}")
