@@ -6,6 +6,7 @@ from abc import ABC
 from abc import abstractmethod
 # from amd_desktop.amd64_nvme import AMD64NVMe
 from amd_desktop.amd64_system import BaseOS
+from unit.amd64_interface import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -215,6 +216,10 @@ class LinuxEvent(SystemLogging):
 
 class BaseEventFactory(ABC):
     '''docstring'''
+    def __init__(self, api: BaseInterface):
+        self.api = api
+        self.os_type = api.os_type
+
     @abstractmethod
     def initiate(self) -> SystemLogging:
         pass
@@ -222,11 +227,12 @@ class BaseEventFactory(ABC):
 
 class EventFactory(BaseEventFactory):
     '''docstring'''
-    def initiate(self, os_type: str, **kwargs) -> SystemLogging:
+    # def initiate(self, os_type: str, **kwargs) -> SystemLogging:
+    def initiate(self, **kwargs) -> SystemLogging:
         '''Factory method to create an interface based on OS type'''
-        if os_type == 'Windows':
+        if self.os_type == 'Windows':
             return WindowsEvent(**kwargs)
-        elif os_type == 'Linux':
+        elif self.os_type == 'Linux':
             return LinuxEvent(**kwargs)
         else:
-            raise ValueError(f"Unsupported OS type: {os_type}")
+            raise ValueError(f"Unsupported OS type: {self.os_type}")

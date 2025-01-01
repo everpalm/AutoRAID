@@ -364,11 +364,24 @@ class LinuxInterface(BaseInterface):
 
 class BaseInterfaceFactory(ABC):
     '''docstring'''
+    @abstractmethod
     def create_interface(self) -> BaseInterface:
         pass
 
 
 class InterfaceFactory(BaseInterfaceFactory):
+    '''docstring'''
+    def create_interface(self, os_type: str, **kwargs) -> BaseInterface:
+        '''Factory method to create an interface based on OS type'''
+        if os_type == 'Windows':
+            return WindowsInterface(**kwargs)
+        elif os_type == 'Linux':
+            return LinuxInterface(**kwargs)
+        else:
+            raise ValueError(f"Unsupported OS type: {os_type}")
+
+
+class RaspberryInterfaceFactory(BaseInterfaceFactory):
     '''docstring'''
     def create_interface(self, os_type: str, **kwargs) -> BaseInterface:
         '''Factory method to create an interface based on OS type'''

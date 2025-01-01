@@ -162,13 +162,11 @@ class BasePerfFactory(ABC):
         self.os_type = api.os_type
 
     @abstractmethod
-    # def initiate(self, os_type: str, **kwargs) -> BasePerf:
     def initiate(self, **kwargs) -> BasePerf:
         pass
 
 
 class PerfFactory(BasePerfFactory):
-    # def initiate(self, os_type: str, **kwargs) -> BasePerf:
     def initiate(self, **kwargs) -> BasePerf:
         if self.os_type == 'Windows':
             return WindowsPerf(**kwargs)

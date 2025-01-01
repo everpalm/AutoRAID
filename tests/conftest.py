@@ -6,7 +6,7 @@ import os
 import pytest
 import paramiko
 from amd_desktop.amd64_ping import PingFactory
-from unit.amd64_interface import InterfaceFactory
+from unit.amd64_interface import RaspberryInterfaceFactory
 from unit.gitlab import GitLabAPI
 from unit.gpio import RaspBerryPins as rbp
 from unit.mongodb import MongoDB
@@ -104,10 +104,10 @@ def store_gitlab_api_in_config(cmdopt, request):
     # return gitlab_api
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def raspi_interface():
     print('\n\033[32m================== Setup RPi Interface =========\033[0m')
-    factory = InterfaceFactory()
+    factory = RaspberryInterfaceFactory()
     return factory.create_interface(
         os_type='Linux',
         mode='local',
@@ -119,7 +119,7 @@ def raspi_interface():
 
 @pytest.fixture(scope="session")
 def target_ping(raspi_interface):
-    print('\n\033[32m================== Setup Ping ==================\033[0m')
+    print('\n\033[32m================== Setup Ping Test ==============\033[0m')
     ping = PingFactory()
     return ping.initiate(os_type='Linux', api=raspi_interface)
 
