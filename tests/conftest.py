@@ -6,6 +6,8 @@ import os
 import pytest
 import paramiko
 from amd_desktop.amd64_ping import PingFactory
+from amd_desktop.amd64_system import PlatformFactory
+from unit.amd64_interface import InterfaceFactory
 from unit.amd64_interface import RaspberryInterfaceFactory
 from unit.gitlab import GitLabAPI
 from unit.gpio import RaspBerryPins as rbp
@@ -115,6 +117,30 @@ def raspi_interface():
         ssh_port='22',
         config_file='app_map.json'
     )
+
+
+@pytest.fixture(scope="session")
+def network_api(cmdopt):
+    '''docstring'''
+    print('\n\033[32m================== Setup Interface =============\033[0m')
+    factory = InterfaceFactory()
+    return factory.create_interface(
+        os_type=cmdopt.get('os_type'),
+        mode=cmdopt.get('mode'),
+        if_name=cmdopt.get('if_name'),
+        ssh_port='22',
+        config_file=cmdopt.get('config_file')
+    )
+
+
+@pytest.fixture(scope="session")
+def amd64_system(network_api):
+    """
+    docstring
+    """
+    print("\n\033[32m================== Setup AMD64 System ==========\033[0m")
+    factory = PlatformFactory(network_api)
+    return factory.create_platform(interface=network_api)
 
 
 @pytest.fixture(scope="session")
