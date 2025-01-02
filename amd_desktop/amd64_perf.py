@@ -17,8 +17,10 @@ class BasePerf(ABC):
     READ_R_CFL = READ_L_CFL = WRITE_R_CFL = WRITE_L_CFL = None
 
     def __init__(self, platform, io_file):
-        if BasePerf.READ_R_CFL is None and BasePerf.WRITE_R_CFL is None:
-            BasePerf.READ_R_CFL = BasePerf.WRITE_R_CFL = 3
+        if BasePerf.READ_R_CFL is None:
+            BasePerf.READ_R_CFL = 3
+        if BasePerf.WRITE_R_CFL is None:
+            BasePerf.WRITE_R_CFL = 3
         if BasePerf.READ_L_CFL is None:
             BasePerf.READ_L_CFL = 10
         if BasePerf.WRITE_L_CFL is None:
@@ -41,10 +43,8 @@ class BasePerf(ABC):
             read_l
             write_l
         """
-        cls.READ_R_CFL = read_r
-        cls.WRITE_R_CFL = write_r
-        cls.READ_L_CFL = read_l
-        cls.WRITE_L_CFL = write_l
+        cls.READ_R_CFL, cls.WRITE_R_CFL = read_r, write_r
+        cls.READ_L_CFL, cls.WRITE_L_CFL = read_l, write_l
         logger.info("Manually set READ_R_CFL: %s", cls.READ_R_CFL)
         logger.info("Manually set WRITE_R_CFL: %s", cls.WRITE_R_CFL)
         logger.info("Manually set READ_L_CFL: %s", cls.READ_L_CFL)

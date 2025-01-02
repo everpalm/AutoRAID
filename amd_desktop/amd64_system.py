@@ -9,7 +9,6 @@ import math
 import re
 from unit.log_handler import get_logger
 from unit.amd64_interface import BaseInterface
-# import os
 
 logger = get_logger(__name__, logging.INFO)
 
@@ -61,7 +60,6 @@ class AMD64Windows(BaseOS):
     '''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        # super().__init__(interface)
         self.manufacturer = interface.config_file.replace('.json', '')
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
