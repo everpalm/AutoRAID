@@ -16,7 +16,7 @@ class BaseCLI(ABC):
         self.api = platform.api
 
     @abstractmethod
-    def interpret(self) -> str:
+    def interpret(self, command: str) -> str:
         '''Placeholder'''
 
 
@@ -35,7 +35,7 @@ class WindowsCLI(BaseCLI):
                 composed_cmd
             )
         except Exception as e:
-            logger.error('Error occurred in interpretation: %s', e)
+            logger.error('Error occurred in interpretation: %s', str(e))
             raise
         return cmd_output
 
@@ -43,9 +43,6 @@ class WindowsCLI(BaseCLI):
 class LinuxCLI(WindowsCLI):
     '''This is a docstring'''
     PREFIX = 'mnv_cli'
-
-    def interpret(self, command: str):
-        pass
 
 
 class BaseCLIFactory(ABC):
