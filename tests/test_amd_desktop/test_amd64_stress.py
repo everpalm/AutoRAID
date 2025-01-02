@@ -12,17 +12,24 @@ import pytest
 # Mark entire module
 logger = logging.getLogger(__name__)
 
+# Write pattern
 FULL_READ = 0
 OLTP_WORKLOAD = 30  # With 8 KB chunk size
-FULL_WRITE = 100
-OVER_NIGHT = 15
 HALF_RW = 50
+FULL_WRITE = 100
+
+# Period
+OVER_NIGHT = 15
 ONE_SHOT = 15
-HYPER_THREAD = 2
+
+# Threading
 SINGLE_THREAD = 1
+HYPER_THREAD = 2
+
+# Outstanding I/O
+OPTIMUM_IODEPTH = 7
 MIN_IODEPTH = 1
 MAX_IODEPTH = 33
-OPTIMUM_IODEPTH = 7
 
 
 @pytest.mark.STRESS

@@ -47,7 +47,7 @@ class BaseStress(ABC):
         self._file_size = self._platform.memory_size * 2
 
     @classmethod
-    def set_cpu_group(cls, cpu_group):
+    def set_cpu_group(cls, cpu_group: str):
         """
         Sets the CPU affinity.
 
