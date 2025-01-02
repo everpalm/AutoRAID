@@ -6,10 +6,10 @@ import pytest
 
 from amd_desktop.amd64_event import EventFactory
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
-from amd_desktop.amd64_system import PlatformFactory
+# from amd_desktop.amd64_system import PlatformFactory
 from amd_desktop.amd64_perf import PerfFactory
 from amd_desktop.amd64_stress import StressFactory
-from unit.amd64_interface import InterfaceFactory
+# from unit.amd64_interface import InterfaceFactory
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi
@@ -29,18 +29,18 @@ def my_app(cmdopt):
     )
 
 
-@pytest.fixture(scope="session")
-def network_api(cmdopt):
-    '''docstring'''
-    print('\n\033[32m================== Setup Interface =============\033[0m')
-    factory = InterfaceFactory()
-    return factory.create_interface(
-        os_type=cmdopt.get('os_type'),
-        mode=cmdopt.get('mode'),
-        if_name=cmdopt.get('if_name'),
-        ssh_port='22',
-        config_file=cmdopt.get('config_file')
-    )
+# @pytest.fixture(scope="session")
+# def network_api(cmdopt):
+#     '''docstring'''
+#     print('\n\033[32m================== Setup Interface =============\033[0m')
+#     factory = InterfaceFactory()
+#     return factory.create_interface(
+#         os_type=cmdopt.get('os_type'),
+#         mode=cmdopt.get('mode'),
+#         if_name=cmdopt.get('if_name'),
+#         ssh_port='22',
+#         config_file=cmdopt.get('config_file')
+#     )
 
 
 @pytest.fixture(scope="session")
@@ -130,14 +130,14 @@ def target_system(my_app):
     return amd64(interface=my_app)
 
 
-@pytest.fixture(scope="session")
-def amd64_system(network_api):
-    """
-    docstring
-    """
-    print("\n\033[32m================== Setup AMD64 System ==========\033[0m")
-    factory = PlatformFactory(network_api)
-    return factory.create_platform(interface=network_api)
+# @pytest.fixture(scope="session")
+# def amd64_system(network_api):
+#     """
+#     docstring
+#     """
+#     print("\n\033[32m================== Setup AMD64 System ==========\033[0m")
+#     factory = PlatformFactory(network_api)
+#     return factory.create_platform(interface=network_api)
 
 
 @pytest.fixture(scope="function")
