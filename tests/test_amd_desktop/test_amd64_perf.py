@@ -7,120 +7,117 @@
 '''
 import logging
 import pytest
-# import os
-# from amd_desktop.amd64_event import WindowsEvent as we
 
 # Mark entire module
 logger = logging.getLogger(__name__)
-# logging.getLogger(__name__).setLevel(logging.DEBUG)
 
-READ_R_CFL = 3
-READ_L_CFL = 10
-WRITE_R_CFL = 3
-WRITE_L_CFL = 7
-
-
-def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
-    """Logs the upper and lower limits for IOPS and bandwidth for validation.
-
-    Args:
-        upper_iops (float): Upper limit of IOPS.
-        lower_iops (float): Lower limit of IOPS.
-        upper_bw (float): Upper limit of bandwidth.
-        lower_bw (float): Lower limit of bandwidth.
-        prefix (str, optional): Prefix for log message to distinguish
-        read/write metrics.
-    """
-    logger.debug('upper_%siops = %s', prefix, upper_iops)
-    logger.debug('lower_%siops = %s', prefix, lower_iops)
-    logger.debug('upper_%sbw = %s', prefix, upper_bw)
-    logger.debug('lower_%sbw = %s', prefix, lower_bw)
+# READ_R_CFL = 3
+# READ_L_CFL = 10
+# WRITE_R_CFL = 3
+# WRITE_L_CFL = 7
 
 
-def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
-    """Logs the I/O metrics for read and write bandwidth and IOPS.
+# def log_target_limit(upper_iops, lower_iops, upper_bw, lower_bw, prefix=""):
+#     """Logs the upper and lower limits for IOPS and bandwidth for validation.
 
-    Args:
-        read_bw (float): Read bandwidth.
-        read_iops (float): Read IOPS.
-        write_bw (float): Write bandwidth.
-        write_iops (float): Write IOPS.
-        prefix (str, optional): Prefix for log message to distinguish
-        random/sequential metrics.
-    """
-    logger.info('%sread_bw = %.2f', prefix, read_bw)  # 保留兩位小數
-    logger.info('%sread_iops = %d', prefix, read_iops)
-    logger.info('%swrite_bw = %.2f', prefix, write_bw)  # 保留兩位小數
-    logger.info('%swrite_iops = %d', prefix, write_iops)
+#     Args:
+#         upper_iops (float): Upper limit of IOPS.
+#         lower_iops (float): Lower limit of IOPS.
+#         upper_bw (float): Upper limit of bandwidth.
+#         lower_bw (float): Lower limit of bandwidth.
+#         prefix (str, optional): Prefix for log message to distinguish
+#         read/write metrics.
+#     """
+#     logger.debug('upper_%siops = %s', prefix, upper_iops)
+#     logger.debug('lower_%siops = %s', prefix, lower_iops)
+#     logger.debug('upper_%sbw = %s', prefix, upper_bw)
+#     logger.debug('lower_%sbw = %s', prefix, lower_bw)
 
 
-def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
-    """Validates the I/O performance metrics against given criteria.
+# def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
+#     """Logs the I/O metrics for read and write bandwidth and IOPS.
 
-    Args:
-        read_bw (float): Read bandwidth.
-        read_iops (float): Read IOPS.
-        write_bw (float): Write bandwidth.
-        write_iops (float): Write IOPS.
-        criteria (dict): A dictionary of performance criteria including
-        percentile, minimum, and standard deviation for IOPS and bandwidth.
+#     Args:
+#         read_bw (float): Read bandwidth.
+#         read_iops (float): Read IOPS.
+#         write_bw (float): Write bandwidth.
+#         write_iops (float): Write IOPS.
+#         prefix (str, optional): Prefix for log message to distinguish
+#         random/sequential metrics.
+#     """
+#     logger.info('%sread_bw = %.2f', prefix, read_bw)  # 保留兩位小數
+#     logger.info('%sread_iops = %d', prefix, read_iops)
+#     logger.info('%swrite_bw = %.2f', prefix, write_bw)  # 保留兩位小數
+#     logger.info('%swrite_iops = %d', prefix, write_iops)
 
-    Raises:
-        AssertionError: If the metrics fall outside of the calculated limits.
-    """
-    if read_iops and read_bw:
-        pct_read_iops = criteria['percentile_read_iops'][0]
-        min_read_iops = criteria['min_read_iops']
-        std_dev_read_iops = criteria['std_dev_read_iops']
 
-        upper_limit_read_iops = (pct_read_iops + std_dev_read_iops *
-                                 READ_R_CFL)
-        lower_limit_read_iops = (pct_read_iops - std_dev_read_iops *
-                                 READ_L_CFL)
-        if lower_limit_read_iops < 0:
-            lower_limit_read_iops = min_read_iops
+# def validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria):
+#     """Validates the I/O performance metrics against given criteria.
 
-        pct_read_bw = criteria['percentile_read_bw'][0]
-        min_read_bw = criteria['min_read_bw']
-        std_dev_read_bw = criteria['std_dev_read_bw']
+#     Args:
+#         read_bw (float): Read bandwidth.
+#         read_iops (float): Read IOPS.
+#         write_bw (float): Write bandwidth.
+#         write_iops (float): Write IOPS.
+#         criteria (dict): A dictionary of performance criteria including
+#         percentile, minimum, and standard deviation for IOPS and bandwidth.
 
-        upper_limit_read_bw = pct_read_bw + std_dev_read_bw * READ_R_CFL
-        lower_limit_read_bw = pct_read_bw - std_dev_read_bw * READ_L_CFL
-        if lower_limit_read_bw < 0:
-            lower_limit_read_bw = min_read_bw
+#     Raises:
+#         AssertionError: If the metrics fall outside of the calculated limits.
+#     """
+#     if read_iops and read_bw:
+#         pct_read_iops = criteria['percentile_read_iops'][0]
+#         min_read_iops = criteria['min_read_iops']
+#         std_dev_read_iops = criteria['std_dev_read_iops']
 
-        log_target_limit(upper_limit_read_iops, lower_limit_read_iops,
-                         upper_limit_read_bw, lower_limit_read_bw, 'read_')
+#         upper_limit_read_iops = (pct_read_iops + std_dev_read_iops *
+#                                  READ_R_CFL)
+#         lower_limit_read_iops = (pct_read_iops - std_dev_read_iops *
+#                                  READ_L_CFL)
+#         if lower_limit_read_iops < 0:
+#             lower_limit_read_iops = min_read_iops
 
-        assert upper_limit_read_iops > read_iops > lower_limit_read_iops
-        assert upper_limit_read_bw > read_bw > lower_limit_read_bw
+#         pct_read_bw = criteria['percentile_read_bw'][0]
+#         min_read_bw = criteria['min_read_bw']
+#         std_dev_read_bw = criteria['std_dev_read_bw']
 
-    if write_iops and write_bw:
-        pct_write_iops = criteria['percentile_write_iops'][0]
-        min_write_iops = criteria['min_write_iops']
-        std_dev_write_iops = criteria['std_dev_write_iops']
+#         upper_limit_read_bw = pct_read_bw + std_dev_read_bw * READ_R_CFL
+#         lower_limit_read_bw = pct_read_bw - std_dev_read_bw * READ_L_CFL
+#         if lower_limit_read_bw < 0:
+#             lower_limit_read_bw = min_read_bw
 
-        upper_limit_write_iops = (pct_write_iops + std_dev_write_iops *
-                                  WRITE_R_CFL)
-        lower_limit_write_iops = (pct_write_iops - std_dev_write_iops *
-                                  WRITE_L_CFL)
-        if lower_limit_write_iops < 0:
-            lower_limit_write_iops = min_write_iops
+#         log_target_limit(upper_limit_read_iops, lower_limit_read_iops,
+#                          upper_limit_read_bw, lower_limit_read_bw, 'read_')
 
-        pct_write_bw = criteria['percentile_write_bw'][0]
-        min_write_bw = criteria['min_write_bw']
-        std_dev_write_bw = criteria['std_dev_write_bw']
+#         assert upper_limit_read_iops > read_iops > lower_limit_read_iops
+#         assert upper_limit_read_bw > read_bw > lower_limit_read_bw
 
-        upper_limit_write_bw = pct_write_bw + std_dev_write_bw * WRITE_R_CFL
-        lower_limit_write_bw = pct_write_bw - std_dev_write_bw * WRITE_L_CFL
-        if lower_limit_write_bw < 0:
-            lower_limit_write_bw = min_write_bw
+#     if write_iops and write_bw:
+#         pct_write_iops = criteria['percentile_write_iops'][0]
+#         min_write_iops = criteria['min_write_iops']
+#         std_dev_write_iops = criteria['std_dev_write_iops']
 
-        log_target_limit(upper_limit_write_iops, lower_limit_write_iops,
-                         upper_limit_write_bw, lower_limit_write_bw, 'write_')
+#         upper_limit_write_iops = (pct_write_iops + std_dev_write_iops *
+#                                   WRITE_R_CFL)
+#         lower_limit_write_iops = (pct_write_iops - std_dev_write_iops *
+#                                   WRITE_L_CFL)
+#         if lower_limit_write_iops < 0:
+#             lower_limit_write_iops = min_write_iops
 
-        assert upper_limit_write_iops > write_iops > lower_limit_write_iops
-        assert upper_limit_write_bw > write_bw > lower_limit_write_bw
+#         pct_write_bw = criteria['percentile_write_bw'][0]
+#         min_write_bw = criteria['min_write_bw']
+#         std_dev_write_bw = criteria['std_dev_write_bw']
+
+#         upper_limit_write_bw = pct_write_bw + std_dev_write_bw * WRITE_R_CFL
+#         lower_limit_write_bw = pct_write_bw - std_dev_write_bw * WRITE_L_CFL
+#         if lower_limit_write_bw < 0:
+#             lower_limit_write_bw = min_write_bw
+
+#         log_target_limit(upper_limit_write_iops, lower_limit_write_iops,
+#                         upper_limit_write_bw, lower_limit_write_bw, 'write_')
+
+#         assert upper_limit_write_iops > write_iops > lower_limit_write_iops
+#         assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
 
 @pytest.mark.PERFORMANCE
@@ -149,14 +146,16 @@ class TestRandomReadWrite:
             target_perf.run_io_operation(io_depth, '4k', '4k', write_pattern,
                                          156)
 
-        log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'random_')
+        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+                                   'random_')
 
         criteria = my_mdb.aggregate_random_metrics(write_pattern, io_depth)
         logger.debug('write_pattern = %s', write_pattern)
         logger.debug('io_depth = %s', io_depth)
-        logger.debug('result = %s', criteria)  # 注意：這裡的變數名是 criteria
+        logger.debug('result = %s', criteria)
 
-        validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+        target_perf.validate_metrics(read_bw, read_iops, write_bw, write_iops,
+                                     criteria)
 
 
 @pytest.mark.PERFORMANCE
@@ -188,7 +187,8 @@ class TestSequentialReadWrite:
         read_bw, read_iops, write_bw, write_iops, _ = \
             target_perf.run_io_operation(32, block_size, None, write_pattern,
                                          156)
-        log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'sequential_')
+        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+                                   'sequential_')
 
         criteria = my_mdb.aggregate_sequential_metrics(write_pattern,
                                                        block_size)
@@ -196,7 +196,8 @@ class TestSequentialReadWrite:
         logger.debug('block_size = %s', block_size)
         logger.debug('criteria = %s', criteria)
 
-        validate_metrics(read_bw, read_iops, write_bw, write_iops, criteria)
+        target_perf.validate_metrics(read_bw, read_iops, write_bw, write_iops,
+                                     criteria)
 
 
 @pytest.mark.PERFORMANCE
@@ -228,7 +229,8 @@ class TestRampTimeReadWrite:
             target_perf.run_io_operation(1, '4k', '4k', write_pattern,
                                          ramp_times)
 
-        log_io_metrics(read_bw, read_iops, write_bw, write_iops, 'ramp_')
+        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+                                   'ramp_')
 
         result = my_mdb.aggregate_ramp_metrics(write_pattern,
                                                ramp_times)

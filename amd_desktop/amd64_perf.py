@@ -14,13 +14,41 @@ logger = get_logger(__name__, logging.INFO)
 
 class BasePerf(ABC):
     '''docstring'''
+    READ_R_CFL = READ_L_CFL = WRITE_R_CFL = WRITE_L_CFL = None
+
     def __init__(self, platform, io_file):
+        if BasePerf.READ_R_CFL is None and BasePerf.WRITE_R_CFL is None:
+            BasePerf.READ_R_CFL = BasePerf.WRITE_R_CFL = 3
+        if BasePerf.READ_L_CFL is None:
+            BasePerf.READ_L_CFL = 10
+        if BasePerf.WRITE_L_CFL is None:
+            BasePerf.WRITE_L_CFL = 7
         self._io_file = io_file
         self._platform = platform
         self._api = platform.api
         self._cpu_num = self._platform.cpu_num
         self._thread = self._cpu_num * 2
         self._file_size = self._platform.memory_size * 2
+
+    @classmethod
+    def set_perf_criteria(cls, read_r, write_r, read_l, write_l):
+        """
+        Sets the perf criteria.
+
+        Args:
+            read_r
+            write_r
+            read_l
+            write_l
+        """
+        cls.READ_R_CFL = read_r
+        cls.WRITE_R_CFL = write_r
+        cls.READ_L_CFL = read_l
+        cls.WRITE_L_CFL = write_l
+        logger.info("Manually set READ_R_CFL: %s", cls.READ_R_CFL)
+        logger.info("Manually set WRITE_R_CFL: %s", cls.WRITE_R_CFL)
+        logger.info("Manually set READ_L_CFL: %s", cls.READ_L_CFL)
+        logger.info("Manually set WRITE_L_CFL: %s", cls.WRITE_L_CFL)
 
     @abstractmethod
     def run_io_operation(self,
@@ -142,6 +170,125 @@ class WindowsPerf(BasePerf):
             float(write_iops or 0.0),
             cpu_usage
         )
+
+    @staticmethod
+    def log_io_metrics(read_bw, read_iops, write_bw, write_iops, prefix=""):
+        """Logs the I/O metrics for read and write bandwidth and IOPS.
+
+        Args:
+            read_bw (float): Read bandwidth.
+            read_iops (float): Read IOPS.
+            write_bw (float): Write bandwidth.
+            write_iops (float): Write IOPS.
+            prefix (str, optional): Prefix for log message to distinguish
+            random/sequential metrics.
+        """
+        logger.info('%sread_bw = %.2f MBps', prefix, read_bw)  # 保留兩位小數
+        logger.info('%sread_iops = %d', prefix, read_iops)
+        logger.info('%swrite_bw = %.2f MBps', prefix, write_bw)  # 保留兩位小數
+        logger.info('%swrite_iops = %d', prefix, write_iops)
+
+    def log_target_limit(self, upper_iops, lower_iops, upper_bw, lower_bw,
+                         prefix=""):
+        """Logs the upper and lower limits for IOPS and bandwidth for
+        validation.
+
+        Args:
+            upper_iops (float): Upper limit of IOPS.
+            lower_iops (float): Lower limit of IOPS.
+            upper_bw (float): Upper limit of bandwidth.
+            lower_bw (float): Lower limit of bandwidth.
+            prefix (str, optional): Prefix for log message to distinguish
+            read/write metrics.
+        """
+        logger.debug('upper_%siops = %s', prefix, upper_iops)
+        logger.debug('lower_%siops = %s', prefix, lower_iops)
+        logger.debug('upper_%sbw = %s', prefix, upper_bw)
+        logger.debug('lower_%sbw = %s', prefix, lower_bw)
+
+    def validate_metrics(self, read_bw, read_iops, write_bw, write_iops,
+                         criteria):
+        """Validates the I/O performance metrics against given criteria.
+
+        Args:
+            read_bw (float): Read bandwidth.
+            read_iops (float): Read IOPS.
+            write_bw (float): Write bandwidth.
+            write_iops (float): Write IOPS.
+            criteria (dict): A dictionary of performance criteria including
+            percentile, minimum, and standard deviation for IOPS and bandwidth.
+
+        Raises:
+            AssertionError: If the metrics fall outside of the calculated
+            limits.
+        """
+        if read_iops and read_bw:
+            pct_read_iops = criteria['percentile_read_iops'][0]
+            min_read_iops = criteria['min_read_iops']
+            std_dev_read_iops = criteria['std_dev_read_iops']
+
+            upper_limit_read_iops = (pct_read_iops + std_dev_read_iops *
+                                     self.READ_R_CFL)
+            lower_limit_read_iops = (pct_read_iops - std_dev_read_iops *
+                                     self.READ_L_CFL)
+            if lower_limit_read_iops < 0:
+                lower_limit_read_iops = min_read_iops
+
+            pct_read_bw = criteria['percentile_read_bw'][0]
+            min_read_bw = criteria['min_read_bw']
+            std_dev_read_bw = criteria['std_dev_read_bw']
+
+            upper_limit_read_bw = \
+                pct_read_bw + std_dev_read_bw * self.READ_R_CFL
+            lower_limit_read_bw = \
+                pct_read_bw - std_dev_read_bw * self.READ_L_CFL
+            if lower_limit_read_bw < 0:
+                lower_limit_read_bw = min_read_bw
+
+            self.log_target_limit(
+                upper_limit_read_iops,
+                lower_limit_read_iops,
+                upper_limit_read_bw,
+                lower_limit_read_bw,
+                'read_'
+            )
+
+            assert upper_limit_read_iops > read_iops > lower_limit_read_iops
+            assert upper_limit_read_bw > read_bw > lower_limit_read_bw
+
+        if write_iops and write_bw:
+            pct_write_iops = criteria['percentile_write_iops'][0]
+            min_write_iops = criteria['min_write_iops']
+            std_dev_write_iops = criteria['std_dev_write_iops']
+
+            upper_limit_write_iops = (pct_write_iops + std_dev_write_iops *
+                                      self.WRITE_R_CFL)
+            lower_limit_write_iops = (pct_write_iops - std_dev_write_iops *
+                                      self.WRITE_L_CFL)
+            if lower_limit_write_iops < 0:
+                lower_limit_write_iops = min_write_iops
+
+            pct_write_bw = criteria['percentile_write_bw'][0]
+            min_write_bw = criteria['min_write_bw']
+            std_dev_write_bw = criteria['std_dev_write_bw']
+
+            upper_limit_write_bw = \
+                pct_write_bw + std_dev_write_bw * self.WRITE_R_CFL
+            lower_limit_write_bw = \
+                pct_write_bw - std_dev_write_bw * self.WRITE_L_CFL
+            if lower_limit_write_bw < 0:
+                lower_limit_write_bw = min_write_bw
+
+            self.log_target_limit(
+                upper_limit_write_iops,
+                lower_limit_write_iops,
+                upper_limit_write_bw,
+                lower_limit_write_bw,
+                'write_'
+            )
+
+            assert upper_limit_write_iops > write_iops > lower_limit_write_iops
+            assert upper_limit_write_bw > write_bw > lower_limit_write_bw
 
 
 class LinuxPerf(BasePerf):
