@@ -3,7 +3,10 @@
         "Test ID": 0,
         "Command": "adapter --list",
         "Description": "Show current NVMe Controller ID and total NVMe Controllers.",
-        "Expected": ["Total number of NVMe Controllers: 1", "Current default NVMe Controller slot ID for CLI commands: 0a:00.00"]
+        "Expected": [
+            "Total number of NVMe Controllers: 1",
+            "Current default NVMe Controller slot ID for CLI commands: 0a:00.00"
+        ]
     },
     {
         "Test ID": 1,
@@ -15,7 +18,10 @@
         "Test ID": 2,
         "Command": "version",
         "Description": "Show API, CLI and support firmware version",
-        "Expected": ["CLI Version: 1.0.14.1050", "Support Firmware Version: 1.0.14.1046 above"]
+        "Expected": [
+            "CLI Version: 1.0.14.1050",
+            "Support Firmware Version: 1.0.14.1046 above"
+        ]
     },
     {
         "Test ID": 3,
@@ -34,5 +40,66 @@
         "Command": "log -a on",
         "Description": "Turn on SPI log",
         "Expected": ["cmd success"]
+    },
+    {
+        "Test ID": 6,
+        "Command": "info -o hba",
+        "Description": "Display NVMe controller(hba)",
+        "Expected": [
+            "NVMe Controller",
+            "Bus Device Fun: 0a:00.00",
+            "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+            "Slot ID: Not found",
+            "Firmware Version: 1.0.0.1053",
+            "VID: 0x1b4b",
+            "SVID: 0x1b4b",
+            "DID: 0x2241",
+            "SDID: 0x2241",
+            "RevisionID: B0B",
+            "Port Count: 2",
+            "Max PD of Per VD: 2",
+            "Max VD: 2",
+            "Max PD: 2",
+            "Max NS of Per VD: 1",
+            "Max NS: 2",
+            "Supported RAID Mode: RAID0 RAID1 JBOD",
+            "Cache: On",
+            "Supported BGA Features: Initialization Rebuild MediaPatrol",
+            "Support Stripe Size: 128KB 256KB 512KB",
+            "Supported Features: Import RAID Namespace Dump",
+            "Root Complex: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "Root Complex: 1",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "End Point: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "",
+            "Total # of HBA: 1",
+            ""
+        ]
+    },
+    {
+        "Test ID": 7,
+        "Command": "info -o vd",
+        "Description": "Display virtual disk",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
     }
 ]
