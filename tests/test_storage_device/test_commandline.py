@@ -22,8 +22,9 @@ def mnv_cli(network_api, amd64_system):
     '''docstring'''
     console = CLIFactory(network_api)
     print('\n\033[32m================== Setup Command Test ===========\033[0m')
-    yield console.initiate(platform=amd64_system)
-    print('\n\033[32m================== Teardown Command Test=========\033[0m')
+    # yield console.initiate(platform=amd64_system)
+    return console.initiate(platform=amd64_system)
+    # print('\n\033[32m================== Teardown Command Test=======\033[0m')
 
 
 class TestCLI:
