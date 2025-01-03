@@ -177,5 +177,23 @@
         "Expected": [
             "No Namespace Info Exist."
         ]
+    },
+    {
+        "Test ID": 12,
+        "Command": "event -c 0",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "Test ID": 13,
+        "Command": "event -c 10",
+        "Description": "Get latest 10 events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
     }
 ]
