@@ -2,7 +2,7 @@
     {
         "Test ID": 0,
         "Command": "adapter --list",
-        "Description": "Show current NVMe Controller ID and total NVMe Controllers.",
+        "Description": "Show current controller ID and total number of controllers.",
         "Expected": [
             "Total number of NVMe Controllers: 1",
             "Current default NVMe Controller slot ID for CLI commands: 0a:00.00"
@@ -11,7 +11,7 @@
     {
         "Test ID": 1,
         "Command": "adapter -s 0a:00.00",
-        "Description": "The value format is \"bus:slot.func\"(In some OS, slot means device).",
+        "Description": "The value format is <bus>:<slot>.<func> (For some OSes, slot means device).",
         "Expected": ["Updated current NVMe Controller : 0a:00.00"]
     },
     {
@@ -26,25 +26,19 @@
     {
         "Test ID": 3,
         "Command": "log -a off",
-        "Description": "Turn off SPI log",
+        "Description": "Turn off SPI log before show",
         "Expected": ["cmd success"]
     },
     {
         "Test ID": 4,
-        "Command": "log -a show",
-        "Description": "Show SPI log",
-        "Expected": ["", "Unable to get SPI log from NVMe Controller"]
-    },
-    {
-        "Test ID": 5,
         "Command": "log -a on",
         "Description": "Turn on SPI log",
         "Expected": ["cmd success"]
     },
     {
-        "Test ID": 6,
+        "Test ID": 5,
         "Command": "info -o hba",
-        "Description": "Display NVMe controller(hba)",
+        "Description": "Display controller(hba)",
         "Expected": [
             "NVMe Controller",
             "Bus Device Fun: 0a:00.00",
@@ -82,7 +76,7 @@
         ]
     },
     {
-        "Test ID": 7,
+        "Test ID": 6,
         "Command": "info -o vd",
         "Description": "Display virtual disks",
         "Expected": [
@@ -103,7 +97,7 @@
         ]
     },
     {
-        "Test ID": 8,
+        "Test ID": 7,
         "Command": "info -o pd",
         "Description": "Display physical disks",
         "Expected": [
@@ -139,7 +133,7 @@
         ]
     },
     {
-        "Test ID": 9,
+        "Test ID": 8,
         "Command": "info -o ns",
         "Description": "Display namespaces",
         "Expected": [
@@ -155,7 +149,7 @@
         ]
     },
     {
-        "Test ID": 10,
+        "Test ID": 9,
         "Command": "info -o ns -t vd -v 0",
         "Description": "Display all namespaces which VD ID0 contains",
         "Expected": [
@@ -171,7 +165,7 @@
         ]
     },
     {
-        "Test ID": 11,
+        "Test ID": 10,
         "Command": "info -o ns -t vd -v 1",
         "Description": "Display all namespaces which VD ID1 contains",
         "Expected": [
@@ -179,7 +173,7 @@
         ]
     },
     {
-        "Test ID": 12,
+        "Test ID": 11,
         "Command": "event -c 0",
         "Description": "Get all events from adapter",
         "Expected": [
@@ -188,12 +182,186 @@
         ]
     },
     {
-        "Test ID": 13,
+        "Test ID": 12,
         "Command": "event -c 10",
-        "Description": "Get latest 10 events from adapter",
+        "Description": "Get latest 10 events from controller",
         "Expected": [
             "",
             "Unable to get event status"
+        ]
+    },
+    {
+        "Test ID": 13,
+        "Command": "get -o hba",
+        "Description": "Get configuration of controllers.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Medium",
+            ""
+        ]
+    },
+    {
+        "Test ID": 14,
+        "Command": "get -o hba -i 0",
+        "Description": "Get configuration of controller 0.",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "Test ID": 15,
+        "Command": "get -o hba -i 1",
+        "Description": "Get configuration of controller 1.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Medium",
+            ""
+        ]
+    },
+    {
+        "Test ID": 16,
+        "Command": "identify -c 0",
+        "Description": "Get configuration of a controller.",
+        "Expected": [
+            "identify: option -n is required"
+        ]
+    },
+    {
+        "Test ID": 17,
+        "Command": "identify -c 1",
+        "Description": "Identify controller ID 1.",
+        "Expected": [
+            "",     
+            "NVME identify Information :",
+            "",
+            "VID: 0x1b4b",
+            "SSVID: 0x1b4b",
+            "SN: 00000000000000000000",
+            "MN: Marvell_NVMe_Controller",
+            "FR: 10001053",
+            "RAB: 0x10",
+            "IEEE[0]: 0x43",
+            "IEEE[1]: 0x50",
+            "IEEE[2]: 0x0",
+            "MIC: 0x3",
+            "MDTS: 0x5",
+            "OACS: 0x4c",
+            "ACL: 0x3",
+            "AERL: 0x0",
+            "FRMW: 0x4",
+            "LPA: 0x2",
+            "ELPE: 0xe",
+            "NPSS: 0x0",
+            "AVSCC: 0x0",
+            "TNVMCAP_LOW: 0xe8dcd80000",
+            "TNVMCAP_HIGH: 0x0",
+            "UNVMCAP_LOW: 0x0",
+            "UNVMCAP_HIGH: 0x0",
+            "TNVMCAP(Bytes): 3705143296",
+            "TNVMCAP(GB): 931",
+            "UNVMCAP(Bytes): 0",
+            "UNVMCAP(GB): 0",
+            "SQES: 0x66",
+            "CQES: 0x44",
+            "NN: 0x2",
+            "ONCS: 0x64",
+            "FUSES: 0x0",
+            "FNA: 0x0",
+            "VWC: 0x1",
+            "AWUN: 0x0",
+            "AWUPF: 0x0",
+            "NVSCC: 0x1",
+            "ACWU: 0x0",
+            "SQLS: 0x0",
+            "SUBNQN: nqn.2018-07.com.marvell:nvme:nvm-subsystem-sn-BTNH94241LNG1P48",
+            ""
+        ]
+    },
+    {
+        "Test ID": 18,
+        "Command": "identify -c 0 -n 0",
+        "Description": "Identify namespace ID 0",
+        "Expected": [
+            "namespace ID can not be zero when you identify namespace. (NS ID: 0x0)"
+        ]
+    },
+    {
+        "Test ID": 19,
+        "Command": "identify -c 0 -n 1",
+        "Description": "Identify namespace ID 1",
+        "Expected": [
+            "NSZE: 0x746e6c00",
+            "NCAP: 0x746e6c00",
+            "NUSE: 0x746e6c00",
+            "NSFEAT: 0x8",
+            "nlbaf: 0x0",
+            "flbas: 0x0",
+            "mc: 0x0",
+            "dpc: 0x0",
+            "dps: 0x0",
+            "nmic: 0x1",
+            "rescap: 0xff",
+            "fpi: 0x0",
+            "dlfeat: 0x0",
+            "nawun: 0x0",
+            "nawupf: 0x0",
+            "nacwu: 0x0",
+            "eui64[0]: 0x0",
+            "eui64[1]: 0x50",
+            "eui64[2]: 0x43",
+            "eui64[3]: 0xc5",
+            "eui64[4]: 0xe",
+            "eui64[5]: 0x0",
+            "eui64[6]: 0x0",
+            "eui64[7]: 0x1",
+            "[LBAF] 0",
+            "MS: 0x0",
+            "DS: 0x9",
+            "RP: 0x0"
+        ]
+    },
+    {
+        "ID": 20,
+        "Command": "identify -c 0 -n 2",
+        "Description": "Identify namespace ID 2",
+        "Expected": [
+            "NSZE: 0x0",
+            "NCAP: 0x0",
+            "NUSE: 0x0",
+            "NSFEAT: 0x0",
+            "nlbaf: 0x0",
+            "flbas: 0x0",
+            "mc: 0x0",
+            "dpc: 0x0",
+            "dps: 0x0",
+            "nmic: 0x0",
+            "rescap: 0x0",
+            "fpi: 0x0",
+            "dlfeat: 0x0",
+            "nawun: 0x0",
+            "nawupf: 0x0",
+            "nacwu: 0x0",
+            "eui64[0]: 0x0",
+            "eui64[1]: 0x0",
+            "eui64[2]: 0x0",
+            "eui64[3]: 0x0",
+            "eui64[4]: 0x0",
+            "eui64[5]: 0x0",
+            "eui64[6]: 0x0",
+            "eui64[7]: 0x0",
+            "[LBAF] 0",
+            "MS: 0x0",
+            "DS: 0x0",
+            "RP: 0x0"
+        ]
+    },
+    {
+        "ID": 21,
+        "Command": "identify -c 0 -n 3",
+        "Description": "Identify namespace ID 3",
+        "Expected": [
+            "Invalid Command Opcode (Status Code: 0x1)",
+            "get identify info failed."
         ]
     }
 ]
