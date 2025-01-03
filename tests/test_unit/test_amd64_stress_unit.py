@@ -1,3 +1,5 @@
+# Contents of test_amd64_stress_unit.py
+'''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from amd_desktop.amd64_stress import WindowsStress
 
