@@ -1,14 +1,20 @@
 [
     {
-        "Test ID": 1,
-        "Test Case": "adapter --list",
+        "Test ID": 0,
+        "Command": "adapter --list",
         "Description": "Show current NVMe Controller ID and total NVMe Controllers.",
         "Expected": ["Total number of NVMe Controllers: 1", "Current default NVMe Controller slot ID for CLI commands: 0a:00.00"]
     },
     {
-        "Test ID": 2,
-        "Test Case": "adapter -s 0a:00.00",
+        "Test ID": 1,
+        "Command": "adapter -s 0a:00.00",
         "Description": "The value format is \"bus:slot.func\"(In some OS, slot means device).",
         "Expected": ["Updated current NVMe Controller : 0a:00.00"]
+    },
+    {
+        "Test ID": 2,
+        "Command": "version",
+        "Description": "Show API, CLI and support firmware version",
+        "Expected": ["CLI Version: 1.0.14.1050", "Support Firmware Version: 1.0.14.1046 above"]
     }
 ]
