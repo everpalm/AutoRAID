@@ -363,5 +363,45 @@
             "Invalid Command Opcode (Status Code: 0x1)",
             "get identify info failed."
         ]
+    },
+    {
+        "ID": 22,
+        "Command": "set -o hba -a off",
+        "Description": "Disable auto-rebuild",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 23,
+        "Command": "set -o hba -a on",
+        "Description": "Enable auto-rebuild",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 24,
+        "Command": "set -o hba -r high",
+        "Description": "Update BGA rate to high",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 25,
+        "Command": "set -o hba -r medium",
+        "Description": "Update BGA rate to medium",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 26,
+        "Command": "set -o hba -r low",
+        "Description": "Update BGA rate to low",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
     }
 ]
