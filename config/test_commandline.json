@@ -16,5 +16,23 @@
         "Command": "version",
         "Description": "Show API, CLI and support firmware version",
         "Expected": ["CLI Version: 1.0.14.1050", "Support Firmware Version: 1.0.14.1046 above"]
+    },
+    {
+        "Test ID": 3,
+        "Command": "log -a off",
+        "Description": "Turn off SPI log",
+        "Expected": ["cmd success"]
+    },
+    {
+        "Test ID": 4,
+        "Command": "log -a show",
+        "Description": "Show SPI log",
+        "Expected": ["", "Unable to get SPI log from NVMe Controller"]
+    },
+    {
+        "Test ID": 5,
+        "Command": "log -a on",
+        "Description": "Turn on SPI log",
+        "Expected": ["cmd success"]
     }
 ]
