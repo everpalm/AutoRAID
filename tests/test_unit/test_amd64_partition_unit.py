@@ -1,3 +1,5 @@
+# Contents of test_amd64_partition_unit.py
+'''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from unittest.mock import MagicMock, patch
 from amd_desktop.amd64_partition import WindowsVolume
