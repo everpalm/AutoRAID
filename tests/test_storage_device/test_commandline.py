@@ -19,6 +19,7 @@ with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
 
 @pytest.fixture(scope="module")
 def mnv_cli(network_api, amd64_system):
+    '''docstring'''
     console = CLIFactory(network_api)
     print('\n\033[32m================== Setup Command Test ===========\033[0m')
     yield console.initiate(platform=amd64_system)
@@ -28,7 +29,7 @@ def mnv_cli(network_api, amd64_system):
 class TestCLI:
     '''docstring'''
     @pytest.mark.parametrize('test_plan', TEST_PLAN)
-    def test_list_adapter(self, mnv_cli, test_plan):
+    def test_commandline(self, mnv_cli, test_plan):
         '''docstring'''
         result = mnv_cli.interpret(test_plan["Test Case"])
         logger.debug('result = %s', result)

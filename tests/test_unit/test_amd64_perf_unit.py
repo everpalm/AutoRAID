@@ -1,3 +1,5 @@
+# Contents of test_amd64_perf_unit.py
+'''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from amd_desktop.amd64_perf import WindowsPerf
 
@@ -20,10 +22,12 @@ class MockAPI:
     """Mock implementation of an API for executing commands."""
     def io_command(self, command):
         return """
-        WARNING: Error adjusting token privileges for SeManageVolumePrivilege (error code: 1300)
-        WARNING: Could not set privileges for setting valid file size; will use a slower method of preparing the file
+        WARNING: Error adjusting token privileges for SeManageVolumePrivilege
+        (error code: 1300)
+        WARNING: Could not set privileges for setting valid file size; will
+        use a slower method of preparing the file
 
-        Command Line: diskspd -c12 -t1 -o7 -b4k -r4k -Sh -D -L -w0 -d30 -c1G M:\IO.dat
+        Command Line:diskspd -c12 -t1 -o7 -b4k -r4k -Sh -D -L -w0 -d30 -c1G M:\IO.dat
 
         Input parameters:
 
