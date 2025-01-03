@@ -84,7 +84,7 @@
     {
         "Test ID": 7,
         "Command": "info -o vd",
-        "Description": "Display virtual disk",
+        "Description": "Display virtual disks",
         "Expected": [
             "",
             "VD ID: 1",
@@ -100,6 +100,82 @@
             "",
             "Total # of VD: 1",
             ""
+        ]
+    },
+    {
+        "Test ID": 8,
+        "Command": "info -o pd",
+        "Description": "Display physical disks",
+        "Expected": [
+            "",
+            "PD ID: 1",
+            "Model: INTEL SSDPEKNW010T8",
+            "Serial: BTNH94241LNG1P0B",
+            "Sector Size: 512 bytes",
+            "LBA: 2000409264",
+            "Size: 953 GB",
+            "SSD backend RC/Slot ID: 1",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 002C",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "PD ID: 2",
+            "Model: Samsung SSD 970 EVO Plus 1TB",
+            "Serial: S4EWNMFN710227E",
+            "Sector Size: 512 bytes",
+            "LBA: 1953525168",
+            "Size: 931 GB",
+            "SSD backend RC/Slot ID: 2",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 2B2QEXM7",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "Total # of PD: 2",
+            ""
+        ]
+    },
+    {
+        "Test ID": 9,
+        "Command": "info -o ns",
+        "Description": "Display namespaces",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "Test ID": 10,
+        "Command": "info -o ns -t vd -v 0",
+        "Description": "Display all namespaces which VD ID0 contains",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "Test ID": 11,
+        "Command": "info -o ns -t vd -v 1",
+        "Description": "Display all namespaces which VD ID1 contains",
+        "Expected": [
+            "No Namespace Info Exist."
         ]
     }
 ]
