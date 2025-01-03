@@ -14,11 +14,12 @@ from unit.commandline_interface import CLIFactory
 logger = logging.getLogger(__name__)
 
 with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
-    TEST_PLAN = json.load(f)
+    TEST_CASE = json.load(f)
 
 
 @pytest.fixture(scope="module")
 def mnv_cli(network_api, amd64_system):
+    '''docstring'''
     console = CLIFactory(network_api)
     print('\n\033[32m================== Setup Command Test ===========\033[0m')
     yield console.initiate(platform=amd64_system)
@@ -27,9 +28,9 @@ def mnv_cli(network_api, amd64_system):
 
 class TestCLI:
     '''docstring'''
-    @pytest.mark.parametrize('test_plan', TEST_PLAN)
-    def test_list_adapter(self, mnv_cli, test_plan):
+    @pytest.mark.parametrize('test_case', TEST_CASE)
+    def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
-        result = mnv_cli.interpret(test_plan["Test Case"])
+        result = mnv_cli.interpret(test_case["Command"])
         logger.debug('result = %s', result)
-        assert result == test_plan["Expected"]
+        assert result == test_case["Expected"]
