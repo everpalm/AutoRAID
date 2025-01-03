@@ -191,7 +191,67 @@
         ]
     },
     {
-        "Test ID": 13,
+        "ID": 13,
+        "Command": "set -o hba -a off",
+        "Description": "Disable auto-rebuild",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 14,
+        "Command": "set -o hba -a on",
+        "Description": "Enable auto-rebuild",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 15,
+        "Command": "set -o hba -r high",
+        "Description": "Update BGA rate to high",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "Test ID": 16,
+        "Command": "get -o hba",
+        "Description": "Get configuration of controllers.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: High",
+            ""
+        ]
+    },
+    {
+        "ID": 17,
+        "Command": "set -o hba -r low",
+        "Description": "Update BGA rate to low",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "Test ID": 18,
+        "Command": "get -o hba",
+        "Description": "Get configuration of controllers.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Low",
+            ""
+        ]
+    },
+    {
+        "ID": 19,
+        "Command": "set -o hba -r medium",
+        "Description": "Update BGA rate to medium",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "Test ID": 20,
         "Command": "get -o hba",
         "Description": "Get configuration of controllers.",
         "Expected": [
@@ -201,7 +261,7 @@
         ]
     },
     {
-        "Test ID": 14,
+        "Test ID": 21,
         "Command": "get -o hba -i 0",
         "Description": "Get configuration of controller 0.",
         "Expected": [
@@ -209,7 +269,7 @@
         ]
     },
     {
-        "Test ID": 15,
+        "Test ID": 22,
         "Command": "get -o hba -i 1",
         "Description": "Get configuration of controller 1.",
         "Expected": [
@@ -219,7 +279,7 @@
         ]
     },
     {
-        "Test ID": 16,
+        "Test ID": 23,
         "Command": "identify -c 0",
         "Description": "Get configuration of a controller.",
         "Expected": [
@@ -227,7 +287,7 @@
         ]
     },
     {
-        "Test ID": 17,
+        "Test ID": 24,
         "Command": "identify -c 1",
         "Description": "Identify controller ID 1.",
         "Expected": [
@@ -278,7 +338,7 @@
         ]
     },
     {
-        "Test ID": 18,
+        "Test ID": 25,
         "Command": "identify -c 0 -n 0",
         "Description": "Identify namespace ID 0",
         "Expected": [
@@ -286,7 +346,7 @@
         ]
     },
     {
-        "Test ID": 19,
+        "Test ID": 26,
         "Command": "identify -c 0 -n 1",
         "Description": "Identify namespace ID 1",
         "Expected": [
@@ -321,7 +381,7 @@
         ]
     },
     {
-        "ID": 20,
+        "ID": 27,
         "Command": "identify -c 0 -n 2",
         "Description": "Identify namespace ID 2",
         "Expected": [
@@ -356,7 +416,7 @@
         ]
     },
     {
-        "ID": 21,
+        "ID": 28,
         "Command": "identify -c 0 -n 3",
         "Description": "Identify namespace ID 3",
         "Expected": [
