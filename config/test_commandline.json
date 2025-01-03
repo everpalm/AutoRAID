@@ -2,7 +2,7 @@
     {
         "Test ID": 0,
         "Command": "adapter --list",
-        "Description": "Show current NVMe Controller ID and total NVMe Controllers.",
+        "Description": "Show current controller ID and total number of controllers.",
         "Expected": [
             "Total number of NVMe Controllers: 1",
             "Current default NVMe Controller slot ID for CLI commands: 0a:00.00"
@@ -11,7 +11,7 @@
     {
         "Test ID": 1,
         "Command": "adapter -s 0a:00.00",
-        "Description": "The value format is \"bus:slot.func\"(In some OS, slot means device).",
+        "Description": "The value format is <bus>:<slot>.<func> (For some OSes, slot means device).",
         "Expected": ["Updated current NVMe Controller : 0a:00.00"]
     },
     {
@@ -26,7 +26,7 @@
     {
         "Test ID": 3,
         "Command": "log -a off",
-        "Description": "Turn off SPI log",
+        "Description": "Turn off SPI log before show",
         "Expected": ["cmd success"]
     },
     {
@@ -44,7 +44,7 @@
     {
         "Test ID": 6,
         "Command": "info -o hba",
-        "Description": "Display NVMe controller(hba)",
+        "Description": "Display controller(hba)",
         "Expected": [
             "NVMe Controller",
             "Bus Device Fun: 0a:00.00",
@@ -190,10 +190,38 @@
     {
         "Test ID": 13,
         "Command": "event -c 10",
-        "Description": "Get latest 10 events from adapter",
+        "Description": "Get latest 10 events from controller",
         "Expected": [
             "",
             "Unable to get event status"
+        ]
+    },
+    {
+        "Test ID": 14,
+        "Command": "get -o hba",
+        "Description": "Get configuration of a controller.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Medium",
+            ""
+        ]
+    },
+    {
+        "Test ID": 15,
+        "Command": "get -o hba -i 0",
+        "Description": "Get configuration of a controller.",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "Test ID": 16,
+        "Command": "get -o hba -i 1",
+        "Description": "Get configuration of a controller.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Medium",
+            ""
         ]
     }
 ]
