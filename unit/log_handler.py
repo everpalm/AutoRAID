@@ -1,4 +1,5 @@
 # log_handler.py
+'''Copyright (c) 2024 Jaron Cheng'''
 import logging
 
 

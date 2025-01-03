@@ -1,3 +1,5 @@
+# Contents of gitlab.py
+'''Copyright (c) 2024 Jaron Cheng'''
 import gitlab
 import logging
 
