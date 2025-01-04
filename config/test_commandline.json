@@ -447,5 +447,13 @@
         "Expected": [
             "-i : invalid NVMe Controller id '0'"
         ]
+    },
+    {
+        "Test ID": 32,
+        "Command": "oemdata --read",
+        "Description": "Get backend SSD ID 0 SMART information",
+        "Expected": [
+            "OEM raw data is not exist."
+        ]
     }
 ]
