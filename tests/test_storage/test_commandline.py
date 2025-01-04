@@ -39,13 +39,7 @@ class TestCLI:
         smart_info = mnv_cli.get_controller_smart_info()
         for key, value in smart_info.__dict__.items():
             logger.info("%s = %s", key, value)
-        # logger.info('critical_warning = %s', smart_info.critical_warning)
-        # logger.info('composite_temp = %s', smart_info.composite_temp)
-        # logger.info('available_spare = %s', smart_info.available_spare)
-        # logger.info('available_spare_threshold = %s',
-        #             smart_info.available_spare_threshold)
-        # logger.debug('percentage_used = %s', smart_info.percentage_used)
-        # 定義規則
+
         limits = {
             "critical_warning": lambda x: 0x00 <= int(x, 16) <= 0x05,
             "composite_temp": lambda x: int(x) < 70,
@@ -55,28 +49,31 @@ class TestCLI:
         }
 
         # 驗證每個字段
-        assert limits["critical_warning"](smart_info.critical_warning), (
-            f"Critical Warning {smart_info.critical_warning} is out of range!"
-        )
-        assert limits["composite_temp"](smart_info.composite_temp), (
-            f"Composite Temperature {smart_info.composite_temp} out of range!"
-        )
-        assert limits["available_spare"](smart_info.available_spare), (
-            f"Available Spare {smart_info.available_spare} is out of range!"
-        )
-        assert limits["available_spare_threshold"](
-            smart_info.available_spare_threshold), (
-            f"Available Spare Threshold {smart_info.available_spare_threshold}"
-            " is out of range!"
-        )
-        assert limits["percentage_used"](smart_info.percentage_used), (
-            f"Percentage Used {smart_info.percentage_used} is out of range!"
-        )
+        # assert limits["critical_warning"](smart_info.critical_warning), (
+        #   f"Critical Warning {smart_info.critical_warning} is out of range!"
+        # )
+        # assert limits["composite_temp"](smart_info.composite_temp), (
+        #   f"Composite Temperature {smart_info.composite_temp} out of range!"
+        # )
+        # assert limits["available_spare"](smart_info.available_spare), (
+        #     f"Available Spare {smart_info.available_spare} is out of range!"
+        # )
+        # assert limits["available_spare_threshold"](
+        #     smart_info.available_spare_threshold), (
+        #   f"Available Spare Threshold {smart_info.available_spare_threshold}"
+        #     " is out of range!"
+        # )
+        # assert limits["percentage_used"](smart_info.percentage_used), (
+        #     f"Percentage Used {smart_info.percentage_used} is out of range!"
+        # )
+        smart_info_fields = smart_info.__dict__
+        for field, value in smart_info_fields.items():
+            assert limits[field](value), (f"{field.replace('_', ' ').title()} "
+                                          f"{value} is out of range!")
 
     def test_get_backend_smart_info(self, mnv_cli):
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
         for key, value in smart_info.__dict__.items():
-            # logger.info(f'{key} = {value}')
             logger.info("%s = %s", key, value)
 
         limits = {
