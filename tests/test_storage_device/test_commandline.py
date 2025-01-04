@@ -36,12 +36,14 @@ class TestCLI:
 
     def test_get_controller_smart_info(self, mnv_cli):
         smart_info = mnv_cli.get_controller_smart_info()
-        logger.info('critical_warning = %s', smart_info.critical_warning)
-        logger.info('composite_temp = %s', smart_info.composite_temp)
-        logger.info('available_spare = %s', smart_info.available_spare)
-        logger.info('available_spare_threshold = %s',
-                    smart_info.available_spare_threshold)
-        logger.debug('percentage_used = %s', smart_info.percentage_used)
+        for key, value in smart_info.__dict__.items():
+            logger.info("%s = %s", key, value)
+        # logger.info('critical_warning = %s', smart_info.critical_warning)
+        # logger.info('composite_temp = %s', smart_info.composite_temp)
+        # logger.info('available_spare = %s', smart_info.available_spare)
+        # logger.info('available_spare_threshold = %s',
+        #             smart_info.available_spare_threshold)
+        # logger.debug('percentage_used = %s', smart_info.percentage_used)
         # 定義規則
         limits = {
             "critical_warning": lambda x: 0x00 <= int(x, 16) <= 0x05,
@@ -73,7 +75,8 @@ class TestCLI:
     def test_get_backend_smart_info(self, mnv_cli):
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
         for key, value in smart_info.__dict__.items():
-            logger.info(f'{key} = {value}')
+            # logger.info(f'{key} = {value}')
+            logger.info("%s = %s", key, value)
 
         limits = {
             "critical_warning": lambda x: 0x00 <= int(x, 16) <= 0x05,
