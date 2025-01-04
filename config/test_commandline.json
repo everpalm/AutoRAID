@@ -191,7 +191,7 @@
         ]
     },
     {
-        "ID": 13,
+        "Test ID": 13,
         "Command": "set -o hba -a off",
         "Description": "Disable auto-rebuild",
         "Expected": [
@@ -199,7 +199,7 @@
         ]
     },
     {
-        "ID": 14,
+        "Test ID": 14,
         "Command": "set -o hba -a on",
         "Description": "Enable auto-rebuild",
         "Expected": [
@@ -207,7 +207,7 @@
         ]
     },
     {
-        "ID": 15,
+        "Test ID": 15,
         "Command": "set -o hba -r high",
         "Description": "Update BGA rate to high",
         "Expected": [
@@ -225,7 +225,7 @@
         ]
     },
     {
-        "ID": 17,
+        "Test ID": 17,
         "Command": "set -o hba -r low",
         "Description": "Update BGA rate to low",
         "Expected": [
@@ -243,7 +243,7 @@
         ]
     },
     {
-        "ID": 19,
+        "Test ID": 19,
         "Command": "set -o hba -r medium",
         "Description": "Update BGA rate to medium",
         "Expected": [
@@ -381,7 +381,7 @@
         ]
     },
     {
-        "ID": 27,
+        "Test ID": 27,
         "Command": "identify -c 0 -n 2",
         "Description": "Identify namespace ID 2",
         "Expected": [
@@ -416,12 +416,36 @@
         ]
     },
     {
-        "ID": 28,
+        "Test ID": 28,
         "Command": "identify -c 0 -n 3",
         "Description": "Identify namespace ID 3",
         "Expected": [
             "Invalid Command Opcode (Status Code: 0x1)",
             "get identify info failed."
+        ]
+    },
+    {
+        "Test ID": 29,
+        "Command": "debuglv -t 1",
+        "Description": "Set debug level to error only",
+        "Expected": [
+            "debug level access to error only success."
+        ]
+    },
+    {
+        "Test ID": 30,
+        "Command": "debuglv -t 0",
+        "Description": "Set debug level to normal",
+        "Expected": [
+            "debug level access to normal success."
+        ]
+    },
+    {
+        "Test ID": 31,
+        "Command": "smart -i 0",
+        "Description": "Get backend SSD ID 0 SMART information",
+        "Expected": [
+            "-i : invalid NVMe Controller id '0'"
         ]
     }
 ]
