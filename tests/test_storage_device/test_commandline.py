@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
     TEST_CASE = json.load(f)
+sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["Test ID"])
 
 
 @pytest.fixture(scope="module")
@@ -27,7 +28,7 @@ def mnv_cli(network_api, amd64_system):
 
 class TestCLI:
     '''docstring'''
-    @pytest.mark.parametrize('test_case', TEST_CASE)
+    @pytest.mark.parametrize('test_case', sorted_test_cases)
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
         result = mnv_cli.interpret(test_case["Command"])
@@ -106,5 +107,5 @@ class TestCLI:
 
         # 逐項檢查是否符合 limits 規範
         for field, value in smart_info_fields.items():
-            assert limits[field](value), f"{field.replace('_', ' ').title()} "
-            "{value} is out of range!"
+            assert limits[field](value), (f"{field.replace('_', ' ').title()} "
+                                          f"{value} is out of range!")
