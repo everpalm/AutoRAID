@@ -381,7 +381,7 @@
         ]
     },
     {
-        "ID": 27,
+        "Test ID": 27,
         "Command": "identify -c 0 -n 2",
         "Description": "Identify namespace ID 2",
         "Expected": [
@@ -422,6 +422,22 @@
         "Expected": [
             "Invalid Command Opcode (Status Code: 0x1)",
             "get identify info failed."
+        ]
+    },
+    {
+        "Test ID": 29,
+        "Command": "debuglv -t 1",
+        "Description": "Set debug level to error only",
+        "Expected": [
+            "debug level access to error only success."
+        ]
+    },
+    {
+        "Test ID": 30,
+        "Command": "debuglv -t 0",
+        "Description": "Set debug level to normal",
+        "Expected": [
+            "debug level access to normal success."
         ]
     }
 ]
