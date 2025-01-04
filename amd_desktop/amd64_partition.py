@@ -146,7 +146,7 @@ class WindowsVolume(PartitionDisk):
         Raises:
             Exception: If an error occurs during the deletion process.
         """
-        logger.info("Delete diskpart script...")
+        logger.debug("Delete diskpart script...")
         try:
             partition_cmd = self._api.command_line.original(
                 self._api,
