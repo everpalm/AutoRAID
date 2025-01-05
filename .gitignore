@@ -1,14 +1,15 @@
+.pytest_cache/
 **/__pycache__
 caches/
 htmlcov/
 logs/*.*
 remoting/
+venv/
 workspace/
 *.jar
 *.log*
 .coverage*
-.pytest_cache/
 .report.json
 .testmondata*
-settings.json
 diskpart_script.txt
+settings.json
