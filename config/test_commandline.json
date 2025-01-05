@@ -31,12 +31,54 @@
     },
     {
         "ID": 4,
+        "Command": "dumphba -a show",
+        "Description": "Show SPI logging is Off",
+        "Expected": [
+            "",
+            "",
+            "MVF Function: On",
+            "SRIOV Function: Off",
+            "Debug message in SPI: Off",
+            "Debug Level: Normal",
+            "[GPIO Feature]",
+            "Function Switch: 0x30",
+            "Level: 0x30",
+            "Value: 0x30",
+            "Set Default: Off",
+            "",
+            "",
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 5,
         "Command": "log -a on",
         "Description": "Turn on SPI log",
         "Expected": ["cmd success"]
     },
     {
-        "ID": 5,
+        "ID": 6,
+        "Command": "dumphba -a show",
+        "Description": "Show SPI logging is on",
+        "Expected": [
+            "",
+            "",
+            "MVF Function: On",
+            "SRIOV Function: Off",
+            "Debug message in SPI: On",
+            "Debug Level: Normal",
+            "[GPIO Feature]",
+            "Function Switch: 0x30",
+            "Level: 0x30",
+            "Value: 0x30",
+            "Set Default: Off",
+            "",
+            "",
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 7,
         "Command": "info -o hba",
         "Description": "Display controller(hba)",
         "Expected": [
@@ -76,7 +118,7 @@
         ]
     },
     {
-        "ID": 6,
+        "ID": 8,
         "Command": "info -o vd",
         "Description": "Display virtual disks",
         "Expected": [
@@ -97,7 +139,7 @@
         ]
     },
     {
-        "ID": 7,
+        "ID": 9,
         "Command": "info -o pd",
         "Description": "Display physical disks",
         "Expected": [
@@ -133,7 +175,7 @@
         ]
     },
     {
-        "ID": 8,
+        "ID": 10,
         "Command": "info -o ns",
         "Description": "Display namespaces",
         "Expected": [
@@ -149,7 +191,7 @@
         ]
     },
     {
-        "ID": 9,
+        "ID": 11,
         "Command": "info -o ns -t vd -v 0",
         "Description": "Display all namespaces which VD ID0 contains",
         "Expected": [
@@ -165,7 +207,7 @@
         ]
     },
     {
-        "ID": 10,
+        "ID": 12,
         "Command": "info -o ns -t vd -v 1",
         "Description": "Display all namespaces which VD ID1 contains",
         "Expected": [
@@ -173,7 +215,7 @@
         ]
     },
     {
-        "ID": 11,
+        "ID": 13,
         "Command": "event -c 0",
         "Description": "Get all events from adapter",
         "Expected": [
@@ -182,7 +224,7 @@
         ]
     },
     {
-        "ID": 12,
+        "ID": 14,
         "Command": "event -c 10",
         "Description": "Get latest 10 events from controller",
         "Expected": [
@@ -191,7 +233,7 @@
         ]
     },
     {
-        "ID": 13,
+        "ID": 15,
         "Command": "set -o hba -a off",
         "Description": "Disable auto-rebuild",
         "Expected": [
@@ -199,7 +241,7 @@
         ]
     },
     {
-        "ID": 14,
+        "ID": 16,
         "Command": "set -o hba -a on",
         "Description": "Enable auto-rebuild",
         "Expected": [
@@ -207,27 +249,9 @@
         ]
     },
     {
-        "ID": 15,
+        "ID": 17,
         "Command": "set -o hba -r high",
         "Description": "Update BGA rate to high",
-        "Expected": [
-            "HBA configuration is updated."
-        ]
-    },
-    {
-        "ID": 16,
-        "Command": "get -o hba",
-        "Description": "Get configuration of controllers.",
-        "Expected": [
-            "Auto Rebuild: on",
-            "BGA Rate: High",
-            ""
-        ]
-    },
-    {
-        "ID": 17,
-        "Command": "set -o hba -r low",
-        "Description": "Update BGA rate to low",
         "Expected": [
             "HBA configuration is updated."
         ]
@@ -238,14 +262,14 @@
         "Description": "Get configuration of controllers.",
         "Expected": [
             "Auto Rebuild: on",
-            "BGA Rate: Low",
+            "BGA Rate: High",
             ""
         ]
     },
     {
         "ID": 19,
-        "Command": "set -o hba -r medium",
-        "Description": "Update BGA rate to medium",
+        "Command": "set -o hba -r low",
+        "Description": "Update BGA rate to low",
         "Expected": [
             "HBA configuration is updated."
         ]
@@ -256,12 +280,30 @@
         "Description": "Get configuration of controllers.",
         "Expected": [
             "Auto Rebuild: on",
-            "BGA Rate: Medium",
+            "BGA Rate: Low",
             ""
         ]
     },
     {
         "ID": 21,
+        "Command": "set -o hba -r medium",
+        "Description": "Update BGA rate to medium",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 22,
+        "Command": "get -o hba",
+        "Description": "Get configuration of controllers.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Medium",
+            ""
+        ]
+    },
+    {
+        "ID": 23,
         "Command": "get -o hba -i 0",
         "Description": "Get configuration of controller 0.",
         "Expected": [
@@ -269,7 +311,7 @@
         ]
     },
     {
-        "ID": 22,
+        "ID": 24,
         "Command": "get -o hba -i 1",
         "Description": "Get configuration of controller 1.",
         "Expected": [
@@ -279,7 +321,7 @@
         ]
     },
     {
-        "ID": 23,
+        "ID": 25,
         "Command": "identify -c 0",
         "Description": "Get configuration of a controller.",
         "Expected": [
@@ -287,7 +329,7 @@
         ]
     },
     {
-        "ID": 24,
+        "ID": 26,
         "Command": "identify -c 1",
         "Description": "Identify controller ID 1.",
         "Expected": [
@@ -338,7 +380,7 @@
         ]
     },
     {
-        "ID": 25,
+        "ID": 27,
         "Command": "identify -c 0 -n 0",
         "Description": "Identify namespace ID 0",
         "Expected": [
@@ -346,7 +388,7 @@
         ]
     },
     {
-        "ID": 26,
+        "ID": 28,
         "Command": "identify -c 0 -n 1",
         "Description": "Identify namespace ID 1",
         "Expected": [
@@ -381,7 +423,7 @@
         ]
     },
     {
-        "ID": 27,
+        "ID": 29,
         "Command": "identify -c 0 -n 2",
         "Description": "Identify namespace ID 2",
         "Expected": [
@@ -416,7 +458,7 @@
         ]
     },
     {
-        "ID": 28,
+        "ID": 30,
         "Command": "identify -c 0 -n 3",
         "Description": "Identify namespace ID 3",
         "Expected": [
@@ -425,7 +467,7 @@
         ]
     },
     {
-        "ID": 29,
+        "ID": 31,
         "Command": "debuglv -t 1",
         "Description": "Set debug level to error only",
         "Expected": [
@@ -433,7 +475,7 @@
         ]
     },
     {
-        "ID": 30,
+        "ID": 32,
         "Command": "dumphba -a show",
         "Description": "Show debug level is error only",
         "Expected": [
@@ -454,7 +496,7 @@
         ]
     },
     {
-        "ID": 31,
+        "ID": 33,
         "Command": "debuglv -t 0",
         "Description": "Set debug level to normal",
         "Expected": [
@@ -462,7 +504,7 @@
         ]
     },
     {
-        "ID": 32,
+        "ID": 34,
         "Command": "dumphba -a show",
         "Description": "Show debug level is normal",
         "Expected": [
@@ -483,7 +525,7 @@
         ]
     },
     {
-        "ID": 33,
+        "ID": 35,
         "Command": "smart -i 0",
         "Description": "Get backend SSD ID 0 SMART information",
         "Expected": [
@@ -491,9 +533,9 @@
         ]
     },
     {
-        "ID": 34,
+        "ID": 36,
         "Command": "oemdata --read",
-        "Description": "Get backend SSD ID 0 SMART information",
+        "Description": "Read OEM data",
         "Expected": [
             "OEM raw data is not exist."
         ]
