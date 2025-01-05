@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
     TEST_CASE = json.load(f)
-sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["Test ID"])
+sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["ID"])
 
 
 @pytest.fixture(scope="module")
