@@ -11,7 +11,7 @@ pipeline {
         GIT_TOKEN = credentials('github-token')
         TEST_UNIT = "${WORKSPACE}/tests/test_unit"
         TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
-        TEST_STORAGE_DEVICE = "${WORKSPACE}/tests/test_storage_device"
+        TEST_STORAGE = "${WORKSPACE}/tests/test_storage"
         PATH = "/home/pi/.pyenv/shims:/home/pi/.pyenv/bin:${env.PATH}"
     }
     stages {
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     gv.test_pep8(env.TEST_AMD_DESKTOP)
-                    gv.test_pep8(env.TEST_STORAGE_DEVICE)
+                    gv.test_pep8(env.TEST_STORAGE)
                     gv.test_unit(env.TEST_UNIT, env.MY_PRIVATE_TOKEN)
                 }
             }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     gv.test_sanity(env.TEST_AMD_DESKTOP)
-                    gv.test_sanity(env.TEST_STORAGE_DEVICE)
+                    gv.test_sanity(env.TEST_STORAGE)
                 }
             }
         }
