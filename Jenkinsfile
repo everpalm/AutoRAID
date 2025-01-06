@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     gv.test_sanity(env.TEST_AMD_DESKTOP)
-                    gv.test_sanity(env.TEST_STORAGE)
+                    gv.test_regression(env.TEST_STORAGE)
                 }
             }
         }
