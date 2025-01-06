@@ -6,7 +6,7 @@ import pytest
 
 from amd_desktop.amd64_event import EventFactory
 from amd_desktop.amd64_nvme import AMD64NVMe as amd64
-from storage.amd64_perf import PerfFactory
+from storage.storage_perf import PerfFactory
 from amd_desktop.amd64_stress import StressFactory
 from unit.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
