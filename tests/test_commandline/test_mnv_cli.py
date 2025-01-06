@@ -8,7 +8,7 @@ import json
 import logging
 import pytest
 
-from commandline.commandline import CLIFactory
+from commandline.mnv_cli import CLIFactory
 
 # Set up logger
 logger = logging.getLogger(__name__)
