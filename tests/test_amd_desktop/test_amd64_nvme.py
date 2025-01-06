@@ -46,7 +46,6 @@ class TestAMD64NVMe:
         memory_size = target_system.memory_size
         logger.info("Memory Size = %s GB", memory_size)
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_mac_address(self, target_system):
         """Test for verifying MAC address of the system.
 
