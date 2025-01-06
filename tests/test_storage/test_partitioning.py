@@ -5,9 +5,9 @@ import logging
 import pytest
 
 from amd_desktop.amd64_system import BaseOS
-from amd_desktop.amd64_partition import PartitionFactory
-from amd_desktop.amd64_partition import PartitionDisk
-from amd_desktop.amd64_partition import WindowsVolume
+from storage.partitioning import PartitionFactory
+from storage.partitioning import PartitionDisk
+from storage.partitioning import WindowsVolume
 from unit.amd64_interface import BaseInterface
 
 logger = logging.getLogger(__name__)
