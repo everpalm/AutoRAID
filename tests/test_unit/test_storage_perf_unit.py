@@ -21,7 +21,7 @@ class MockPlatform:
 class MockAPI:
     """Mock implementation of an API for executing commands."""
     def io_command(self, command):
-        return """
+        return r"""
         WARNING: Error adjusting token privileges for SeManageVolumePrivilege
         (error code: 1300)
         WARNING: Could not set privileges for setting valid file size; will
