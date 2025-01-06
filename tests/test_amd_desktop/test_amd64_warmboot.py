@@ -3,7 +3,7 @@
 import logging
 import time
 import pytest
-from tests.test_amd_desktop.test_amd64_stress import TestOneShotStress
+from tests.test_storage.test_amd64_stress import TestOneShotStress
 # from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
 from amd_desktop.amd64_warmboot import WarmBootFactory
 
