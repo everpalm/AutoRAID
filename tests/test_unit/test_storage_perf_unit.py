@@ -1,7 +1,7 @@
 # Contents of test_amd64_perf_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
-from amd_desktop.amd64_perf import WindowsPerf
+from storage.amd64_perf import WindowsPerf
 
 
 class MockPlatform:
