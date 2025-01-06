@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     curl \
     pkg-config \
+    iproute2 \
     && apt-get clean
 
 # 安装 Rust 工具链，用于构建 cryptography
