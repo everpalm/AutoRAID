@@ -2,9 +2,9 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 
-from unit.commandline_interface import CLIFactory
-from unit.commandline_interface import LinuxCLI
-from unit.commandline_interface import WindowsCLI
+from commandline.commandline import CLIFactory
+from commandline.commandline import LinuxCLI
+from commandline.commandline import WindowsCLI
 from unittest.mock import MagicMock, patch
 
 
