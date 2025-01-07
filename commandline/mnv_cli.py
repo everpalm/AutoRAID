@@ -144,10 +144,12 @@ class WindowsCLI(BaseCLI):
                     r"Temperature 2 Transition Count\s*:\s*([0-9]+)"
                 ),
                 "total_time_for_tmp1": (
-                    r"Total Time For Thermal Management Temperature 1\s*:\s*([0-9]+)"
+                    r"Total Time For Thermal Management Temperature "
+                    r"1\s*:\s*([0-9]+)"
                 ),
                 "total_time_for_tmp2": (
-                    r"Total Time For Thermal Management Temperature 2\s*:\s*([0-9]+)"
+                    r"Total Time For Thermal Management Temperature "
+                    r"2\s*:\s*([0-9]+)"
                 )
             }
             result = {}
