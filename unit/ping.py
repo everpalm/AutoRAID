@@ -128,12 +128,7 @@ class LinuxPing(PingBase):
                 f'ping -c {count} {self._ip_address}'
             )
             logger.debug('list_return = %s', list_return)
-            # if list_return:
-            #   bool_msg = self._parse_packets(dict_return.get(6),
-            #       self.LINUX_PACKET_MSG)
-            #       bool_sts = self._parse_statistics(dict_return.get(7),
-            #                        self.LINUX_STATISTICS)
-            # r eturn bool_msg and bool_sts
+
             if list_return:
                 bool_msg, bool_sts = False, False
                 for line in list_return:

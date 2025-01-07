@@ -1,8 +1,8 @@
 # Contents of test_amd64_warmboot_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
-from amd_desktop.amd64_warmboot import WindowsWarmBoot
-from amd_desktop.amd64_warmboot import LinuxWarmBoot
+from boot.amd64_warmboot import WindowsWarmBoot
+from boot.amd64_warmboot import LinuxWarmBoot
 
 
 @pytest.fixture

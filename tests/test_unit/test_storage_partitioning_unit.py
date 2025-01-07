@@ -2,7 +2,7 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from unittest.mock import MagicMock, patch
-from amd_desktop.amd64_partition import WindowsVolume
+from storage.partitioning import WindowsVolume
 from amd_desktop.amd64_nvme import AMD64NVMe
 
 
