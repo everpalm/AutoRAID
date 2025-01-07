@@ -4,7 +4,7 @@ import logging
 # import time
 import pytest
 import RPi.GPIO as gpio
-from tests.test_storage.test_amd64_stress import TestOneShotStress as Toss
+from tests.test_storage.test_stress import TestOneShotStress as Toss
 from tests.test_raspberry.test_pi3_gpio import TestPowerOnSUT
 from tests.test_raspberry.test_pi3_gpio import TestPowerOffSUT
 from unit.gpio import OperateGPIO as og

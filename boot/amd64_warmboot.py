@@ -4,7 +4,7 @@ import logging
 
 from abc import ABC, abstractmethod
 from amd_desktop.amd64_nvme import AMD64NVMe
-from unit.amd64_interface import BaseInterface
+from interface.application import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
