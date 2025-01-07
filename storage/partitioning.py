@@ -5,8 +5,8 @@ import math
 import re
 from abc import ABC
 from abc import abstractmethod
-from amd_desktop.amd64_nvme import AMD64NVMe
-from amd_desktop.amd64_system import BaseOS
+from amd64.amd64_nvme import AMD64NVMe
+from amd64.amd64_system import BaseOS
 from typing import List
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
