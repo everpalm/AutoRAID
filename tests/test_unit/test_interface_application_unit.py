@@ -3,18 +3,18 @@
 import pytest
 from unittest.mock import patch, MagicMock
 # from unit.amd64_interface import BaseInterface
-from unit.amd64_interface import WindowsInterface
-from unit.amd64_interface import LinuxInterface
+from interface.application import WindowsInterface
+from interface.application import LinuxInterface
 # from unit.amd64_interface import CommandContext
-from unit.amd64_interface import InterfaceFactory
+from interface.application import InterfaceFactory
 
 
 @pytest.fixture
 def base_interface():
-    with patch('unit.amd64_interface.BaseInterface._get_local_ip',
+    with patch('interface.application.BaseInterface._get_local_ip',
                return_value='192.168.0.139'):
         with patch(
-            'unit.amd64_interface.BaseInterface._get_remote_ip',
+            'interface.application.BaseInterface._get_remote_ip',
             return_value=(
                 "192.168.0.128",
                 "pi",
@@ -33,7 +33,7 @@ def base_interface():
 
 def test_get_local_ip(base_interface):
     with patch(
-        'unit.amd64_interface.BaseInterface._get_local_ip'
+        'interface.application.BaseInterface._get_local_ip'
     ) as mock_get_local_ip:
         mock_get_local_ip.return_value = '127.0.0.1'
         result = base_interface._get_local_ip('eth0')
@@ -42,7 +42,7 @@ def test_get_local_ip(base_interface):
 
 def test_get_remote_ip(base_interface):
     with patch(
-        'unit.amd64_interface.BaseInterface._get_remote_ip'
+        'interface.application.BaseInterface._get_remote_ip'
     ) as mock_get_remote_ip:
         mock_get_remote_ip.return_value = (
             "192.168.0.128",
@@ -61,7 +61,7 @@ def test_get_remote_ip(base_interface):
 
 
 def test_os_type():
-    with patch('unit.amd64_interface.paramiko.SSHClient') as mock_ssh_client:
+    with patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
         mock_ssh = MagicMock()
         mock_ssh.exec_command.return_value = (
             None,
@@ -96,7 +96,7 @@ def test_ftp_command_windows(windows_interface):
          patch.object(windows_interface, 'account', 'user'), \
          patch.object(windows_interface, 'password', 'password'), \
          patch.object(windows_interface, 'remote_dir', '/remote'), \
-         patch('unit.amd64_interface.paramiko.SSHClient') as mock_ssh_client:
+         patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
 
         # 模擬 SFTP 操作
         mock_ssh = MagicMock()
@@ -110,7 +110,7 @@ def test_ftp_command_windows(windows_interface):
 
 def test_command_line_windows(windows_interface):
     with patch(
-        'unit.amd64_interface.WindowsInterface.my_command',
+        'interface.application.WindowsInterface.my_command',
         return_value=['Command executed successfully']
     ) as mock_my_command:
         result = windows_interface.command_line('echo Test')
@@ -133,7 +133,7 @@ def test_ftp_command_linux(linux_interface):
          patch.object(linux_interface, 'account', 'user'), \
          patch.object(linux_interface, 'password', 'password'), \
          patch.object(linux_interface, 'remote_dir', '/remote'), \
-         patch('unit.amd64_interface.paramiko.SSHClient') as mock_ssh_client:
+         patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
 
         # Mock paramiko.SSHClient 行為
         mock_ssh = MagicMock()
@@ -157,7 +157,7 @@ def test_ftp_command_linux(linux_interface):
 
 def test_command_line_linux(linux_interface):
     with patch(
-            'unit.amd64_interface.LinuxInterface.my_command',
+            'interface.application.LinuxInterface.my_command',
             return_value=['Command executed successfully']
     ) as mock_my_command:
         result = linux_interface.command_line('echo Test')

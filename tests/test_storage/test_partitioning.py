@@ -8,7 +8,7 @@ from amd_desktop.amd64_system import BaseOS
 from storage.partitioning import PartitionFactory
 from storage.partitioning import PartitionDisk
 from storage.partitioning import WindowsVolume
-from unit.amd64_interface import BaseInterface
+from interface.application import BaseInterface
 
 logger = logging.getLogger(__name__)
 

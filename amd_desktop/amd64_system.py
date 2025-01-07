@@ -8,7 +8,7 @@ import logging
 import math
 import re
 from unit.log_handler import get_logger
-from unit.amd64_interface import BaseInterface
+from interface.application import BaseInterface
 
 logger = get_logger(__name__, logging.INFO)
 

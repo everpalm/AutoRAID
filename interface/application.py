@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Tuple
 from typing import List
 from typing import Dict
-from unit.application_interface import dict_format
+from interface.application_interface import dict_format
 import logging
 import subprocess
 import socket
