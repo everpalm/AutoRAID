@@ -2,9 +2,9 @@
 '''Copyright (c) 2024 Jaron Cheng'''
 from abc import ABC
 from abc import abstractmethod
-from unit.ping import PingBase
-from unit.ping import LinuxPing
-from unit.ping import WindowsPing
+from network.ping import PingBase
+from network.ping import LinuxPing
+from network.ping import WindowsPing
 
 
 class AMD64Ping(LinuxPing):

@@ -1,5 +1,6 @@
 # Contents of commandline_interface.py
 '''Copyright (c) 2024 Jaron Cheng'''
+import json
 import logging
 import re
 from abc import ABC
@@ -171,6 +172,50 @@ class WindowsCLI(BaseCLI):
         except Exception as e:
             logger.error("Error during write script execution: %s", e)
             raise
+
+    @staticmethod
+    def export_smart_limits(file_path: str):
+        limits_dict = {
+            "critical_warning": "lambda x: 0x00 <= int(x, 16) <= 0x05",
+            "composite_temp": "lambda x: int(x) < 70",
+            "available_spare": "lambda x: int(x) > 10",
+            "available_spare_threshold": "lambda x: int(x) > 0",
+            "percentage_used": "lambda x: int(x) < 100",
+            "data_units_read": "lambda x: int(x) >= 0",
+            "data_units_written": "lambda x: int(x) >= 0",
+            "host_read_commands": "lambda x: int(x) >= 0",
+            "host_write_commands": "lambda x: int(x) >= 0",
+            "controller_busy_time": "lambda x: int(x) >= 0",
+            "power_cycles": "lambda x: int(x) >= 0",
+            "power_on_hours": "lambda x: int(x) >= 0",
+            "unsafe_shutdowns": "lambda x: int(x) >= 0",
+            "media_and_data_integrity_errors": "lambda x: int(x) == 0",
+            "num_err_log_entries": "lambda x: int(x) == 0",
+            "warning_composite_temp_time": "lambda x: int(x) >= 0",
+            "critical_composite_temp_time": "lambda x: int(x) >= 0",
+            "tmp_1_transition_count": "lambda x: int(x) >= 0",
+            "tmp_2_transition_count": "lambda x: int(x) >= 0",
+            "total_time_for_tmp1": "lambda x: int(x) >= 0",
+            "total_time_for_tmp2": "lambda x: int(x) >= 0",
+        }
+
+        with open(file_path, "w") as file:
+            json.dump(limits_dict, file, indent=4)
+
+    @staticmethod
+    def import_limits(file_path):
+        """
+        Load limits from a JSON file and convert expressions to functions.
+
+        :param file_path: Path to the JSON file containing limit definitions
+        :return: A dictionary with field names as keys and lambda functions as
+        values
+        """
+        with open(file_path, "r") as file:
+            limits_data = json.load(file)
+
+        # 將字串表達式轉換為 Lambda 函數
+        return {key: eval(value) for key, value in limits_data.items()}
 
 
 class LinuxCLI(WindowsCLI):
