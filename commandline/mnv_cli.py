@@ -5,7 +5,7 @@ import logging
 import re
 from abc import ABC
 from abc import abstractmethod
-from amd_desktop.amd64_system import BaseOS
+from amd64.amd64_system import BaseOS
 from dataclasses import dataclass
 from unit.log_handler import get_logger
 

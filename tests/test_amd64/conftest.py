@@ -4,8 +4,8 @@ import logging
 import paramiko
 import pytest
 
-from amd_desktop.amd64_event import EventFactory
-from amd_desktop.amd64_nvme import AMD64NVMe as amd64
+from amd64.amd64_event import EventFactory
+from amd64.amd64_nvme import AMD64NVMe as amd64
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
 from interface.application_interface import ApplicationInterface as api
