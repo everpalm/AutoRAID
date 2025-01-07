@@ -64,12 +64,15 @@ class TestMongoDB:
         mock_log_data = "Sample log data"
         mock_report_data = {"key": "value"}
 
-        with patch("builtins.open", mock_open(read_data=mock_log_data)) as mock_log_file, \
+        with patch("builtins.open",
+                   mock_open(read_data=mock_log_data)) as mock_log_file, \
              patch("json.load", return_value=mock_report_data):
 
             # Adjust the `open` function to mock encoding-specific behavior
             mock_log_file.side_effect = lambda path, mode, *args, **kwargs: (
-                mock_open(read_data=mock_log_data).return_value if 'r' in mode else None
+                mock_open(
+                    read_data=mock_log_data
+                ).return_value if 'r' in mode else None
             )
 
             mongo_db_instance.write_log_and_report(log_path, report_path)
@@ -83,7 +86,8 @@ class TestMongoDB:
                 'log': mock_log_data,
                 'report': mock_report_data
             }
-            mock_collection.insert_one.assert_called_once_with(expected_document)
+            mock_collection.insert_one.assert_called_once_with(
+                expected_document)
 
     def test_read_result(self, mongo_db):
         """Test the read_result method to check if documents are retrieved from
@@ -107,7 +111,8 @@ class TestMongoDB:
             written_data = handle.write.call_args_list
 
             # Convert written data back to JSON for comparison
-            written_json = json.loads("".join(call[0][0] for call in written_data))
+            written_json = json.loads("".join(
+                call[0][0] for call in written_data))
 
             assert written_json == mock_documents
 
@@ -126,7 +131,8 @@ class TestMongoDB:
         mongo_db_instance.update_document(filter_query, update_values)
 
         # Verify the update call
-        mock_collection.update_one.assert_called_once_with(filter_query, {'$set': update_values})
+        mock_collection.update_one.assert_called_once_with(
+            filter_query, {'$set': update_values})
 
     def test_delete_document(self, mongo_db):
         """Test the delete_document method to confirm that specified documents
@@ -161,8 +167,8 @@ class TestMongoDB:
 
     @pytest.mark.parametrize("mock_aggregate_result", [AGGREGATE_RESULTS])
     def test_aggregate_random_metrics(self, mongo_db, mock_aggregate_result):
-        """Test the aggregate_document method to verify if a document is correctly
-        aggregated from MongoDB based on the filter query.
+        """Test the aggregate_document method to verify if a document is
+        correctly aggregated from MongoDB based on the filter query.
         """
         mongo_db_instance, mock_collection = mongo_db
 

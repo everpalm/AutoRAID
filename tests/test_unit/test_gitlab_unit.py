@@ -1,6 +1,6 @@
 # Contents of test_gitlab.py
 '''Unit tests for the GitLab API integration. This module includes tests
-   for fetching, creating, updating, and deleting issues, as well as 
+   for fetching, creating, updating, and deleting issues, as well as
    interacting with project information within a simulated GitLab environment.
    Copyright (c) 2024 Jaron Cheng
 '''
@@ -22,11 +22,11 @@ def gitlab_api(request):
 
 
 class TestGitLabAPI:
-    """Test suite for GitLab API interactions, including issue management 
+    """Test suite for GitLab API interactions, including issue management
     and project details.
     """
     def test_fetch_test_case_content(self, gitlab_api):
-        """Tests `fetch_test_case_content` by simulating fetching a specific 
+        """Tests `fetch_test_case_content` by simulating fetching a specific
         test case description for a given issue ID.
 
         Args:
@@ -49,7 +49,7 @@ class TestGitLabAPI:
             mock_project.issues.get.assert_called_once_with(1)
 
     def test_push_test_result(self, gitlab_api):
-        """Tests `push_test_result` by simulating adding a test result 
+        """Tests `push_test_result` by simulating adding a test result
         note and label to a specified issue in GitLab.
 
         Args:
@@ -71,10 +71,11 @@ class TestGitLabAPI:
                                         color='#00FF00')
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.get.assert_called_once_with(1)
-            mock_issue.notes.create.assert_called_once_with({'body': "All pass"})
+            mock_issue.notes.create.assert_called_once_with(
+                {'body': "All pass"})
 
     def test_create_issue(self, gitlab_api):
-        """Tests `create_issue` by simulating the creation of a new issue 
+        """Tests `create_issue` by simulating the creation of a new issue
         in a GitLab project.
 
         Args:
@@ -95,11 +96,10 @@ class TestGitLabAPI:
             assert issue == mock_issue
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.create.assert_called_once_with(
-                {'title': "New issue", 
-                'description': "A new issue"})
+                {'title': "New issue", 'description': "A new issue"})
 
     def test_get_project_info(self, gitlab_api):
-        """Tests `get_project_info` by simulating retrieval of project 
+        """Tests `get_project_info` by simulating retrieval of project
         details such as name and ID.
 
         Args:
@@ -119,7 +119,7 @@ class TestGitLabAPI:
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
 
     def test_list_issues(self, gitlab_api):
-        """Tests `list_issues` by simulating retrieval of all issues in 
+        """Tests `list_issues` by simulating retrieval of all issues in
         a GitLab project.
 
         Args:
@@ -141,7 +141,7 @@ class TestGitLabAPI:
             mock_project.issues.list.assert_called_once_with(all=True)
 
     def test_update_issue(self, gitlab_api):
-        """Tests `update_issue` by simulating the update of an issue's title 
+        """Tests `update_issue` by simulating the update of an issue's title
         and description in a GitLab project.
 
         Args:
@@ -149,7 +149,8 @@ class TestGitLabAPI:
 
         Verifies:
             - Issue is updated with new title and description.
-            - Project, issue retrieval, and update calls are correctly executed.
+            - Project, issue retrieval, and update calls are correctly
+            executed.
         """
         with patch.object(gitlab_api.gl.projects, 'get') as mock_get:
             mock_project = MagicMock()
@@ -157,9 +158,11 @@ class TestGitLabAPI:
             mock_get.return_value = mock_project
             mock_project.issues.get.return_value = mock_issue
 
-            updated_issue = gitlab_api.update_issue(issue_id=1,
-                    title="Updated title",
-                    description="Updated description")
+            updated_issue = gitlab_api.update_issue(
+                issue_id=1,
+                title="Updated title",
+                description="Updated description"
+            )
             assert updated_issue == mock_issue
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.get.assert_called_once_with(1)
@@ -168,7 +171,7 @@ class TestGitLabAPI:
             assert mock_issue.description == "Updated description"
 
     def test_delete_issue(self, gitlab_api):
-        """Tests `delete_issue` by simulating the deletion of a specific 
+        """Tests `delete_issue` by simulating the deletion of a specific
         issue from a GitLab project.
 
         Args:
@@ -190,7 +193,7 @@ class TestGitLabAPI:
             mock_issue.delete.assert_called_once()
 
     def test_get_test_case_id(self, gitlab_api):
-        """Tests `get_test_case_id` by simulating retrieval of a specific 
+        """Tests `get_test_case_id` by simulating retrieval of a specific
         test case ID based on the title of a GitLab issue.
 
         Args:
@@ -208,11 +211,11 @@ class TestGitLabAPI:
             mock_issue_1.iid = 1
             mock_issue_2.title = "test_case_2"
             mock_issue_2.iid = 2
-            mock_project.issues.list.return_value = [mock_issue_1, mock_issue_2]
+            mock_project.issues.list.return_value = \
+                [mock_issue_1, mock_issue_2]
             mock_get.return_value = mock_project
 
             test_case_id = gitlab_api.get_test_case_id("test_case_2")
             assert test_case_id == 2
             mock_get.assert_called_once_with('storage7301426/AutoRAID')
             mock_project.issues.list.assert_called_once_with(all=True)
-
