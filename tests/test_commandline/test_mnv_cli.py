@@ -35,6 +35,7 @@ class TestCLI:
         logger.debug('result = %s', result)
         assert result == test_case["Expected"]
 
+    @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
         smart_info = mnv_cli.get_controller_smart_info()
         for key, value in smart_info.__dict__.items():
@@ -53,6 +54,7 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
 
+    @pytest.mark.skip(reason="Deprecated")
     def test_get_backend_smart_info(self, mnv_cli):
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
         for key, value in smart_info.__dict__.items():
@@ -88,3 +90,44 @@ class TestCLI:
         for field, value in smart_info_fields.items():
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
+
+    @pytest.mark.skip(reason="Only for case generation")
+    def test_export_smart_limits(self, mnv_cli):
+        cmd_output = mnv_cli.export_smart_limits(
+            'config/test_smart_limits.json')
+        print(cmd_output)
+
+    def test_import_limits(self, mnv_cli):
+        limits = mnv_cli.import_limits(
+            'config/test_smart_limits.json')
+        for key, value in limits.items():
+            logger.info("%s = %s", key, value)
+
+        assert len(limits) == 21, 'The number of limits is not correct!'
+
+        for key, value in limits.items():
+            assert callable(value), f'{key} is not a function!'
+
+    def test_get_backend_smart_info1(self, mnv_cli):
+        smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
+        for key, value in smart_info.__dict__.items():
+            logger.info("%s = %s", key, value)
+
+        limits = mnv_cli.import_limits(
+            'config/test_smart_limits.json')
+
+        for field, value in smart_info.__dict__.items():
+            assert limits[field](value), (f"{field.replace('_', ' ').title()}"
+                                          f" {value} is out of range!")
+
+    def test_get_controller_smart_info1(self, mnv_cli):
+        smart_info = mnv_cli.get_controller_smart_info()
+        for key, value in smart_info.__dict__.items():
+            logger.info("%s = %s", key, value)
+
+        limits = mnv_cli.import_limits(
+            'config/test_smart_limits.json')
+
+        for field, value in smart_info.__dict__.items():
+            assert limits[field](value), (f"{field.replace('_', ' ').title()}"
+                                          f" {value} is out of range!")

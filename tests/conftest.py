@@ -5,7 +5,7 @@ import logging
 import os
 import pytest
 import paramiko
-from amd_desktop.amd64_ping import PingFactory
+from network.amd64_ping import PingFactory
 from amd_desktop.amd64_system import PlatformFactory
 from interface.application import InterfaceFactory
 from interface.application import RaspberryInterfaceFactory

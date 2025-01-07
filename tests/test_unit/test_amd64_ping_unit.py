@@ -8,7 +8,7 @@
 import logging
 import pytest
 from unittest.mock import MagicMock
-from unit.ping import LinuxPing, WindowsPing
+from network.ping import LinuxPing, WindowsPing
 
 logger = logging.getLogger(__name__)
 # logging.getLogger(__name__).setLevel(logging.INFO)

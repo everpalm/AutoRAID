@@ -1,0 +1,23 @@
+{
+    "critical_warning": "lambda x: 0x00 <= int(x, 16) <= 0x05",
+    "composite_temp": "lambda x: int(x) < 70",
+    "available_spare": "lambda x: int(x) > 10",
+    "available_spare_threshold": "lambda x: int(x) > 0",
+    "percentage_used": "lambda x: int(x) < 100",
+    "data_units_read": "lambda x: int(x) >= 0",
+    "data_units_written": "lambda x: int(x) >= 0",
+    "host_read_commands": "lambda x: int(x) >= 0",
+    "host_write_commands": "lambda x: int(x) >= 0",
+    "controller_busy_time": "lambda x: int(x) >= 0",
+    "power_cycles": "lambda x: int(x) >= 0",
+    "power_on_hours": "lambda x: int(x) >= 0",
+    "unsafe_shutdowns": "lambda x: int(x) >= 0",
+    "media_and_data_integrity_errors": "lambda x: int(x) == 0",
+    "num_err_log_entries": "lambda x: int(x) == 0",
+    "warning_composite_temp_time": "lambda x: int(x) >= 0",
+    "critical_composite_temp_time": "lambda x: int(x) >= 0",
+    "tmp_1_transition_count": "lambda x: int(x) >= 0",
+    "tmp_2_transition_count": "lambda x: int(x) >= 0",
+    "total_time_for_tmp1": "lambda x: int(x) >= 0",
+    "total_time_for_tmp2": "lambda x: int(x) >= 0"
+}
