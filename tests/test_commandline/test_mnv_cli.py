@@ -37,6 +37,7 @@ class TestCLI:
 
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
+        '''docstring'''
         smart_info = mnv_cli.get_controller_smart_info()
         for key, value in smart_info.__dict__.items():
             logger.info("%s = %s", key, value)
@@ -56,6 +57,7 @@ class TestCLI:
 
     @pytest.mark.skip(reason="Deprecated")
     def test_get_backend_smart_info(self, mnv_cli):
+        '''docstring'''
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
         for key, value in smart_info.__dict__.items():
             logger.info("%s = %s", key, value)
@@ -93,11 +95,13 @@ class TestCLI:
 
     @pytest.mark.skip(reason="Only for case generation")
     def test_export_smart_limits(self, mnv_cli):
+        '''docstring'''
         cmd_output = mnv_cli.export_smart_limits(
             'config/test_smart_limits.json')
         print(cmd_output)
 
     def test_import_limits(self, mnv_cli):
+        '''docstring'''
         limits = mnv_cli.import_limits(
             'config/test_smart_limits.json')
         for key, value in limits.items():
@@ -109,6 +113,7 @@ class TestCLI:
             assert callable(value), f'{key} is not a function!'
 
     def test_get_backend_smart_info1(self, mnv_cli):
+        '''docstring'''
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
         for key, value in smart_info.__dict__.items():
             logger.info("%s = %s", key, value)
@@ -121,6 +126,7 @@ class TestCLI:
                                           f" {value} is out of range!")
 
     def test_get_controller_smart_info1(self, mnv_cli):
+        '''docstring'''
         smart_info = mnv_cli.get_controller_smart_info()
         for key, value in smart_info.__dict__.items():
             logger.info("%s = %s", key, value)
