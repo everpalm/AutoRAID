@@ -7,7 +7,6 @@
 '''
 import logging
 import pytest
-# from tests.test_amd_desktop.test_amd64_perf import log_io_metrics
 
 # Mark entire module
 logger = logging.getLogger(__name__)

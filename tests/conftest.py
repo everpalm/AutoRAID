@@ -7,8 +7,8 @@ import pytest
 import paramiko
 from amd_desktop.amd64_ping import PingFactory
 from amd_desktop.amd64_system import PlatformFactory
-from unit.amd64_interface import InterfaceFactory
-from unit.amd64_interface import RaspberryInterfaceFactory
+from interface.application import InterfaceFactory
+from interface.application import RaspberryInterfaceFactory
 from unit.gitlab import GitLabAPI
 from unit.gpio import RaspBerryPins as rbp
 from unit.mongodb import MongoDB

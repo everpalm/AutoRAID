@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Tuple
 from typing import List
 from typing import Dict
-from unit.application_interface import dict_format
+from interface.application_interface import dict_format
 import logging
 import subprocess
 import socket
@@ -18,7 +18,7 @@ import json
 import paramiko
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 @dataclass

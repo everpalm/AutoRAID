@@ -1,11 +1,12 @@
-# Contents of test_commandline_interface_unit.py
+# Contents of test_commandline_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 
-from unit.commandline_interface import CLIFactory
-from unit.commandline_interface import LinuxCLI
-from unit.commandline_interface import WindowsCLI
-from unittest.mock import MagicMock, patch
+from commandline.mnv_cli import CLIFactory
+from commandline.mnv_cli import LinuxCLI
+from commandline.mnv_cli import WindowsCLI
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 
 # Mocked BaseOS and API for testing
@@ -21,7 +22,7 @@ class MockBaseOS:
 
 
 # Test WindowsCLI
-@patch('unit.commandline_interface.logger')
+@patch('commandline.mnv_cli.logger')
 def test_windows_cli(logger_mock):
     platform = MockBaseOS(os_type='Windows')
     windows_cli = WindowsCLI(platform)
@@ -41,7 +42,7 @@ def test_windows_cli(logger_mock):
 
 
 # Test LinuxCLI
-@patch('unit.commandline_interface.logger')
+@patch('commandline.mnv_cli.logger')
 def test_linux_cli(logger_mock):
     platform = MockBaseOS(os_type='Linux')
     linux_cli = LinuxCLI(platform)
@@ -58,7 +59,7 @@ def test_linux_cli(logger_mock):
 
 
 # Test CLIFactory
-@patch('unit.commandline_interface.logger')
+@patch('commandline.mnv_cli.logger')
 def test_cli_factory(logger_mock):
     platform_windows = MockBaseOS(os_type='Windows')
     platform_linux = MockBaseOS(os_type='Linux')
@@ -79,7 +80,7 @@ def test_cli_factory(logger_mock):
         factory_unsupported.initiate(platform=platform_unsupported)
 
 
-@patch('unit.commandline_interface.logger')
+@patch('commandline.mnv_cli.logger')
 def test_windows_cli_error(logger_mock):
     platform = MockBaseOS(os_type='Windows')
     windows_cli = WindowsCLI(platform)

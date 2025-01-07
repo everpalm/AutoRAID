@@ -6,7 +6,7 @@ from abc import ABC
 from abc import abstractmethod
 from typing import Optional
 from typing import Tuple
-from unit.amd64_interface import BaseInterface
+from interface.application import BaseInterface
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)

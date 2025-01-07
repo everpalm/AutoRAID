@@ -1,7 +1,7 @@
 # Contents of test_amd64_perf_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
-from storage.amd64_perf import WindowsPerf
+from storage.performance import WindowsPerf
 
 
 class MockPlatform:
@@ -21,7 +21,7 @@ class MockPlatform:
 class MockAPI:
     """Mock implementation of an API for executing commands."""
     def io_command(self, command):
-        return """
+        return r"""
         WARNING: Error adjusting token privileges for SeManageVolumePrivilege
         (error code: 1300)
         WARNING: Could not set privileges for setting valid file size; will

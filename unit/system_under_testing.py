@@ -4,7 +4,7 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 import logging
 import os
 import re
-from unit.application_interface import GenericAPI
+from interface.application_interface import GenericAPI
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)

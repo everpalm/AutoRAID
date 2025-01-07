@@ -1,7 +1,7 @@
 # Contents of test_amd64_stress_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
-from amd_desktop.amd64_stress import WindowsStress
+from storage.stress import WindowsStress
 
 
 class MockPlatform:
@@ -15,7 +15,7 @@ class MockPlatform:
 class MockAPI:
     """Mock implementation of an API for executing commands."""
     def io_command(self, command):
-        return """
+        return r"""
         WARNING: Error adjusting token privileges for SeManageVolumePrivilege (error code: 1300)
         WARNING: Could not set privileges for setting valid file size; will use a slower method of preparing the file
 
@@ -115,7 +115,7 @@ class MockAPI:
         total:                 0 |            0 |       0.00 |       0.00 |    0.000 |       0.00 |       N/A
 
         Total latency distribution:
-        %-ile |  Read (ms) | Write (ms) | Total (ms)
+        Idle |  Read (ms) | Write (ms) | Total (ms)
         ----------------------------------------------
             min |      0.053 |        N/A |      0.053
         25th |      0.058 |        N/A |      0.058
