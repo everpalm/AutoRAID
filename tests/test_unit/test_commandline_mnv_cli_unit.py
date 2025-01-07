@@ -1,22 +1,26 @@
 # Contents of test_commandline_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
+from unittest.mock import MagicMock
+from unittest.mock import patch
 import pytest
 
 from commandline.mnv_cli import CLIFactory
 from commandline.mnv_cli import LinuxCLI
 from commandline.mnv_cli import WindowsCLI
-from unittest.mock import MagicMock
-from unittest.mock import patch
 
 
 # Mocked BaseOS and API for testing
 class MockAPI:
+    '''docstring'''
     def __init__(self):
+        '''docstring'''
         self.command_line = MagicMock()
 
 
 class MockBaseOS:
+    '''docstring'''
     def __init__(self, os_type):
+        '''docstring'''
         self.api = MockAPI()
         self.os_type = os_type
 
@@ -24,6 +28,7 @@ class MockBaseOS:
 # Test WindowsCLI
 @patch('commandline.mnv_cli.logger')
 def test_windows_cli(logger_mock):
+    '''docstring'''
     platform = MockBaseOS(os_type='Windows')
     windows_cli = WindowsCLI(platform)
 
@@ -44,6 +49,7 @@ def test_windows_cli(logger_mock):
 # Test LinuxCLI
 @patch('commandline.mnv_cli.logger')
 def test_linux_cli(logger_mock):
+    '''docstring'''
     platform = MockBaseOS(os_type='Linux')
     linux_cli = LinuxCLI(platform)
 
@@ -61,6 +67,7 @@ def test_linux_cli(logger_mock):
 # Test CLIFactory
 @patch('commandline.mnv_cli.logger')
 def test_cli_factory(logger_mock):
+    '''docstring'''
     platform_windows = MockBaseOS(os_type='Windows')
     platform_linux = MockBaseOS(os_type='Linux')
 
@@ -82,6 +89,7 @@ def test_cli_factory(logger_mock):
 
 @patch('commandline.mnv_cli.logger')
 def test_windows_cli_error(logger_mock):
+    '''docstring'''
     platform = MockBaseOS(os_type='Windows')
     windows_cli = WindowsCLI(platform)
 
