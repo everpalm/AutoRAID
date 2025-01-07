@@ -11,6 +11,7 @@ from interface.application import InterfaceFactory
 
 @pytest.fixture
 def base_interface():
+    '''docstring'''
     with patch('interface.application.BaseInterface._get_local_ip',
                return_value='192.168.0.139'):
         with patch(
@@ -32,6 +33,7 @@ def base_interface():
 
 
 def test_get_local_ip(base_interface):
+    '''docstring'''
     with patch(
         'interface.application.BaseInterface._get_local_ip'
     ) as mock_get_local_ip:
@@ -41,6 +43,7 @@ def test_get_local_ip(base_interface):
 
 
 def test_get_remote_ip(base_interface):
+    '''docstring'''
     with patch(
         'interface.application.BaseInterface._get_remote_ip'
     ) as mock_get_remote_ip:
@@ -61,6 +64,7 @@ def test_get_remote_ip(base_interface):
 
 
 def test_os_type():
+    '''docstring'''
     with patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
         mock_ssh = MagicMock()
         mock_ssh.exec_command.return_value = (
@@ -82,6 +86,7 @@ def test_os_type():
 
 @pytest.fixture
 def windows_interface():
+    '''docstring'''
     return WindowsInterface(
         mode='remote',
         if_name='eth0',
@@ -91,6 +96,7 @@ def windows_interface():
 
 
 def test_ftp_command_windows(windows_interface):
+    '''docstring'''
     # Mock 基類屬性，設置預期值
     with patch.object(windows_interface, 'remote_ip', '192.168.0.2'), \
          patch.object(windows_interface, 'account', 'user'), \
@@ -109,6 +115,7 @@ def test_ftp_command_windows(windows_interface):
 
 
 def test_command_line_windows(windows_interface):
+    '''docstring'''
     with patch(
         'interface.application.WindowsInterface.my_command',
         return_value=['Command executed successfully']
@@ -120,6 +127,7 @@ def test_command_line_windows(windows_interface):
 
 @pytest.fixture
 def linux_interface():
+    '''docstring'''
     return LinuxInterface(
         mode='remote',
         if_name='eth0',
@@ -129,6 +137,7 @@ def linux_interface():
 
 
 def test_ftp_command_linux(linux_interface):
+    '''docstring'''
     with patch.object(linux_interface, 'remote_ip', '192.168.0.2'), \
          patch.object(linux_interface, 'account', 'user'), \
          patch.object(linux_interface, 'password', 'password'), \
@@ -156,6 +165,7 @@ def test_ftp_command_linux(linux_interface):
 
 
 def test_command_line_linux(linux_interface):
+    '''docstring'''
     with patch(
             'interface.application.LinuxInterface.my_command',
             return_value=['Command executed successfully']
@@ -165,6 +175,7 @@ def test_command_line_linux(linux_interface):
 
 
 def test_create_windows_interface():
+    '''docstring'''
     factory = InterfaceFactory()
     interface = factory.create_interface(
         os_type='Windows',
@@ -177,6 +188,7 @@ def test_create_windows_interface():
 
 
 def test_create_linux_interface():
+    '''docstring'''
     factory = InterfaceFactory()
     interface = factory.create_interface(
         os_type='Linux',
@@ -189,6 +201,7 @@ def test_create_linux_interface():
 
 
 def test_create_invalid_interface():
+    '''docstring'''
     factory = InterfaceFactory()
     with pytest.raises(ValueError):
         factory.create_interface(

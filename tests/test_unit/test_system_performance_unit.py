@@ -97,7 +97,7 @@ class TestPerformanceIODepth:
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rr_table['IOPS']
-            elif metric == 'BW':
+            if metric == 'BW':
                 return rr_table['BW']
             else:
                 return None
@@ -127,7 +127,7 @@ class TestPerformanceIODepth:
         def mock_groupby_io_mean(_io_depth, metric):
             if metric == 'IOPS':
                 return rw_table['IOPS']
-            elif metric == 'BW':
+            if metric == 'BW':
                 return rw_table['BW']
             else:
                 return None
