@@ -9,8 +9,8 @@
 from unittest.mock import MagicMock
 from collections import defaultdict
 import pytest
-from amd_desktop.amd64_nvme import AMD64NVMe
-from amd_desktop.amd64_event import WindowsEvent
+from amd64.amd64_nvme import AMD64NVMe
+from amd64.amd64_event import WindowsEvent
 
 
 # 定義一個 fixture 來設置 mock_platform 及其 api 屬性

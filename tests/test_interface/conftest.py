@@ -4,7 +4,7 @@ import logging
 import paramiko
 import pytest
 
-from amd_desktop.amd64_event import EventFactory
+from amd64.amd64_event import EventFactory
 from interface.application_interface import ApplicationInterface as api
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)

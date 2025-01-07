@@ -9,10 +9,11 @@ pipeline {
         MY_PRIVATE_TOKEN = credentials('gitlab-private-token')
         VERSION_FILE = "${WORKSPACE}/version.txt"
         GIT_TOKEN = credentials('github-token')
-        TEST_AMD_DESKTOP = "${WORKSPACE}/tests/test_amd_desktop"
+        TEST_AMD64 = "${WORKSPACE}/tests/test_amd64"
         TEST_BOOT = "${WORKSPACE}/tests/test_boot"
         TEST_COMMANDLINE = "${WORKSPACE}/tests/test_commandline"
         TEST_INTERFACE = "${WORKSPACE}/tests/test_interface"
+        TEST_NETWORK = "${WORKSPACE}/tests/test_network"
         TEST_STORAGE = "${WORKSPACE}/tests/test_storage"
         TEST_UNIT = "${WORKSPACE}/tests/test_unit"
         PATH = "/home/pi/.pyenv/shims:/home/pi/.pyenv/bin:${env.PATH}"
@@ -36,10 +37,11 @@ pipeline {
         stage('Unit Testing') {
             steps {
                 script {
-                    gv.test_pep8(env.TEST_AMD_DESKTOP)
+                    gv.test_pep8(env.TEST_AMD64)
                     gv.test_pep8(env.TEST_BOOT)
                     gv.test_pep8(env.TEST_COMMANDLINE)
                     gv.test_pep8(env.TEST_INTERFACE)
+                    gv.test_pep8(env.TEST_NETWORK)
                     gv.test_pep8(env.TEST_STORAGE)
                     gv.test_pep8(env.TEST_UNIT)
                     gv.test_unit(env.TEST_UNIT, env.MY_PRIVATE_TOKEN)
@@ -49,9 +51,10 @@ pipeline {
         stage('Sanity Testing') {
             steps {
                 script {
-                    gv.test_sanity(env.TEST_AMD_DESKTOP)
+                    gv.test_sanity(env.TEST_AMD64)
                     gv.test_sanity(env.TEST_BOOT)
                     gv.test_sanity(env.TEST_INTERFACE)
+                    gv.test_sanity(env.TEST_NETWORK)
                     gv.test_sanity(env.TEST_STORAGE)
                     gv.test_regression(env.TEST_COMMANDLINE)
                 }
