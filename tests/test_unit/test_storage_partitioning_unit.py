@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 import pytest
 from storage.partitioning import WindowsVolume
-from amd64.amd64_nvme import AMD64NVMe
+from amd64.nvme import AMD64NVMe
 
 
 @pytest.fixture
