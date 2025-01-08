@@ -3,7 +3,7 @@
 import logging
 
 from abc import ABC, abstractmethod
-from amd64.amd64_nvme import AMD64NVMe
+from amd64.nvme import AMD64NVMe
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
 

@@ -6,7 +6,7 @@ import os
 import pytest
 import paramiko
 from network.amd64_ping import PingFactory
-from amd64.amd64_system import PlatformFactory
+from amd64.system import PlatformFactory
 from interface.application import InterfaceFactory
 from interface.application import RaspberryInterfaceFactory
 from unit.gitlab import GitLabAPI

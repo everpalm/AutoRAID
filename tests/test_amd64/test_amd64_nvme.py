@@ -13,9 +13,6 @@ import pytest
 # Set up logger
 logger = logging.getLogger(__name__)
 
-# with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
-#     AMD64_NVM = [json.load(f)]
-
 
 @pytest.fixture(scope="module")
 def amd64_nvm():
@@ -31,7 +28,6 @@ class TestAMD64NVMe:
     loaded from the configuration file.
     """
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_hyperthreading(self, target_system, amd64_nvm):
         """Test for verifying hyperthreading setting.
 
@@ -63,7 +59,6 @@ class TestAMD64NVMe:
         mac_address = target_system.mac_address
         logger.info("MAC Address = %s", mac_address)
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_cpu_info(self, target_system, amd64_nvm):
         """Test for verifying CPU model and core count.
 
@@ -78,7 +73,6 @@ class TestAMD64NVMe:
         assert (target_system.cpu_name ==
                 amd64_nvm['CPU Information']["Model Name"])
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_desktop_info(self, target_system, amd64_nvm):
         """Test for verifying system manufacturer, model, and operating system.
 
@@ -99,7 +93,6 @@ class TestAMD64NVMe:
         assert (target_system.os ==
                 amd64_nvm['Desktop Information']["Operating System"])
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_pcie_info(self, target_system, amd64_nvm):
         """Test for verifying PCIe configuration, including VID, DID, SDID,
         and Rev.
@@ -122,7 +115,6 @@ class TestAMD64NVMe:
         assert (target_system.rev ==
                 amd64_nvm['PCIE Configuration']["Rev"])
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_disk_num(self, target_system, amd64_nvm):
         """Test for verifying the number of disks and the serial number.
 
@@ -135,7 +127,6 @@ class TestAMD64NVMe:
         assert (target_system.disk_num ==
                 amd64_nvm['Disk Information']["Number"])
 
-    # @pytest.mark.parametrize('amd64_nvm', AMD64_NVM)
     def test_get_volume(self, target_system, amd64_nvm):
         """Test for verifying disk volume information.
 
