@@ -7,13 +7,20 @@ import pytest
 # Set up logger
 logger = logging.getLogger(__name__)
 
-with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
-    AMD64_SETTINGS = [json.load(f)]
+# with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
+#     AMD64_SETTINGS = [json.load(f)]
+
+
+@pytest.fixture(scope="module")
+def amd64_settings():
+    """Fixture to load AMD64 settings from a JSON file."""
+    with open('config/amd64_nvme.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 
 class TestAMD64System:
     '''Duplicate of TestAMD64NVMe'''
-    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_hyperthreading(self, amd64_system, amd64_settings):
         """Test for verifying hyperthreading setting.
 
@@ -45,7 +52,7 @@ class TestAMD64System:
         mac_address = amd64_system.mac_address
         logger.info("MAC Address = %s", mac_address)
 
-    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_cpu_info(self, amd64_system, amd64_settings):
         """Test for verifying CPU model and core count.
 
@@ -60,7 +67,7 @@ class TestAMD64System:
         assert (amd64_system.cpu_name ==
                 amd64_settings['CPU Information']["Model Name"])
 
-    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_desktop_info(self, amd64_system, amd64_settings):
         """Test for verifying system manufacturer, model, and operating system.
 
@@ -77,7 +84,7 @@ class TestAMD64System:
         assert (amd64_system.model ==
                 amd64_settings['Desktop Information']["Model"])
 
-    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_pcie_info(self, amd64_system, amd64_settings):
         """Test for verifying PCIe configuration, including VID, DID, SDID,
         and Rev.
@@ -100,7 +107,7 @@ class TestAMD64System:
         assert (amd64_system.rev ==
                 amd64_settings['PCIE Configuration']["Rev"])
 
-    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_disk_num(self, amd64_system, amd64_settings):
         """Test for verifying the number of disks and the serial number.
 
@@ -113,7 +120,7 @@ class TestAMD64System:
         assert (amd64_system.disk_num ==
                 amd64_settings['Disk Information']["Number"])
 
-    @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
+    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_volume(self, amd64_system, amd64_settings):
         """Test for verifying disk volume information.
 
