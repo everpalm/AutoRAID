@@ -4,7 +4,7 @@ import json
 import logging
 import pytest
 
-from amd64.amd64_system import BaseOS
+from amd64.system import BaseOS
 from storage.partitioning import PartitionFactory
 from storage.partitioning import PartitionDisk
 from storage.partitioning import WindowsVolume

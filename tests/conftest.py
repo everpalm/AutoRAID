@@ -6,7 +6,7 @@ import os
 import pytest
 import paramiko
 from network.amd64_ping import PingFactory
-from amd64.amd64_system import PlatformFactory
+from amd64.system import PlatformFactory
 from interface.application import InterfaceFactory
 from interface.application import RaspberryInterfaceFactory
 from unit.gitlab import GitLabAPI
@@ -145,6 +145,7 @@ def amd64_system(network_api):
 
 @pytest.fixture(scope="session")
 def target_ping(raspi_interface):
+    '''docstring'''
     print('\n\033[32m================== Setup Ping Test ==============\033[0m')
     ping = PingFactory()
     return ping.initiate(os_type='Linux', api=raspi_interface)
@@ -204,6 +205,7 @@ def target_ping(raspi_interface):
 
 
 def pytest_sessionfinish(session, exitstatus):
+    '''docstring'''
     for item in session.items:
         test_folder = os.path.basename(os.path.dirname(item.fspath))
         collection_name = test_folder.replace('test_', '')

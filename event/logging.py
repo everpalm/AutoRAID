@@ -4,7 +4,7 @@ import logging
 import re
 from abc import ABC
 from abc import abstractmethod
-from amd64.amd64_system import BaseOS
+from amd64.system import BaseOS
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
 
