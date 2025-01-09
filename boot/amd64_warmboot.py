@@ -1,8 +1,8 @@
 # Contents of amd64_warmboot.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
-
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from amd64.nvme import AMD64NVMe
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
@@ -12,6 +12,8 @@ logger = get_logger(__name__, logging.INFO)
 
 class WarmBoot(ABC):
     """Abstract base class for warm boot operations."""
+    def __init__(self, platform: AMD64NVMe):
+        self._api = platform.api
 
     @abstractmethod
     def execute(self) -> bool:
@@ -20,8 +22,8 @@ class WarmBoot(ABC):
 
 class WindowsWarmBoot(WarmBoot):
     """Warm boot implementation for Windows systems."""
-    def __init__(self, platform: AMD64NVMe):
-        self._api = platform.api
+    # def __init__(self, platform: AMD64NVMe):
+    #     self._api = platform.api
 
     def execute(self) -> bool:
         logger.info("Executing warm boot for Windows...")
@@ -38,8 +40,8 @@ class WindowsWarmBoot(WarmBoot):
 
 class LinuxWarmBoot(WarmBoot):
     """Warm boot implementation for Linux systems."""
-    def __init__(self, platform: AMD64NVMe):
-        self._api = platform.api
+    # def __init__(self, platform: AMD64NVMe):
+    #     self._api = platform.api
 
     def execute(self) -> bool:
         logger.info("Executing warm boot for Linux...")
