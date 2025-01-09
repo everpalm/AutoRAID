@@ -3,8 +3,8 @@
 import logging
 import time
 import pytest
+from tests.test_network.test_amd64_ping import TestAMD64Ping
 from tests.test_storage.test_stress import TestOneShotStress
-# from amd_desktop.amd64_warmboot import WindowsWarmBoot as wwb
 from boot.amd64_warmboot import WarmBootFactory
 
 logger = logging.getLogger(__name__)
@@ -63,34 +63,38 @@ class TestWindowsWarmBoot:
 
         time.sleep(RESET_DURATION)
 
-    @pytest.mark.flaky(reruns=3, reruns_delay=10)
-    def test_ping_after_warmboot(self, target_ping):
-        """
-        Verify network connectivity after a Windows Warm Boot.
-
-        This test pings the target system after a warm boot to ensure network
-        connectivity is restored. It uses the `target_ping` fixture and logs
-        various ping statistics. The test is marked as flaky and will be rerun
-        up to 3 times with a 10-second delay between reruns if it initially
-        fails, to account for potential network instability after a reboot.
-
-        Args:
-            target_ping: The ping fixture for the target system.
-        """
-        result = target_ping.ping()
-        logger.info('target_ping.sent = %s', target_ping.sent)
-        logger.info('target_ping.received = %s', target_ping.received)
-        logger.info('target_ping.lost = %s', target_ping.lost)
-        logger.info('target_ping.minimum = %s', target_ping.minimum)
-        logger.info('target_ping.maximum = %s', target_ping.maximum)
-        logger.info('target_ping.average = %s', target_ping.average)
-        logger.info('ping_instance.deviation = %s', target_ping.deviation)
-
-        # Check whether return value is True, which stands for the ping success
-        assert result is True
-
 
 @pytest.mark.order(2)
+class TestWindowsWarmBootPing(TestAMD64Ping):
+    """
+    # @pytest.mark.flaky(reruns=3, reruns_delay=10)
+    # def test_ping_after_warmboot(self, target_ping):
+    #     """
+    #     Verify network connectivity after a Windows Warm Boot.
+
+    #     This test pings the target system after a warm boot to ensure network
+    #     connectivity is restored. It uses the `target_ping` fixture and logs
+    #   various ping statistics. The test is marked as flaky and will be rerun
+    #     up to 3 times with a 10-second delay between reruns if it initially
+    #     fails, to account for potential network instability after a reboot.
+
+    #     Args:
+    #         target_ping: The ping fixture for the target system.
+    #     """
+    #     result = target_ping.ping()
+    #     logger.info('target_ping.sent = %s', target_ping.sent)
+    #     logger.info('target_ping.received = %s', target_ping.received)
+    #     logger.info('target_ping.lost = %s', target_ping.lost)
+    #     logger.info('target_ping.minimum = %s', target_ping.minimum)
+    #     logger.info('target_ping.maximum = %s', target_ping.maximum)
+    #     logger.info('target_ping.average = %s', target_ping.average)
+    #     logger.info('ping_instance.deviation = %s', target_ping.deviation)
+
+    #   # Check whether return value is True, which stands for the ping success
+    #     assert result is True
+
+
+@pytest.mark.order(3)
 class TestWindowsWarmBootStress(TestOneShotStress):
     """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
     """
