@@ -67,34 +67,12 @@ class TestWindowsWarmBoot:
 @pytest.mark.order(2)
 class TestWindowsWarmBootPing(TestAMD64Ping):
     """
-    # @pytest.mark.flaky(reruns=3, reruns_delay=10)
-    # def test_ping_after_warmboot(self, target_ping):
-    #     """
-    #     Verify network connectivity after a Windows Warm Boot.
-
-    #     This test pings the target system after a warm boot to ensure network
-    #     connectivity is restored. It uses the `target_ping` fixture and logs
-    #   various ping statistics. The test is marked as flaky and will be rerun
-    #     up to 3 times with a 10-second delay between reruns if it initially
-    #     fails, to account for potential network instability after a reboot.
-
-    #     Args:
-    #         target_ping: The ping fixture for the target system.
-    #     """
-    #     result = target_ping.ping()
-    #     logger.info('target_ping.sent = %s', target_ping.sent)
-    #     logger.info('target_ping.received = %s', target_ping.received)
-    #     logger.info('target_ping.lost = %s', target_ping.lost)
-    #     logger.info('target_ping.minimum = %s', target_ping.minimum)
-    #     logger.info('target_ping.maximum = %s', target_ping.maximum)
-    #     logger.info('target_ping.average = %s', target_ping.average)
-    #     logger.info('ping_instance.deviation = %s', target_ping.deviation)
-
-    #   # Check whether return value is True, which stands for the ping success
-    #     assert result is True
+    Test suite for verifying Windows Warm Boot functionality with network
+    """
 
 
 @pytest.mark.order(3)
 class TestWindowsWarmBootStress(TestOneShotStress):
-    """Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
+    """
+    Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
     """
