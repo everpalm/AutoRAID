@@ -1,13 +1,12 @@
 # Contents of test_amd64_coldboot.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
-# import time
 import pytest
 import RPi.GPIO as gpio
-from tests.test_storage.test_stress import TestOneShotStress as Toss
 from tests.test_raspberry.test_pi3_gpio import TestPowerOnSUT
 from tests.test_raspberry.test_pi3_gpio import TestPowerOffSUT
-from unit.gpio import OperateGPIO as og
+from tests.test_storage.test_stress import TestOneShotStress
+from unit.gpio import OperateGPIO
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ OPTIMUM_IODEPTH = 7
 def rpi_gpio(my_pins):
     '''This is a docstring'''
     print('\n================== Setup Relay ================================')
-    amd_mgi = og(my_pins, gpio.BOARD)
+    amd_mgi = OperateGPIO(my_pins, gpio.BOARD)
 
     yield amd_mgi
     print('\n================== Teardown Relay =============================')
@@ -45,5 +44,5 @@ class TestRelayOn(TestPowerOnSUT):
 
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(3)
-class TestWindowsColdBootStress(Toss):
+class TestWindowsColdBootStress(TestOneShotStress):
     '''This is a docstring'''
