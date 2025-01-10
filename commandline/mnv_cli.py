@@ -217,6 +217,43 @@ class WindowsCLI(BaseCLI):
         # 將字串表達式轉換為 Lambda 函數
         return {key: eval(value) for key, value in limits_data.items()}
 
+    def compare_file(self, file_name: str) -> bool:
+        """
+        Compares a file retrieved via FTP with a local configuration file.
+
+        This method retrieves a file using the FTP API and compares it with a
+        local file using the `cmp` command. If the files are identical, it
+        returns `True`; otherwise, it returns `False`. Any exceptions during
+        the process are logged, and the method returns `False`.
+
+        Args:
+            file_name (str): The name of the file to be compared. This file
+            should be located in the `config/` directory locally and in the
+            `logs/` directory remotely.
+
+        Returns:
+            bool: `True` if the files are identical, `False` otherwise or if
+            an error occurs.
+
+        Raises:
+            This method does not raise exceptions; all errors are logged, and
+            `False` is returned.
+        """
+        try:
+            cmd_output = self.api.ftp_get(file_name)
+            logger.debug('cmd_output = %s', cmd_output)
+
+            if cmd_output:
+                compare_result = self.api.command_line.original(
+                    self.api,
+                    f'cmp "config/{file_name}" f"logs/{file_name}"'
+                )
+                logger.debug('compare_result = %s', compare_result)
+                return compare_result == []
+        except Exception as e:
+            logger.error("Error during file comparison: %s", e)
+            return False
+
 
 class LinuxCLI(WindowsCLI):
     '''This is a docstring'''

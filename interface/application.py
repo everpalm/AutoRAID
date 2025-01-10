@@ -268,6 +268,48 @@ class WindowsInterface(BaseInterface):
         if self.mode != 'local' and self.mode != 'remote':
             raise ValueError('Unknown mode setting in set_access_mode')
 
+    def ftp_get(self, file_name: str) -> bool:
+        """
+        Downloads a file from the remote server to the local system.
+
+        :param remote_file_path: The full path of the file on the remote server
+        :param local_file_path: The full path where the file will be saved
+        locally
+        :return: True if the file is downloaded successfully, otherwise raises
+        an error
+        """
+        logger.debug('file_name: %s', file_name)
+
+        try:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            logger.debug('remote_ip = %s', self.remote_ip)
+            logger.debug('account = %s', self.account)
+            logger.debug('password = %s', self.password)
+            logger.debug('remote_dir = %s', self.remote_dir)
+
+            # Connect to the remote server
+            client.connect(self.remote_ip, port=22, username=self.account,
+                           password=self.password)
+
+            sftp = client.open_sftp()
+            logger.debug('sftp = %s', sftp)
+
+            if self.remote_dir:
+                logger.debug('Change remote directory to: %s', self.remote_dir)
+                sftp.chdir(self.remote_dir)
+
+            # Download the file
+            get_result = sftp.get(file_name, f"logs/{file_name}")
+            logger.debug('get_result = %s', get_result)
+
+            sftp.close()
+            client.close()
+        except Exception as e:
+            logger.error("Error occurred in ftp_get: %s", e)
+            raise
+        return True
+
 
 class LinuxInterface(BaseInterface):
     '''This is a docstring'''
