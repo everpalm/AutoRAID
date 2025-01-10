@@ -17,6 +17,9 @@ with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
     TEST_CASE = json.load(f)
 sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["ID"])
 
+with open('config/test_compare_file.json', 'r', encoding='utf-8') as f:
+    FILE_PATH = json.load(f)
+
 
 @pytest.fixture(scope="module")
 def mnv_cli(network_api, amd64_system):
@@ -28,6 +31,7 @@ def mnv_cli(network_api, amd64_system):
 
 class TestCLI:
     '''docstring'''
+    @pytest.mark.dependency(name="commandline conformance")
     @pytest.mark.parametrize('test_case', sorted_test_cases)
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
@@ -137,3 +141,11 @@ class TestCLI:
         for field, value in smart_info.__dict__.items():
             assert limits[field](value), (f"{field.replace('_', ' ').title()}"
                                           f" {value} is out of range!")
+
+    @pytest.mark.dependency(depends=["commandline conformance"])
+    @pytest.mark.parametrize('file_path', FILE_PATH)
+    def test_compare_file(self, mnv_cli, file_path):
+        '''docstring'''
+        logger.info('file_path = %s', file_path["Name"])
+        result = mnv_cli.compare_file(file_path["Name"])
+        assert result, 'The two files are not the same!'

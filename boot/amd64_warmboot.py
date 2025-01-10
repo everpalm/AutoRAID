@@ -22,8 +22,6 @@ class WarmBoot(ABC):
 
 class WindowsWarmBoot(WarmBoot):
     """Warm boot implementation for Windows systems."""
-    # def __init__(self, platform: AMD64NVMe):
-    #     self._api = platform.api
 
     def execute(self) -> bool:
         logger.info("Executing warm boot for Windows...")
@@ -40,8 +38,6 @@ class WindowsWarmBoot(WarmBoot):
 
 class LinuxWarmBoot(WarmBoot):
     """Warm boot implementation for Linux systems."""
-    # def __init__(self, platform: AMD64NVMe):
-    #     self._api = platform.api
 
     def execute(self) -> bool:
         logger.info("Executing warm boot for Linux...")
@@ -59,17 +55,20 @@ class LinuxWarmBoot(WarmBoot):
 class BaseWarmBootFactory(ABC):
     '''docstring'''
     def __init__(self, api: BaseInterface):
+        '''docstring'''
         self.api = api
         self.os_type = api.os_type
 
     @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> WarmBoot:
+        '''docstring'''
         pass
 
 
 class WarmBootFactory(BaseWarmBootFactory):
-    # def initiate(self, os_type: str, **kwargs) -> WarmBoot:
+    '''docstring'''
     def initiate(self, **kwargs) -> WarmBoot:
+        '''docstring'''
         if self.os_type == 'Windows':
             return WindowsWarmBoot(**kwargs)
         elif self.os_type == 'Linux':

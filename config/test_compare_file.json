@@ -1,0 +1,14 @@
+[
+    {
+        "ID": 0,
+        "Name": "id_data",
+        "Description": "Exported from passthru command.",
+        "Expected": true
+    },
+    {
+        "ID": 1,
+        "Name": "raw_data",
+        "Description": "Exported from dumphba command.",
+        "Expected": true
+    }
+]
