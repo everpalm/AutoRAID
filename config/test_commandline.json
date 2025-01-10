@@ -647,5 +647,21 @@
             "Invalid Field in Command (Status Code: 0x2)",
             "LED control failed."
         ]
-    }
-]
+    },
+    {
+        "ID": 50,
+        "Command": "passthru -i 1 -o 0x6 --cdw10=1 --data-len=4096 -r read --outputfile id_data",
+        "Description": "Export identity of backend congtroller ID 1 to file id_data",
+        "Expected": [
+            "Passthrough command is success."
+        ]
+    },
+    {
+        "ID": 51,
+        "Command": "dumphba --outputfile=raw_data",
+        "Description": "Output raw data into file raw_data",
+        "Expected": [
+            "cmd success"
+        ]
+    } 
+]   
