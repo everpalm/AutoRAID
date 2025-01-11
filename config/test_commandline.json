@@ -696,5 +696,13 @@
             "Invalid Field in Command (Status Code: 0x2)",
             "Reset failed."
         ]
+    },
+    {
+        "ID": 56,
+        "Command": "reset -i 0 -t perstn -a on",
+        "Description": "Device PD id 0 as pcie reset cycle",
+        "Expected": [
+            "-i : invalid device id '0'"
+        ]
     }
 ]   
