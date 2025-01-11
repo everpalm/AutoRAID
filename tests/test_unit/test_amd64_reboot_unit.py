@@ -51,7 +51,8 @@ def test_linux_execute_success(mock_api, mocker):
     mock_api.command_line.return_value = None  # 模擬正常返回
 
     assert linux_warmboot.warm_reset() is True
-    mock_api.command_line.assert_called_once_with(mock_api, 'sudo reboot')
+    mock_api.command_line.assert_called_once_with(mock_api,
+                                                  'sudo shutdown -r now')
 
 
 def test_linux_execute_failure(mock_api, mocker):
@@ -63,4 +64,5 @@ def test_linux_execute_failure(mock_api, mocker):
     mock_api.command_line.side_effect = Exception("Mocked exception")
 
     assert linux_warmboot.warm_reset() is False
-    mock_api.command_line.assert_called_once_with(mock_api, 'sudo reboot')
+    mock_api.command_line.assert_called_once_with(mock_api,
+                                                  'sudo shutdown -r now')
