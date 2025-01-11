@@ -10,20 +10,24 @@ from unit.log_handler import get_logger
 logger = get_logger(__name__, logging.INFO)
 
 
-class WarmBoot(ABC):
+class BaseReboot(ABC):
     """Abstract base class for warm boot operations."""
     def __init__(self, platform: AMD64NVMe):
         self._api = platform.api
 
     @abstractmethod
-    def execute(self) -> bool:
+    def warm_reset(self) -> bool:
         """Execute the warm boot process."""
 
+    @abstractmethod
+    def cold_reset(self) -> bool:
+        """Execute the cold boot process."""
 
-class WindowsWarmBoot(WarmBoot):
+
+class WindowsReboot(BaseReboot):
     """Warm boot implementation for Windows systems."""
 
-    def execute(self) -> bool:
+    def warm_reset(self) -> bool:
         logger.info("Executing warm boot for Windows...")
         try:
             # Execute the warm boot command
@@ -35,15 +39,27 @@ class WindowsWarmBoot(WarmBoot):
             logger.error("Error during Windows warm boot execution: %s", e)
             return False
 
+    def cold_reset(self) -> bool:
+        logger.info("Executing warm boot for Windows...")
+        try:
+            # Execute the warm boot command
+            self._api.command_line.original(self._api, 'shutdown /s /t 0')
+            logger.info("Cold boot executed successfully for Windows.")
+            return True
 
-class LinuxWarmBoot(WarmBoot):
+        except Exception as e:
+            logger.error("Error during Windows cold boot execution: %s", e)
+            return False
+
+
+class LinuxReboot(BaseReboot):
     """Warm boot implementation for Linux systems."""
 
-    def execute(self) -> bool:
+    def warm_reset(self) -> bool:
         logger.info("Executing warm boot for Linux...")
         try:
             # Execute the warm boot command
-            self._api.command_line(self._api, 'sudo reboot')
+            self._api.command_line(self._api, 'sudo shutdown -r now')
             logger.info("Warm boot executed successfully for Linux.")
             return True
 
@@ -51,8 +67,20 @@ class LinuxWarmBoot(WarmBoot):
             logger.error("Error during Linux warm boot execution: %s", e)
             return False
 
+    def cold_reset(self) -> bool:
+        logger.info("Executing warm boot for Linux...")
+        try:
+            # Execute the warm boot command
+            self._api.command_line(self._api, 'sudo shutdown -h now')
+            logger.info("Cold boot executed successfully for Linux.")
+            return True
 
-class BaseWarmBootFactory(ABC):
+        except Exception as e:
+            logger.error("Error during Linux cold boot execution: %s", e)
+            return False
+
+
+class BaseRebootFactory(ABC):
     '''docstring'''
     def __init__(self, api: BaseInterface):
         '''docstring'''
@@ -60,18 +88,18 @@ class BaseWarmBootFactory(ABC):
         self.os_type = api.os_type
 
     @abstractmethod
-    def initiate(self, os_type: str, **kwargs) -> WarmBoot:
+    def initiate(self, os_type: str, **kwargs) -> BaseReboot:
         '''docstring'''
         pass
 
 
-class WarmBootFactory(BaseWarmBootFactory):
+class RebootFactory(BaseRebootFactory):
     '''docstring'''
-    def initiate(self, **kwargs) -> WarmBoot:
+    def initiate(self, **kwargs) -> BaseReboot:
         '''docstring'''
         if self.os_type == 'Windows':
-            return WindowsWarmBoot(**kwargs)
+            return WindowsReboot(**kwargs)
         elif self.os_type == 'Linux':
-            return LinuxWarmBoot(**kwargs)
+            return LinuxReboot(**kwargs)
         else:
             raise ValueError(f"Unsupported OS type: {self.os_type}")

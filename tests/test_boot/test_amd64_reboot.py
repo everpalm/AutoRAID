@@ -5,7 +5,7 @@ import time
 import pytest
 from tests.test_network.test_amd64_ping import TestAMD64Ping
 from tests.test_storage.test_stress import TestOneShotStress
-from boot.amd64_warmboot import WarmBootFactory
+from boot.amd64_reboot import RebootFactory
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ RESET_DURATION = 30
 
 
 @pytest.fixture(scope="module", autouse=True)
-def win_warmboot(amd64_system, network_api):
+def win_boot(amd64_system, network_api):
     """
     Fixture to automatically execute a Windows Warm Boot for the test module.
 
@@ -37,8 +37,9 @@ def win_warmboot(amd64_system, network_api):
     Returns:
         wwb: The warm boot execution object.
     """
-    warmboot = WarmBootFactory(network_api)
-    return warmboot.initiate(platform=amd64_system)
+    reboot = RebootFactory(network_api)
+    print("\n\033[32m================== Setup Reboot Test ===========\033[0m")
+    return reboot.initiate(platform=amd64_system)
 
 
 @pytest.mark.order(1)
@@ -46,7 +47,7 @@ class TestWindowsWarmBoot:
     """
     Test suite for verifying Windows Warm Boot functionality.
     """
-    def test_warmboot_execute(self, win_warmboot):
+    def test_warm_reset(self, win_boot):
         """
         Execute a Windows Warm Boot and verify successful reset.
 
@@ -57,7 +58,7 @@ class TestWindowsWarmBoot:
         Args:
             win_warmboot: The warm boot execution fixture.
         """
-        result = win_warmboot.execute()
+        result = win_boot.warm_reset()
         assert result, "Windows Warm Boot execution failed."
         logger.info("Windows Warm Boot executed successfully.")
 
