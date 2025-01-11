@@ -663,5 +663,38 @@
         "Expected": [
             "cmd success"
         ]
-    } 
+    },
+    {
+        "ID": 52,
+        "Command": "reset -i 0 -t device",
+        "Description": "Device PD id 0 as reset cycle",
+        "Expected": [
+            "-i : invalid device id '0'"
+        ]
+    },
+    {
+        "ID": 53,
+        "Command": "reset -i 1 -t device",
+        "Description": "Device PD id 1 as reset cycle",
+        "Expected": [
+            "Reset success"
+        ]
+    },
+    {
+        "ID": 54,
+        "Command": "reset -i 2 -t device",
+        "Description": "Device PD id 2 as reset cycle",
+        "Expected": [
+            "Reset success"
+        ]
+    },
+    {
+        "ID": 55,
+        "Command": "reset -i 3 -t device",
+        "Description": "Device PD id 3 as reset cycle",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "Reset failed."
+        ]
+    }
 ]   
