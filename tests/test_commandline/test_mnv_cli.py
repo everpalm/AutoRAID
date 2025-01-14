@@ -13,12 +13,36 @@ from commandline.mnv_cli import CLIFactory
 # Set up logger
 logger = logging.getLogger(__name__)
 
-with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
-    TEST_CASE = json.load(f)
-sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["ID"])
 
-with open('config/test_compare_file.json', 'r', encoding='utf-8') as f:
-    FILE_PATH = json.load(f)
+def load_and_sort_json(file_path, key):
+    '''docstring'''
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return sorted(data, key=lambda x: x[key])
+    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+        logger.error(f"Error loading or sorting file {file_path}: {e}")
+        return []
+
+
+# 定義配置檔案與對應鍵
+CONFIG_FILES = {
+    "test_cases": ("config/test_commandline.json", "ID"),
+    "reset_device": ("config/test_mnv_cli_reset_device.json", "ID"),
+    "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
+    "reset_power": ("config/test_mnv_cli_reset_power.json", "ID"),
+    "file_paths": ("config/test_compare_file.json", None),
+}
+
+# 動態加載與處理檔案
+SORTED_DATA = {
+    name: load_and_sort_json(path, key) if key else json.load(open(
+        path,
+        'r',
+        encoding='utf-8'
+    ))
+    for name, (path, key) in CONFIG_FILES.items()
+}
 
 
 @pytest.fixture(scope="module")
@@ -32,13 +56,48 @@ def mnv_cli(network_api, amd64_system):
 class TestCLI:
     '''docstring'''
     @pytest.mark.dependency(name="commandline conformance")
-    @pytest.mark.parametrize('test_case', sorted_test_cases)
+    @pytest.mark.parametrize('test_case', SORTED_DATA["test_cases"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
         result = mnv_cli.interpret(test_case["Command"])
         logger.debug('result = %s', result)
         assert result == test_case["Expected"]
 
+
+class TestCLIResetDevice:
+    '''docstring'''
+    @pytest.mark.dependency(name="reset iteration")
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_device"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_device_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_device_result = %s', reset_device_result)
+        assert reset_device_result == test_case["Expected"]
+
+
+class TestCLIResetPCIe:
+    '''docstring'''
+    @pytest.mark.dependency(name="reset iteration")
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pcie"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_pcie_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_pcie_result = %s', reset_pcie_result)
+        assert reset_pcie_result == test_case["Expected"]
+
+
+class TestCLIResetPower:
+    '''docstring'''
+    @pytest.mark.dependency(name="reset iteration")
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_power"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_power_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_power_result = %s', reset_power_result)
+        assert reset_power_result == test_case["Expected"]
+
+
+class TestCLISMART:
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
         '''docstring'''
@@ -59,6 +118,7 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
 
+    '''docstring'''
     @pytest.mark.skip(reason="Deprecated")
     def test_get_backend_smart_info(self, mnv_cli):
         '''docstring'''
@@ -97,25 +157,6 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
 
-    @pytest.mark.skip(reason="Only for case generation")
-    def test_export_smart_limits(self, mnv_cli):
-        '''docstring'''
-        cmd_output = mnv_cli.export_smart_limits(
-            'config/test_smart_limits.json')
-        print(cmd_output)
-
-    def test_import_limits(self, mnv_cli):
-        '''docstring'''
-        limits = mnv_cli.import_limits(
-            'config/test_smart_limits.json')
-        for key, value in limits.items():
-            logger.info("%s = %s", key, value)
-
-        assert len(limits) == 21, 'The number of limits is not correct!'
-
-        for key, value in limits.items():
-            assert callable(value), f'{key} is not a function!'
-
     def test_get_backend_smart_info1(self, mnv_cli):
         '''docstring'''
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
@@ -142,10 +183,31 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()}"
                                           f" {value} is out of range!")
 
-    @pytest.mark.dependency(depends=["commandline conformance"])
-    @pytest.mark.parametrize('file_path', FILE_PATH)
-    def test_compare_file(self, mnv_cli, file_path):
+    @pytest.mark.skip(reason="Only for case generation")
+    def test_export_smart_limits(self, mnv_cli):
         '''docstring'''
-        logger.info('file_path = %s', file_path["Name"])
-        result = mnv_cli.compare_file(file_path["Name"])
+        cmd_output = mnv_cli.export_smart_limits(
+            'config/test_smart_limits.json')
+        print(cmd_output)
+
+    def test_import_limits(self, mnv_cli):
+        '''docstring'''
+        limits = mnv_cli.import_limits(
+            'config/test_smart_limits.json')
+        for key, value in limits.items():
+            logger.info("%s = %s", key, value)
+
+        assert len(limits) == 21, 'The number of limits is not correct!'
+
+        for key, value in limits.items():
+            assert callable(value), f'{key} is not a function!'
+
+
+class TestCLIExport:
+    @pytest.mark.dependency(depends=["commandline conformance"])
+    @pytest.mark.parametrize('test_case', SORTED_DATA["file_paths"])
+    def test_compare_file(self, mnv_cli, test_case):
+        '''docstring'''
+        logger.info('file_path = %s', test_case["Name"])
+        result = mnv_cli.compare_file(test_case["Name"])
         assert result, 'The two files are not the same!'
