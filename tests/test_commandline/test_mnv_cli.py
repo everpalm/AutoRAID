@@ -17,6 +17,14 @@ with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
     TEST_CASE = json.load(f)
 sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["ID"])
 
+with open('config/test_mnv_cli_reset_device.json', 'r', encoding='utf-8') as f:
+    RESET_DEVICE = json.load(f)
+sorted_reset_device = sorted(RESET_DEVICE, key=lambda x: x["ID"])
+
+with open('config/test_mnv_cli_reset_pcie.json', 'r', encoding='utf-8') as f:
+    RESET_PCIE = json.load(f)
+sorted_reset_pcie = sorted(RESET_PCIE, key=lambda x: x["ID"])
+
 with open('config/test_compare_file.json', 'r', encoding='utf-8') as f:
     FILE_PATH = json.load(f)
 
@@ -39,6 +47,30 @@ class TestCLI:
         logger.debug('result = %s', result)
         assert result == test_case["Expected"]
 
+
+class TestCLIResetDevice:
+    '''docstring'''
+    @pytest.mark.dependency(name="reset iteration")
+    @pytest.mark.parametrize('reset_device', sorted_reset_device)
+    def test_commandline(self, mnv_cli, reset_device):
+        '''docstring'''
+        reset_device_result = mnv_cli.interpret(reset_device["Command"])
+        logger.debug('reset_device_result = %s', reset_device_result)
+        assert reset_device_result == reset_device["Expected"]
+
+
+class TestCLIResetPCIe:
+    '''docstring'''
+    @pytest.mark.dependency(name="reset iteration")
+    @pytest.mark.parametrize('reset_pcie', sorted_reset_pcie)
+    def test_commandline(self, mnv_cli, reset_pcie):
+        '''docstring'''
+        reset_pcie_result = mnv_cli.interpret(reset_pcie["Command"])
+        logger.debug('reset_pcie_result = %s', reset_pcie_result)
+        assert reset_pcie_result == reset_pcie["Expected"]
+
+
+class TestCLISMART:
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
         '''docstring'''
@@ -59,6 +91,7 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
 
+    '''docstring'''
     @pytest.mark.skip(reason="Deprecated")
     def test_get_backend_smart_info(self, mnv_cli):
         '''docstring'''
@@ -97,25 +130,6 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
 
-    @pytest.mark.skip(reason="Only for case generation")
-    def test_export_smart_limits(self, mnv_cli):
-        '''docstring'''
-        cmd_output = mnv_cli.export_smart_limits(
-            'config/test_smart_limits.json')
-        print(cmd_output)
-
-    def test_import_limits(self, mnv_cli):
-        '''docstring'''
-        limits = mnv_cli.import_limits(
-            'config/test_smart_limits.json')
-        for key, value in limits.items():
-            logger.info("%s = %s", key, value)
-
-        assert len(limits) == 21, 'The number of limits is not correct!'
-
-        for key, value in limits.items():
-            assert callable(value), f'{key} is not a function!'
-
     def test_get_backend_smart_info1(self, mnv_cli):
         '''docstring'''
         smart_info = mnv_cli.get_backend_smart_info(pd_id='1')
@@ -142,6 +156,27 @@ class TestCLI:
             assert limits[field](value), (f"{field.replace('_', ' ').title()}"
                                           f" {value} is out of range!")
 
+    @pytest.mark.skip(reason="Only for case generation")
+    def test_export_smart_limits(self, mnv_cli):
+        '''docstring'''
+        cmd_output = mnv_cli.export_smart_limits(
+            'config/test_smart_limits.json')
+        print(cmd_output)
+
+    def test_import_limits(self, mnv_cli):
+        '''docstring'''
+        limits = mnv_cli.import_limits(
+            'config/test_smart_limits.json')
+        for key, value in limits.items():
+            logger.info("%s = %s", key, value)
+
+        assert len(limits) == 21, 'The number of limits is not correct!'
+
+        for key, value in limits.items():
+            assert callable(value), f'{key} is not a function!'
+
+
+class TestCLIExport:
     @pytest.mark.dependency(depends=["commandline conformance"])
     @pytest.mark.parametrize('file_path', FILE_PATH)
     def test_compare_file(self, mnv_cli, file_path):
