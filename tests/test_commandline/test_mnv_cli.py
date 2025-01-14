@@ -13,20 +13,36 @@ from commandline.mnv_cli import CLIFactory
 # Set up logger
 logger = logging.getLogger(__name__)
 
-with open('config/test_commandline.json', 'r', encoding='utf-8') as f:
-    TEST_CASE = json.load(f)
-sorted_test_cases = sorted(TEST_CASE, key=lambda x: x["ID"])
 
-with open('config/test_mnv_cli_reset_device.json', 'r', encoding='utf-8') as f:
-    RESET_DEVICE = json.load(f)
-sorted_reset_device = sorted(RESET_DEVICE, key=lambda x: x["ID"])
+def load_and_sort_json(file_path, key):
+    '''docstring'''
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return sorted(data, key=lambda x: x[key])
+    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+        logger.error(f"Error loading or sorting file {file_path}: {e}")
+        return []
 
-with open('config/test_mnv_cli_reset_pcie.json', 'r', encoding='utf-8') as f:
-    RESET_PCIE = json.load(f)
-sorted_reset_pcie = sorted(RESET_PCIE, key=lambda x: x["ID"])
 
-with open('config/test_compare_file.json', 'r', encoding='utf-8') as f:
-    FILE_PATH = json.load(f)
+# 定義配置檔案與對應鍵
+CONFIG_FILES = {
+    "test_cases": ("config/test_commandline.json", "ID"),
+    "reset_device": ("config/test_mnv_cli_reset_device.json", "ID"),
+    "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
+    "reset_power": ("config/test_mnv_cli_reset_power.json", "ID"),
+    "file_paths": ("config/test_compare_file.json", None),
+}
+
+# 動態加載與處理檔案
+SORTED_DATA = {
+    name: load_and_sort_json(path, key) if key else json.load(open(
+        path,
+        'r',
+        encoding='utf-8'
+    ))
+    for name, (path, key) in CONFIG_FILES.items()
+}
 
 
 @pytest.fixture(scope="module")
@@ -40,7 +56,7 @@ def mnv_cli(network_api, amd64_system):
 class TestCLI:
     '''docstring'''
     @pytest.mark.dependency(name="commandline conformance")
-    @pytest.mark.parametrize('test_case', sorted_test_cases)
+    @pytest.mark.parametrize('test_case', SORTED_DATA["test_cases"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
         result = mnv_cli.interpret(test_case["Command"])
@@ -51,23 +67,34 @@ class TestCLI:
 class TestCLIResetDevice:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
-    @pytest.mark.parametrize('reset_device', sorted_reset_device)
-    def test_commandline(self, mnv_cli, reset_device):
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_device"])
+    def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
-        reset_device_result = mnv_cli.interpret(reset_device["Command"])
+        reset_device_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('reset_device_result = %s', reset_device_result)
-        assert reset_device_result == reset_device["Expected"]
+        assert reset_device_result == test_case["Expected"]
 
 
 class TestCLIResetPCIe:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
-    @pytest.mark.parametrize('reset_pcie', sorted_reset_pcie)
-    def test_commandline(self, mnv_cli, reset_pcie):
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pcie"])
+    def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
-        reset_pcie_result = mnv_cli.interpret(reset_pcie["Command"])
+        reset_pcie_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('reset_pcie_result = %s', reset_pcie_result)
-        assert reset_pcie_result == reset_pcie["Expected"]
+        assert reset_pcie_result == test_case["Expected"]
+
+
+class TestCLIResetPower:
+    '''docstring'''
+    @pytest.mark.dependency(name="reset iteration")
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_power"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_power_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_power_result = %s', reset_power_result)
+        assert reset_power_result == test_case["Expected"]
 
 
 class TestCLISMART:
@@ -178,9 +205,9 @@ class TestCLISMART:
 
 class TestCLIExport:
     @pytest.mark.dependency(depends=["commandline conformance"])
-    @pytest.mark.parametrize('file_path', FILE_PATH)
-    def test_compare_file(self, mnv_cli, file_path):
+    @pytest.mark.parametrize('test_case', SORTED_DATA["file_paths"])
+    def test_compare_file(self, mnv_cli, test_case):
         '''docstring'''
-        logger.info('file_path = %s', file_path["Name"])
-        result = mnv_cli.compare_file(file_path["Name"])
+        logger.info('file_path = %s', test_case["Name"])
+        result = mnv_cli.compare_file(test_case["Name"])
         assert result, 'The two files are not the same!'
