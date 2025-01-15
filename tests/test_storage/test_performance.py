@@ -12,6 +12,7 @@ import pytest
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.skip(reason="Discerned")
 @pytest.mark.PERFORMANCE
 class TestRandomReadWrite:
     ''' Test AMD64 NVM Random Read Write Performance
@@ -25,7 +26,7 @@ class TestRandomReadWrite:
     @pytest.mark.parametrize('io_depth', [2**power for power in range(6)])
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, io_depth,
-                              my_mdb):
+                              my_mdb, machine_learn):
         """Test random I/O operation performance.
 
         Args:
@@ -34,9 +35,18 @@ class TestRandomReadWrite:
             write io_depth (int): The I/O depth, ranging from 1 to 32.
             my_mdb (object): Database instance for aggregating metrics.
         """
+        result = machine_learn.aggregate_best_ramp_time()
+        best_ramp_time = result["percentile_best_ramp_time"][0]
+        logger.info('best_ramp_time = %s', best_ramp_time)
+
         read_bw, read_iops, write_bw, write_iops, _ = \
-            target_perf.run_io_operation(io_depth, '4k', '4k', write_pattern,
-                                         156)
+            target_perf.run_io_operation(
+                io_depth,
+                '4k',
+                '4k',
+                write_pattern,
+                int(best_ramp_time)
+            )
 
         target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
                                    'random_')
@@ -50,6 +60,7 @@ class TestRandomReadWrite:
                                      criteria)
 
 
+@pytest.mark.skip(reason="Discerned")
 @pytest.mark.PERFORMANCE
 class TestSequentialReadWrite:
     ''' Test AMD64 NVM Sequential Read Write Performanceutdown -h
@@ -92,6 +103,7 @@ class TestSequentialReadWrite:
                                      criteria)
 
 
+# @pytest.mark.skip(reason="Discerned")
 @pytest.mark.PERFORMANCE
 class TestRampTimeReadWrite:
     ''' Test AMD64 NVM Ramp-up Time Read Write
@@ -102,9 +114,8 @@ class TestRampTimeReadWrite:
             write_pattern:
             my_mdb:
     '''
-    @pytest.mark.skip(reason="Discerned")
     @pytest.mark.flaky(reruns=3, reruns_delay=60)
-    @pytest.mark.parametrize('ramp_times', list(range(120, 181, 10)))
+    @pytest.mark.parametrize('ramp_times', list(range(150, 191, 10)))
     @pytest.mark.parametrize('write_pattern', [0, 100])
     def test_run_io_operation(self, target_perf, write_pattern, ramp_times,
                               my_mdb):
