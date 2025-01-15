@@ -1,0 +1,109 @@
+[
+    {
+      "$project":
+        {
+          "report.tests.keywords": 1,
+          "report.tests.call.log.msg": 1,
+          "report.collectors": 1
+        }
+    },
+    {
+      "$match":
+        {
+          "$and": [
+            {
+              "report.tests.keywords": {
+                "$regex": "best_ramp_time"
+              }
+            },
+            {
+              "report.collectors.outcome": {
+                "$regex": "passed"
+              }
+            },
+            {
+              "report.tests.keywords": {
+                "$regex": "TestMLRampTime"
+              }
+            }
+          ]
+        }
+    },
+    {
+      "$unwind":
+        {
+          "path": "$report.tests"
+        }
+    },
+    {
+      "$unwind":
+        {
+          "path": "$report.tests.call"
+        }
+    },
+    {
+      "$unwind":
+        {
+          "path": "$report.tests.call.log"
+        }
+    },
+    {
+      "$unwind":
+        {
+          "path": "$report.tests.call.log.msg"
+        }
+    },
+    {
+      "$project":
+        {
+          "best_ramp_time_str": {
+            "$regexFind": {
+              "input": "$report.tests.call.log.msg",
+              "regex": "best_ramp_time = (\\d+)"
+            }
+          }
+        }
+    },
+    {
+      "$project":
+        {
+          "best_ramp_time": {
+            "$convert": {
+              "input": {
+                "$arrayElemAt": [
+                  "$best_ramp_time_str.captures",
+                  0
+                ]
+              },
+              "to": "int",
+              "onError": null,
+              "onNull": null
+            }
+          }
+        }
+    },
+    {
+      "$match":
+        {
+          "best_ramp_time": {
+            "$ne": null
+          }
+        }
+    },
+    {
+      "$group":
+        {
+          "_id": null,
+          "avg_best_ramp_time": {
+            "$avg": "$best_ramp_time"
+          },
+          "percentile_best_ramp_time": {
+            "$percentile": {
+              "input": "$best_ramp_time",
+              "p": [0.99],
+              "method": "approximate"
+            }
+          }
+        }
+    }
+  ]

@@ -49,6 +49,17 @@ def my_mdb():
 
 
 @pytest.fixture(scope="session")
+def machine_learn():
+    print("\n\033[32m================== Setup Machine Learning ======\033[0m")
+    return mdb(
+        host="192.168.0.128",
+        port=27017,
+        db_name="MLAutoRAID",
+        collection_name="system",
+    )
+
+
+@pytest.fixture(scope="session")
 def drone(raspi_interface):
     """
     Fixture to set up a Raspberry Pi (presumably for drone control).

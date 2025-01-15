@@ -401,3 +401,34 @@ class MongoDB(object):
         except errors.PyMongoError as e:
             logger.error("Error performing aggregation: %s", e)
             return None
+
+    def aggregate_best_ramp_time(self):
+        """
+        Aggregates best ramp time from the MongoDB collection.
+        """
+        try:
+            with open('config/pipeline_best_ramp_time.json', 'r',
+                      encoding='utf-8') as file:
+                pipeline = json.load(file)
+        except FileNotFoundError:
+            logger.error("Pipeline configuration file not found.")
+            return None
+        except json.JSONDecodeError as e:
+            logger.critical("Error decoding JSON from pipeline "
+                            "configuration: %s", e)
+            return None
+
+        # for stage in pipeline:
+        #     if "$match" in stage and "write_pattern" in stage["$match"]:
+        #         stage["$match"]["write_pattern"]["$eq"] = write_pattern
+
+        try:
+            result = list(self.collection.aggregate(pipeline))
+            if result:
+                return result[0]
+            else:
+                logger.error("No data found for aggregation.")
+                return None
+        except errors.PyMongoError as e:
+            logger.critical(f"Error performing aggregation: {e}")
+            return None

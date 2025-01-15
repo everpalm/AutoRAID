@@ -6,8 +6,9 @@
    Copyright (c) 2024 Jaron Cheng
 '''
 import logging
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 from network.ping import LinuxPing, WindowsPing
 
 logger = logging.getLogger(__name__)

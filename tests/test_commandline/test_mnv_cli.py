@@ -1,6 +1,6 @@
 # Contents of test_commandline.py
-'''Unit tests for the ApplicationInterface class, which includes testing the
-   execution of Windows commands to verify system responses and configurations
+'''Unit tests for commandline class, which includes testing the
+   execution of mnv_cli commands to verify commands and system responses
 
    Copyright (c) 2024 Jaron Cheng
 '''
@@ -118,7 +118,6 @@ class TestCLISMART:
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")
 
-    '''docstring'''
     @pytest.mark.skip(reason="Deprecated")
     def test_get_backend_smart_info(self, mnv_cli):
         '''docstring'''
@@ -204,6 +203,7 @@ class TestCLISMART:
 
 
 class TestCLIExport:
+    '''docstring'''
     @pytest.mark.dependency(depends=["commandline conformance"])
     @pytest.mark.parametrize('test_case', SORTED_DATA["file_paths"])
     def test_compare_file(self, mnv_cli, test_case):
