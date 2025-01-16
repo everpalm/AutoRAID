@@ -52,11 +52,14 @@ def test_sanity(String path) {
 }
 
 def test_regression(String path) {
-    run_test(path, '', '--cov-report=html -m "not STRESS"')
+    run_test(path, '', '--cov-report=html -m "not STRESS and not TRAINING"')
 }
 
 def test_unit(String path, String key) {
     run_test(path, key, '--cov-report=html')
 }
 
+def test_training(String path) {
+    run_test(path, '', '-m "TRAINING" --cov-report=html')
+}
 return this

@@ -9,9 +9,18 @@
     },
     {
         "$match": {
-            "report.tests.keywords": {
-                "$regex": "TestRandomReadWrite"
-            }
+           "$or": [
+                {
+                    "report.tests.keywords": {
+                        "$regex": "TestRandomReadWrite"
+                    }
+                },
+                {
+                    "report.tests.keywords": {
+                        "$regex": "TestRandomReadWriteSample"
+                    }
+                }
+           ]
         }
     },
     {
