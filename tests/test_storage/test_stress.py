@@ -95,8 +95,12 @@ class TestOneShotStress:
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
                                            '4k', '4k', HALF_RW, ONE_SHOT)
 
-        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-                                   'stress_')
+        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+        #                            'stress_')
+        logger.info('stress_read_bw = %.2f MBps', read_bw)
+        logger.info('stress_read_iops = %d', read_iops)
+        logger.info('stress_write_bw = %.2f MBps', write_bw)
+        logger.info('stress_write_iops = %d', write_iops)
 
         criteria = my_mdb.aggregate_stress_metrics(HALF_RW, OPTIMUM_IODEPTH)
 
@@ -122,8 +126,12 @@ class TestOneShotStress:
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
                                            '4k', '4k', FULL_READ, ONE_SHOT)
 
-        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-                                   'stress_')
+        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+        #                            'stress_')
+        logger.info('stress_read_bw = %.2f MBps', read_bw)
+        logger.info('stress_read_iops = %d', read_iops)
+        logger.info('stress_write_bw = %.2f MBps', write_bw)
+        logger.info('stress_write_iops = %d', write_iops)
 
         criteria = my_mdb.aggregate_stress_metrics(FULL_READ, OPTIMUM_IODEPTH)
 
@@ -149,8 +157,12 @@ class TestOneShotStress:
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
                                            '4k', '4k', FULL_WRITE, ONE_SHOT)
 
-        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-                                   'stress_')
+        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+        #                            'stress_')
+        logger.info('stress_read_bw = %.2f MBps', read_bw)
+        logger.info('stress_read_iops = %d', read_iops)
+        logger.info('stress_write_bw = %.2f MBps', write_bw)
+        logger.info('stress_write_iops = %d', write_iops)
 
         criteria = my_mdb.aggregate_stress_metrics(FULL_WRITE, OPTIMUM_IODEPTH)
 
@@ -189,8 +201,12 @@ class TestOLTP:
             target_stress.run_io_operation(SINGLE_THREAD, iodepth, '8k', '8k',
                                            OLTP_WORKLOAD, OVER_NIGHT)
 
-        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-                                   'oltp_')
+        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+        #                            'oltp_')
+        logger.info('oltp_read_bw = %.2f MBps', read_bw)
+        logger.info('oltp_read_iops = %d', read_iops)
+        logger.info('oltp_write_bw = %.2f MBps', write_bw)
+        logger.info('oltp_write_iops = %d', write_iops)
 
         criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD, iodepth)
 
@@ -230,8 +246,12 @@ class TestOLAP:
                                            '512k', '512k', write_pattern,
                                            OVER_NIGHT)
 
-        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-                                   'olap_')
+        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
+        #                            'olap_')
+        logger.info('olap_read_bw = %.2f MBps', read_bw)
+        logger.info('olap_read_iops = %d', read_iops)
+        logger.info('olap_write_bw = %.2f MBps', write_bw)
+        logger.info('olap_write_iops = %d', write_iops)
 
         criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD,
                                                    write_pattern)
