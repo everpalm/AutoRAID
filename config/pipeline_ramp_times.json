@@ -9,15 +9,17 @@
   },
   {
     "$match": {
+      "report.tests.keywords": {
+        "$regex": "TestRampTimeReadWrite"
+      }
+    }
+  },
+  {
+    "$match": {
       "$and": [
         {
           "report.collectors.outcome": {
             "$regex": "passed"
-          }
-        },
-        {
-          "report.tests.keywords": {
-            "$regex": "TestRandomReadWrite"
           }
         },
         {

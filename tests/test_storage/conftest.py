@@ -35,6 +35,8 @@ def my_mdb():
     Establishes a connection to MongoDB with the specified parameters. This
     fixture has a "session" scope, meaning it will be executed only once per
     test session.
+    Database: "AutoRAID"
+    Collection: "amd64"
 
     Returns:
         mdb: The MongoDB connection object.
@@ -44,7 +46,27 @@ def my_mdb():
         host="192.168.0.128",
         port=27017,
         db_name="AutoRAID",
-        collection_name="amd_desktop",
+        # collection_name="amd_desktop",
+        collection_name="storage",
+    )
+
+
+@pytest.fixture(scope="session")
+def machine_learn():
+    '''
+    Fixture to establish a connection to a MongoDB database
+    Database: "MLAutoRAID"
+    Collection: "system
+
+    Returns:
+        mdb: The MongoDB connection object.
+    '''
+    print("\n\033[32m================== Setup Machine Learning ======\033[0m")
+    return mdb(
+        host="192.168.0.128",
+        port=27017,
+        db_name="MLAutoRAID",
+        collection_name="system",
     )
 
 
