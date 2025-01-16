@@ -9,18 +9,25 @@
     },
     {
         "$match": {
-            "$and": [
+            "$or": [
                 {
                     "report.tests.keywords": {
                         "$regex": "TestSequentialReadWrite"
                     }
                 },
                 {
-                    "report.collectors.outcome": {
-                        "$regex": "passed"
+                    "report.tests.keywords": {
+                        "$regex": "TestSequentialReadWriteSample"
                     }
                 }
             ]
+        }
+    },
+    {
+        "$match": {
+            "report.collectors.outcome": {
+                "$regex": "passed"
+            }
         }
     },
     {
