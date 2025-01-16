@@ -46,7 +46,6 @@ def my_mdb():
         host="192.168.0.128",
         port=27017,
         db_name="AutoRAID",
-        # collection_name="amd_desktop",
         collection_name="storage",
     )
 
