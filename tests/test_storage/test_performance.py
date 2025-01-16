@@ -1,9 +1,10 @@
-# Contents of amd64_performance.py
-'''Module for testing AMD64 system NVM performance. This module includes
-   unit tests for Random, Sequential, and Ramp-up Read/Write performance,
-   leveraging pytest fixtures and parameterized tests.
+# Contents of test_performance.py
+'''
+Module for testing AMD64/Intelx86 storage I/O performance. This module
+includes unit tests for Random, Sequential, and Ramp-up Read/Write performance,
+leveraging pytest fixtures and parameterized tests.
 
-   Copyright (c) 2024 Jaron Cheng
+Copyright (c) 2024 Jaron Cheng
 '''
 import logging
 import pytest
@@ -12,7 +13,6 @@ import pytest
 logger = logging.getLogger(__name__)
 
 
-# @pytest.mark.skip(reason="Discerned")
 @pytest.mark.PERFORMANCE
 class TestRandomReadWrite:
     ''' Test AMD64 NVM Random Read Write Performance
@@ -57,7 +57,6 @@ class TestRandomReadWrite:
                                      criteria)
 
 
-# @pytest.mark.skip(reason="Discerned")
 @pytest.mark.PERFORMANCE
 class TestSequentialReadWrite:
     ''' Test AMD64 NVM Sequential Read Write Performanceutdown -h
