@@ -17,7 +17,32 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
 @pytest.fixture(scope="session")
 def my_app(cmdopt):
-    '''This is a docstring'''
+    '''
+    Initialize and return an API interface for the test session.
+
+    This fixture sets up an API interface for the test environment based on
+    the configuration provided in the `cmdopt` parameter. It is marked as
+    deprecated and should be replaced with newer implementations in the future
+
+    Args:
+        cmdopt (dict): A dictionary containing configuration options for the
+        API interface.
+            - os_type (str): The operating system type (e.g., 'Windows',
+            'Linux').
+            - mode (str): The mode in which the interface operates (e.g.,
+            'test', 'production').
+            - if_name (str): The name of the interface to be used.
+            - config_file (str): The path to the configuration file.
+
+    Returns:
+        Interface: An instance of the API interface created based on the
+        provided configuration.
+
+    Notes:
+        - This setup method is marked as deprecated.
+        - The green-highlighted setup message indicates that this API is
+        obsolete.
+    '''
     print('\n\033[32m================== Setup API (Deprecated)=======\033[0m')
     return api.create_interface(
         os_type=cmdopt.get('os_type'),

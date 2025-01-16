@@ -43,8 +43,6 @@ class WindowsVolume(PartitionDisk):
     Provides methods to write, execute, and delete partitioning scripts
     on a Windows platform.
     """
-
-    # def __init__(self, platform: AMD64NVMe, disk_format: str,
     def __init__(self, platform: BaseOS, disk_format: str,
                  file_system: str):
         """

@@ -479,21 +479,70 @@ class AMD64Linux(BaseOS):
 
 
 class BasePlatformFactory(ABC):
-    '''docstring'''
+    """
+    Abstract base class for platform factories.
+
+    This class serves as a blueprint for creating platform-specific interfaces
+    based on the operating system type. It enforces the implementation of the
+    `create_platform` method in subclasses.
+
+    Attributes:
+        api (BaseInterface): An interface providing information about the
+        platform.
+        os_type (str): The operating system type derived from the provided
+        `api`.
+    """
     def __init__(self, api: BaseInterface):
+        """
+        Initialize the BasePlatformFactory with an API instance.
+
+        Args:
+            api (BaseInterface): An interface instance providing platform
+            details.
+        """
         self.api = api
         self.os_type = api.os_type
 
     @abstractmethod
     def create_platform(self) -> BaseOS:
-        '''docstring'''
+        """
+        Abstract method to create a platform-specific interface.
+
+        Subclasses must implement this method to provide a concrete
+        implementation for creating platform-specific objects based on the
+        operating system type.
+
+        Returns:
+            BaseOS: A platform-specific interface object.
+        """
         pass
 
 
 class PlatformFactory(BasePlatformFactory):
-    '''docstring'''
+    """
+    A concrete implementation of the BasePlatformFactory.
+
+    This class provides a factory method to create platform-specific
+    interfaces based on the operating system type. It supports 'Windows' and
+    'Linux' platforms.
+    """
     def create_platform(self, **kwargs) -> BaseOS:
-        '''Factory method to create an interface based on OS type'''
+        """
+        Factory method to create a platform-specific interface.
+
+        Depending on the `os_type` attribute, this method creates an instance
+        of a platform-specific class (e.g., `AMD64Windows` or `AMD64Linux`).
+
+        Args:
+            **kwargs: Additional arguments passed to the platform-specific
+            class constructor.
+
+        Returns:
+            BaseOS: An instance of the platform-specific class.
+
+        Raises:
+            ValueError: If the `os_type` is not supported.
+        """
         if self.os_type == 'Windows':
             return AMD64Windows(**kwargs)
         elif self.os_type == 'Linux':
