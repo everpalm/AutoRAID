@@ -32,7 +32,7 @@ CONFIG_FILES = {
     "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
     "reset_power": ("config/test_mnv_cli_reset_power.json", "ID"),
     "file_paths": ("config/test_compare_file.json", None),
-    "rebuild": ("config/test_mnv_cli_rebuild.json", None)
+    "rebuild": ("config/test_mnv_cli_rebuild.json", "ID")
 }
 
 # 動態加載與處理檔案
