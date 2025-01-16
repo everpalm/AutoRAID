@@ -32,6 +32,7 @@ CONFIG_FILES = {
     "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
     "reset_power": ("config/test_mnv_cli_reset_power.json", "ID"),
     "file_paths": ("config/test_compare_file.json", None),
+    "rebuild": ("config/test_mnv_cli_rebuild.json", "ID")
 }
 
 # 動態加載與處理檔案
@@ -211,3 +212,14 @@ class TestCLIExport:
         logger.info('file_path = %s', test_case["Name"])
         result = mnv_cli.compare_file(test_case["Name"])
         assert result, 'The two files are not the same!'
+
+
+class TestCLIRebuild:
+    '''docstring'''
+    @pytest.mark.dependency(name="rebuild iteration")
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_result = %s', rebuild_result)
+        assert rebuild_result == test_case["Expected"]

@@ -1,0 +1,54 @@
+[
+    {
+        "ID": 0,
+        "Command": "rebuild -a start -i 0 -d 1",
+        "Description": "Start background rebuild on VD0 with PD1",
+        "Expected": [
+            "-i : invalid vd id '0'."
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "rebuild -a start -i 0 -d 2",
+        "Description": "Start background rebuild on VD0 with PD1",
+        "Expected": [
+            "-i : invalid vd id '0'."
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "rebuild -a start -i 1 -d 1",
+        "Description": "Start background rebuild on VD1 with PD1",
+        "Expected": [
+            "LD is functional (Status Code: 0x736)",
+            "cmd failed."
+        ]
+    },
+    {
+        "ID": 3,
+        "Command": "rebuild -a start -i 1 -d 2",
+        "Description": "Start background rebuild on VD1 with PD2",
+        "Expected": [
+            "LD is functional (Status Code: 0x736)",
+            "cmd failed."
+        ]
+    },
+    {
+        "ID": 4,
+        "Command": "rebuild -a start -i 2 -d 1",
+        "Description": "Start background rebuild on VD1 with PD1",
+        "Expected": [
+            "Invalid LD ID (Status Code: 0x707)",
+            "cmd failed."
+        ]
+    },
+    {
+        "ID": 5,
+        "Command": "rebuild -a start -i 2 -d 2",
+        "Description": "Start background rebuild on VD1 with PD2",
+        "Expected": [
+            "Invalid LD ID (Status Code: 0x707)",
+            "cmd failed."
+        ]
+    }
+]   
