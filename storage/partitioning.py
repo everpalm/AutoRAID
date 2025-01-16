@@ -168,7 +168,6 @@ class WindowsVolume(PartitionDisk):
         ]
         logger.debug("self.partition_size = %s", self.partition_size)
         logger.debug("self.disk_capacity = %s", self.disk_capacity)
-        # partition_num = math.floor(self.disk_capacity / self.partition_size)
         partition_num = self.partition_num
         logger.debug("partition_num = %s", partition_num)
 
@@ -176,8 +175,8 @@ class WindowsVolume(PartitionDisk):
         for _ in range(partition_num):
             script_lines.append(
                 f"create partition primary size={partition_size}")
-            script_lines.append("assign")
             script_lines.append(f"format fs={self.file_system} quick")
+            script_lines.append("assign")
         logger.debug("script_lines = %s", script_lines)
 
         try:

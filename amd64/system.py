@@ -7,10 +7,11 @@ from collections import defaultdict
 import logging
 import math
 import re
+import traceback
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 class BaseOS(ABC):
@@ -335,38 +336,39 @@ class AMD64Windows(BaseOS):
             Raises: Any errors
         '''
         try:
-            # 获取命令输出
-            str_return = self.api.command_line(
+            # self.disk_num stands for the logical device of target controller
+            dict_return = self.api.command_line(
                 f"powershell Get-Partition -DiskNumber {self.disk_num}")
 
-            # 使用正则表达式来提取DriveLetter和Size
+            # Get DriveLetter and Size
             pattern = re.compile(r'\d+\s+([A-Z]?)\s+\d+\s+([\d.]+\s+\w+)')
 
-            # 存储结果
             list_disk_info = []
+            logger.debug("dict_return = %s", dict_return)
 
-            # 处理命令输出并查找匹配项
-            if str_return:
-                # 假设 str_return 是一个字典或包含多行字符串的对象，你需要先转换为单一字符串
-                if isinstance(str_return, dict):
-                    output_string = "\n".join(str_return.values())
-                else:
-                    output_string = str_return
+            if dict_return == {}:
+                logger.warning("No partitions found. Attempting to create "
+                               "partitions...")
+                self.create_partition()
 
-                for match in pattern.findall(output_string):
-                    drive_letter = match[0] if match[0] else "No Drive Letter"
-                    size = match[1]
-                    list_disk_info.append((drive_letter, size))
-
-                # 使用日志记录器记录统计结果
-                total_disks = len(list_disk_info)
-                logger.debug("Total number of disks: %s", total_disks)
+            if isinstance(dict_return, dict):
+                output_string = "\n".join(dict_return.values())
             else:
-                raise ValueError(
-                    "Unexpected None value returned from command line")
+                output_string = dict_return
+
+            for match in pattern.findall(output_string):
+                drive_letter = match[0] if match[0] else "No Drive Letter"
+                size = match[1]
+                list_disk_info.append((drive_letter, size))
+
+            logger.debug("list_disk_info = %s", list_disk_info)
+
+            total_disks = len(list_disk_info)
+            logger.debug("Total number of disks: %s", total_disks)
 
         except Exception as e:
             logger.error('Error occurred in _get_volume: %s', e)
+            logger.error("Traceback:\n%s", traceback.format_exc())
             raise
 
         return list_disk_info
@@ -417,6 +419,42 @@ class AMD64Windows(BaseOS):
             raise
 
         return int(disk_capacity) / (2**30)
+
+    def create_partition(self):
+        '''Create a partition if none exists
+        Args: None
+        Returns: None
+        Raises: Any errors
+        '''
+        try:
+            diskpart_commands = f"""
+            select disk {self.disk_num}
+            clean
+            convert gpt
+            create partition primary
+            format fs=ntfs quick
+            assign
+            """
+            # with open('diskpart_script.txt', "w") as file:
+            with open(self.api.script_name, "w") as file:
+                file.write(diskpart_commands)
+
+            self.api.ftp_command(self.api.script_name)
+
+            partition_cmd = self.api.command_line.original(
+                self.api,
+                f"diskpart /s {self.api.script_name}"
+            )
+            result_string = ' '.join(partition_cmd)
+            logger.debug('result_string = %s', result_string)
+
+        except OSError as e:
+            logger.error("Error during Windows disk partitioning: %s", e)
+            raise Exception("Error during Windows disk partitioning") from e
+
+        except Exception as e:
+            logger.error("Error during Windows disk partitioning: %s", e)
+            raise
 
 
 class AMD64Linux(BaseOS):
