@@ -432,3 +432,100 @@ class MongoDB(object):
         except errors.PyMongoError as e:
             logger.critical(f"Error performing aggregation: {e}")
             return None
+
+    def aggregate_oltp_metrics(self):
+        """
+        Aggregates OLTP stress metrics from the MongoDB collection.
+
+        The aggregation pipeline processes documents to extract and compute
+        average and standard deviation metrics for random IOPS and bandwidth
+        based on the write pattern and I/O depth.
+
+        Args:
+            write_pattern (int): The write pattern to filter the metrics (e.g.
+            , 50 for 50% writes).
+            io_depth (int): The I/O depth to filter the metrics.
+
+        Returns:
+            dict or None: A dictionary containing the aggregated metrics, or
+            None if no data is found.
+
+        Raises:
+            PyMongoError: If there is an error performing the aggregation in
+            MongoDB.
+        """
+        try:
+            with open('config/pipeline_oltp.json', 'r',
+                      encoding='utf-8') as file:
+                pipeline = json.load(file)
+        except FileNotFoundError:
+            logger.error("Pipeline configuration file not found.")
+            return None
+        except json.JSONDecodeError as e:
+            logger.critical("Error decoding JSON from pipeline configuration:"
+                            " %s", e)
+            return None
+
+        # Update the pipeline with the specific filter values
+        # for stage in pipeline:
+        #     if "$match" in stage and "io_depth" in stage["$match"]:
+        #         stage["$match"]["io_depth"]["$eq"] = iodepth
+
+        try:
+            result = list(self.collection.aggregate(pipeline))
+            if result:
+                return result[0]
+            else:
+                logger.error("No data found for aggregation.")
+                return None
+        except errors.PyMongoError as e:
+            logger.error("Error performing aggregation: %s", e)
+            return None
+
+    def aggregate_olap_metrics(self, write_pattern):
+        """
+        Aggregates OLAP stress metrics from the MongoDB collection.
+
+        The aggregation pipeline processes documents to extract and compute
+        average and standard deviation metrics for random IOPS and bandwidth
+        based on the write pattern and I/O depth.
+
+        Args:
+            write_pattern (int): The write pattern to filter the metrics (e.g.
+            , 50 for 50% writes).
+
+        Returns:
+            dict or None: A dictionary containing the aggregated metrics, or
+            None if no data is found.
+
+        Raises:
+            PyMongoError: If there is an error performing the aggregation in
+            MongoDB.
+        """
+        try:
+            with open('config/pipeline_olap.json', 'r',
+                      encoding='utf-8') as file:
+                pipeline = json.load(file)
+        except FileNotFoundError:
+            logger.error("Pipeline configuration file not found.")
+            return None
+        except json.JSONDecodeError as e:
+            logger.critical("Error decoding JSON from pipeline configuration:"
+                            " %s", e)
+            return None
+
+        # Update the pipeline with the specific filter values
+        for stage in pipeline:
+            if "$match" in stage and "write_pattern" in stage["$match"]:
+                stage["$match"]["write_pattern"]["$eq"] = write_pattern
+
+        try:
+            result = list(self.collection.aggregate(pipeline))
+            if result:
+                return result[0]
+            else:
+                logger.error("No data found for aggregation.")
+                return None
+        except errors.PyMongoError as e:
+            logger.error("Error performing aggregation: %s", e)
+            return None

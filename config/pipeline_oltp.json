@@ -1,0 +1,136 @@
+[
+    {
+        "$match": {
+            "$and": [
+                { "report.tests.keywords": { "$regex": "TestOLTP" } },        
+                { "report.collectors.outcome": { "$regex": "passed" } }
+            ]
+        }
+    },
+    {
+        "$unwind": "$report.tests"
+    },
+    {
+        "$unwind": "$report.tests.keywords"
+    },
+    {
+        "$unwind": "$report.tests.call"
+    },
+    {
+        "$unwind": "$report.tests.call.log"
+    },
+    {
+        "$project": {
+            "_id": 0,
+            "read_iops_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "oltp_read_iops\\s*=\\s*(\\d+.\\d+)"
+                }
+            },
+            "read_bw_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "oltp_read_bw\\s*=\\s*(\\d+.\\d+)"
+                }
+            },
+            "write_iops_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "oltp_write_iops\\s*=\\s*(\\d+.\\d+)"
+                }
+            },
+            "write_bw_string": {
+                "$regexFind": {
+                    "input": "$report.tests.call.log.msg",
+                    "regex": "oltp_write_bw\\s*=\\s*(\\d+.\\d+)"
+                }
+            }
+        }
+    },
+    {
+        "$project": {
+            "read_iops": {
+                "$convert": {
+                    "input": { "$arrayElemAt": [ "$read_iops_string.captures", 0 ] },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "read_bw": {
+                "$convert": {
+                    "input": { "$arrayElemAt": [ "$read_bw_string.captures", 0 ] },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "write_iops": {
+                "$convert": {
+                    "input": { "$arrayElemAt": [ "$write_iops_string.captures", 0 ] },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            },
+            "write_bw": {
+                "$convert": {
+                    "input": { "$arrayElemAt": [ "$write_bw_string.captures", 0 ] },
+                    "to": "double",
+                    "onError": null,
+                    "onNull": null
+                }
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": "",
+            "percentile_read_iops": {
+                "$percentile": {
+                    "input": "$read_iops",
+                    "p": [0.99],
+                    "method": "approximate"
+                }
+            },
+            "percentile_write_iops": {
+                "$percentile": {
+                    "input": "$write_iops",
+                    "p": [0.99],
+                    "method": "approximate"
+                }
+            },
+            "percentile_read_bw": {
+                "$percentile": {
+                    "input": "$read_bw",
+                    "p": [0.99],
+                    "method": "approximate"
+                }
+            },
+            "percentile_write_bw": {
+                "$percentile": {
+                    "input": "$write_bw",
+                    "p": [0.99],
+                    "method": "approximate"
+                }
+            },
+            "avg_read_iops": { "$avg": "$read_iops" },
+            "max_read_iops": { "$max": "$read_iops" },
+            "min_read_iops": { "$min": "$read_iops" },
+            "std_dev_read_iops": { "$stdDevPop": "$read_iops" },
+            "avg_read_bw": { "$avg": "$read_bw" },
+            "max_read_bw": { "$max": "$read_bw" },
+            "min_read_bw": { "$min": "$read_bw" },
+            "std_dev_read_bw": { "$stdDevPop": "$read_bw" },
+            "avg_write_iops": { "$avg": "$write_iops" },
+            "max_write_iops": { "$max": "$write_iops" },
+            "min_write_iops": { "$min": "$write_iops" },
+            "std_dev_write_iops": { "$stdDevPop": "$write_iops" },
+            "avg_write_bw": { "$avg": "$write_bw" },
+            "max_write_bw": { "$max": "$write_bw" },
+            "min_write_bw": { "$min": "$write_bw" },
+            "std_dev_write_bw": { "$stdDevPop": "$write_bw" }
+        }
+    }
+]
