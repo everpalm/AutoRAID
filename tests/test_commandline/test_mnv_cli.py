@@ -21,7 +21,7 @@ def load_and_sort_json(file_path, key):
             data = json.load(f)
         return sorted(data, key=lambda x: x[key])
     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-        logger.error(f"Error loading or sorting file {file_path}: {e}")
+        logger.error("Error loading or sorting file %s: %s", file_path, e)
         return []
 
 
