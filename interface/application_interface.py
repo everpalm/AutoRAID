@@ -21,7 +21,7 @@ SSH_PORT = '22'
 
 ''' Define NevoX application interface '''
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 def dict_format(callback):
