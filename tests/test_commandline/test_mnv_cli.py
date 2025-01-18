@@ -30,9 +30,15 @@ CONFIG_FILES = {
     "test_cases": ("config/test_commandline.json", "ID"),
     "reset_device": ("config/test_mnv_cli_reset_device.json", "ID"),
     "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
+    "reset_pd1": ("config/test_mnv_cli_reset_pd1.json", "ID"),
+    "reset_pd2": ("config/test_mnv_cli_reset_pd2.json", "ID"),
     "reset_power": ("config/test_mnv_cli_reset_power.json", "ID"),
     "file_paths": ("config/test_compare_file.json", None),
-    "rebuild": ("config/test_mnv_cli_rebuild.json", "ID")
+    "rebuild": ("config/test_mnv_cli_rebuild.json", "ID"),
+    "rebuild_pd1": ("config/test_mnv_cli_rebuild_pd1.json", "ID"),
+    "rebuild_pd2": ("config/test_mnv_cli_rebuild_pd2.json", "ID"),
+    "rebuild_pd1_stop": ("config/test_mnv_cli_rebuild_pd1_stop.json", "ID"),
+    "rebuild_pd2_stop": ("config/test_mnv_cli_rebuild_pd2_stop.json", "ID")
 }
 
 # 動態加載與處理檔案
@@ -203,9 +209,9 @@ class TestCLISMART:
             assert callable(value), f'{key} is not a function!'
 
 
+@pytest.mark.dependency(depends=["commandline conformance"])
 class TestCLIExport:
     '''docstring'''
-    @pytest.mark.dependency(depends=["commandline conformance"])
     @pytest.mark.parametrize('test_case', SORTED_DATA["file_paths"])
     def test_compare_file(self, mnv_cli, test_case):
         '''docstring'''
@@ -214,12 +220,80 @@ class TestCLIExport:
         assert result, 'The two files are not the same!'
 
 
+@pytest.mark.dependency(name="rebuild iteration")
 class TestCLIRebuild:
     '''docstring'''
-    @pytest.mark.dependency(name="rebuild iteration")
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
         rebuild_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('rebuild_result = %s', rebuild_result)
         assert rebuild_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="reset pd1")
+class TestCLIResetPD1:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_pd1_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_pd1_result = %s', reset_pd1_result)
+        assert reset_pd1_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="reset pd2")
+class TestCLIResetPD2:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd2"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_pd2_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_pd2_result = %s', reset_pd2_result)
+        assert reset_pd2_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="rebuild pd1 stop",
+                        depends=["reset pd1", "general stress"])
+class TestCLIRebuildPD1Stop:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_stop_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_stop_result = %s', rebuild_pd1_stop_result)
+        assert rebuild_pd1_stop_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="rebuild pd2 stop",
+                        depends=["reset pd2", "general stress"])
+class TestCLIRebuildPD2Stop:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd2_stop_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd2_stop_result = %s', rebuild_pd2_stop_result)
+        assert rebuild_pd2_stop_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="rebuild pd1", depends=["rebuild pd1 stop"])
+class TestCLIRebuildPD1:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
+        assert rebuild_pd1_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="rebuild pd2", depends=["reset pd2 stop"])
+class TestCLIRebuildPD2:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd2_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd2_result = %s', rebuild_pd2_result)
+        assert rebuild_pd2_result == test_case["Expected"]
