@@ -45,7 +45,7 @@ class TestAMD64MultiPathStress:
     @pytest.mark.parametrize('iodepth', [2**power for power in range(6)])
     @pytest.mark.parametrize('write_pattern', [FULL_READ, FULL_WRITE])
     def test_run_io_operation(self, target_stress, write_pattern, iodepth,
-                              my_mdb, target_perf):
+                              my_mdb):
         """Runs parameterized I/O operations to test system stress with varying
         I/O depths and write patterns.
 
@@ -64,8 +64,10 @@ class TestAMD64MultiPathStress:
             target_stress.run_io_operation(SINGLE_THREAD, iodepth, '4k', '4k',
                                            write_pattern, OVER_NIGHT)
 
-        target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-                                   'stress_')
+        logger.info('stress_read_bw = %.2f MBps', read_bw)
+        logger.info('stress_read_iops = %d', read_iops)
+        logger.info('stress_write_bw = %.2f MBps', write_bw)
+        logger.info('stress_write_iops = %d', write_iops)
 
         criteria = my_mdb.aggregate_stress_metrics(write_pattern, iodepth)
 
@@ -76,7 +78,7 @@ class TestAMD64MultiPathStress:
 @pytest.mark.STRESS
 class TestOneShotStress:
     ''' Oneshot I/O Stress Test'''
-    def test_read_write(self, target_stress, my_mdb, target_perf):
+    def test_read_write(self, target_stress, my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
         I/O depths and write patterns.
 
@@ -95,8 +97,6 @@ class TestOneShotStress:
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
                                            '4k', '4k', HALF_RW, ONE_SHOT)
 
-        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-        #                            'stress_')
         logger.info('stress_read_bw = %.2f MBps', read_bw)
         logger.info('stress_read_iops = %d', read_iops)
         logger.info('stress_write_bw = %.2f MBps', write_bw)
@@ -107,7 +107,7 @@ class TestOneShotStress:
         logger.debug('criteria = %s', criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
-    def test_full_read(self, target_stress, my_mdb, target_perf):
+    def test_full_read(self, target_stress, my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
         I/O depths and write patterns.
 
@@ -126,8 +126,6 @@ class TestOneShotStress:
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
                                            '4k', '4k', FULL_READ, ONE_SHOT)
 
-        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-        #                            'stress_')
         logger.info('stress_read_bw = %.2f MBps', read_bw)
         logger.info('stress_read_iops = %d', read_iops)
         logger.info('stress_write_bw = %.2f MBps', write_bw)
@@ -138,7 +136,7 @@ class TestOneShotStress:
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
-    def test_full_write(self, target_stress, my_mdb, target_perf):
+    def test_full_write(self, target_stress, my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
         I/O depths and write patterns.
 
@@ -157,8 +155,6 @@ class TestOneShotStress:
             target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
                                            '4k', '4k', FULL_WRITE, ONE_SHOT)
 
-        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-        #                            'stress_')
         logger.info('stress_read_bw = %.2f MBps', read_bw)
         logger.info('stress_read_iops = %d', read_iops)
         logger.info('stress_write_bw = %.2f MBps', write_bw)
@@ -181,13 +177,12 @@ class TestOLTP:
             iodepth
     '''
     @pytest.mark.parametrize('iodepth', [2**power for power in range(6)])
-    def test_run_io_operation(self, target_stress, iodepth, my_mdb,
-                              target_perf):
+    def test_run_io_operation(self, target_stress, iodepth, my_mdb):
         """Runs parameterized I/O operations to test system stress with varying
         I/O depths and write patterns.
 
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            target_stress (OLTP): Stress instance for I/O
             tests.
             write_pattern (int): Write pattern defining the read/write ratio.
             iodepth (int): I/O depth level for stress testing.
@@ -201,14 +196,12 @@ class TestOLTP:
             target_stress.run_io_operation(SINGLE_THREAD, iodepth, '8k', '8k',
                                            OLTP_WORKLOAD, OVER_NIGHT)
 
-        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-        #                            'oltp_')
         logger.info('oltp_read_bw = %.2f MBps', read_bw)
         logger.info('oltp_read_iops = %d', read_iops)
         logger.info('oltp_write_bw = %.2f MBps', write_bw)
         logger.info('oltp_write_iops = %d', write_iops)
 
-        criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD, iodepth)
+        criteria = my_mdb.aggregate_oltp_metrics(iodepth)
 
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
@@ -225,13 +218,12 @@ class TestOLAP:
             1 thread per file
     '''
     @pytest.mark.parametrize('write_pattern', list(range(0, 101, 20)))
-    def test_run_io_operation(self, target_stress, write_pattern, my_mdb,
-                              target_perf):
+    def test_run_io_operation(self, target_stress, write_pattern, my_mdb):
         """Runs parameterized I/O operations to test system stress with varying
         I/O depths and write patterns.
 
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            target_stress (OLAP): Stress instance for I/O
             tests.
             write_pattern (int): Write pattern defining the read/write ratio.
             iodepth (int): I/O depth level for stress testing.
@@ -246,15 +238,12 @@ class TestOLAP:
                                            '512k', '512k', write_pattern,
                                            OVER_NIGHT)
 
-        # target_perf.log_io_metrics(read_bw, read_iops, write_bw, write_iops,
-        #                            'olap_')
         logger.info('olap_read_bw = %.2f MBps', read_bw)
         logger.info('olap_read_iops = %d', read_iops)
         logger.info('olap_write_bw = %.2f MBps', write_bw)
         logger.info('olap_write_iops = %d', write_iops)
 
-        criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD,
-                                                   write_pattern)
+        criteria = my_mdb.aggregate_olap_metrics(write_pattern)
 
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
