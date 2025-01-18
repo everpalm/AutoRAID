@@ -136,7 +136,7 @@ class TestOneShotStress:
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
-    def test_full_write(self, target_stress, my_mdb, target_perf):
+    def test_full_write(self, target_stress, my_mdb):
         """Runs oneshot I/O operations to test system stress with optimum
         I/O depths and write patterns.
 
@@ -182,7 +182,7 @@ class TestOLTP:
         I/O depths and write patterns.
 
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            target_stress (OLTP): Stress instance for I/O
             tests.
             write_pattern (int): Write pattern defining the read/write ratio.
             iodepth (int): I/O depth level for stress testing.
@@ -201,7 +201,7 @@ class TestOLTP:
         logger.info('oltp_write_bw = %.2f MBps', write_bw)
         logger.info('oltp_write_iops = %d', write_iops)
 
-        criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD, iodepth)
+        criteria = my_mdb.aggregate_oltp_metrics(iodepth)
 
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
@@ -223,7 +223,7 @@ class TestOLAP:
         I/O depths and write patterns.
 
         Args:
-            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            target_stress (OLAP): Stress instance for I/O
             tests.
             write_pattern (int): Write pattern defining the read/write ratio.
             iodepth (int): I/O depth level for stress testing.
@@ -243,8 +243,7 @@ class TestOLAP:
         logger.info('olap_write_bw = %.2f MBps', write_bw)
         logger.info('olap_write_iops = %d', write_iops)
 
-        criteria = my_mdb.aggregate_stress_metrics(OLTP_WORKLOAD,
-                                                   write_pattern)
+        criteria = my_mdb.aggregate_olap_metrics(write_pattern)
 
         logger.debug("criteria = %s", criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])

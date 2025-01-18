@@ -433,7 +433,7 @@ class MongoDB(object):
             logger.critical(f"Error performing aggregation: {e}")
             return None
 
-    def aggregate_oltp_metrics(self):
+    def aggregate_oltp_metrics(self, iodepth: str):
         """
         Aggregates OLTP stress metrics from the MongoDB collection.
 
@@ -467,9 +467,9 @@ class MongoDB(object):
             return None
 
         # Update the pipeline with the specific filter values
-        # for stage in pipeline:
-        #     if "$match" in stage and "io_depth" in stage["$match"]:
-        #         stage["$match"]["io_depth"]["$eq"] = iodepth
+        for stage in pipeline:
+            if "$match" in stage and "iodepth" in stage["$match"]:
+                stage["$match"]["iodepth"]["$eq"] = iodepth
 
         try:
             result = list(self.collection.aggregate(pipeline))
