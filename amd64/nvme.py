@@ -309,19 +309,14 @@ class AMD64NVMe:
             Raises: Any errors
         '''
         try:
-            # 获取命令输出
             str_return = self.api.command_line(
                 f"powershell Get-Partition -DiskNumber {self.disk_num}")
 
-            # 使用正则表达式来提取DriveLetter和Size
             pattern = re.compile(r'\d+\s+([A-Z]?)\s+\d+\s+([\d.]+\s+\w+)')
 
-            # 存储结果
             list_disk_info = []
 
-            # 处理命令输出并查找匹配项
             if str_return:
-                # 假设 str_return 是一个字典或包含多行字符串的对象，你需要先转换为单一字符串
                 if isinstance(str_return, dict):
                     output_string = "\n".join(str_return.values())
                 else:
@@ -332,7 +327,6 @@ class AMD64NVMe:
                     size = match[1]
                     list_disk_info.append((drive_letter, size))
 
-                # 使用日志记录器记录统计结果
                 total_disks = len(list_disk_info)
                 logger.debug("Total number of disks: %s", total_disks)
             else:

@@ -23,7 +23,7 @@ WINDOWS_CMD_TABLE = ({
                             "remote": {
                                 0: '',
                                 1: ('Microsoft Windows '
-                                    '[Version 10.0.19045.5247]')
+                                    '[Version 10.0.19045.5371]')
                             }
                         }
                     })
