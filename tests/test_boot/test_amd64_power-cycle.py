@@ -3,8 +3,8 @@
 import logging
 import pytest
 import RPi.GPIO as gpio
-from tests.test_raspberry.test_pi3_gpio import TestPowerOnSUT
-from tests.test_raspberry.test_pi3_gpio import TestPowerOffSUT
+from tests.test_arm.test_pi3_gpio import TestPowerOnSUT
+from tests.test_arm.test_pi3_gpio import TestPowerOffSUT
 from tests.test_storage.test_stress import TestOneShotStress
 from unit.gpio import OperateGPIO
 
