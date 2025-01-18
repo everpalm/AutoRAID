@@ -1,0 +1,17 @@
+[
+    {
+        "ID": 0,
+        "Command": "adapter --list",
+        "Description": "Show current controller ID and total number of controllers.",
+        "Expected": [
+            "Total number of NVMe Controllers: 1",
+            "Current default NVMe Controller slot ID for CLI commands: 0a:00.00"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "adapter -s 0a:00.00",
+        "Description": "The value format is <bus>:<slot>.<func> (For some OSes, slot means device).",
+        "Expected": ["Updated current NVMe Controller : 0a:00.00"]
+    }
+]

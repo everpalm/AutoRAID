@@ -1,0 +1,10 @@
+[
+    {
+        "ID": 0,
+        "Command": "oemdata --read",
+        "Description": "Read OEM data",
+        "Expected": [
+            "OEM raw data is not exist."
+        ]
+    }
+]

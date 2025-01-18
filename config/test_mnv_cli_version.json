@@ -1,0 +1,11 @@
+[
+    {
+        "ID": 0,
+        "Command": "version",
+        "Description": "Show API, CLI and support firmware version",
+        "Expected": [
+            "CLI Version: 1.0.14.1050",
+            "Support Firmware Version: 1.0.14.1046 above"
+        ]
+    }
+]   

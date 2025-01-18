@@ -1,0 +1,20 @@
+[
+    {
+        "ID": 0,
+        "Command": "event -c 0",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "event -c 10",
+        "Description": "Get latest 10 events from controller",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    }
+]
