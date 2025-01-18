@@ -9,7 +9,7 @@ from amd64.system import BaseOS
 from dataclasses import dataclass
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 @dataclass
