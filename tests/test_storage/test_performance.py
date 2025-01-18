@@ -1,4 +1,4 @@
-# Contents of test_performance.py
+# Contents of test_storage.test_performance.py
 '''
 Module for testing AMD64/Intelx86 storage I/O performance. This module
 includes unit tests for Random, Sequential, and Ramp-up Read/Write performance,

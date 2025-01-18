@@ -1,4 +1,4 @@
-# Content of test_raspberry.conftest.py
+# Content of test_arm.conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
 # import logging
 import pytest

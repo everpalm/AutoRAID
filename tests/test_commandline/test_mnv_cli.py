@@ -1,4 +1,4 @@
-# Contents of test_commandline.py
+# Contents of test_commandline.test_mnv_cli.py
 '''Unit tests for commandline class, which includes testing the
    execution of mnv_cli commands to verify commands and system responses
 
