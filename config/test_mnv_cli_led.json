@@ -1,0 +1,110 @@
+[
+    {
+        "ID": 0,
+        "Command": "led -o ep -i 0 -a on",
+        "Description": "Set endpoint 0 status on",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "led -o ep -i 1 -a on",
+        "Description": "Set endpoint 1 status on",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "led -o ep -i 2 -a on",
+        "Description": "Set endpoint 2 status on",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 3,
+        "Command": "led -o ep -i 0 -a off",
+        "Description": "Set endpoint 0 status off",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 4,
+        "Command": "led -o ep -i 1 -a off",
+        "Description": "Set endpoint 1 status off",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 5,
+        "Command": "led -o ep -i 2 -a off",
+        "Description": "Set endpoint 2 status off",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 6,
+        "Command": "led -o rc -i 0 -a sb",
+        "Description": "Set rootcomplex 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 7,
+        "Command": "led -o rc -i 1 -a sb",
+        "Description": "Set rootcomplex 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 8,
+        "Command": "led -o rc -i 2 -a sb",
+        "Description": "Set rootcomplex 2 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 9,
+        "Command": "led -o rc -i 3 -a sb",
+        "Description": "Set rootcomplex 3 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 10,
+        "Command": "led -o ep -i 0 -a qb",
+        "Description": "Set endpoint 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 11,
+        "Command": "led -o ep -i 1 -a qb",
+        "Description": "Set endpoint 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 12,
+        "Command": "led -o ep -i 2 -a qb",
+        "Description": "Set endpoint 2 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    }
+]

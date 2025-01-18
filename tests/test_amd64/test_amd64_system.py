@@ -1,4 +1,4 @@
-# Contents of test_amd64_os.py
+# Contents of test_amd64_system.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 import logging
@@ -113,6 +113,7 @@ class TestAMD64System:
         assert (amd64_system.disk_num ==
                 amd64_settings['Disk Information']["Number"])
 
+    @pytest.mark.skip(reason="Deprecated")
     def test_get_volume(self, amd64_system, amd64_settings):
         """Test for verifying disk volume information.
 

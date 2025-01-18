@@ -1,4 +1,4 @@
-# Contents of amd64_warmboot.py
+# Contents of boot.amd64_reboot.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 from abc import ABC

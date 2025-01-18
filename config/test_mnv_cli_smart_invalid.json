@@ -1,0 +1,10 @@
+[
+    {
+        "ID": 0,
+        "Command": "smart -i 0",
+        "Description": "Get backend SSD ID 0 SMART information",
+        "Expected": [
+            "-i : invalid NVMe Controller id '0'"
+        ]
+    }
+]

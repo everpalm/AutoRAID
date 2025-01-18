@@ -1,4 +1,4 @@
-# Contents of test_commandline.py
+# Contents of test_commandline.test_mnv_cli.py
 '''Unit tests for commandline class, which includes testing the
    execution of mnv_cli commands to verify commands and system responses
 
@@ -27,7 +27,7 @@ def load_and_sort_json(file_path, key):
 
 # 定義配置檔案與對應鍵
 CONFIG_FILES = {
-    "test_cases": ("config/test_commandline.json", "ID"),
+    "version": ("config/test_mnv_cli_version.json", "ID"),
     "reset_device": ("config/test_mnv_cli_reset_device.json", "ID"),
     "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
     "reset_pd1": ("config/test_mnv_cli_reset_pd1.json", "ID"),
@@ -38,10 +38,30 @@ CONFIG_FILES = {
     "rebuild_pd1": ("config/test_mnv_cli_rebuild_pd1.json", "ID"),
     "rebuild_pd2": ("config/test_mnv_cli_rebuild_pd2.json", "ID"),
     "rebuild_pd1_stop": ("config/test_mnv_cli_rebuild_pd1_stop.json", "ID"),
-    "rebuild_pd2_stop": ("config/test_mnv_cli_rebuild_pd2_stop.json", "ID")
+    "rebuild_pd2_stop": ("config/test_mnv_cli_rebuild_pd2_stop.json", "ID"),
+    "info": ("config/test_mnv_cli_info.json", "ID"),
+    "identify": ("config/test_mnv_cli_identify.json", "ID"),
+    "mp_start": ("config/test_mnv_cli_mp_start.json", "ID"),
+    "mp_stop": ("config/test_mnv_cli_mp_stop.json", "ID"),
+    "adapter": ("config/test_mnv_cli_adapter.json", "ID"),
+    "log": ("config/test_mnv_cli_log.json", "ID"),
+    "bga_on": ("config/test_mnv_cli_bga_on.json", "ID"),
+    "bga_off": ("config/test_mnv_cli_bga_off.json", "ID"),
+    "bga_high": ("config/test_mnv_cli_bga_high.json", "ID"),
+    "bga_low": ("config/test_mnv_cli_bga_low.json", "ID"),
+    "bga_medium": ("config/test_mnv_cli_bga_medium.json", "ID"),
+    "bga_invalid": ("config/test_mnv_cli_bga_invalid.json", "ID"),
+    "event": ("config/test_mnv_cli_event.json", "ID"),
+    "debug_error": ("config/test_mnv_cli_debug_error.json", "ID"),
+    "debug_normal": ("config/test_mnv_cli_debug_normal.json", "ID"),
+    "smart_invalid": ("config/test_mnv_cli_smart_invalid.json", "ID"),
+    "oem_data": ("config/test_mnv_cli_oem_data.json", "ID"),
+    "led": ("config/test_mnv_cli_led.json", "ID"),
+    "passthru": ("config/test_mnv_cli_passthru.json", "ID"),
+    "dump_hba": ("config/test_mnv_cli_dump_hba.json", "ID")
 }
 
-# 動態加載與處理檔案
+# Load and process file
 SORTED_DATA = {
     name: load_and_sort_json(path, key) if key else json.load(open(
         path,
@@ -60,17 +80,18 @@ def mnv_cli(network_api, amd64_system):
     return console.initiate(platform=amd64_system)
 
 
-class TestCLI:
+@pytest.mark.order(1)
+class TestCLIVersion:
     '''docstring'''
-    @pytest.mark.dependency(name="commandline conformance")
-    @pytest.mark.parametrize('test_case', SORTED_DATA["test_cases"])
+    @pytest.mark.parametrize('test_case', SORTED_DATA["version"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
-        result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('result = %s', result)
-        assert result == test_case["Expected"]
+        version_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('version_result = %s', version_result)
+        assert version_result == test_case["Expected"]
 
 
+@pytest.mark.order(2)
 class TestCLIResetDevice:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
@@ -82,6 +103,7 @@ class TestCLIResetDevice:
         assert reset_device_result == test_case["Expected"]
 
 
+@pytest.mark.order(3)
 class TestCLIResetPCIe:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
@@ -93,6 +115,7 @@ class TestCLIResetPCIe:
         assert reset_pcie_result == test_case["Expected"]
 
 
+@pytest.mark.order(4)
 class TestCLIResetPower:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
@@ -104,7 +127,9 @@ class TestCLIResetPower:
         assert reset_power_result == test_case["Expected"]
 
 
+@pytest.mark.order(5)
 class TestCLISMART:
+    '''Docstring'''
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
         '''docstring'''
@@ -209,6 +234,7 @@ class TestCLISMART:
             assert callable(value), f'{key} is not a function!'
 
 
+@pytest.mark.order(6)
 @pytest.mark.dependency(depends=["commandline conformance"])
 class TestCLIExport:
     '''docstring'''
@@ -220,6 +246,7 @@ class TestCLIExport:
         assert result, 'The two files are not the same!'
 
 
+@pytest.mark.order(7)
 @pytest.mark.dependency(name="rebuild iteration")
 class TestCLIRebuild:
     '''docstring'''
@@ -231,6 +258,7 @@ class TestCLIRebuild:
         assert rebuild_result == test_case["Expected"]
 
 
+@pytest.mark.order(8)
 @pytest.mark.dependency(name="reset pd1")
 class TestCLIResetPD1:
     '''docstring'''
@@ -242,6 +270,7 @@ class TestCLIResetPD1:
         assert reset_pd1_result == test_case["Expected"]
 
 
+@pytest.mark.order(9)
 @pytest.mark.dependency(name="reset pd2")
 class TestCLIResetPD2:
     '''docstring'''
@@ -297,3 +326,218 @@ class TestCLIRebuildPD2:
         rebuild_pd2_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('rebuild_pd2_result = %s', rebuild_pd2_result)
         assert rebuild_pd2_result == test_case["Expected"]
+
+
+@pytest.mark.skip(reason="Volatile")
+class TestCLIIdentify:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["identify"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        identify_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('identify_result = %s', identify_result)
+        assert identify_result == test_case["Expected"]
+
+
+@pytest.mark.skip(reason="Volatile")
+class TestCLIInfo:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["info"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        info_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('info_result = %s', info_result)
+        assert info_result == test_case["Expected"]
+
+
+@pytest.mark.order(10)
+class TestCLIAdapter:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["adapter"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        adapter_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('adapter_result = %s', adapter_result)
+        assert adapter_result == test_case["Expected"]
+
+
+@pytest.mark.order(11)
+class TestCLILog:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["log"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        log_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('log_result = %s', log_result)
+        assert log_result == test_case["Expected"]
+
+
+@pytest.mark.order(12)
+class TestCLIBGAOff:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["bga_off"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        bga_off_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('bga_off_result = %s', bga_off_result)
+        assert bga_off_result == test_case["Expected"]
+
+
+@pytest.mark.order(13)
+class TestCLIBGAOn:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["bga_on"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        bga_on_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('bga_on_result = %s', bga_on_result)
+        assert bga_on_result == test_case["Expected"]
+
+
+@pytest.mark.order(14)
+class TestCLIBGAHigh:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["bga_high"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        bga_high_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('bga_high_result = %s', bga_high_result)
+        assert bga_high_result == test_case["Expected"]
+
+
+@pytest.mark.order(15)
+class TestCLIBGALow:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["bga_low"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        bga_low_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('bga_low_result = %s', bga_low_result)
+        assert bga_low_result == test_case["Expected"]
+
+
+@pytest.mark.order(16)
+class TestCLIBGAMedium:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["bga_medium"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        bga_medium_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('bga_medium_result = %s', bga_medium_result)
+        assert bga_medium_result == test_case["Expected"]
+
+
+@pytest.mark.order(17)
+class TestCLIBGAInvalid:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["bga_invalid"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        bga_invalid_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('bga_invalid_result = %s', bga_invalid_result)
+        assert bga_invalid_result == test_case["Expected"]
+
+
+@pytest.mark.order(18)
+class TestCLIEvent:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["event"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        event_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('event_result = %s', event_result)
+        assert event_result == test_case["Expected"]
+
+
+@pytest.mark.order(19)
+class TestCLIDebugError:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["debug_error"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        debug_error_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('debug_error_result = %s', debug_error_result)
+        assert debug_error_result == test_case["Expected"]
+
+
+@pytest.mark.order(20)
+class TestCLIDebugNormal:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["debug_normal"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        debug_normal_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('debug_normal_result = %s', debug_normal_result)
+        assert debug_normal_result == test_case["Expected"]
+
+
+class TestCLISMARTInvalid:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["smart_invalid"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        smart_invalid_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('smart_invalid_result = %s', smart_invalid_result)
+        assert smart_invalid_result == test_case["Expected"]
+
+
+class TestCLIOEMData:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["oem_data"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        oem_data_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('oem_data_result = %s', oem_data_result)
+        assert oem_data_result == test_case["Expected"]
+
+
+class TestCLILED:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["led"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        led_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('led_result = %s', led_result)
+        assert led_result == test_case["Expected"]
+
+
+class TestCLIPassthru:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["passthru"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        passthru_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('passthru_result = %s', passthru_result)
+        assert passthru_result == test_case["Expected"]
+
+
+class TestCLIDumpHBA:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["dump_hba"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        dump_hba_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('dump_hba_result = %s', dump_hba_result)
+        assert dump_hba_result == test_case["Expected"]
+
+
+@pytest.mark.order(21)
+class TestCLIMPStart:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["mp_start"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        mp_start_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('mp_start_result = %s', mp_start_result)
+        assert mp_start_result == test_case["Expected"]
+
+
+@pytest.mark.order(22)
+class TestCLIMPStop:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["mp_stop"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        mp_stop_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('mp_stop_result = %s', mp_stop_result)
+        assert mp_stop_result == test_case["Expected"]

@@ -1,0 +1,28 @@
+[
+    {
+        "ID": 0,
+        "Command": "set -o hba -a on",
+        "Description": "Enable auto-rebuild",
+        "Expected": [
+            "HBA configuration is updated."
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "get -o hba -i 0",
+        "Description": "Get configuration of controller 0.",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "get -o hba -i 1",
+        "Description": "Get configuration of controller 1.",
+        "Expected": [
+            "Auto Rebuild: on",
+            "BGA Rate: Medium",
+            ""
+        ]
+    }
+]

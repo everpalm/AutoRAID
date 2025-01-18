@@ -1,0 +1,56 @@
+[
+    {
+        "ID": 0,
+        "Command": "log -a off",
+        "Description": "Turn off SPI log before show",
+        "Expected": ["cmd success"]
+    },
+    {
+        "ID": 1,
+        "Command": "dumphba -a show",
+        "Description": "Show SPI logging is Off",
+        "Expected": [
+            "",
+            "",
+            "MVF Function: On",
+            "SRIOV Function: Off",
+            "Debug message in SPI: Off",
+            "Debug Level: Normal",
+            "[GPIO Feature]",
+            "Function Switch: 0x30",
+            "Level: 0x30",
+            "Value: 0x30",
+            "Set Default: Off",
+            "",
+            "",
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "log -a on",
+        "Description": "Turn on SPI log",
+        "Expected": ["cmd success"]
+    },
+    {
+        "ID": 3,
+        "Command": "dumphba -a show",
+        "Description": "Show SPI logging is on",
+        "Expected": [
+            "",
+            "",
+            "MVF Function: On",
+            "SRIOV Function: Off",
+            "Debug message in SPI: On",
+            "Debug Level: Normal",
+            "[GPIO Feature]",
+            "Function Switch: 0x30",
+            "Level: 0x30",
+            "Value: 0x30",
+            "Set Default: Off",
+            "",
+            "",
+            "cmd success"
+        ]
+    }
+]

@@ -1,3 +1,4 @@
+# Contents of event.logging.py
 '''Copyright (c) 2024 Jaron Cheng'''
 # from collections import defaultdict
 import logging

@@ -1,4 +1,4 @@
-# Contents of pi3_gpio.py
+# Contents of arm.pi3_gpio.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from unit.gpio import OperateGPIO
 
