@@ -1,0 +1,139 @@
+[
+    {
+        "ID": 0,
+        "Command": "info -o hba",
+        "Description": "Display controller(hba)",
+        "Expected": [
+            "NVMe Controller",
+            "Bus Device Fun: 0a:00.00",
+            "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+            "Slot ID: Not found",
+            "Firmware Version: 1.0.0.1053",
+            "VID: 0x1b4b",
+            "SVID: 0x1b4b",
+            "DID: 0x2241",
+            "SDID: 0x2241",
+            "RevisionID: B0B",
+            "Port Count: 2",
+            "Max PD of Per VD: 2",
+            "Max VD: 2",
+            "Max PD: 2",
+            "Max NS of Per VD: 1",
+            "Max NS: 2",
+            "Supported RAID Mode: RAID0 RAID1 JBOD",
+            "Cache: On",
+            "Supported BGA Features: Initialization Rebuild MediaPatrol",
+            "Support Stripe Size: 128KB 256KB 512KB",
+            "Supported Features: Import RAID Namespace Dump",
+            "Root Complex: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "Root Complex: 1",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "End Point: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "",
+            "Total # of HBA: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "info -o pd",
+        "Description": "Display physical disks",
+        "Expected": [
+            "",
+            "PD ID: 1",
+            "Model: INTEL SSDPEKNW010T8",
+            "Serial: BTNH94241LNG1P0B",
+            "Sector Size: 512 bytes",
+            "LBA: 2000409264",
+            "Size: 953 GB",
+            "SSD backend RC/Slot ID: 1",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 002C",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "PD ID: 2",
+            "Model: Samsung SSD 970 EVO Plus 1TB",
+            "Serial: S4EWNMFN710227E",
+            "Sector Size: 512 bytes",
+            "LBA: 1953525168",
+            "Size: 931 GB",
+            "SSD backend RC/Slot ID: 2",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 2B2QEXM7",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "Total # of PD: 2",
+            ""
+        ]
+    },
+    {
+        "ID": 3,
+        "Command": "info -o ns",
+        "Description": "Display namespaces",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 4,
+        "Command": "info -o ns -t vd -v 0",
+        "Description": "Display all namespaces which VD ID0 contains",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 5,
+        "Command": "info -o ns -t vd -v 1",
+        "Description": "Display all namespaces which VD ID1 contains",
+        "Expected": [
+            "No Namespace Info Exist."
+        ]
+    }
+]

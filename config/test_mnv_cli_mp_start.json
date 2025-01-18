@@ -1,0 +1,27 @@
+[
+    {
+        "ID": 0,
+        "Command": "mp -a start -i 0",
+        "Description": "Start media patrol on VD 0",
+        "Expected": [
+            "-i : invalid vd id '0'."
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "mp -a start -i 1",
+        "Description": "Start media patrol on VD 1",
+        "Expected": [
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "mp -a start -i 2",
+        "Description": "Start media patrol on VD 2",
+        "Expected": [
+            "Invalid LD ID (Status Code: 0x707)",
+            "cmd failed."
+        ]
+    }
+]

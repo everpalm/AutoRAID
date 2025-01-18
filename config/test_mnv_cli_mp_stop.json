@@ -1,0 +1,24 @@
+[
+    {
+        "ID": 0,
+        "Command": "mp -a stop -i 0",
+        "Description": "Stop media patrol on VD 0",
+        "Expected": [
+            "-i : invalid vd id '0'."
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "mp -a stop -i 1",
+        "Description": "Stop media patrol on VD 1",
+        "Expected": [
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "mp -a stop -i 2",
+        "Description": "Stop media patrol on VD 2",
+        "Expected": []
+    }
+]

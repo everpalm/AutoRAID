@@ -1,0 +1,10 @@
+[
+    {
+        "ID": 0,
+        "Command": "dumphba --outputfile=raw_data",
+        "Description": "Output raw data into file raw_data",
+        "Expected": [
+            "cmd success"
+        ]
+    }
+]

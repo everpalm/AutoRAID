@@ -1,0 +1,31 @@
+[
+    {
+        "ID": 0,
+        "Command": "debuglv -t 1",
+        "Description": "Set debug level to error only",
+        "Expected": [
+            "debug level access to error only success."
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "dumphba -a show",
+        "Description": "Show debug level is error only",
+        "Expected": [
+            "",
+            "",
+            "MVF Function: On",
+            "SRIOV Function: Off",
+            "Debug message in SPI: On",
+            "Debug Level: Error only",
+            "[GPIO Feature]",
+            "Function Switch: 0x30",
+            "Level: 0x30",
+            "Value: 0x30",
+            "Set Default: Off",
+            "",
+            "",
+            "cmd success"
+        ]
+    }
+]
