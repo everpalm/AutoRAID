@@ -10,7 +10,7 @@
     {
         "ID": 1,
         "Command": "rebuild -a start -i 0 -d 2",
-        "Description": "Start background rebuild on VD0 with PD1",
+        "Description": "Start background rebuild on VD0 with PD2",
         "Expected": [
             "-i : invalid vd id '0'."
         ]
@@ -36,7 +36,7 @@
     {
         "ID": 4,
         "Command": "rebuild -a start -i 2 -d 1",
-        "Description": "Start background rebuild on VD1 with PD1",
+        "Description": "Start background rebuild on VD2 with PD1",
         "Expected": [
             "Invalid LD ID (Status Code: 0x707)",
             "cmd failed."
@@ -45,7 +45,7 @@
     {
         "ID": 5,
         "Command": "rebuild -a start -i 2 -d 2",
-        "Description": "Start background rebuild on VD1 with PD2",
+        "Description": "Start background rebuild on VD2 with PD2",
         "Expected": [
             "Invalid LD ID (Status Code: 0x707)",
             "cmd failed."
