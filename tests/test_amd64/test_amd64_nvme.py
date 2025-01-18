@@ -1,4 +1,4 @@
-# Contents of test_amd_64_nvme.py
+# Contents of test_amd64_nvme.py
 '''Unit tests for the AMD64 NVMe system configuration and details. This module
    includes tests for retrieving system and hardware information, including
    CPU, memory, disk, and PCIe configuration, and compares these values to

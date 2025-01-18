@@ -1,4 +1,4 @@
-# Content of test_amd_desktop.conftest.py
+# Content of test_boot.conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import paramiko

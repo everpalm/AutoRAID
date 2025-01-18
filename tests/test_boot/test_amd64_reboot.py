@@ -1,4 +1,4 @@
-# Contents of test_amd64_coldboot.py
+# Contents of test.boot.test_amd64_reboot.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import time

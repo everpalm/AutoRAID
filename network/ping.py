@@ -1,3 +1,4 @@
+# Contents of network.ping.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import re

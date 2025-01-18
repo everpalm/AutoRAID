@@ -1,4 +1,4 @@
-# Contents of amd64_stress.py
+# Contents of storage.stress.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import re

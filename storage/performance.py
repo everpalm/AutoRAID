@@ -1,4 +1,4 @@
-# Contents of amd64_perf.py
+# Contents of storage.perforamnce.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import re
 import logging

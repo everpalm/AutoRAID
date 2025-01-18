@@ -1,4 +1,4 @@
-# Contents of test_pi3_gpio.py
+# Contents of test_arm.test_pi3_gpio.py
 """
 test_pi3_gpio.py
 
