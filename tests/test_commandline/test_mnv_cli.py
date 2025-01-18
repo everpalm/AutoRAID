@@ -60,6 +60,7 @@ def mnv_cli(network_api, amd64_system):
     return console.initiate(platform=amd64_system)
 
 
+@pytest.mark.order(1)
 class TestCLI:
     '''docstring'''
     @pytest.mark.dependency(name="commandline conformance")
@@ -71,6 +72,7 @@ class TestCLI:
         assert result == test_case["Expected"]
 
 
+@pytest.mark.order(2)
 class TestCLIResetDevice:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
@@ -82,6 +84,7 @@ class TestCLIResetDevice:
         assert reset_device_result == test_case["Expected"]
 
 
+@pytest.mark.order(3)
 class TestCLIResetPCIe:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
@@ -93,6 +96,7 @@ class TestCLIResetPCIe:
         assert reset_pcie_result == test_case["Expected"]
 
 
+@pytest.mark.order(4)
 class TestCLIResetPower:
     '''docstring'''
     @pytest.mark.dependency(name="reset iteration")
@@ -104,6 +108,7 @@ class TestCLIResetPower:
         assert reset_power_result == test_case["Expected"]
 
 
+@pytest.mark.order(5)
 class TestCLISMART:
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
@@ -209,6 +214,7 @@ class TestCLISMART:
             assert callable(value), f'{key} is not a function!'
 
 
+@pytest.mark.order(6)
 @pytest.mark.dependency(depends=["commandline conformance"])
 class TestCLIExport:
     '''docstring'''
@@ -220,6 +226,7 @@ class TestCLIExport:
         assert result, 'The two files are not the same!'
 
 
+@pytest.mark.order(7)
 @pytest.mark.dependency(name="rebuild iteration")
 class TestCLIRebuild:
     '''docstring'''
@@ -231,6 +238,7 @@ class TestCLIRebuild:
         assert rebuild_result == test_case["Expected"]
 
 
+@pytest.mark.order(8)
 @pytest.mark.dependency(name="reset pd1")
 class TestCLIResetPD1:
     '''docstring'''
@@ -242,6 +250,7 @@ class TestCLIResetPD1:
         assert reset_pd1_result == test_case["Expected"]
 
 
+@pytest.mark.order(9)
 @pytest.mark.dependency(name="reset pd2")
 class TestCLIResetPD2:
     '''docstring'''
