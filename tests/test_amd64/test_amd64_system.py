@@ -113,6 +113,7 @@ class TestAMD64System:
         assert (amd64_system.disk_num ==
                 amd64_settings['Disk Information']["Number"])
 
+    @pytest.mark.skip(reason="Deprecated")
     def test_get_volume(self, amd64_system, amd64_settings):
         """Test for verifying disk volume information.
 

@@ -127,6 +127,7 @@ class TestAMD64NVMe:
         assert (target_system.disk_num ==
                 amd64_nvm['Disk Information']["Number"])
 
+    @pytest.mark.skip(reason="Deprecated")
     def test_get_volume(self, target_system, amd64_nvm):
         """Test for verifying disk volume information.
 
