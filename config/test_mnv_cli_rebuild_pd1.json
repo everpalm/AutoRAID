@@ -1,0 +1,11 @@
+[
+    {
+        "ID": 0,
+        "Command": "rebuild -a start -i 1 -d 1",
+        "Description": "Start background rebuild on VD1 with PD1",
+        "Expected": [
+            "LD is functional (Status Code: 0x736)",
+            "cmd failed."
+        ]
+    }
+]   

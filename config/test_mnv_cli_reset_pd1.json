@@ -1,0 +1,18 @@
+[
+    {
+        "ID": 0,
+        "Command": "reset -i 1 -t perstn -a off",
+        "Description": "Device PD id 1 as reset pcie off",
+        "Expected": [
+            "Reset success"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "reset -i 1 -t perstn -a on",
+        "Description": "Device PD id 1 as reset pcie on",
+        "Expected": [
+            "Reset success"
+        ]
+    }
+]   
