@@ -129,6 +129,7 @@ class TestCLIResetPower:
 
 @pytest.mark.order(5)
 class TestCLISMART:
+    '''Docstring'''
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
         '''docstring'''
