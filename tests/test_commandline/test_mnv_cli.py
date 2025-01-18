@@ -1,3 +1,5 @@
+# pylint: disable=redefined-outer-name
+# pylint: disable=too-few-public-methods
 # Contents of test_commandline.test_mnv_cli.py
 '''Unit tests for commandline class, which includes testing the
    execution of mnv_cli commands to verify commands and system responses
@@ -129,6 +131,7 @@ class TestCLIResetPower:
 
 @pytest.mark.order(5)
 class TestCLISMART:
+    '''Docstring'''
     @pytest.mark.skip(reason="Deprecated")
     def test_get_controller_smart_info(self, mnv_cli):
         '''docstring'''
