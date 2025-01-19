@@ -80,6 +80,49 @@ def mnv_cli(network_api, amd64_system):
     return console.initiate(platform=amd64_system)
 
 
+@pytest.mark.skip(reason="Volatile")
+class TestCLIIdentify:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["identify"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        identify_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('identify_result = %s', identify_result)
+        assert identify_result == test_case["Expected"]
+
+
+@pytest.mark.skip(reason="Volatile")
+class TestCLIInfo:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["info"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        info_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('info_result = %s', info_result)
+        assert info_result == test_case["Expected"]
+
+
+@pytest.mark.skip(reason="Volatile")
+class TestCLIAdapter:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["adapter"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        adapter_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('adapter_result = %s', adapter_result)
+        assert adapter_result == test_case["Expected"]
+
+
+class TestCLIOEMData:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["oem_data"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        oem_data_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('oem_data_result = %s', oem_data_result)
+        assert oem_data_result == test_case["Expected"]
+
+
 @pytest.mark.order(1)
 class TestCLIVersion:
     '''docstring'''
@@ -127,7 +170,6 @@ class TestCLIResetPower:
         assert reset_power_result == test_case["Expected"]
 
 
-@pytest.mark.order(5)
 class TestCLISMART:
     '''Docstring'''
     @pytest.mark.skip(reason="Deprecated")
@@ -234,8 +276,20 @@ class TestCLISMART:
             assert callable(value), f'{key} is not a function!'
 
 
+@pytest.mark.order(5)
+@pytest.mark.dependency(name="dump data")
+class TestCLIDumpHBA:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["dump_hba"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        dump_hba_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('dump_hba_result = %s', dump_hba_result)
+        assert dump_hba_result == test_case["Expected"]
+
+
 @pytest.mark.order(6)
-@pytest.mark.dependency(depends=["commandline conformance"])
+@pytest.mark.dependency(depends=["dump data"])
 class TestCLIExport:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["file_paths"])
@@ -271,17 +325,13 @@ class TestCLIResetPD1:
 
 
 @pytest.mark.order(9)
-@pytest.mark.dependency(name="reset pd2")
-class TestCLIResetPD2:
+@pytest.mark.dependency(name="general stress")
+class TestCLIGenerateIO:
     '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd2"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        reset_pd2_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('reset_pd2_result = %s', reset_pd2_result)
-        assert reset_pd2_result == test_case["Expected"]
+    pass
 
 
+@pytest.mark.order(10)
 @pytest.mark.dependency(name="rebuild pd1 stop",
                         depends=["reset pd1", "general stress"])
 class TestCLIRebuildPD1Stop:
@@ -294,6 +344,31 @@ class TestCLIRebuildPD1Stop:
         assert rebuild_pd1_stop_result == test_case["Expected"]
 
 
+@pytest.mark.order(11)
+@pytest.mark.dependency(name="rebuild pd1", depends=["rebuild pd1 stop"])
+class TestCLIRebuildPD1:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
+        assert rebuild_pd1_result == test_case["Expected"]
+
+
+@pytest.mark.order(12)
+@pytest.mark.dependency(name="reset pd2")
+class TestCLIResetPD2:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd2"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        reset_pd2_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('reset_pd2_result = %s', reset_pd2_result)
+        assert reset_pd2_result == test_case["Expected"]
+
+
+@pytest.mark.order(13)
 @pytest.mark.dependency(name="rebuild pd2 stop",
                         depends=["reset pd2", "general stress"])
 class TestCLIRebuildPD2Stop:
@@ -306,17 +381,7 @@ class TestCLIRebuildPD2Stop:
         assert rebuild_pd2_stop_result == test_case["Expected"]
 
 
-@pytest.mark.dependency(name="rebuild pd1", depends=["rebuild pd1 stop"])
-class TestCLIRebuildPD1:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
-        assert rebuild_pd1_result == test_case["Expected"]
-
-
+@pytest.mark.order(14)
 @pytest.mark.dependency(name="rebuild pd2", depends=["reset pd2 stop"])
 class TestCLIRebuildPD2:
     '''docstring'''
@@ -328,40 +393,7 @@ class TestCLIRebuildPD2:
         assert rebuild_pd2_result == test_case["Expected"]
 
 
-@pytest.mark.skip(reason="Volatile")
-class TestCLIIdentify:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["identify"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        identify_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('identify_result = %s', identify_result)
-        assert identify_result == test_case["Expected"]
-
-
-@pytest.mark.skip(reason="Volatile")
-class TestCLIInfo:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["info"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        info_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('info_result = %s', info_result)
-        assert info_result == test_case["Expected"]
-
-
-@pytest.mark.order(10)
-class TestCLIAdapter:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["adapter"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        adapter_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('adapter_result = %s', adapter_result)
-        assert adapter_result == test_case["Expected"]
-
-
-@pytest.mark.order(11)
+@pytest.mark.order(15)
 class TestCLILog:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["log"])
@@ -372,7 +404,7 @@ class TestCLILog:
         assert log_result == test_case["Expected"]
 
 
-@pytest.mark.order(12)
+@pytest.mark.order(16)
 class TestCLIBGAOff:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_off"])
@@ -383,7 +415,7 @@ class TestCLIBGAOff:
         assert bga_off_result == test_case["Expected"]
 
 
-@pytest.mark.order(13)
+@pytest.mark.order(17)
 class TestCLIBGAOn:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_on"])
@@ -394,7 +426,7 @@ class TestCLIBGAOn:
         assert bga_on_result == test_case["Expected"]
 
 
-@pytest.mark.order(14)
+@pytest.mark.order(18)
 class TestCLIBGAHigh:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_high"])
@@ -405,7 +437,7 @@ class TestCLIBGAHigh:
         assert bga_high_result == test_case["Expected"]
 
 
-@pytest.mark.order(15)
+@pytest.mark.order(19)
 class TestCLIBGALow:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_low"])
@@ -416,7 +448,7 @@ class TestCLIBGALow:
         assert bga_low_result == test_case["Expected"]
 
 
-@pytest.mark.order(16)
+@pytest.mark.order(20)
 class TestCLIBGAMedium:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_medium"])
@@ -427,7 +459,7 @@ class TestCLIBGAMedium:
         assert bga_medium_result == test_case["Expected"]
 
 
-@pytest.mark.order(17)
+@pytest.mark.order(21)
 class TestCLIBGAInvalid:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_invalid"])
@@ -449,7 +481,7 @@ class TestCLIEvent:
         assert event_result == test_case["Expected"]
 
 
-@pytest.mark.order(19)
+@pytest.mark.order(22)
 class TestCLIDebugError:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_error"])
@@ -460,7 +492,7 @@ class TestCLIDebugError:
         assert debug_error_result == test_case["Expected"]
 
 
-@pytest.mark.order(20)
+@pytest.mark.order(23)
 class TestCLIDebugNormal:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_normal"])
@@ -479,16 +511,6 @@ class TestCLISMARTInvalid:
         smart_invalid_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('smart_invalid_result = %s', smart_invalid_result)
         assert smart_invalid_result == test_case["Expected"]
-
-
-class TestCLIOEMData:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["oem_data"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        oem_data_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('oem_data_result = %s', oem_data_result)
-        assert oem_data_result == test_case["Expected"]
 
 
 class TestCLILED:
@@ -511,17 +533,7 @@ class TestCLIPassthru:
         assert passthru_result == test_case["Expected"]
 
 
-class TestCLIDumpHBA:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["dump_hba"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        dump_hba_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('dump_hba_result = %s', dump_hba_result)
-        assert dump_hba_result == test_case["Expected"]
-
-
-@pytest.mark.order(21)
+@pytest.mark.order(24)
 class TestCLIMPStart:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["mp_start"])
@@ -532,7 +544,7 @@ class TestCLIMPStart:
         assert mp_start_result == test_case["Expected"]
 
 
-@pytest.mark.order(22)
+@pytest.mark.order(25)
 class TestCLIMPStop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["mp_stop"])
