@@ -31,7 +31,6 @@ MIN_IODEPTH = 1
 MAX_IODEPTH = 33
 
 
-@pytest.mark.dependency(name="general stress")
 @pytest.mark.STRESS
 class TestAMD64MultiPathStress:
     ''' Test I/O Stress
