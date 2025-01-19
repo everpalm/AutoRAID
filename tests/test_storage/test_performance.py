@@ -51,7 +51,7 @@ class TestRandomReadWrite:
         criteria = my_mdb.aggregate_random_metrics(write_pattern, io_depth)
         logger.info('write_pattern = %s', write_pattern)
         logger.info('io_depth = %s', io_depth)
-        logger.info('result = %s', criteria)
+        logger.debug('result = %s', criteria)
 
         target_perf.validate_metrics(read_bw, read_iops, write_bw, write_iops,
                                      criteria)
