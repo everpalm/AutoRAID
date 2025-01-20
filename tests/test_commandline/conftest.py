@@ -20,26 +20,6 @@ def mnv_cli(network_api, amd64_system):
     return console.initiate(platform=amd64_system)
 
 
-# @pytest.fixture(scope="function")
-# def target_perf(amd64_system, cmdopt, network_api):
-#     """
-#     Fixture to set up performance testing on the target system.
-
-#     Creates an `amd64perf` object for performance testing, initialized with
-#     the `amd64_system` and a specified I/O file. This fixture has a function
-#     scope, meaning it will be executed before each test function.
-
-#     Args:
-#         amd64_system: The target system fixture.
-
-#     Returns:
-#         amd64perf: The performance testing object.
-#     """
-#     print("\n\033[32m================== Setup Performance Test ======\033[0m")
-#     perf = PerfFactory(api=network_api)
-#     return perf.initiate(platform=amd64_system, io_file=cmdopt.get('io_file'))
-
-
 @pytest.fixture(scope="function")
 def target_stress(amd64_system, network_api):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
