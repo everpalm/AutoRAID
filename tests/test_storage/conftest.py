@@ -1,5 +1,6 @@
 # Content of test_storage.conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
+import json
 import logging
 import paramiko
 import pytest
@@ -11,6 +12,10 @@ from storage.stress import StressFactory
 from interface.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi
+from interface.application import BaseInterface
+from amd64.system import BaseOS
+from storage.partitioning import PartitionFactory
+from storage.partitioning import PartitionDisk
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
@@ -155,8 +160,27 @@ def target_perf(amd64_system, cmdopt, network_api):
     return perf.initiate(platform=amd64_system, io_file=cmdopt.get('io_file'))
 
 
+@pytest.fixture(scope="module")
+def win_partition(amd64_system: BaseOS,
+                  network_api: BaseInterface) -> PartitionDisk:
+    """
+    Pytest fixture to initialize a WindowsVolume instance for testing.
+
+    Args:
+        amd_system (AMD64NVMe): The NVMe target system.
+
+    Returns:
+        WindowsVolume: An instance of the WindowsVolume class with the
+        specified platform, disk format, and file system.
+    """
+    partition = PartitionFactory(api=network_api)
+    print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
+    return partition.initiate(platform=amd64_system, disk_format='gpt',
+                              file_system='ntfs')
+
+
 @pytest.fixture(scope="function")
-def target_stress(amd64_system, network_api):
+def target_stress(amd64_system, network_api, win_partition):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
@@ -167,7 +191,7 @@ def target_stress(amd64_system, network_api):
     """
     print('\n\033[32m================== Setup Stress Test ===========\033[0m')
     stress = StressFactory(network_api)
-    return stress.initiate(platform=amd64_system)
+    return stress.initiate(platform=amd64_system, diskpart=win_partition)
 
 
 @pytest.fixture(scope="package")
@@ -213,3 +237,11 @@ def test_check_error(os_event):
 
     if errors:
         raise AssertionError(f"Detected errors: {errors}")
+
+
+@pytest.fixture(scope="module")
+def amd64_settings():
+    """Fixture to load ASUS Rog X570 settings from a JSON file."""
+    with open('config/rog_x570.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
+

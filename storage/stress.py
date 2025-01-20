@@ -28,7 +28,7 @@ class BaseStress(ABC):
     """
     CPU_GROUP = None
 
-    def __init__(self, platform):
+    def __init__(self, platform, diskpart):
         """
         Initializes the AMD64MultiPathStress class with test parameters.
 
@@ -42,7 +42,8 @@ class BaseStress(ABC):
         if BaseStress.CPU_GROUP is None:
             BaseStress.CPU_GROUP = "0,0"  # Default CPU group 0, CPU0
         self._platform = platform
-        self.io_paths = self._platform.disk_info
+        self._diskpart = diskpart
+        self.io_paths = self._diskpart.disk_info
         self._api = platform.api
         self._file_size = self._platform.memory_size * 2
 

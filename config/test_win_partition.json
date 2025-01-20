@@ -9,7 +9,7 @@
     {
         "ID": 2,
         "Description": "List Partition", 
-        "Script": "select disk 2\nlist partition",
+        "Script": "select disk 1\nlist partition",
         "Pattern": "Partition\\s(\\d+)\\s+Reserved",
         "Expected": "1"
     }
