@@ -4,11 +4,11 @@ import json
 import logging
 import pytest
 
-from amd64.system import BaseOS
-from storage.partitioning import PartitionFactory
-from storage.partitioning import PartitionDisk
+# from amd64.system import BaseOS
+# from storage.partitioning import PartitionFactory
+# from storage.partitioning import PartitionDisk
 from storage.partitioning import WindowsVolume
-from interface.application import BaseInterface
+# from interface.application import BaseInterface
 
 logger = logging.getLogger(__name__)
 
@@ -16,23 +16,23 @@ with open('config/test_win_partition.json', 'r', encoding='utf-8') as f:
     SCENARIO = json.load(f)
 
 
-@pytest.fixture(scope="module")
-def win_partition(amd64_system: BaseOS,
-                  network_api: BaseInterface) -> PartitionDisk:
-    """
-    Pytest fixture to initialize a WindowsVolume instance for testing.
+# @pytest.fixture(scope="module")
+# def win_partition(amd64_system: BaseOS,
+#                   network_api: BaseInterface) -> PartitionDisk:
+#     """
+#     Pytest fixture to initialize a WindowsVolume instance for testing.
 
-    Args:
-        amd_system (AMD64NVMe): The NVMe target system.
+#     Args:
+#         amd_system (AMD64NVMe): The NVMe target system.
 
-    Returns:
-        WindowsVolume: An instance of the WindowsVolume class with the
-        specified platform, disk format, and file system.
-    """
-    partition = PartitionFactory(api=network_api)
-    print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
-    return partition.initiate(platform=amd64_system, disk_format='gpt',
-                              file_system='ntfs')
+#     Returns:
+#         WindowsVolume: An instance of the WindowsVolume class with the
+#         specified platform, disk format, and file system.
+#     """
+#     partition = PartitionFactory(api=network_api)
+#     print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
+#     return partition.initiate(platform=amd64_system, disk_format='gpt',
+#                               file_system='ntfs')
 
 
 class TestWindowsVolume:
