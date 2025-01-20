@@ -1,5 +1,6 @@
 # Content of test_storage.conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
+import json
 import logging
 import paramiko
 import pytest
@@ -213,3 +214,10 @@ def test_check_error(os_event):
 
     if errors:
         raise AssertionError(f"Detected errors: {errors}")
+
+
+@pytest.fixture(scope="module")
+def amd64_settings():
+    """Fixture to load ASUS Rog X570 settings from a JSON file."""
+    with open('config/rog_x570.json', 'r', encoding='utf-8') as f:
+        return json.load(f)

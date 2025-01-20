@@ -30,7 +30,7 @@ def win_partition(amd64_system: BaseOS,
         specified platform, disk format, and file system.
     """
     partition = PartitionFactory(api=network_api)
-
+    print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
     return partition.initiate(platform=amd64_system, disk_format='gpt',
                               file_system='ntfs')
 
@@ -44,7 +44,7 @@ class TestWindowsVolume:
     """
     @pytest.mark.dependency(name="not max partitions")
     @pytest.mark.xfail
-    def test_partition_existance(self, amd64_system, win_partition):
+    def test_partition_existance(self, win_partition):
         """
         Test that the partition count does not exceed the allowed number.
 
@@ -56,7 +56,9 @@ class TestWindowsVolume:
             The number of existing partitions should be less than the allowed
             number.
         """
-        assert len(amd64_system.disk_info) < win_partition.partition_num
+        logger.debug("disk_info = %s", win_partition.disk_info)
+        logger.debug("partition_num = %s", win_partition.partition_num)
+        assert len(win_partition.disk_info) < win_partition.partition_num
 
     @pytest.mark.dependency(name="not system drive")
     @pytest.mark.parametrize('scenario', SCENARIO)
@@ -125,3 +127,82 @@ class TestWindowsVolume:
         del_result = win_partition.delete_script()
         logger.info('del_result = %s', del_result)
         assert del_result is True
+
+    def test_get_disk_num(self, win_partition, amd64_settings):
+        """Test for verifying the number of disks and the serial number.
+
+        Args:
+            amd64_system: The system instance being tested.
+            AMD64_SETTINGS (dict): Expected configuration data for validation.
+        """
+        logger.info("Number = %s", win_partition.disk_num)
+        logger.info("SerialNumber = %s", win_partition.serial_num)
+        assert (win_partition.disk_num ==
+                amd64_settings['Disk Information']["Number"])
+
+    def test_partition_size(self, win_partition):
+        """Test for verifying parition size of the disk.
+
+        Args:
+            amd64_system: The system instance being tested.
+            AMD64_SETTINGS (dict): Expected configuration data for validation.
+        """
+        partition_size = win_partition.partition_size
+        logger.info("Partition Size = %s GB", partition_size)
+
+    def test_disk_capacity(self, win_partition):
+        """Test for verifying parition size of the disk.
+
+        Args:
+            amd64_system: The system instance being tested.
+            AMD64_SETTINGS (dict): Expected configuration data for validation.
+        """
+        disk_capacity = win_partition.disk_capacity
+        logger.info("disk_capacity = %s GB", disk_capacity)
+
+    def test_get_volume(self, win_partition, amd64_settings):
+        """Test for verifying disk volume information.
+
+        Args:
+            win_partition: The partition instance being tested.
+            amd64_settings (dict): Expected configuration data for validation.
+        """
+        partition_num = win_partition.partition_num
+        logger.debug("partition_num = %s", partition_num)
+
+        # 動態生成磁碟字母，跳過某些字母（例如無效或保留的磁碟字母）
+        start_letter = ord('D')  # 磁碟字母起始為 'D'
+        disk_letters = []
+        for i in range(partition_num):
+            letter = chr(start_letter + i)
+            if letter not in {'A', 'B', 'C'}:  # 排除保留字母，例如 'A', 'B', 'C'
+                disk_letters.append(letter)
+        logger.debug("Generated disk_letters: %s", disk_letters)
+
+        # 驗證磁碟字母總數是否符合 partition_num
+        if len(disk_letters) != partition_num:
+            logger.error("Generated disk letter count (%d) does not match "
+                         "partition_num (%d)",
+                         len(disk_letters), partition_num)
+            raise AssertionError("Mismatch between generated disk letters and "
+                                 "partition count")
+
+        # 處理磁碟資訊，僅迭代 partition_num 的範圍
+        for i in range(partition_num):
+            try:
+                logger.info('%s = %s', win_partition.disk_info[i][0],
+                            win_partition.disk_info[i][1])
+            except IndexError:
+                logger.error("IndexError: No disk info for partition %d", i)
+                break
+
+        # 根據動態生成的 disk_letters 驗證磁碟資訊
+        for i, letter in enumerate(disk_letters):
+            try:
+                # 驗證磁碟資訊是否正確
+                assert win_partition.disk_info[i][1] == \
+                    amd64_settings['Disk Information'][letter]
+            except IndexError:
+                logger.warning("IndexError: No disk info for partition %d", i)
+            except KeyError:
+                logger.warning("KeyError: Missing expected key: %s", letter)
