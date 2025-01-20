@@ -1,15 +1,16 @@
 # Content of test_commandline.conftest.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import json
+
 import pytest
-from commandline.mnv_cli import CLIFactory
-# from storage.performance import PerfFactory
-from storage.stress import StressFactory
-from unit.mongodb import MongoDB as mdb
+
 from amd64.system import BaseOS
+from commandline.mnv_cli import CLIFactory
+from interface.application import BaseInterface
+from storage.stress import StressFactory
 from storage.partitioning import PartitionFactory
 from storage.partitioning import PartitionDisk
-from interface.application import BaseInterface
+from unit.mongodb import MongoDB as mdb
 
 
 @pytest.fixture(scope="module")

@@ -100,4 +100,3 @@ class TestAMD64System:
                 amd64_settings['PCIE Configuration']["SDID"])
         assert (amd64_system.rev ==
                 amd64_settings['PCIE Configuration']["Rev"])
-
