@@ -5,17 +5,17 @@ import logging
 import paramiko
 import pytest
 
-from event.logging import EventFactory
 from amd64.nvme import AMD64NVMe as amd64
+from amd64.system import BaseOS
+from event.logging import EventFactory
+from interface.application import BaseInterface
+from interface.application_interface import ApplicationInterface as api
+from storage.partitioning import PartitionDisk
+from storage.partitioning import PartitionFactory
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
-from interface.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi
-from interface.application import BaseInterface
-from amd64.system import BaseOS
-from storage.partitioning import PartitionFactory
-from storage.partitioning import PartitionDisk
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
@@ -244,4 +244,3 @@ def amd64_settings():
     """Fixture to load ASUS Rog X570 settings from a JSON file."""
     with open('config/rog_x570.json', 'r', encoding='utf-8') as f:
         return json.load(f)
-

@@ -41,13 +41,9 @@ class PartitionDisk(ABC):
         self.memory_size = platform.memory_size
         self.disk_format = disk_format
         self.file_system = file_system
-        # self.disk_num = platform.disk_num
         self.disk_num, self.serial_num = self._get_disk_num().values()
-        # self.partition_size = platform.partition_size * 1024
         self._partition_size = None
-        # self.disk_capacity = platform.disk_capacity
         self._disk_capacity = None
-        # self.disk_info = platform.disk_info
         self.partition_num = math.floor(
             self.disk_capacity / self.partition_size)
         self.disk_info = self._get_volume()
@@ -390,17 +386,20 @@ class LinuxVolume(PartitionDisk):
 class BasePartitionFactory(ABC):
     '''docstring'''
     def __init__(self, api: BaseInterface):
+        '''docstring'''
         self.api = api
         self.os_type = api.os_type
 
     @abstractmethod
     def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
+        '''docstring'''
         pass
 
 
 class PartitionFactory(BasePartitionFactory):
-    # def initiate(self, os_type: str, **kwargs) -> PartitionDisk:
+    '''docstring'''
     def initiate(self, **kwargs) -> PartitionDisk:
+        '''docstring'''
         if self.os_type == 'Windows':
             return WindowsVolume(**kwargs)
         elif self.os_type == 'Linux':
