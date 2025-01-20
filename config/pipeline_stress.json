@@ -5,7 +5,8 @@
                 {
                     "$or": [
                         { "report.tests.keywords": { "$regex": "TestAMD64MultiPathStress" } },
-                        { "report.tests.keywords": { "$regex": "TestOneShotStress" } }
+                        { "report.tests.keywords": { "$regex": "TestOneShotStress" } },
+                        { "report.tests.keywords": { "$regex": "TestOneShotReadWriteStress" } }
                     ]
                 },
                 { "report.collectors.outcome": { "$regex": "passed" } }
