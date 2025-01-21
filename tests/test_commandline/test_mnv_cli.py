@@ -94,6 +94,7 @@ class TestCLIAdapter:
         assert adapter_result == test_case["Expected"]
 
 
+@pytest.mark.order(1)
 class TestCLIOEMData:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["oem_data"])
@@ -104,7 +105,7 @@ class TestCLIOEMData:
         assert oem_data_result == test_case["Expected"]
 
 
-@pytest.mark.order(1)
+@pytest.mark.order(2)
 class TestCLIVersion:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["version"])
@@ -115,7 +116,7 @@ class TestCLIVersion:
         assert version_result == test_case["Expected"]
 
 
-@pytest.mark.order(2)
+@pytest.mark.order(3)
 class TestCLIResetDevice:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_device"])
@@ -127,7 +128,7 @@ class TestCLIResetDevice:
 
 
 @pytest.mark.skip(reason="Deprecated")
-@pytest.mark.order(3)
+@pytest.mark.order(4)
 class TestCLIResetPCIe:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pcie"])
@@ -138,7 +139,7 @@ class TestCLIResetPCIe:
         assert reset_pcie_result == test_case["Expected"]
 
 
-@pytest.mark.order(4)
+@pytest.mark.order(5)
 class TestCLIResetPower:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_power"])
@@ -149,6 +150,7 @@ class TestCLIResetPower:
         assert reset_power_result == test_case["Expected"]
 
 
+@pytest.mark.order(6)
 class TestCLISMART:
     '''Docstring'''
     @pytest.mark.skip(reason="Deprecated")
@@ -255,7 +257,7 @@ class TestCLISMART:
             assert callable(value), f'{key} is not a function!'
 
 
-@pytest.mark.order(5)
+@pytest.mark.order(7)
 @pytest.mark.dependency(name="dump data")
 class TestCLIDumpHBA:
     '''docstring'''
@@ -267,7 +269,7 @@ class TestCLIDumpHBA:
         assert dump_hba_result == test_case["Expected"]
 
 
-@pytest.mark.order(6)
+@pytest.mark.order(8)
 @pytest.mark.dependency(depends=["dump data"])
 class TestCLIExport:
     '''docstring'''
@@ -279,7 +281,7 @@ class TestCLIExport:
         assert result, 'The two files are not the same!'
 
 
-@pytest.mark.order(7)
+@pytest.mark.order(9)
 class TestCLILog:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["log"])
@@ -290,7 +292,7 @@ class TestCLILog:
         assert log_result == test_case["Expected"]
 
 
-@pytest.mark.order(8)
+@pytest.mark.order(10)
 class TestCLIBGAOff:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_off"])
@@ -301,7 +303,7 @@ class TestCLIBGAOff:
         assert bga_off_result == test_case["Expected"]
 
 
-@pytest.mark.order(9)
+@pytest.mark.order(11)
 class TestCLIBGAOn:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_on"])
@@ -312,7 +314,7 @@ class TestCLIBGAOn:
         assert bga_on_result == test_case["Expected"]
 
 
-@pytest.mark.order(10)
+@pytest.mark.order(12)
 class TestCLIBGAHigh:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_high"])
@@ -323,7 +325,7 @@ class TestCLIBGAHigh:
         assert bga_high_result == test_case["Expected"]
 
 
-@pytest.mark.order(11)
+@pytest.mark.order(13)
 class TestCLIBGALow:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_low"])
@@ -334,7 +336,7 @@ class TestCLIBGALow:
         assert bga_low_result == test_case["Expected"]
 
 
-@pytest.mark.order(12)
+@pytest.mark.order(14)
 class TestCLIBGAMedium:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_medium"])
@@ -345,7 +347,7 @@ class TestCLIBGAMedium:
         assert bga_medium_result == test_case["Expected"]
 
 
-@pytest.mark.order(13)
+@pytest.mark.order(15)
 class TestCLIBGAInvalid:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_invalid"])
@@ -356,7 +358,7 @@ class TestCLIBGAInvalid:
         assert bga_invalid_result == test_case["Expected"]
 
 
-@pytest.mark.order(14)
+@pytest.mark.order(16)
 class TestCLIEvent:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["event"])
@@ -367,7 +369,7 @@ class TestCLIEvent:
         assert event_result == test_case["Expected"]
 
 
-@pytest.mark.order(15)
+@pytest.mark.order(17)
 class TestCLIDebugError:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_error"])
@@ -378,7 +380,7 @@ class TestCLIDebugError:
         assert debug_error_result == test_case["Expected"]
 
 
-@pytest.mark.order(16)
+@pytest.mark.order(18)
 class TestCLIDebugNormal:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_normal"])
@@ -389,6 +391,7 @@ class TestCLIDebugNormal:
         assert debug_normal_result == test_case["Expected"]
 
 
+@pytest.mark.order(19)
 class TestCLISMARTInvalid:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["smart_invalid"])
@@ -399,6 +402,7 @@ class TestCLISMARTInvalid:
         assert smart_invalid_result == test_case["Expected"]
 
 
+@pytest.mark.order(20)
 class TestCLILED:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["led"])
@@ -409,6 +413,7 @@ class TestCLILED:
         assert led_result == test_case["Expected"]
 
 
+@pytest.mark.order(21)
 class TestCLIPassthru:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["passthru"])
