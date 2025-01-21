@@ -1,4 +1,4 @@
-# Contents of device_under_testing.py
+# Contents of unit/device_under_testing.py
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import logging

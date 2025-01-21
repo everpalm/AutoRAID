@@ -1,4 +1,4 @@
-# Contents of test_interface.test_application_interface.py
+# Contents of tests/test_interface/test_application_interface.py
 '''Unit tests for the ApplicationInterface class, which includes testing the
    execution of Windows commands to verify system responses and configurations
 

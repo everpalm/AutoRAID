@@ -1,4 +1,4 @@
-# Contents of test_amd64_nvme.py
+# Contents of tests/test_amd64/test_amd64_nvme.py
 '''Unit tests for the AMD64 NVMe system configuration and details. This module
    includes tests for retrieving system and hardware information, including
    CPU, memory, disk, and PCIe configuration, and compares these values to
@@ -115,58 +115,58 @@ class TestAMD64NVMe:
         assert (target_system.rev ==
                 amd64_nvm['PCIE Configuration']["Rev"])
 
-    def test_get_disk_num(self, target_system, amd64_nvm):
-        """Test for verifying the number of disks and the serial number.
+    # def test_get_disk_num(self, target_system, amd64_nvm):
+    #     """Test for verifying the number of disks and the serial number.
 
-        Args:
-            target_system: The system instance being tested.
-            amd64_nvm (dict): Expected configuration data for validation.
-        """
-        logger.info("Number = %s", target_system.disk_num)
-        logger.info("SerialNumber = %s", target_system.serial_num)
-        assert (target_system.disk_num ==
-                amd64_nvm['Disk Information']["Number"])
+    #     Args:
+    #         target_system: The system instance being tested.
+    #         amd64_nvm (dict): Expected configuration data for validation.
+    #     """
+    #     logger.info("Number = %s", target_system.disk_num)
+    #     logger.info("SerialNumber = %s", target_system.serial_num)
+    #     assert (target_system.disk_num ==
+    #             amd64_nvm['Disk Information']["Number"])
 
-    @pytest.mark.skip(reason="Deprecated")
-    def test_get_volume(self, target_system, amd64_nvm):
-        """Test for verifying disk volume information.
+    # @pytest.mark.skip(reason="Deprecated")
+    # def test_get_volume(self, target_system, amd64_nvm):
+    #     """Test for verifying disk volume information.
 
-        Args:
-            target_system: The system instance being tested.
-            amd64_nvm (dict): Expected configuration data for validation.
-        """
-        for i in range(12):  # 迴圈處理 0 到 11
-            try:
-                logger.info('%s = %s', target_system.disk_info[i][0],
-                            target_system.disk_info[i][1])
-            except IndexError:
-                break  # 如果索引超出範圍，則跳出迴圈
+    #     Args:
+    #         target_system: The system instance being tested.
+    #         amd64_nvm (dict): Expected configuration data for validation.
+    #     """
+    #     for i in range(12):  # 迴圈處理 0 到 11
+    #         try:
+    #             logger.info('%s = %s', target_system.disk_info[i][0],
+    #                         target_system.disk_info[i][1])
+    #         except IndexError:
+    #             break  # 如果索引超出範圍，則跳出迴圈
 
-        disk_letters = ["D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-                        "P"]
-        for i, letter in enumerate(disk_letters):
-            try:
-                assert target_system.disk_info[i][1] == \
-                    amd64_nvm['Disk Information'][letter]
-            except (IndexError, KeyError):  # 處理索引或鍵錯誤
-                pass  # 或是選擇其他處理方式，例如記錄錯誤訊息
+    #     disk_letters = ["D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+    #                     "P"]
+    #     for i, letter in enumerate(disk_letters):
+    #         try:
+    #             assert target_system.disk_info[i][1] == \
+    #                 amd64_nvm['Disk Information'][letter]
+    #         except (IndexError, KeyError):  # 處理索引或鍵錯誤
+    #             pass  # 或是選擇其他處理方式，例如記錄錯誤訊息
 
-    def test_partition_size(self, target_system):
-        """Test for verifying parition size of the disk.
+    # def test_partition_size(self, target_system):
+    #     """Test for verifying parition size of the disk.
 
-        Args:
-            target_system: The system instance being tested.
-            amd64_nvm (dict): Expected configuration data for validation.
-        """
-        partition_size = target_system.partition_size
-        logger.info("Partition Size = %s GB", partition_size)
+    #     Args:
+    #         target_system: The system instance being tested.
+    #         amd64_nvm (dict): Expected configuration data for validation.
+    #     """
+    #     partition_size = target_system.partition_size
+    #     logger.info("Partition Size = %s GB", partition_size)
 
-    def test_disk_capacity(self, target_system):
-        """Test for verifying parition size of the disk.
+    # def test_disk_capacity(self, target_system):
+    #     """Test for verifying parition size of the disk.
 
-        Args:
-            target_system: The system instance being tested.
-            amd64_nvm (dict): Expected configuration data for validation.
-        """
-        disk_capacity = target_system.disk_capacity
-        logger.info("disk_capacity = %s GB", disk_capacity)
+    #     Args:
+    #         target_system: The system instance being tested.
+    #         amd64_nvm (dict): Expected configuration data for validation.
+    #     """
+    #     disk_capacity = target_system.disk_capacity
+    #     logger.info("disk_capacity = %s GB", disk_capacity)

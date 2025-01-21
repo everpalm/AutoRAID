@@ -1,4 +1,4 @@
-# Contents of test_gitlab.py
+# Contents of tests/test_unit/test_gitlab_unit.py
 '''Unit tests for the GitLab API integration. This module includes tests
    for fetching, creating, updating, and deleting issues, as well as
    interacting with project information within a simulated GitLab environment.

@@ -1,4 +1,4 @@
-# Contents of test_network.test_amd64_ping.py
+# Contents of tests/test_network/test_amd64_ping.py
 '''Unit tests for the AMD64Ping functionality, ensuring that network
    connectivity can be verified and that round-trip times (RTT) are correctly
    measured and reported.

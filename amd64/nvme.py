@@ -1,9 +1,9 @@
-# Contents of amd64.nvme.py
+# Contents of amd64/nvme.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from collections import defaultdict
 import logging
-import math
+# import math
 import re
 from unit.log_handler import get_logger
 from interface.application_interface import GenericAPI
@@ -37,15 +37,11 @@ class AMD64NVMe:
             self._get_pcie_info().values()
         self.cpu_num, self.cpu_name = self.get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
-        self.disk_num, self.serial_num = self._get_disk_num().values()
-        self.disk_info = self._get_volume()
         self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
-        self._partition_size = None
-        self._disk_capacity = None
 
     def _get_hyperthreading(self):
         """
@@ -193,52 +189,6 @@ class AMD64NVMe:
             raise
         return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 
-    def _get_disk_num(self):
-        """
-        Retrieves disk information (number and serial number).
-
-        Uses powershell and findstr to retrieve disk information, with target
-        depending on vendor, and parses the output to get the disk number and
-        serial number.
-
-        Returns:
-            dict[str, str | int | None]: A dictionary containing the disk
-            number (as an integer) and serial number (as a string), or None
-            for both if an error occurred.
-
-        Raises:
-            subprocess.CalledProcessError: If there is a problem executing the
-                subprocess command
-            ValueError: If the powershell output is not found or can't be
-                converted to an integer
-            IndexError: If parsing fails
-        """
-        str_return = int_disk_num = None
-
-        if self.manufacturer == 'VEN_1B4B':
-            str_target = 'Marvell'
-        else:
-            str_target = 'CT500P5SSD8'
-
-        try:
-            str_return = self.api.command_line(
-                    f'powershell Get-PhysicalDisk|findstr {str_target}')
-            logger.debug('str_return = %s', str_return)
-
-            # Check if str_return is None
-            if str_return is None:
-                raise ValueError("Received None from command_line")
-
-            int_disk_num = int(str_return.get(0).split(' ')[0].lstrip())
-            str_serial_num = str_return.get(0).split(' ')[2].lstrip()
-            logger.debug('disk_num = %d', int_disk_num)
-            logger.debug('serial_num = %s', str_serial_num)
-
-        except Exception as e:
-            logger.error('Error occurred in _get_disk_num: %s', e)
-            raise
-        return {"Number": int_disk_num, "SerialNumber": str_serial_num}
-
     def _get_desktop_info(self) -> dict[str]:
         ''' Get Desktop Computer information
             Grep HW information from system call 'lshw'
@@ -301,87 +251,3 @@ class AMD64NVMe:
             raise
         return {"VID": str_vid, "DID": str_sdid,
                 "SDID": str_sdid, "Rev": str_rev}
-
-    def _get_volume(self):
-        ''' Get Volume
-            Args: None
-            Returns: Volume, Size
-            Raises: Any errors
-        '''
-        try:
-            str_return = self.api.command_line(
-                f"powershell Get-Partition -DiskNumber {self.disk_num}")
-
-            pattern = re.compile(r'\d+\s+([A-Z]?)\s+\d+\s+([\d.]+\s+\w+)')
-
-            list_disk_info = []
-
-            if str_return:
-                if isinstance(str_return, dict):
-                    output_string = "\n".join(str_return.values())
-                else:
-                    output_string = str_return
-
-                for match in pattern.findall(output_string):
-                    drive_letter = match[0] if match[0] else "No Drive Letter"
-                    size = match[1]
-                    list_disk_info.append((drive_letter, size))
-
-                total_disks = len(list_disk_info)
-                logger.debug("Total number of disks: %s", total_disks)
-            else:
-                raise ValueError(
-                    "Unexpected None value returned from command line")
-
-        except Exception as e:
-            logger.error('Error occurred in _get_volume: %s', e)
-            raise
-
-        return list_disk_info
-
-    @property
-    def partition_size(self):
-        '''Returns the partition size as the next power of 2 based on memory
-        size.
-        '''
-        if self._partition_size is None:
-            self._partition_size = self._next_power_of_2(self.memory_size * 2)
-        return self._partition_size
-
-    def _next_power_of_2(self, x):
-        '''Returns the next power of 2 greater than or equal to x.'''
-        return 1 if x == 0 else 2**math.ceil(math.log2(x))
-
-    @property
-    def disk_capacity(self):
-        ''' Get Volume
-        Args: None
-        Returns: Volume, Size
-        Raises: Any errors
-        '''
-        try:
-            str_return = self.api.command_line(
-                "wmic diskdrive get size,caption")
-
-            pattern = r"Marvell_NVMe_Controller\s+(\d+)"
-
-            if str_return:
-                if isinstance(str_return, dict):
-                    output_string = "\n".join(str_return.values())
-                else:
-                    output_string = str_return
-
-            match = re.search(pattern, output_string)
-
-            if match:
-                disk_capacity = match.group(1)
-                logger.debug("disk_capacity = %s", disk_capacity)
-            else:
-                raise ValueError(
-                    "Unexpected None value returned from command line")
-
-        except Exception as e:
-            logger.error('Error occurred in disk_capacity: %s', e)
-            raise
-
-        return int(disk_capacity) / (2**30)

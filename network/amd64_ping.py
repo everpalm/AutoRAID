@@ -1,4 +1,4 @@
-# Contents of network.amd64_ping.py
+# Contents of network/amd64_ping.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from abc import ABC
 from abc import abstractmethod

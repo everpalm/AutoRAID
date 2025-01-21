@@ -1,4 +1,4 @@
-# Contents of test_amd64_warmboot_unit.py
+# Content of tests/test_unit/test_reboot_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from boot.amd64_reboot import WindowsReboot

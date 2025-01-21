@@ -1,4 +1,4 @@
-# Contents of test_commandline_unit.py
+# Content of tests/test_unit/test_event_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 from unittest.mock import MagicMock
 from unittest.mock import patch

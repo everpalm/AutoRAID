@@ -1,0 +1,31 @@
+[
+    {
+        "ID": 0,
+        "Command": "vd -a create -r 1 -d 1,2",
+        "Description": "Create RAID1 VD with PD1 and PD2",
+        "Expected": [
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
+    }
+]  

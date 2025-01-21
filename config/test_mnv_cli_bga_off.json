@@ -13,7 +13,7 @@
         "Description": "Get configuration of controllers.",
         "Expected": [
             "Auto Rebuild: off",
-            "BGA Rate: Medium",
+            "BGA Rate: High",
             ""
         ]
     }

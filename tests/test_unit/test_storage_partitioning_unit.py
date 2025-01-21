@@ -1,4 +1,4 @@
-# Contents of test_amd64_partition_unit.py
+# Content of tests/test_unit/test_storage_partitioning_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -17,11 +17,15 @@ def mock_windows_platform():
     mock_platform.api.account = "admin"
     mock_platform.api.password = "password"
     mock_platform.api.script_name = "diskpart_script.txt"
-    mock_platform.api.command_line.original = MagicMock()
+
+    # Mock command_line to return a valid dictionary
+    mock_platform.api.command_line.return_value = {
+        0: "0 Marvell_NVMe_Controller 1234567890"
+    }
+
     mock_platform.disk_num = 0
-    mock_platform.disk_info = {"capacity": "1TB"}
-    mock_platform.partition_size = 65536
-    mock_platform.disk_capacity = 1000000
+    mock_platform.memory_size = 512
+    mock_platform.manufacturer = "VEN_1B4B"  # Matches the manufacturer logic
     return mock_platform
 
 

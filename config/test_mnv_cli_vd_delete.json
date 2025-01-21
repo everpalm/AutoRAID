@@ -1,0 +1,19 @@
+[
+    {
+        "ID": 0,
+        "Command": "vd -a delete -i 1",
+        "Description": "Delete VD ID 1",
+        "Expected": [
+            "cmd success"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "info -o vd",
+        "Description": "Confirm VD ID1 is removed",
+        "Expected": [
+            "",
+            "No virtual disk is found."
+        ]
+    }
+]  

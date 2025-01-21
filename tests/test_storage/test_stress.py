@@ -1,4 +1,4 @@
-# Contents of test_storage.test_stress.py
+# Contents of tests/test_storage/test_stress.py
 '''Unit tests for the AMD64MultiPathStress class. This module includes tests
    for I/O stress operations on the AMD64 system to verify endurance and
    performance stability under stress conditions.
@@ -246,4 +246,37 @@ class TestOLAP:
         criteria = my_mdb.aggregate_olap_metrics(write_pattern)
 
         logger.debug("criteria = %s", criteria)
+        logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
+
+
+@pytest.mark.STRESS
+class TestOneShotReadWriteStress:
+    ''' Oneshot I/O Stress Test'''
+    def test_read_write(self, target_stress, my_mdb):
+        """Runs oneshot I/O operations to test system stress with optimum
+        I/O depths and write patterns.
+
+        Args:
+            target_stress (AMD64MultiPathStress): Stress instance for I/O
+            tests.
+            write_pattern (int): Write and Read in half.
+            iodepth (int): Optimum I/O depth level for stress testing is 7.
+            my_mdb: Mock database for storing and comparing test metrics.
+
+        Assertions:
+            - read_bw, read_iops, write_bw, write_iops metrics meet target
+            criteria.
+        """
+        read_bw, read_iops, write_bw, write_iops, cpu_usage = \
+            target_stress.run_io_operation(SINGLE_THREAD, OPTIMUM_IODEPTH,
+                                           '4k', '4k', HALF_RW, ONE_SHOT)
+
+        logger.info('stress_read_bw = %.2f MBps', read_bw)
+        logger.info('stress_read_iops = %d', read_iops)
+        logger.info('stress_write_bw = %.2f MBps', write_bw)
+        logger.info('stress_write_iops = %d', write_iops)
+
+        criteria = my_mdb.aggregate_stress_metrics(HALF_RW, OPTIMUM_IODEPTH)
+
+        logger.debug('criteria = %s', criteria)
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])

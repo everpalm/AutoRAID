@@ -1,4 +1,4 @@
-# Contents of commandline.mnv_cli.py
+# Contents of commandline/mnv_cli.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 import logging

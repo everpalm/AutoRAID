@@ -1,4 +1,4 @@
-# Contents of test_amd64_interface_unit.py
+# Contents of tests/test_unit/test_amd64_interface_unit.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from unittest.mock import patch, MagicMock
