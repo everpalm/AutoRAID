@@ -161,8 +161,8 @@ def target_perf(amd64_system, cmdopt, network_api):
 
 
 @pytest.fixture(scope="module")
-def win_partition(amd64_system: BaseOS,
-                  network_api: BaseInterface) -> PartitionDisk:
+def disk_partition(amd64_system: BaseOS,
+                   network_api: BaseInterface) -> PartitionDisk:
     """
     Pytest fixture to initialize a WindowsVolume instance for testing.
 
@@ -174,13 +174,13 @@ def win_partition(amd64_system: BaseOS,
         specified platform, disk format, and file system.
     """
     partition = PartitionFactory(api=network_api)
-    print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
+    print("\n\033[32m================== Setup Partitioning ==========\033[0m")
     return partition.initiate(platform=amd64_system, disk_format='gpt',
                               file_system='ntfs')
 
 
 @pytest.fixture(scope="function")
-def target_stress(amd64_system, network_api, win_partition):
+def target_stress(amd64_system, network_api, disk_partition):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
@@ -191,7 +191,7 @@ def target_stress(amd64_system, network_api, win_partition):
     """
     print('\n\033[32m================== Setup Stress Test ===========\033[0m')
     stress = StressFactory(network_api)
-    return stress.initiate(platform=amd64_system, diskpart=win_partition)
+    return stress.initiate(platform=amd64_system, diskpart=disk_partition)
 
 
 @pytest.fixture(scope="package")
