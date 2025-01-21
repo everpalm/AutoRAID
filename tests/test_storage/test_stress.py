@@ -1,4 +1,4 @@
-# Contents of test_storage.test_stress.py
+# Contents of tests/test_storage/test_stress.py
 '''Unit tests for the AMD64MultiPathStress class. This module includes tests
    for I/O stress operations on the AMD64 system to verify endurance and
    performance stability under stress conditions.

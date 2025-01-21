@@ -1,4 +1,4 @@
-# Contents of test_system_under_testing_unit.py
+# Contents of tests/test_unit/test_system_under_testing_unit.py
 '''Unit tests for the SystemUnderTesting class. This module includes tests
    for various methods within SystemUnderTesting, verifying system
    functionality and configurations.

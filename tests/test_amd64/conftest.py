@@ -1,4 +1,4 @@
-# Content of test_amd64.conftest.py
+# Content of tests/test_amd64/conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import paramiko

@@ -1,4 +1,4 @@
-# Content of tests.conftest.py
+# Content of tests/conftest.py
 '''Copyright (c) 2024 Jaron Cheng'''
 
 import logging

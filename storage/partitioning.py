@@ -1,4 +1,4 @@
-# Contents of storage.partition.py
+# Contents of storage/partition.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import math

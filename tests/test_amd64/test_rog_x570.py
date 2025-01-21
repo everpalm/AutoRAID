@@ -1,4 +1,4 @@
-# Contents of test_rog_x570.py
+# Contents of tests/test_amd64/test_rog_x570.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 import logging

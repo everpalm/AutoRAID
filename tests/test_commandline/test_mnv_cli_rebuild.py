@@ -1,4 +1,4 @@
-# Contents of test_commandline.test_mnv_cli_rebuild.py
+# Contents of tests/test_commandline/test_mnv_cli_rebuild.py
 '''Unit tests for commandline class, which includes testing the
    execution of mnv_cli commands to verify commands and system responses
 
@@ -7,7 +7,6 @@
 import json
 import logging
 import pytest
-from tests.test_amd64.test_rog_x570 import TestRogX570
 from tests.test_storage.test_partitioning import TestWindowsVolume
 from tests.test_storage.test_stress import TestOneShotReadWriteStress
 
