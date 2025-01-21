@@ -86,13 +86,11 @@ class TestCLIRebuildPD1:
         assert rebuild_pd1_result == test_case["Expected"]
 
 
-# @pytest.mark.dependency(name="rebuild pd1 stop0")
 @pytest.mark.xfail
 @pytest.mark.order(5)
 class TestCLIRebuildPD1Stop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop0"])
-    # @pytest.mark.flaky(reruns=2, reruns_delay=5)
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
         rebuild_pd1_stop0_result = mnv_cli.interpret(test_case["Command"])
@@ -100,12 +98,10 @@ class TestCLIRebuildPD1Stop:
         assert rebuild_pd1_stop0_result == test_case["Expected"]
 
 
-# @pytest.mark.dependency(depends=["rebuild pd1 stop0"])
 @pytest.mark.xfail
 @pytest.mark.order(6)
 class TestCLIRebuildPD1StopAgain:
     '''docstring'''
-    # @pytest.mark.flaky(reruns=2, reruns_delay=5)
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
@@ -140,11 +136,6 @@ class TestCLIVDCreateR1:
 @pytest.mark.order(9)
 class TestCLIPartitioning(TestWindowsVolume):
     '''docstring'''
-
-
-# @pytest.mark.order(12)
-# class TestCLIInitialSystemAgain(TestRogX570):
-#     '''docstring'''
 
 
 @pytest.mark.order(10)
@@ -198,11 +189,9 @@ class TestCLIRebuildPD2:
 
 
 @pytest.mark.xfail
-# @pytest.mark.dependency(name="rebuild pd2 stop0")
 @pytest.mark.order(15)
 class TestCLIRebuildPD2Stop:
     '''docstring'''
-    # @pytest.mark.flaky(reruns=2, reruns_delay=5)
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop0"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
@@ -212,42 +201,15 @@ class TestCLIRebuildPD2Stop:
 
 
 @pytest.mark.xfail
-# @pytest.mark.dependency(depends=["rebuild pd2 stop0"])
 @pytest.mark.order(16)
 class TestCLIRebuildPD2StopAgain:
     '''docstring'''
-    # @pytest.mark.flaky(reruns=2, reruns_delay=5)
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
         rebuild_pd2_stop_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('rebuild_pd2_stop_result = %s', rebuild_pd2_stop_result)
         assert rebuild_pd2_stop_result == test_case["Expected"]
-
-
-# @pytest.mark.dependency(name="rebuild pd2 stop0 after")
-# @pytest.mark.order(17)
-# class TestCLIRebuildPD2StopAfter:
-#     '''docstring'''
-#     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop0"])
-#     def test_commandline(self, mnv_cli, test_case):
-#         '''docstring'''
-#         rebuild_pd2_stop0_result = mnv_cli.interpret(test_case["Command"])
-#         logger.debug('rebuild_pd2_stop0_result = %s',
-#                      rebuild_pd2_stop0_result)
-#         assert rebuild_pd2_stop0_result == test_case["Expected"]
-
-
-# @pytest.mark.dependency(depends=["rebuild pd2 stop0 after"])
-# @pytest.mark.order(18)
-# class TestCLIRebuildPD2StopAgainAfter:
-#     '''docstring'''
-#     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop"])
-#     def test_commandline(self, mnv_cli, test_case):
-#         '''docstring'''
-#         rebuild_pd2_stop_result = mnv_cli.interpret(test_case["Command"])
-#         logger.debug('rebuild_pd2_stop_result = %s', rebuild_pd2_stop_result)
-#         assert rebuild_pd2_stop_result == test_case["Expected"]
 
 
 @pytest.mark.flaky(reruns=2, reruns_delay=5)
