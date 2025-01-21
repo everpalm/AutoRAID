@@ -12,7 +12,7 @@ from typing import List
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 class PartitionDisk(ABC):

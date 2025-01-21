@@ -1,10 +1,10 @@
 [
     {
         "ID": 0,
-        "Command": "rebuild -a start -i 1 -d 1",
+        "Command": "reset -i 1 -t perstn -a on",
         "Description": "Start background rebuild on VD1 with PD1",
         "Expected": [
-            "cmd success"
+            "Reset success"
         ]
     },
     {
@@ -20,10 +20,9 @@
         "RAID Mode: RAID1",
         "size: 931 GB",
         "PD Count: 2",
-        "PDs: 1 2",
+        "PDs: ? 2",
         "Stripe Block Size: 128K",
         "Sector Size: 512 bytes",
-        "BGA progress: Rebuilding is running in 0%",
         "",
         "Total # of VD: 1",
         ""
