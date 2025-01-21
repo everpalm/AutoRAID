@@ -1,4 +1,4 @@
-# log_handler.py
+# Contents of unit/log_handler.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 

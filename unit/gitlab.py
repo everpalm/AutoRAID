@@ -1,4 +1,4 @@
-# Contents of gitlab.py
+# Contents of unit/gitlab.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import gitlab
 import logging

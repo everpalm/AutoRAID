@@ -1,4 +1,4 @@
-# Contents of test_boot.test_amd64_power-cycle.py
+# Contents of tests/test_boot/test_amd64_power_cycle.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 import pytest

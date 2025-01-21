@@ -1,3 +1,4 @@
+# Content of tests/test_unit/test_event_unit.py
 '''Unit tests for WindowsEvent class methods related to log management.
    This module verifies the behavior of methods within the WindowsEvent
    class, including the ability to find error logs based on patterns and

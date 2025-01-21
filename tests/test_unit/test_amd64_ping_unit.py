@@ -1,4 +1,4 @@
-# Contents of test_ping.py
+# Content of tests/test_unit/test_ping_unit.py
 '''Unit tests for LinuxPing and WindowsPing classes for ping command
     functionality.
    This module includes tests to verify successful and failed ping scenarios

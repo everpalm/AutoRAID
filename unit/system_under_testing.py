@@ -1,4 +1,4 @@
-# Contents of system_under_testing.py
+# Contents of unit/system_under_testing.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 import logging

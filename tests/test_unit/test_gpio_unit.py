@@ -1,4 +1,4 @@
-# Contents of test_gpio.py
+# Contents of tests/test_unit/test_gpio_unit.py
 '''Unit tests for OperateGPIO class, which interacts with RPi.GPIO
    for controlling GPIO pins on a Raspberry Pi. Tests include basic
    GPIO operations like setting up and controlling the power button.

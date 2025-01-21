@@ -1,4 +1,4 @@
-# Contents of test_storage.test_partition.py
+# Contents of tests/test_storage/test_partition.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import json
 import logging

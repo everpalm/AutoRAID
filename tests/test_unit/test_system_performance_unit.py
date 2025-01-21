@@ -1,4 +1,4 @@
-# Contents of test_system_performance_unit.py
+# Contents of tests/test_unit/test_system_performance_unit.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
 from unittest.mock import MagicMock
