@@ -59,15 +59,11 @@ class AMD64Windows(BaseOS):
             self._get_pcie_info().values()
         self.cpu_num, self.cpu_name = self.get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
-        # self.disk_num, self.serial_num = self._get_disk_num().values()
-        # self.disk_info = self._get_volume()
         self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
-        # self._partition_size = None
-        # self._disk_capacity = None
 
     def _get_hyperthreading(self):
         """
@@ -285,9 +281,6 @@ class AMD64Linux(BaseOS):
 
     def get_cpu_info(self) -> dict[str, str]:
         pass
-
-    # def _get_disk_num(self):
-    #     pass
 
     def _get_desktop_info(self) -> dict[str]:
         pass
