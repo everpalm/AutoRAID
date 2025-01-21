@@ -1,11 +1,31 @@
 [
     {
         "ID": 0,
-        "Command": "rebuild -a start -i 1 -d 2",
+        "Command": "reset -i 2 -t perstn -a on",
         "Description": "Start background rebuild on VD1 with PD2",
         "Expected": [
-            "LD is functional (Status Code: 0x736)",
-            "cmd failed."
+            "Reset success"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+        "",
+        "VD ID: 1",
+        "Name: VD_0",
+        "Status: Degrade",
+        "Importable: No",
+        "RAID Mode: RAID1",
+        "size: 931 GB",
+        "PD Count: 2",
+        "PDs: 1 ?",
+        "Stripe Block Size: 128K",
+        "Sector Size: 512 bytes",
+        "",
+        "Total # of VD: 1",
+        ""
         ]
     }
 ]   

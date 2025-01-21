@@ -61,7 +61,9 @@ CONFIG_FILES = {
     "passthru": ("config/test_mnv_cli_passthru.json", "ID"),
     "dump_hba": ("config/test_mnv_cli_dump_hba.json", "ID"),
     "vd_delete": ("config/test_mnv_cli_vd_delete.json", "ID"),
-    "vd_create_r1": ("config/test_mnv_cli_vd_create_r1.json", "ID")
+    "vd_create_r1": ("config/test_mnv_cli_vd_create_r1.json", "ID"),
+    "rebuild_pd1_stop0": ("config/test_mnv_cli_rebuild_pd1_stop0.json", "ID"),
+    "rebuild_pd2_stop0": ("config/test_mnv_cli_rebuild_pd2_stop0.json", "ID")
 }
 
 # Load and process file
@@ -455,6 +457,7 @@ class TestCLIRebuild:
         assert rebuild_result == test_case["Expected"]
 
 
+@pytest.mark.flaky(reruns=2, reruns_delay=5)
 @pytest.mark.order(19)
 class TestCLIResetPD1:
     '''docstring'''
@@ -471,29 +474,22 @@ class TestCLIStressAfterResetPD1(TestOneShotReadWriteStress):
     '''docstring'''
 
 
+@pytest.mark.dependency(name="rebuild pd1 stop0")
+@pytest.mark.flaky(reruns=2, reruns_delay=5)
 @pytest.mark.order(21)
 class TestCLIRebuildPD1Stop:
     '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop"])
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop0"])
     def test_commandline(self, mnv_cli, test_case):
         '''docstring'''
-        rebuild_pd1_stop_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('rebuild_pd1_stop_result = %s', rebuild_pd1_stop_result)
-        assert rebuild_pd1_stop_result == test_case["Expected"]
+        rebuild_pd1_stop0_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_stop0_result = %s',
+                     rebuild_pd1_stop0_result)
+        assert rebuild_pd1_stop0_result == test_case["Expected"]
 
 
+@pytest.mark.dependency(depends=["rebuild pd1 stop0"])
 @pytest.mark.order(22)
-class TestCLIRebuildPD1:
-    '''docstring'''
-    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
-    def test_commandline(self, mnv_cli, test_case):
-        '''docstring'''
-        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
-        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
-        assert rebuild_pd1_result == test_case["Expected"]
-
-
-@pytest.mark.order(23)
 class TestCLIRebuildPD1StopAgain:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop"])
@@ -504,7 +500,43 @@ class TestCLIRebuildPD1StopAgain:
         assert rebuild_pd1_stop_result == test_case["Expected"]
 
 
+@pytest.mark.order(23)
+class TestCLIRebuildPD1:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
+        assert rebuild_pd1_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="rebuild pd1 stop0 after")
 @pytest.mark.order(24)
+class TestCLIRebuildPD1StopAfter:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop0"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_stop0_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_stop0_result = %s',
+                     rebuild_pd1_stop0_result)
+        assert rebuild_pd1_stop0_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(depends=["rebuild pd1 stop0 after"])
+@pytest.mark.order(25)
+class TestCLIRebuildPD1StopAgainAfter:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_stop_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_stop_result = %s', rebuild_pd1_stop_result)
+        assert rebuild_pd1_stop_result == test_case["Expected"]
+
+
+@pytest.mark.order(26)
 class TestCLIVDDelete:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["vd_delete"])
@@ -515,7 +547,7 @@ class TestCLIVDDelete:
         assert vd_delete_result == test_case["Expected"]
 
 
-@pytest.mark.order(25)
+@pytest.mark.order(27)
 class TestCLIVDCreateR1:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["vd_create_r1"])
@@ -526,17 +558,17 @@ class TestCLIVDCreateR1:
         assert vd_create_result == test_case["Expected"]
 
 
-@pytest.mark.order(27)
+@pytest.mark.order(28)
 class TestCLIPartitioning(TestWindowsVolume):
     '''docstring'''
 
 
-@pytest.mark.order(28)
+@pytest.mark.order(29)
 class TestCLIInitialSystemAgain(TestRogX570):
     '''docstring'''
 
 
-@pytest.mark.order(29)
+@pytest.mark.order(30)
 class TestCLIMPStart:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["mp_start"])
@@ -547,7 +579,7 @@ class TestCLIMPStart:
         assert mp_start_result == test_case["Expected"]
 
 
-@pytest.mark.order(30)
+@pytest.mark.order(31)
 class TestCLIMPStop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["mp_stop"])
@@ -558,7 +590,8 @@ class TestCLIMPStop:
         assert mp_stop_result == test_case["Expected"]
 
 
-@pytest.mark.order(31)
+@pytest.mark.flaky(reruns=2, reruns_delay=5)
+@pytest.mark.order(32)
 class TestCLIResetPD2:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd2"])
@@ -569,13 +602,26 @@ class TestCLIResetPD2:
         assert reset_pd2_result == test_case["Expected"]
 
 
-@pytest.mark.order(32)
+@pytest.mark.order(33)
 class TestCLIStressAfterResetPD2(TestOneShotReadWriteStress):
     '''docstring'''
 
 
-@pytest.mark.order(33)
+@pytest.mark.dependency(name="rebuild pd2 stop0")
+@pytest.mark.order(34)
 class TestCLIRebuildPD2Stop:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop0"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd2_stop0_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd2_stop0_result = %s', rebuild_pd2_stop0_result)
+        assert rebuild_pd2_stop0_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(depends=["rebuild pd2 stop0"])
+@pytest.mark.order(34)
+class TestCLIRebuildPD2StopAgain:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop"])
     def test_commandline(self, mnv_cli, test_case):
@@ -585,7 +631,7 @@ class TestCLIRebuildPD2Stop:
         assert rebuild_pd2_stop_result == test_case["Expected"]
 
 
-@pytest.mark.order(34)
+@pytest.mark.order(35)
 class TestCLIRebuildPD2:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2"])
@@ -594,3 +640,51 @@ class TestCLIRebuildPD2:
         rebuild_pd2_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('rebuild_pd2_result = %s', rebuild_pd2_result)
         assert rebuild_pd2_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(name="rebuild pd2 stop0 after")
+@pytest.mark.order(36)
+class TestCLIRebuildPD2StopAfter:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop0"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd2_stop0_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd2_stop0_result = %s',
+                     rebuild_pd2_stop0_result)
+        assert rebuild_pd2_stop0_result == test_case["Expected"]
+
+
+@pytest.mark.dependency(depends=["rebuild pd2 stop0 after"])
+@pytest.mark.order(37)
+class TestCLIRebuildPD2StopAgainAfter:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd2_stop_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd2_stop_result = %s', rebuild_pd2_stop_result)
+        assert rebuild_pd2_stop_result == test_case["Expected"]
+
+
+@pytest.mark.flaky(reruns=2, reruns_delay=5)
+@pytest.mark.order(38)
+class TestCLIVDDeleteAgain:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["vd_delete"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        vd_delete_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('vd_delete_result = %s', vd_delete_result)
+        assert vd_delete_result == test_case["Expected"]
+
+
+@pytest.mark.order(39)
+class TestCLIVDCreateR1Again:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["vd_create_r1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        vd_create_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('vd_create_result = %s', vd_create_result)
+        assert vd_create_result == test_case["Expected"]

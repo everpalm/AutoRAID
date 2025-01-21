@@ -22,7 +22,26 @@ def mnv_cli(network_api, amd64_system):
 
 
 @pytest.fixture(scope="function")
-def target_stress(amd64_system, network_api):
+def win_partition(amd64_system: BaseOS,
+                  network_api: BaseInterface) -> PartitionDisk:
+    """
+    Pytest fixture to initialize a WindowsVolume instance for testing.
+
+    Args:
+        amd_system (AMD64NVMe): The NVMe target system.
+
+    Returns:
+        WindowsVolume: An instance of the WindowsVolume class with the
+        specified platform, disk format, and file system.
+    """
+    partition = PartitionFactory(api=network_api)
+    print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
+    return partition.initiate(platform=amd64_system, disk_format='gpt',
+                              file_system='ntfs')
+
+
+@pytest.fixture(scope="function")
+def target_stress(amd64_system, network_api, win_partition):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
@@ -33,7 +52,7 @@ def target_stress(amd64_system, network_api):
     """
     print('\n\033[32m================== Setup Stress Test ===========\033[0m')
     stress = StressFactory(network_api)
-    return stress.initiate(platform=amd64_system)
+    return stress.initiate(platform=amd64_system, diskpart=win_partition)
 
 
 @pytest.fixture(scope="session")
@@ -57,25 +76,6 @@ def my_mdb():
         db_name="AutoRAID",
         collection_name="storage",
     )
-
-
-@pytest.fixture(scope="module")
-def win_partition(amd64_system: BaseOS,
-                  network_api: BaseInterface) -> PartitionDisk:
-    """
-    Pytest fixture to initialize a WindowsVolume instance for testing.
-
-    Args:
-        amd_system (AMD64NVMe): The NVMe target system.
-
-    Returns:
-        WindowsVolume: An instance of the WindowsVolume class with the
-        specified platform, disk format, and file system.
-    """
-    partition = PartitionFactory(api=network_api)
-
-    return partition.initiate(platform=amd64_system, disk_format='gpt',
-                              file_system='ntfs')
 
 
 @pytest.fixture(scope="module")
