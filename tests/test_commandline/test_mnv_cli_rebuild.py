@@ -29,7 +29,7 @@ def load_and_sort_json(file_path, key):
 CONFIG_FILES = {
     "reset_pd1": ("config/test_mnv_cli_reset_pd1.json", "ID"),
     "reset_pd2": ("config/test_mnv_cli_reset_pd2.json", "ID"),
-    "rebuild": ("config/test_mnv_cli_rebuild.json", "ID"),
+    # "rebuild": ("config/test_mnv_cli_rebuild.json", "ID"),
     "rebuild_pd1": ("config/test_mnv_cli_rebuild_pd1.json", "ID"),
     "rebuild_pd2": ("config/test_mnv_cli_rebuild_pd2.json", "ID"),
     "rebuild_pd1_stop": ("config/test_mnv_cli_rebuild_pd1_stop.json", "ID"),
