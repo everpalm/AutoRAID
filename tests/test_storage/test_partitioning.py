@@ -4,6 +4,12 @@ import json
 import logging
 import pytest
 
+# from amd64.system import BaseOS
+# from storage.partitioning import PartitionFactory
+# from storage.partitioning import PartitionDisk
+# from storage.partitioning import WindowsVolume
+# from interface.application import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 with open('config/test_disk_partition.json', 'r', encoding='utf-8') as f:
