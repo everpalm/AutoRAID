@@ -4,13 +4,18 @@ import logging
 import paramiko
 import pytest
 
-from event.logging import EventFactory
 from amd64.nvme import AMD64NVMe as amd64
+from event.logging import EventFactory
+from interface.application import BaseInterface
+from storage.partitioning import PartitionFactory
+from storage.partitioning import PartitionDisk
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
 from interface.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from unit.system_under_testing import RaspberryPi
+from amd64.system import BaseOS
+
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
@@ -160,7 +165,26 @@ def target_perf(amd64_system, cmdopt, network_api):
 
 
 @pytest.fixture(scope="function")
-def target_stress(amd64_system, network_api):
+def disk_partition(amd64_system: BaseOS,
+                   network_api: BaseInterface) -> PartitionDisk:
+    """
+    Pytest fixture to initialize a WindowsVolume instance for testing.
+
+    Args:
+        amd_system (AMD64NVMe): The NVMe target system.
+
+    Returns:
+        WindowsVolume: An instance of the WindowsVolume class with the
+        specified platform, disk format, and file system.
+    """
+    partition = PartitionFactory(api=network_api)
+    print("\n\033[32m================== Setup Win Partitioning ======\033[0m")
+    return partition.initiate(platform=amd64_system, disk_format='gpt',
+                              file_system='ntfs')
+
+
+@pytest.fixture(scope="function")
+def target_stress(amd64_system, network_api, disk_partition):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
@@ -171,7 +195,7 @@ def target_stress(amd64_system, network_api):
     """
     print('\n\033[32m================== Setup Stress Test ===========\033[0m')
     stress = StressFactory(network_api)
-    return stress.initiate(platform=amd64_system)
+    return stress.initiate(platform=amd64_system, diskpart=disk_partition)
 
 
 @pytest.fixture(scope="package")

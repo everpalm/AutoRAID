@@ -56,7 +56,7 @@ def test_regression(String path) {
 }
 
 def test_unit(String path, String key) {
-    run_test(path, key, '--cov-report=html')
+    run_test(path, key, "--cov-report=html --cov=${path}")
 }
 
 def test_training(String path) {
