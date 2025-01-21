@@ -100,7 +100,7 @@ class TestSequentialReadWrite:
                                                        block_size)
         logger.info('write_pattern = %s', write_pattern)
         logger.info('block_size = %s', block_size)
-        logger.info('criteria = %s', criteria)
+        logger.debug('criteria = %s', criteria)
 
         target_perf.validate_metrics(read_bw, read_iops, write_bw, write_iops,
                                      criteria)
