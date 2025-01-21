@@ -7,7 +7,7 @@
 import json
 import logging
 import pytest
-from tests.test_storage.test_partitioning import TestWindowsVolume
+from tests.test_storage.test_partitioning import TestDiskVolume
 from tests.test_storage.test_stress import TestOneShotReadWriteStress
 
 # Set up logger
@@ -125,7 +125,7 @@ class TestCLIBGAInvalid:
 
 
 @pytest.mark.order(22)
-class TestCLIPartitioningBeforehand(TestWindowsVolume):
+class TestCLIPartitioningBeforehand(TestDiskVolume):
     '''docstring'''
 
 
@@ -205,7 +205,7 @@ class TestCLIVDCreateR1:
 
 
 @pytest.mark.order(30)
-class TestCLIPartitioning(TestWindowsVolume):
+class TestCLIPartitioning(TestDiskVolume):
     '''docstring'''
 
 
@@ -307,5 +307,5 @@ class TestCLIVDCreateR1Again:
 
 
 @pytest.mark.order(40)
-class TestCLIPartitioningLast(TestWindowsVolume):
+class TestCLIPartitioningLast(TestDiskVolume):
     '''docstring'''

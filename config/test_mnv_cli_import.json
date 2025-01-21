@@ -1,0 +1,62 @@
+[
+    {
+        "ID": 0,
+        "Command": "import -l 0",
+        "Description": "Import VD ID 0 into controller",
+        "Expected": [
+            "-l : invalid VD ID '0'"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "import -l 1",
+        "Description": "Import VD ID 1 into controller",
+        "Expected": [
+            "",
+            "VD 1 is not importable."
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "import -l 2",
+        "Description": "Import VD ID 2 into controller",
+        "Expected": [
+            "",
+            "Unable to get info of VD"
+        ]
+    },
+    {
+        "ID": 3,
+        "Command": "import -l -1",
+        "Description": "Import VD ID -1 into controller",
+        "Expected": [
+            "-l : invalid VD ID '-1'"
+        ]
+    },
+    {
+        "ID": 4,
+        "Command": "import -l 65536",
+        "Description": "Import VD ID -1 into controller",
+        "Expected": [
+            "",
+            "Unable to get info of VD"
+        ]
+    },
+    {
+        "ID": 5,
+        "Command": "import -l 65537",
+        "Description": "Import VD ID 65537 into controller",
+        "Expected": [
+            "",
+            "VD 1 is not importable."
+        ]
+    },
+    {
+        "ID": 6,
+        "Command": "import -l fffffff",
+        "Description": "Import VD ID fffffff into controller",
+        "Expected": [
+            "-l : invalid VD ID 'fffffff'"
+        ]
+    }
+]

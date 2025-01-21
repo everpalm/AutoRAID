@@ -37,7 +37,8 @@ CONFIG_FILES = {
     "oem_data": ("config/test_mnv_cli_oem_data.json", "ID"),
     "led": ("config/test_mnv_cli_led.json", "ID"),
     "passthru": ("config/test_mnv_cli_passthru.json", "ID"),
-    "dump_hba": ("config/test_mnv_cli_dump_hba.json", "ID")
+    "dump_hba": ("config/test_mnv_cli_dump_hba.json", "ID"),
+    "import": ("config/test_mnv_cli_import.json", "ID")
 }
 
 # Load and process file
@@ -194,3 +195,14 @@ class TestCLIPassthru:
         passthru_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('passthru_result = %s', passthru_result)
         assert passthru_result == test_case["Expected"]
+
+
+@pytest.mark.order(41)
+class TestCLIImport:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["import"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        import_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('import_result = %s', import_result)
+        assert import_result == test_case["Expected"]
