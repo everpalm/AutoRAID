@@ -55,8 +55,7 @@ class TestWindowsVolume:
             Writing the script should succeed.
             Execution results should match the expected pattern.
         """
-        write_result = win_partition.write_script(
-            scenario["Script"])
+        write_result = win_partition.write_script(scenario["Script"])
         logger.info('write_script = %s', write_result)
         assert write_result is True
 
