@@ -1,26 +1,27 @@
 # Contents of tests/test_commandline/test_mnv_cli.py
-'''Unit tests for commandline class, which includes testing the
-   execution of mnv_cli commands to verify commands and system responses
+'''Unit tests for commandline class, which includes testing the execution of
+mnv_cli commands to verify commands and system responses
 
    Copyright (c) 2024 Jaron Cheng
 '''
 import json
 import logging
 import pytest
+from unit.json_handler import load_and_sort_json
 
 # Set up logger
 logger = logging.getLogger(__name__)
 
 
-def load_and_sort_json(file_path, key):
-    '''docstring'''
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return sorted(data, key=lambda x: x[key])
-    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-        logger.error("Error loading or sorting file %s: %s", file_path, e)
-        return []
+# def load_and_sort_json(file_path, key):
+#     '''docstring'''
+#     try:
+#         with open(file_path, 'r', encoding='utf-8') as f:
+#             data = json.load(f)
+#         return sorted(data, key=lambda x: x[key])
+#     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+#         logger.error("Error loading or sorting file %s: %s", file_path, e)
+#         return []
 
 
 # 定義配置檔案與對應鍵
@@ -119,7 +120,7 @@ class TestCLIDumpHBA:
         assert dump_hba_result == test_case["Expected"]
 
 
-@pytest.mark.order(4)
+# @pytest.mark.order(4)
 @pytest.mark.dependency(depends=["dump data"])
 class TestCLIExport:
     '''docstring'''
@@ -131,7 +132,7 @@ class TestCLIExport:
         assert result, 'The two files are not the same!'
 
 
-@pytest.mark.order(5)
+@pytest.mark.order(4)
 class TestCLILog:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["log"])
@@ -142,7 +143,7 @@ class TestCLILog:
         assert log_result == test_case["Expected"]
 
 
-@pytest.mark.order(6)
+@pytest.mark.order(5)
 class TestCLIEvent:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["event"])
@@ -153,7 +154,7 @@ class TestCLIEvent:
         assert event_result == test_case["Expected"]
 
 
-@pytest.mark.order(7)
+@pytest.mark.order(6)
 class TestCLIDebugError:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_error"])
@@ -164,7 +165,7 @@ class TestCLIDebugError:
         assert debug_error_result == test_case["Expected"]
 
 
-@pytest.mark.order(8)
+@pytest.mark.order(7)
 class TestCLIDebugNormal:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_normal"])
@@ -175,7 +176,7 @@ class TestCLIDebugNormal:
         assert debug_normal_result == test_case["Expected"]
 
 
-@pytest.mark.order(9)
+@pytest.mark.order(8)
 class TestCLILED:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["led"])
@@ -186,7 +187,7 @@ class TestCLILED:
         assert led_result == test_case["Expected"]
 
 
-@pytest.mark.order(10)
+@pytest.mark.order(9)
 class TestCLIPassthru:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["passthru"])

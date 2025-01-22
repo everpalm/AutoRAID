@@ -1,26 +1,27 @@
 # Contents of tests/test_commandline/test_mnv_cli_init.py
 '''Unit tests for commandline class, which includes testing the
-   execution of mnv_cli commands to verify reset commands and system responses
+   execution of mnv_cli commands to verify init commands and system responses
 
    Copyright (c) 2025 Jaron Cheng
 '''
 import json
 import logging
 import pytest
+from unit.json_handler import load_and_sort_json
 
 # Set up logger
 logger = logging.getLogger(__name__)
 
 
-def load_and_sort_json(file_path, key):
-    '''docstring'''
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return sorted(data, key=lambda x: x[key])
-    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-        logger.error("Error loading or sorting file %s: %s", file_path, e)
-        return []
+# def load_and_sort_json(file_path, key):
+#     '''docstring'''
+#     try:
+#         with open(file_path, 'r', encoding='utf-8') as f:
+#             data = json.load(f)
+#         return sorted(data, key=lambda x: x[key])
+#     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+#         logger.error("Error loading or sorting file %s: %s", file_path, e)
+#         return []
 
 
 # 定義配置檔案與對應鍵
@@ -41,7 +42,7 @@ SORTED_DATA = {
 }
 
 
-@pytest.mark.order(41)
+@pytest.mark.order(38)
 class TestCLIInit:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["init"])
@@ -52,7 +53,7 @@ class TestCLIInit:
         assert init_result == test_case["Expected"]
 
 
-@pytest.mark.order(42)
+@pytest.mark.order(39)
 class TestCLIInitStart:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["init_start"])
@@ -63,7 +64,7 @@ class TestCLIInitStart:
         assert init_start_result == test_case["Expected"]
 
 
-@pytest.mark.order(43)
+@pytest.mark.order(40)
 class TestCLIInitStop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["init_stop"])

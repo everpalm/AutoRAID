@@ -1,26 +1,27 @@
 # Contents of tests/test_commandline/test_mnv_smart.py
-'''Unit tests for commandline class, which includes testing the
-   execution of mnv_cli commands to verify smart commands and system responses
+'''Unit tests for commandline class, which includes testing the execution of
+mnv_cli commands to verify smart commands and system responses
 
    Copyright (c) 2024 Jaron Cheng
 '''
 import json
 import logging
 import pytest
+from unit.json_handler import load_and_sort_json
 
 # Set up logger
 logger = logging.getLogger(__name__)
 
 
-def load_and_sort_json(file_path, key):
-    '''docstring'''
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return sorted(data, key=lambda x: x[key])
-    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-        logger.error("Error loading or sorting file %s: %s", file_path, e)
-        return []
+# def load_and_sort_json(file_path, key):
+#     '''docstring'''
+#     try:
+#         with open(file_path, 'r', encoding='utf-8') as f:
+#             data = json.load(f)
+#         return sorted(data, key=lambda x: x[key])
+#     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+#         logger.error("Error loading or sorting file %s: %s", file_path, e)
+#         return []
 
 
 # 定義配置檔案與對應鍵
@@ -39,7 +40,7 @@ SORTED_DATA = {
 }
 
 
-@pytest.mark.order(11)
+# @pytest.mark.order(10)
 class TestCLISMART:
     '''Docstring'''
     @pytest.mark.skip(reason="Deprecated")
@@ -146,7 +147,7 @@ class TestCLISMART:
             assert callable(value), f'{key} is not a function!'
 
 
-@pytest.mark.order(12)
+# @pytest.mark.order(11)
 class TestCLISMARTInvalid:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["smart_invalid"])
