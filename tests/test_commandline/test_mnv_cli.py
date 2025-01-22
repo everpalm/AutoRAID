@@ -39,7 +39,8 @@ CONFIG_FILES = {
     "led": ("config/test_mnv_cli_led.json", "ID"),
     "passthru": ("config/test_mnv_cli_passthru.json", "ID"),
     "dump_hba": ("config/test_mnv_cli_dump_hba.json", "ID"),
-    "import": ("config/test_mnv_cli_import.json", "ID")
+    "import": ("config/test_mnv_cli_import.json", "ID"),
+    "row": ("config/test_mnv_cli_row.json", "ID")
 }
 
 # Load and process file
@@ -207,3 +208,16 @@ class TestCLIImport:
         import_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('import_result = %s', import_result)
         assert import_result == test_case["Expected"]
+
+
+@pytest.mark.STRESS
+@pytest.mark.xdist_group("group2")
+@pytest.mark.order(42)
+class TestCLIRow:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["row"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        row_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('row_result = %s', row_result)
+        assert row_result == test_case["Expected"]
