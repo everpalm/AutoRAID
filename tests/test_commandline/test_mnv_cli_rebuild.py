@@ -15,17 +15,6 @@ from unit.json_handler import load_and_sort_json
 logger = logging.getLogger(__name__)
 
 
-# def load_and_sort_json(file_path, key):
-#     '''docstring'''
-#     try:
-#         with open(file_path, 'r', encoding='utf-8') as f:
-#             data = json.load(f)
-#         return sorted(data, key=lambda x: x[key])
-#     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-#         logger.error("Error loading or sorting file %s: %s", file_path, e)
-#         return []
-
-
 # 定義配置檔案與對應鍵
 CONFIG_FILES = {
     "bga_off": ("config/test_mnv_cli_bga_off.json", "ID"),
