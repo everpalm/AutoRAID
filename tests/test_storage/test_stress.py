@@ -249,6 +249,7 @@ class TestOLAP:
         logger.info("cpu_usage = %.2f%%", cpu_usage[0]["Total"])
 
 
+@pytest.mark.xdist_group("group1")
 @pytest.mark.STRESS
 class TestOneShotReadWriteStress:
     ''' Oneshot I/O Stress Test'''
