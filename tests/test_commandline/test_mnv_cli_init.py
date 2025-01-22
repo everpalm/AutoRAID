@@ -42,7 +42,7 @@ SORTED_DATA = {
 }
 
 
-@pytest.mark.order(38)
+@pytest.mark.order(39)
 class TestCLIInit:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["init"])
@@ -53,7 +53,7 @@ class TestCLIInit:
         assert init_result == test_case["Expected"]
 
 
-@pytest.mark.order(39)
+@pytest.mark.order(40)
 class TestCLIInitStart:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["init_start"])
@@ -64,7 +64,7 @@ class TestCLIInitStart:
         assert init_start_result == test_case["Expected"]
 
 
-@pytest.mark.order(40)
+@pytest.mark.order(41)
 class TestCLIInitStop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["init_stop"])
