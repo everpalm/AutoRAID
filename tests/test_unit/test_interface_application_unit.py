@@ -2,10 +2,8 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 from unittest.mock import patch, MagicMock
-# from unit.amd64_interface import BaseInterface
 from interface.application import WindowsInterface
 from interface.application import LinuxInterface
-# from unit.amd64_interface import CommandContext
 from interface.application import InterfaceFactory
 
 
