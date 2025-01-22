@@ -1,26 +1,27 @@
 # Contents of tests/test_commandline/test_mnv_cli.py
-'''Unit tests for commandline class, which includes testing the
-   execution of mnv_cli commands to verify commands and system responses
+'''Unit tests for commandline class, which includes testing the execution of
+mnv_cli commands to verify commands and system responses
 
    Copyright (c) 2024 Jaron Cheng
 '''
 import json
 import logging
 import pytest
+from unit.json_handler import load_and_sort_json
 
 # Set up logger
 logger = logging.getLogger(__name__)
 
 
-def load_and_sort_json(file_path, key):
-    '''docstring'''
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return sorted(data, key=lambda x: x[key])
-    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-        logger.error("Error loading or sorting file %s: %s", file_path, e)
-        return []
+# def load_and_sort_json(file_path, key):
+#     '''docstring'''
+#     try:
+#         with open(file_path, 'r', encoding='utf-8') as f:
+#             data = json.load(f)
+#         return sorted(data, key=lambda x: x[key])
+#     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+#         logger.error("Error loading or sorting file %s: %s", file_path, e)
+#         return []
 
 
 # 定義配置檔案與對應鍵
@@ -38,7 +39,8 @@ CONFIG_FILES = {
     "led": ("config/test_mnv_cli_led.json", "ID"),
     "passthru": ("config/test_mnv_cli_passthru.json", "ID"),
     "dump_hba": ("config/test_mnv_cli_dump_hba.json", "ID"),
-    "import": ("config/test_mnv_cli_import.json", "ID")
+    "import": ("config/test_mnv_cli_import.json", "ID"),
+    "row": ("config/test_mnv_cli_row.json", "ID")
 }
 
 # Load and process file
@@ -206,3 +208,16 @@ class TestCLIImport:
         import_result = mnv_cli.interpret(test_case["Command"])
         logger.debug('import_result = %s', import_result)
         assert import_result == test_case["Expected"]
+
+
+@pytest.mark.STRESS
+@pytest.mark.xdist_group("group2")
+@pytest.mark.order(42)
+class TestCLIRow:
+    '''docstring'''
+    @pytest.mark.parametrize('test_case', SORTED_DATA["row"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        row_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('row_result = %s', row_result)
+        assert row_result == test_case["Expected"]

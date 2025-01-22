@@ -1,0 +1,1262 @@
+[
+    {
+        "ID": 0,
+        "Command": "led -o ep -i 0 -a on",
+        "Description": "Set endpoint 0 status on",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "led -o ep -i 1 -a on",
+        "Description": "Set endpoint 1 status on",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "led -o ep -i 2 -a on",
+        "Description": "Set endpoint 2 status on",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 3,
+        "Command": "led -o ep -i 0 -a off",
+        "Description": "Set endpoint 0 status off",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 4,
+        "Command": "led -o ep -i 1 -a off",
+        "Description": "Set endpoint 1 status off",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 5,
+        "Command": "led -o ep -i 2 -a off",
+        "Description": "Set endpoint 2 status off",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 6,
+        "Command": "led -o rc -i 0 -a sb",
+        "Description": "Set rootcomplex 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 7,
+        "Command": "led -o rc -i 1 -a sb",
+        "Description": "Set rootcomplex 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 8,
+        "Command": "led -o rc -i 2 -a sb",
+        "Description": "Set rootcomplex 2 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 9,
+        "Command": "led -o rc -i 3 -a sb",
+        "Description": "Set rootcomplex 3 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 10,
+        "Command": "led -o ep -i 0 -a qb",
+        "Description": "Set endpoint 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 11,
+        "Command": "led -o ep -i 1 -a qb",
+        "Description": "Set endpoint 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 12,
+        "Command": "led -o ep -i 2 -a qb",
+        "Description": "Set endpoint 2 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 13,
+        "Command": "event -c 0",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 14,
+        "Command": "event -c 10",
+        "Description": "Get latest 10 events from controller",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 15,
+        "Command": "version",
+        "Description": "Show API, CLI and support firmware version",
+        "Expected": [
+            "CLI Version: 1.0.14.1050",
+            "Support Firmware Version: 1.0.14.1046 above"
+        ]
+    },
+    {
+        "ID": 16,
+        "Command": "passthru -i 1 -o 0x6 --cdw10=1 --data-len=4096 -r read --outputfile id_data",
+        "Description": "Export identity of backend congtroller ID 1 to file id_data",
+        "Expected": [
+            "Passthrough command is success."
+        ]
+    },
+    {
+        "ID": 17,
+        "Command": "oemdata --read",
+        "Description": "Read OEM data",
+        "Expected": [
+            "OEM raw data is not exist."
+        ]
+    },
+    {
+        "ID": 18,
+        "Command": "info -o hba",
+        "Description": "Display controller(hba)",
+        "Expected": [
+            "NVMe Controller",
+            "Bus Device Fun: 0a:00.00",
+            "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+            "Slot ID: Not found",
+            "Firmware Version: 1.0.0.1053",
+            "VID: 0x1b4b",
+            "SVID: 0x1b4b",
+            "DID: 0x2241",
+            "SDID: 0x2241",
+            "RevisionID: B0B",
+            "Port Count: 2",
+            "Max PD of Per VD: 2",
+            "Max VD: 2",
+            "Max PD: 2",
+            "Max NS of Per VD: 1",
+            "Max NS: 2",
+            "Supported RAID Mode: RAID0 RAID1 JBOD",
+            "Cache: On",
+            "Supported BGA Features: Initialization Rebuild MediaPatrol",
+            "Support Stripe Size: 128KB 256KB 512KB",
+            "Supported Features: Import RAID Namespace Dump",
+            "Root Complex: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "Root Complex: 1",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "End Point: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "",
+            "Total # of HBA: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 19,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 20,
+        "Command": "info -o pd",
+        "Description": "Display physical disks",
+        "Expected": [
+            "",
+            "PD ID: 1",
+            "Model: INTEL SSDPEKNW010T8",
+            "Serial: BTNH94241LNG1P0B",
+            "Sector Size: 512 bytes",
+            "LBA: 2000409264",
+            "Size: 953 GB",
+            "SSD backend RC/Slot ID: 1",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 002C",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "PD ID: 2",
+            "Model: Samsung SSD 970 EVO Plus 1TB",
+            "Serial: S4EWNMFN710227E",
+            "Sector Size: 512 bytes",
+            "LBA: 1953525168",
+            "Size: 931 GB",
+            "SSD backend RC/Slot ID: 2",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 2B2QEXM7",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "Total # of PD: 2",
+            ""
+        ]
+    },
+    {
+        "ID": 21,
+        "Command": "info -o ns",
+        "Description": "Display namespaces",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 22,
+        "Command": "info -o ns -t vd -v 0",
+        "Description": "Display all namespaces which VD ID0 contains",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 23,
+        "Command": "info -o ns -t vd -v 1",
+        "Description": "Display all namespaces which VD ID1 contains",
+        "Expected": [
+            "No Namespace Info Exist."
+        ]
+    },
+    {
+        "ID": 24,
+        "Command": "led -o ep -i 0 -a on",
+        "Description": "Set endpoint 0 status on",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 25,
+        "Command": "led -o ep -i 1 -a on",
+        "Description": "Set endpoint 1 status on",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 26,
+        "Command": "led -o ep -i 2 -a on",
+        "Description": "Set endpoint 2 status on",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 27,
+        "Command": "led -o ep -i 0 -a off",
+        "Description": "Set endpoint 0 status off",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 28,
+        "Command": "led -o ep -i 1 -a off",
+        "Description": "Set endpoint 1 status off",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 29,
+        "Command": "led -o ep -i 2 -a off",
+        "Description": "Set endpoint 2 status off",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 30,
+        "Command": "led -o rc -i 0 -a sb",
+        "Description": "Set rootcomplex 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 31,
+        "Command": "led -o rc -i 1 -a sb",
+        "Description": "Set rootcomplex 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 32,
+        "Command": "led -o rc -i 2 -a sb",
+        "Description": "Set rootcomplex 2 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 33,
+        "Command": "led -o rc -i 3 -a sb",
+        "Description": "Set rootcomplex 3 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 34,
+        "Command": "led -o ep -i 0 -a qb",
+        "Description": "Set endpoint 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 35,
+        "Command": "led -o ep -i 1 -a qb",
+        "Description": "Set endpoint 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 36,
+        "Command": "led -o ep -i 2 -a qb",
+        "Description": "Set endpoint 2 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 37,
+        "Command": "event -c 0",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 38,
+        "Command": "event -c 10",
+        "Description": "Get latest 10 events from controller",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 39,
+        "Command": "version",
+        "Description": "Show API, CLI and support firmware version",
+        "Expected": [
+            "CLI Version: 1.0.14.1050",
+            "Support Firmware Version: 1.0.14.1046 above"
+        ]
+    },
+    {
+        "ID": 40,
+        "Command": "passthru -i 1 -o 0x6 --cdw10=1 --data-len=4096 -r read --outputfile id_data",
+        "Description": "Export identity of backend congtroller ID 1 to file id_data",
+        "Expected": [
+            "Passthrough command is success."
+        ]
+    },
+    {
+        "ID": 41,
+        "Command": "oemdata --read",
+        "Description": "Read OEM data",
+        "Expected": [
+            "OEM raw data is not exist."
+        ]
+    },
+    {
+        "ID": 42,
+        "Command": "info -o hba",
+        "Description": "Display controller(hba)",
+        "Expected": [
+            "NVMe Controller",
+            "Bus Device Fun: 0a:00.00",
+            "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+            "Slot ID: Not found",
+            "Firmware Version: 1.0.0.1053",
+            "VID: 0x1b4b",
+            "SVID: 0x1b4b",
+            "DID: 0x2241",
+            "SDID: 0x2241",
+            "RevisionID: B0B",
+            "Port Count: 2",
+            "Max PD of Per VD: 2",
+            "Max VD: 2",
+            "Max PD: 2",
+            "Max NS of Per VD: 1",
+            "Max NS: 2",
+            "Supported RAID Mode: RAID0 RAID1 JBOD",
+            "Cache: On",
+            "Supported BGA Features: Initialization Rebuild MediaPatrol",
+            "Support Stripe Size: 128KB 256KB 512KB",
+            "Supported Features: Import RAID Namespace Dump",
+            "Root Complex: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "Root Complex: 1",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "End Point: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "",
+            "Total # of HBA: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 43,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 44,
+        "Command": "info -o pd",
+        "Description": "Display physical disks",
+        "Expected": [
+            "",
+            "PD ID: 1",
+            "Model: INTEL SSDPEKNW010T8",
+            "Serial: BTNH94241LNG1P0B",
+            "Sector Size: 512 bytes",
+            "LBA: 2000409264",
+            "Size: 953 GB",
+            "SSD backend RC/Slot ID: 1",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 002C",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "PD ID: 2",
+            "Model: Samsung SSD 970 EVO Plus 1TB",
+            "Serial: S4EWNMFN710227E",
+            "Sector Size: 512 bytes",
+            "LBA: 1953525168",
+            "Size: 931 GB",
+            "SSD backend RC/Slot ID: 2",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 2B2QEXM7",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "Total # of PD: 2",
+            ""
+        ]
+    },
+    {
+        "ID": 45,
+        "Command": "info -o ns",
+        "Description": "Display namespaces",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 46,
+        "Command": "info -o ns -t vd -v 0",
+        "Description": "Display all namespaces which VD ID0 contains",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 47,
+        "Command": "info -o ns -t vd -v 1",
+        "Description": "Display all namespaces which VD ID1 contains",
+        "Expected": [
+            "No Namespace Info Exist."
+        ]
+    },
+    {
+        "ID": 48,
+        "Command": "led -o ep -i 0 -a on",
+        "Description": "Set endpoint 0 status on",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 49,
+        "Command": "led -o ep -i 1 -a on",
+        "Description": "Set endpoint 1 status on",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 50,
+        "Command": "led -o ep -i 2 -a on",
+        "Description": "Set endpoint 2 status on",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 51,
+        "Command": "led -o ep -i 0 -a off",
+        "Description": "Set endpoint 0 status off",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 52,
+        "Command": "led -o ep -i 1 -a off",
+        "Description": "Set endpoint 1 status off",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 53,
+        "Command": "led -o ep -i 2 -a off",
+        "Description": "Set endpoint 2 status off",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 54,
+        "Command": "led -o rc -i 0 -a sb",
+        "Description": "Set rootcomplex 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 55,
+        "Command": "led -o rc -i 1 -a sb",
+        "Description": "Set rootcomplex 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 56,
+        "Command": "led -o rc -i 2 -a sb",
+        "Description": "Set rootcomplex 2 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 57,
+        "Command": "led -o rc -i 3 -a sb",
+        "Description": "Set rootcomplex 3 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 58,
+        "Command": "led -o ep -i 0 -a qb",
+        "Description": "Set endpoint 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 59,
+        "Command": "led -o ep -i 1 -a qb",
+        "Description": "Set endpoint 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 60,
+        "Command": "led -o ep -i 2 -a qb",
+        "Description": "Set endpoint 2 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 61,
+        "Command": "event -c 0",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 62,
+        "Command": "event -c 10",
+        "Description": "Get latest 10 events from controller",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 63,
+        "Command": "version",
+        "Description": "Show API, CLI and support firmware version",
+        "Expected": [
+            "CLI Version: 1.0.14.1050",
+            "Support Firmware Version: 1.0.14.1046 above"
+        ]
+    },
+    {
+        "ID": 64,
+        "Command": "passthru -i 1 -o 0x6 --cdw10=1 --data-len=4096 -r read --outputfile id_data",
+        "Description": "Export identity of backend congtroller ID 1 to file id_data",
+        "Expected": [
+            "Passthrough command is success."
+        ]
+    },
+    {
+        "ID": 65,
+        "Command": "oemdata --read",
+        "Description": "Read OEM data",
+        "Expected": [
+            "OEM raw data is not exist."
+        ]
+    },
+    {
+        "ID": 66,
+        "Command": "info -o hba",
+        "Description": "Display controller(hba)",
+        "Expected": [
+            "NVMe Controller",
+            "Bus Device Fun: 0a:00.00",
+            "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+            "Slot ID: Not found",
+            "Firmware Version: 1.0.0.1053",
+            "VID: 0x1b4b",
+            "SVID: 0x1b4b",
+            "DID: 0x2241",
+            "SDID: 0x2241",
+            "RevisionID: B0B",
+            "Port Count: 2",
+            "Max PD of Per VD: 2",
+            "Max VD: 2",
+            "Max PD: 2",
+            "Max NS of Per VD: 1",
+            "Max NS: 2",
+            "Supported RAID Mode: RAID0 RAID1 JBOD",
+            "Cache: On",
+            "Supported BGA Features: Initialization Rebuild MediaPatrol",
+            "Support Stripe Size: 128KB 256KB 512KB",
+            "Supported Features: Import RAID Namespace Dump",
+            "Root Complex: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "Root Complex: 1",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "End Point: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "",
+            "Total # of HBA: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 67,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 68,
+        "Command": "info -o pd",
+        "Description": "Display physical disks",
+        "Expected": [
+            "",
+            "PD ID: 1",
+            "Model: INTEL SSDPEKNW010T8",
+            "Serial: BTNH94241LNG1P0B",
+            "Sector Size: 512 bytes",
+            "LBA: 2000409264",
+            "Size: 953 GB",
+            "SSD backend RC/Slot ID: 1",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 002C",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "PD ID: 2",
+            "Model: Samsung SSD 970 EVO Plus 1TB",
+            "Serial: S4EWNMFN710227E",
+            "Sector Size: 512 bytes",
+            "LBA: 1953525168",
+            "Size: 931 GB",
+            "SSD backend RC/Slot ID: 2",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 2B2QEXM7",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "Total # of PD: 2",
+            ""
+        ]
+    },
+    {
+        "ID": 69,
+        "Command": "info -o ns",
+        "Description": "Display namespaces",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 70,
+        "Command": "info -o ns -t vd -v 0",
+        "Description": "Display all namespaces which VD ID0 contains",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 71,
+        "Command": "info -o ns -t vd -v 1",
+        "Description": "Display all namespaces which VD ID1 contains",
+        "Expected": [
+            "No Namespace Info Exist."
+        ]
+    },
+    {
+        "ID": 72,
+        "Command": "led -o ep -i 0 -a on",
+        "Description": "Set endpoint 0 status on",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 73,
+        "Command": "led -o ep -i 1 -a on",
+        "Description": "Set endpoint 1 status on",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 74,
+        "Command": "led -o ep -i 2 -a on",
+        "Description": "Set endpoint 2 status on",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 75,
+        "Command": "led -o ep -i 0 -a off",
+        "Description": "Set endpoint 0 status off",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 76,
+        "Command": "led -o ep -i 1 -a off",
+        "Description": "Set endpoint 1 status off",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 77,
+        "Command": "led -o ep -i 2 -a off",
+        "Description": "Set endpoint 2 status off",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 78,
+        "Command": "led -o rc -i 0 -a sb",
+        "Description": "Set rootcomplex 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 79,
+        "Command": "led -o rc -i 1 -a sb",
+        "Description": "Set rootcomplex 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 80,
+        "Command": "led -o rc -i 2 -a sb",
+        "Description": "Set rootcomplex 2 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 81,
+        "Command": "led -o rc -i 3 -a sb",
+        "Description": "Set rootcomplex 3 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 82,
+        "Command": "led -o ep -i 0 -a qb",
+        "Description": "Set endpoint 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 83,
+        "Command": "led -o ep -i 1 -a qb",
+        "Description": "Set endpoint 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 84,
+        "Command": "led -o ep -i 2 -a qb",
+        "Description": "Set endpoint 2 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 85,
+        "Command": "event -c 0",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 86,
+        "Command": "event -c 10",
+        "Description": "Get latest 10 events from controller",
+        "Expected": [
+            "",
+            "Unable to get event status"
+        ]
+    },
+    {
+        "ID": 87,
+        "Command": "version",
+        "Description": "Show API, CLI and support firmware version",
+        "Expected": [
+            "CLI Version: 1.0.14.1050",
+            "Support Firmware Version: 1.0.14.1046 above"
+        ]
+    },
+    {
+        "ID": 88,
+        "Command": "passthru -i 1 -o 0x6 --cdw10=1 --data-len=4096 -r read --outputfile id_data",
+        "Description": "Export identity of backend congtroller ID 1 to file id_data",
+        "Expected": [
+            "Passthrough command is success."
+        ]
+    },
+    {
+        "ID": 89,
+        "Command": "oemdata --read",
+        "Description": "Read OEM data",
+        "Expected": [
+            "OEM raw data is not exist."
+        ]
+    },
+    {
+        "ID": 90,
+        "Command": "info -o hba",
+        "Description": "Display controller(hba)",
+        "Expected": [
+            "NVMe Controller",
+            "Bus Device Fun: 0a:00.00",
+            "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+            "Slot ID: Not found",
+            "Firmware Version: 1.0.0.1053",
+            "VID: 0x1b4b",
+            "SVID: 0x1b4b",
+            "DID: 0x2241",
+            "SDID: 0x2241",
+            "RevisionID: B0B",
+            "Port Count: 2",
+            "Max PD of Per VD: 2",
+            "Max VD: 2",
+            "Max PD: 2",
+            "Max NS of Per VD: 1",
+            "Max NS: 2",
+            "Supported RAID Mode: RAID0 RAID1 JBOD",
+            "Cache: On",
+            "Supported BGA Features: Initialization Rebuild MediaPatrol",
+            "Support Stripe Size: 128KB 256KB 512KB",
+            "Supported Features: Import RAID Namespace Dump",
+            "Root Complex: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "Root Complex: 1",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "End Point: 0",
+            "Link width: 4x",
+            "PCIe speed: 8Gb/s",
+            "",
+            "Total # of HBA: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 91,
+        "Command": "info -o vd",
+        "Description": "Display virtual disks",
+        "Expected": [
+            "",
+            "VD ID: 1",
+            "Name: VD_0",
+            "Status: Functional",
+            "Importable: No",
+            "RAID Mode: RAID1",
+            "size: 931 GB",
+            "PD Count: 2",
+            "PDs: 1 2",
+            "Stripe Block Size: 128K",
+            "Sector Size: 512 bytes",
+            "",
+            "Total # of VD: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 92,
+        "Command": "info -o pd",
+        "Description": "Display physical disks",
+        "Expected": [
+            "",
+            "PD ID: 1",
+            "Model: INTEL SSDPEKNW010T8",
+            "Serial: BTNH94241LNG1P0B",
+            "Sector Size: 512 bytes",
+            "LBA: 2000409264",
+            "Size: 953 GB",
+            "SSD backend RC/Slot ID: 1",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 002C",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "PD ID: 2",
+            "Model: Samsung SSD 970 EVO Plus 1TB",
+            "Serial: S4EWNMFN710227E",
+            "Sector Size: 512 bytes",
+            "LBA: 1953525168",
+            "Size: 931 GB",
+            "SSD backend RC/Slot ID: 2",
+            "SSD backend Namespace ID: 1",
+            "Firmware version: 2B2QEXM7",
+            "Status: Idle",
+            "Assigned: Yes",
+            "SMART Critical Warning: No",
+            "",
+            "Total # of PD: 2",
+            ""
+        ]
+    },
+    {
+        "ID": 93,
+        "Command": "info -o ns",
+        "Description": "Display namespaces",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 94,
+        "Command": "info -o ns -t vd -v 0",
+        "Description": "Display all namespaces which VD ID0 contains",
+        "Expected": [
+            "NS ID: 1",
+            "Size: 931 GB",
+            "Parent VD ID: 1",
+            "Valid: Yes",
+            "Active: Yes",
+            "VD status: Healthy",
+            "",
+            "Total # of NS: 1",
+            ""
+        ]
+    },
+    {
+        "ID": 95,
+        "Command": "info -o ns -t vd -v 1",
+        "Description": "Display all namespaces which VD ID1 contains",
+        "Expected": [
+            "No Namespace Info Exist."
+        ]
+    },
+    {
+        "ID": 96,
+        "Command": "led -o ep -i 0 -a on",
+        "Description": "Set endpoint 0 status on",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 97,
+        "Command": "led -o ep -i 1 -a on",
+        "Description": "Set endpoint 1 status on",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 98,
+        "Command": "led -o ep -i 2 -a on",
+        "Description": "Set endpoint 2 status on",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 99,
+        "Command": "led -o ep -i 0 -a off",
+        "Description": "Set endpoint 0 status off",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 100,
+        "Command": "led -o ep -i 1 -a off",
+        "Description": "Set endpoint 1 status off",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 101,
+        "Command": "led -o ep -i 2 -a off",
+        "Description": "Set endpoint 2 status off",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 102,
+        "Command": "led -o rc -i 0 -a sb",
+        "Description": "Set rootcomplex 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 103,
+        "Command": "led -o rc -i 1 -a sb",
+        "Description": "Set rootcomplex 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 104,
+        "Command": "led -o rc -i 2 -a sb",
+        "Description": "Set rootcomplex 2 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 105,
+        "Command": "led -o rc -i 3 -a sb",
+        "Description": "Set rootcomplex 3 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    },
+    {
+        "ID": 106,
+        "Command": "led -o ep -i 0 -a qb",
+        "Description": "Set endpoint 0 as status slow blink",
+        "Expected": [
+            "-i : invalid id '0'"
+        ]
+    },
+    {
+        "ID": 107,
+        "Command": "led -o ep -i 1 -a qb",
+        "Description": "Set endpoint 1 as status slow blink",
+        "Expected": [
+            "LED control success"
+        ]
+    },
+    {
+        "ID": 108,
+        "Command": "led -o ep -i 2 -a qb",
+        "Description": "Set endpoint 2 as status slow blink",
+        "Expected": [
+            "Invalid Field in Command (Status Code: 0x2)",
+            "LED control failed."
+        ]
+    }
+]
