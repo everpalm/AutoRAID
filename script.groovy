@@ -44,22 +44,22 @@ def test_pep8(String path) {
 }
 
 def test_smoke(String path, int rep_number, String key, String scope) {
-    run_test(path + '/test_amd64_warmboot.py', key, "--count=${rep_number} --repeat-scope=${scope} --cov-report=html --cov=${path}")
+    run_test(path + '/test_amd64_warmboot.py', key, "--count=${rep_number} --repeat-scope=${scope} --cov=${path} --json-report")
 }
 
 def test_sanity(String path) {
-    run_test(path, '', "-m 'not PERFORMANCE and not STRESS' --testmon --cov-report=html --cov=${path}")
+    run_test(path, '', "-m 'not PERFORMANCE and not STRESS' --testmon --cov=${path} --json-report")
 }
 
 def test_regression(String path) {
-    run_test(path, '', "--cov-report=html -m 'not STRESS and not TRAINING' --cov=${path}")
+    run_test(path, '', "-m 'not STRESS and not TRAINING' --cov=${path} --json-report")
 }
 
 def test_unit(String path, String key) {
-    run_test(path, key, "--cov-report=html --cov=${path}")
+    run_test(path, key, "--cov=${path} --json-report")
 }
 
 def test_training(String path) {
-    run_test(path, '', "-m 'TRAINING' --cov-report=html --cov=${path}")
+    run_test(path, '', "-m 'TRAINING' --cov=${path} --json-report")
 }
 return this
