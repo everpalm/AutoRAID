@@ -1,0 +1,63 @@
+[
+    {
+        "ID": 0,
+        "Command": "init -h",
+        "Description": "Get all events from adapter",
+        "Expected": [
+            "Description:For start or stop VD initialization.",
+            "init [-a <start|stop>] -i <id> [-h]",
+            "",
+            "Notice:For now, only provide VD full initialization.",
+            "VD must be functional.",
+            "",
+            "Options:",
+            "-a, --action <start|stop>",
+            "(DEFAULT:start) - Initialization action to be performed on VD.",
+            "-i,--id <id>",
+            "VD id.",
+            "-h, --help",
+            "",
+            "Examples:",
+            "init -a start -i 1",
+            "Start full background initialization on VD 1.",
+            "",
+            "init -a stop -i 1",
+            "Stop full background initialization on VD 1.",
+            ""
+        ]
+    },
+    {
+        "ID": 1,
+        "Command": "init -a start -i 0",
+        "Description": "Start full background initialization on VD 0",
+        "Expected": [
+            "-i : invalid vd id '0'."
+        ]
+    },
+    {
+        "ID": 2,
+        "Command": "init -a start -i 2",
+        "Description": "Start full background initialization on VD 2",
+        "Expected": [
+            "Invalid LD ID (Status Code: 0x707)",
+            "cmd failed."
+        ]
+    },
+    {
+        "ID": 3,
+        "Command": "init -a start -i 65535",
+        "Description": "Start full background initialization on VD 65535",
+        "Expected": [
+            "Invalid LD ID (Status Code: 0x707)",
+            "cmd failed."
+        ]
+    },
+    {
+        "ID": 4,
+        "Command": "init -a start -i z",
+        "Description": "Start full background initialization on VD z",
+        "Expected": [
+            "-i : invalid vd id 'z'."
+        ]
+    }
+]
