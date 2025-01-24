@@ -7,7 +7,6 @@ import pytest
 from event.logging import EventFactory
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
-# from interface.application_interface import ApplicationInterface as api
 from unit.mongodb import MongoDB as mdb
 from arm.system import RaspberryPi
 

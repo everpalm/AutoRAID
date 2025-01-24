@@ -60,3 +60,54 @@ def convert_size(callback):
                     str_result[key] = float(value)
         return str_result
     return wrapper
+
+
+def dict_format(callback):
+    """
+    Decorator to convert the result of a function (which should return an
+    iterable) to a dictionary with integer keys (index).
+
+    This decorator wraps a given function, executes it, logs the result,
+    and then converts the iterable returned by the original function to a
+    dictionary where keys are the integer indices of the iterable's elements.
+
+    Args:
+        original_function: The function to be wrapped.
+
+    Returns:
+        Callable: The wrapped function.
+        dict:  A dictionary where the keys are integer indices of the input
+        list. Returns None if an error occurs during the dictionary creation.
+    Raises:
+         TypeError: If the input is not iterable
+
+    """
+    def wrapper(*args, **kwargs):
+        """
+        Wrapper function that executes the original function and formats the
+        result as a dictionary.
+
+        Args:
+            *args: Variable length argument list of the original function.
+            **kwargs: Arbitrary keyword arguments of the original function.
+
+        Returns:
+            Dict[int, Any] | None: A dictionary where the keys are integer
+            indices of the original function's iterable result.
+            Returns None if an error occurs during processing or the input is
+            not iterable.
+
+        Raises:
+            TypeError: If the input function result is not iterable
+        """
+        try:
+            dict_result = callback(*args, **kwargs)
+            logger.debug("Result to be transformed = %s", dict_result)
+            return dict(enumerate(dict_result))
+        except TypeError as e:
+            logger.error("TypeError occurred in wrapper: %s", e)
+        except Exception as e:
+            logger.exception("An unexpected error occurred in wrapper: %s", e)
+            raise
+    wrapper.original = callback
+    return wrapper

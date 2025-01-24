@@ -1,15 +1,33 @@
 # Contents of arm/system.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
+from abc import ABC
+from abc import abstractmethod
 from amd64.system import BaseOS
 from interface.application import BaseInterface
+from typing import Tuple
 from unit.log_handler import get_logger
 
 
 logger = get_logger(__name__, logging.INFO)
 
 
-class RaspberryPi(BaseOS):
+class BaseUART(ABC):
+    def __init__(self, uart_path: str, baud_rate: int, file_name: str):
+        self.uart_path = uart_path
+        self.baud_rate = baud_rate
+        self.file_name = file_name
+
+    @abstractmethod
+    def open_uart(self):
+        pass
+
+    @abstractmethod
+    def close_uart(self):
+        pass
+
+
+class RaspberryPi(BaseOS, BaseUART):
     """
     Raspberry Pi UART Manager
 
@@ -24,16 +42,20 @@ class RaspberryPi(BaseOS):
     """
     def __init__(self, uart_path: str, baud_rate: int, file_name: str,
                  rpi_api: BaseInterface):
-        super().__init__(rpi_api)
-        self.uart_path = uart_path
-        self.baud_rate = baud_rate
-        self.file_name = file_name
+        BaseOS.__init__(self, rpi_api)
+        BaseUART.__init__(self, uart_path, baud_rate, file_name)
 
     def open_uart(self) -> None:
-        logger.debug('self.file_name = %s', self.file_name)
-        self.api.command_line('pwd')
-        self.api.command_line(f"sudo screen -dm -L -Logfile {self.file_name}"
-                              f" {self.uart_path} {self.baud_rate}")
+        try:
+            logger.debug('self.file_name = %s', self.file_name)
+            self.api.command_line('pwd')
+            self.api.command_line(
+                f"sudo screen -dm -L -Logfile "
+                f"{self.file_name} {self.uart_path} "
+                f"{self.baud_rate}"
+            )
+        except Exception as e:
+            logger.warning("Failed to open UART session: %s", e)
 
     def close_uart(self) -> int:
         str_return = self.api.command_line("sudo screen -ls")
@@ -57,8 +79,25 @@ class RaspberryPi(BaseOS):
         logger.debug("Closing UART session with command: %s", close_cmd)
         return int(uart_port)
 
-    def _get_memory_size(self):
-        pass
+    def _get_memory_size(self) -> Tuple[int, str]:
+        try:
+            memory_info = self.api.command_line.original(
+                self.api, "cat /proc/meminfo | grep MemTotal")
+            value, unit = (memory_info[0].split()[1],
+                           memory_info[0].split()[2])
+            return (int(value), unit)
 
-    def get_cpu_info(self):
-        pass
+        except Exception as e:
+            logger.error("Failed to retrieve memory size: %s", str(e))
+            raise
+
+    def get_cpu_info(self) -> str:
+        try:
+            cpu_info = self.api.command_line.original(
+                self.api, "cat /proc/cpuinfo | grep 'Model'")
+            model_name = cpu_info[0].split(":")[1].strip()
+            logger.info("model_name = %s", model_name)
+            return model_name
+        except Exception as e:
+            logger.error("Failed to retrieve CPU info: %s", str(e))
+            raise
