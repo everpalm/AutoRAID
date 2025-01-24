@@ -10,7 +10,7 @@ from amd64.system import PlatformFactory
 from interface.application import InterfaceFactory
 from interface.application import RaspberryInterfaceFactory
 from unit.gitlab import GitLabAPI
-from unit.gpio import RaspBerryPins as rbp
+from unit.gpio import RaspBerryPins
 from unit.mongodb import MongoDB
 
 
@@ -94,7 +94,7 @@ def cmdopt(request):
 @pytest.fixture(scope="session")
 def my_pins():
     print('\n\033[32m================= Setup GPIO.2 =================\033[0m')
-    return rbp('rpi3_gpio_pins.json', 'GPIO.2')
+    return RaspBerryPins('rpi3_gpio_pins.json', 'GPIO.2')
 
 
 @pytest.fixture(scope="session", autouse=True)

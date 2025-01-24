@@ -8,7 +8,7 @@
 from unittest.mock import MagicMock
 import pytest
 import RPi.GPIO as gpio
-from unit.gpio import OperateGPIO as og
+from unit.gpio import OperateGPIO
 
 
 class TestOperateGPIO:
@@ -36,7 +36,7 @@ class TestOperateGPIO:
         gpio.output = MagicMock()
         gpio.cleanup = MagicMock()
 
-        my_mgi = og(my_pins, gpio.BOARD)
+        my_mgi = OperateGPIO(my_pins, gpio.BOARD)
         yield my_mgi
         print('\n=====================Teardown GPIO=====================')
         my_mgi.clear_gpio()
