@@ -6,10 +6,7 @@ from pymongo import MongoClient, errors
 from pymongo import DESCENDING
 from unit.log_handler import get_logger
 
-# logger = logging.getLogger(__name__)
 logger = get_logger(__name__, logging.INFO)
-
-# PROJECT_PATH = "/home/pi/Projects/AutoRAID"
 
 
 class MongoDB(object):

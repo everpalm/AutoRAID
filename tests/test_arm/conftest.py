@@ -4,14 +4,14 @@
 import pytest
 import RPi.GPIO as gpio
 from arm.system import RaspberryPi
-from unit.gpio import OperateGPIO as og
+from unit.gpio import OperateGPIO
 
 
 @pytest.fixture(scope="module")
 def rpi_gpio(my_pins):
     '''This is a docstring'''
     print('\n================== Setup Relay ================================')
-    amd_mgi = og(my_pins, gpio.BOARD)
+    amd_mgi = OperateGPIO(my_pins, gpio.BOARD)
 
     yield amd_mgi
     print('\n================== Teardown Relay =============================')

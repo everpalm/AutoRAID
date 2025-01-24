@@ -5,7 +5,6 @@ import paramiko
 import pytest
 
 from event.logging import EventFactory
-# from interface.application_interface import ApplicationInterface as api
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
