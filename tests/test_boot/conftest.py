@@ -5,7 +5,7 @@ import paramiko
 import pytest
 
 from amd64.system import BaseOS
-from amd64.nvme import AMD64NVMe as amd64
+# from amd64.nvme import AMD64NVMe as amd64
 from event.logging import EventFactory
 from interface.application import BaseInterface
 from interface.application_interface import ApplicationInterface as api
@@ -99,23 +99,23 @@ def test_open_uart(drone):
     drone.close_uart()
 
 
-@pytest.fixture(scope="session")
-def target_system(my_app):
-    """
-    Fixture to set up the target system (AMD64 platform).
+# @pytest.fixture(scope="session")
+# def target_system(my_app):
+#     """
+#     Fixture to set up the target system (AMD64 platform).
 
-    Initializes an `amd64` object representing the target system, using the
-    provided `my_app` interface. This fixture has a "session" scope.
+#     Initializes an `amd64` object representing the target system, using the
+#     provided `my_app` interface. This fixture has a "session" scope.
 
-    Args:
-        my_app: The application interface for interacting with the target
-        system.
+#     Args:
+#         my_app: The application interface for interacting with the target
+#         system.
 
-    Returns:
-        amd64: The target system object.
-    """
-    print("\n\033[32m================== Setup Platform (Deprecated)==\033[0m")
-    return amd64(interface=my_app)
+#     Returns:
+#         amd64: The target system object.
+#     """
+#    print("\n\033[32m================== Setup Platform (Deprecated)==\033[0m")
+#     return amd64(interface=my_app)
 
 
 @pytest.fixture(scope="function")
