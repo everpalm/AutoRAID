@@ -40,6 +40,20 @@ class RaspberryPi(BaseOS, BaseUART):
         logfile_path (str): The path to the logfile for 'screen'.
         api: An API interface to run command_line commands (e.g. SSH or local).
     """
+    _instance = None
+    _initialized = False
+
+    def __new__(cls, *args, **kwargs):
+        """
+        Ensures only one instance of the class is created (Singleton pattern).
+
+        Returns:
+            RaspBerryPins: The singleton instance of the RaspBerryPins class.
+        """
+        if cls._instance is None:
+            cls.instance = super(RaspberryPi, cls).__new__(cls)
+        return cls.instance
+
     def __init__(self, uart_path: str, baud_rate: int, file_name: str,
                  rpi_api: BaseInterface):
         BaseOS.__init__(self, rpi_api)
