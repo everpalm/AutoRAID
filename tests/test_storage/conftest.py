@@ -9,7 +9,7 @@ import pytest
 from amd64.system import BaseOS
 from event.logging import EventFactory
 from interface.application import BaseInterface
-from interface.application_interface import ApplicationInterface as api
+# from interface.application_interface import ApplicationInterface as api
 from storage.partitioning import PartitionDisk
 from storage.partitioning import PartitionFactory
 from storage.performance import PerfFactory
@@ -18,18 +18,6 @@ from unit.mongodb import MongoDB as mdb
 from arm.system import RaspberryPi
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
-
-
-@pytest.fixture(scope="session")
-def my_app(cmdopt):
-    '''This is a docstring'''
-    print('\n\033[32m================== Setup API (Deprecated)=======\033[0m')
-    return api.create_interface(
-        os_type=cmdopt.get('os_type'),
-        mode=cmdopt.get('mode'),
-        if_name=cmdopt.get('if_name'),
-        config_file=cmdopt.get('config_file')
-    )
 
 
 @pytest.fixture(scope="session")
@@ -119,25 +107,6 @@ def test_open_uart(drone):
     yield drone.open_uart()
     print('\n\033[32m================== Teardown UART ===============\033[0m')
     drone.close_uart()
-
-
-# @pytest.fixture(scope="session")
-# def target_system(my_app):
-#     """
-#     Fixture to set up the target system (AMD64 platform).
-
-#     Initializes an `amd64` object representing the target system, using the
-#     provided `my_app` interface. This fixture has a "session" scope.
-
-#     Args:
-#         my_app: The application interface for interacting with the target
-#         system.
-
-#     Returns:
-#         amd64: The target system object.
-#     """
-#    print("\n\033[32m================== Setup Platform (Deprecated)==\033[0m")
-#     return amd64(interface=my_app)
 
 
 @pytest.fixture(scope="function")
