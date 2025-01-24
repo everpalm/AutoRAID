@@ -10,7 +10,8 @@
 from unittest.mock import MagicMock
 from collections import defaultdict
 import pytest
-from amd64.nvme import AMD64NVMe
+# from amd64.nvme import AMD64NVMe
+from amd64.system import AMD64Windows
 from event.logging import WindowsEvent
 
 
@@ -25,7 +26,7 @@ def mock_platform():
                    error_features and command-line interaction.
     """
     # 模擬 AMD64NVMe 的 platform 和 api 行為
-    mocked = MagicMock(spec=AMD64NVMe)
+    mocked = MagicMock(spec=AMD64Windows)
 
     # 模擬 error_features
     mocked.error_features = defaultdict(set)

@@ -4,13 +4,14 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 import pytest
 from storage.partitioning import WindowsVolume
-from amd64.nvme import AMD64NVMe
+# from amd64.nvme import AMD64NVMe
+from amd64.system import AMD64Windows
 
 
 @pytest.fixture
 def mock_windows_platform():
     """Fixture to create a mocked AMD64NVMe platform for Windows tests."""
-    mock_platform = MagicMock(spec=AMD64NVMe)
+    mock_platform = MagicMock(spec=AMD64Windows)
     mock_platform.api = MagicMock()
     mock_platform.api.remote_dir = "/remote/dir"
     mock_platform.api.remote_ip = "192.168.1.100"

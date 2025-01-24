@@ -3,7 +3,8 @@
 import logging
 from abc import ABC
 from abc import abstractmethod
-from amd64.nvme import AMD64NVMe
+# from amd64.nvme import AMD64NVMe
+from amd64.system import BaseOS
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
 
@@ -12,7 +13,8 @@ logger = get_logger(__name__, logging.INFO)
 
 class BaseReboot(ABC):
     """Abstract base class for warm boot operations."""
-    def __init__(self, platform: AMD64NVMe):
+    # def __init__(self, platform: AMD64NVMe):
+    def __init__(self, platform: BaseOS):
         self._api = platform.api
 
     @abstractmethod
