@@ -149,8 +149,3 @@ class TestPowerOnSUT:
 
         # 检查返回值是否为True，表示ping成功
         assert result is True
-
-
-# class TestSystemOperation(object):
-#     # Placeholder
-#     pass

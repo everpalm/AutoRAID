@@ -1,10 +1,6 @@
 # Contents of arm/system.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
-# import os
-# from __future__ import annotations  # Header, Python 3.7 or later version
-# from abc import ABC
-# from abc import abstractmethod
 from amd64.system import BaseOS
 from interface.application import BaseInterface
 from unit.log_handler import get_logger
@@ -26,14 +22,12 @@ class RaspberryPi(BaseOS):
         logfile_path (str): The path to the logfile for 'screen'.
         api: An API interface to run command_line commands (e.g. SSH or local).
     """
-    # def __init__(self, uart_path, baud_rate, file_name, rpi_api):
     def __init__(self, uart_path: str, baud_rate: int, file_name: str,
                  rpi_api: BaseInterface):
         super().__init__(rpi_api)
         self.uart_path = uart_path
         self.baud_rate = baud_rate
         self.file_name = file_name
-        # self.api = rpi_api
 
     def open_uart(self) -> None:
         logger.debug('self.file_name = %s', self.file_name)
