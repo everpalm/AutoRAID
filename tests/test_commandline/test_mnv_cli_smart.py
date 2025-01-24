@@ -12,7 +12,6 @@ from unit.json_handler import load_and_sort_json
 # Set up logger
 logger = logging.getLogger(__name__)
 
-
 # 定義配置檔案與對應鍵
 CONFIG_FILES = {
     "smart_invalid": ("config/test_mnv_cli_smart_invalid.json", "ID")

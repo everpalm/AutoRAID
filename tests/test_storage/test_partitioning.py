@@ -56,11 +56,11 @@ class TestDiskVolume:
             Execution results should match the expected pattern.
         """
         write_result = disk_partition.write_script(scenario["Script"])
-        logger.info('write_script = %s', write_result)
+        logger.debug('write_script = %s', write_result)
         assert write_result is True
 
         exe_result = disk_partition.execute(scenario["Pattern"])
-        logger.info('exe_result = %s', exe_result)
+        logger.debug('exe_result = %s', exe_result)
         assert exe_result == scenario["Expected"]
 
     @pytest.mark.dependency(depends=["not max partitions", "not system drive"])
@@ -105,7 +105,7 @@ class TestDiskVolume:
             Script deletion should succeed.
         """
         del_result = disk_partition.delete_script()
-        logger.info('del_result = %s', del_result)
+        logger.debug('del_result = %s', del_result)
         assert del_result is True
 
     def test_get_disk_num(self, disk_partition, amd64_settings):
