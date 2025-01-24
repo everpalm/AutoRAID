@@ -32,14 +32,14 @@ WINDOWS_CMD_TABLE = ({
 class TestApplicationInterface:
     '''This is a docstring'''
     @pytest.mark.parametrize("windows_cmd", WINDOWS_CMD_TABLE)
-    def test_command_line(self, my_app, windows_cmd):
+    def test_command_line(self, network_api, windows_cmd):
         """Tests the command_line method of the ApplicationInterface class
         by sending Windows commands and comparing the output with the expected
         results from the WINDOWS_CMD_TABLE.
 
         Args:
-            my_app (ApplicationInterface): The ApplicationInterface instance
-            used for testing, typically provided as a fixture.
+            network_api (ApplicationInterface): The ApplicationInterface
+            instance used for testing, typically provided as a fixture.
             windows_cmd (dict): A dictionary representing a command and
             expected return value for the test case.
 
@@ -47,7 +47,7 @@ class TestApplicationInterface:
             - Checks that the output from executing the command matches the
             expected return value in WINDOWS_CMD_TABLE.
         """
-        list_executed = my_app.command_line(windows_cmd["Command"])
-        logger.debug("my_app.command_line = %s, type %s",
+        list_executed = network_api.command_line(windows_cmd["Command"])
+        logger.debug("network_api.command_line = %s, type %s",
                      list_executed, type(list_executed))
-        assert list_executed == windows_cmd["Return"][my_app.mode]
+        assert list_executed == windows_cmd["Return"][network_api.mode]

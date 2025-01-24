@@ -20,10 +20,6 @@ class BaseOS(ABC):
         self.manufacturer = interface.config_file.replace('.json', '')
         self.memory_size = self._get_memory_size()
 
-    # @abstractmethod
-    # def _get_hyperthreading(self):
-    #     pass
-
     @abstractmethod
     def _get_memory_size(self) -> int:
         pass
@@ -31,9 +27,6 @@ class BaseOS(ABC):
     @abstractmethod
     def get_cpu_info(self) -> dict[str, str]:
         pass
-
-    # def _get_pcie_info(self) -> dict[str, str]:
-    #     pass
 
 
 class AMD64Windows(BaseOS):
@@ -273,9 +266,6 @@ class AMD64Windows(BaseOS):
 
 class AMD64Linux(BaseOS):
     '''docstring'''
-    # def _get_hyperthreading(self):
-    #     pass
-
     def _get_memory_size(self):
         pass
 
@@ -284,9 +274,6 @@ class AMD64Linux(BaseOS):
 
     def _get_desktop_info(self) -> dict[str]:
         pass
-
-    # def _get_pcie_info(self) -> dict[str, str]:
-    #     pass
 
 
 class BasePlatformFactory(ABC):

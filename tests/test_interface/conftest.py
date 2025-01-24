@@ -5,21 +5,9 @@ import paramiko
 import pytest
 
 from event.logging import EventFactory
-from interface.application_interface import ApplicationInterface as api
+# from interface.application_interface import ApplicationInterface as api
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
-
-
-@pytest.fixture(scope="session")
-def my_app(cmdopt):
-    '''This is a docstring'''
-    print('\n\033[32m================== Setup API (Deprecated)=======\033[0m')
-    return api.create_interface(
-        os_type=cmdopt.get('os_type'),
-        mode=cmdopt.get('mode'),
-        if_name=cmdopt.get('if_name'),
-        config_file=cmdopt.get('config_file')
-    )
 
 
 @pytest.fixture(scope="package")
