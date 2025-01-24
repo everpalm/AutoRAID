@@ -83,8 +83,8 @@ class RaspberryPi(BaseOS, BaseUART):
         try:
             memory_info = self.api.command_line.original(
                 self.api, "cat /proc/meminfo | grep MemTotal")
-            value, unit = (memory_info[0].split()[1],
-                           memory_info[0].split()[2])
+            split_info = memory_info[0].split()
+            value, unit = split_info[1], split_info[2]
             return (int(value), unit)
 
         except Exception as e:
