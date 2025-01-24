@@ -14,7 +14,7 @@ from storage.partitioning import PartitionFactory
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
 from unit.mongodb import MongoDB as mdb
-from unit.system_under_testing import RaspberryPi
+from arm.system import RaspberryPi
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
