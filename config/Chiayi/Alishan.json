@@ -1,0 +1,158 @@
+[
+    {
+        "Name": "MY-RASPI-07",
+        "Remote": "192.168.0.132",
+        "Local": "192.168.0.12",
+        "Account": "ste",
+        "Password": "123456",
+        "Remote Directory": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
+        "Local Directory": "/home/pi/Projects/AutoRAID",
+        "Remote Hardware": {
+            "CPU Information": {
+                "CPU(s)": 12,
+                "Model Name": "AMD Ryzen 9",
+                "Hyperthreading": true
+            },
+            "Memory Information": {
+                "Total Physical Size": "31 GB"
+            },
+            "System Information": {
+                "Manufacturer": "System",
+                "Model": "System Product",
+                "Name": "MY-TESTBED-01",
+                "Operating System": "Windows"
+            },
+            "Storage Information": {
+                "Standard NVM Express Controller": {
+                    "PCIE Configuration": {
+                        "Manufacturer": "NVM",
+                        "VID": "1B4B",
+                        "DID": "22411B4B",
+                        "SDID": "22411B4B",
+                        "Rev": "20"
+                    }
+                }
+            }
+        },
+        "Local Hardware": {
+            "CPU Information": {
+                "CPU(s)": 4,
+                "Model Name": "Cortex-A72",
+                "Hyperthreading": false
+            },
+            "Memory Information": {
+                "Total Physical Size": "1942364 kB"
+            },
+            "System Information": {
+                "Manufacturer": "Raspberry Pi 4",
+                "Model": "B",
+                "Name": "MY-RASPI-02",
+                "Rev":  "1.5"
+            }
+        }
+    },
+    {
+        "Name": "MY-RASPI-08",
+        "Remote": "192.168.0.133",
+        "Local": "192.168.0.13",
+        "Account": "root",
+        "Password": "marvell",
+        "Remote Directory": "/home/test/FW_Generic",
+        "Local Directory": "/home/pi/Projects/AutoRAID",
+        "Remote Hardware": {
+            "CPU Information": {
+                "CPU(s)": 12,
+                "Model Name": "AMD Ryzen 9",
+                "Hyperthreading": true
+            },
+            "Memory Information": {
+                "Total Physical Size": "31 GB"
+            },
+            "System Information": {
+                "Manufacturer": "System",
+                "Model": "System Product",
+                "Name": "MY-TESTBED-01",
+                "Operating System": "Windows"
+            },
+            "Storage Information": {
+                "Standard NVM Express Controller": {
+                    "PCIE Configuration": {
+                        "Manufacturer": "NVM",
+                        "VID": "1B4B",
+                        "DID": "22411B4B",
+                        "SDID": "22411B4B",
+                        "Rev": "20"
+                    }
+                }
+            }
+        },
+        "Local Hardware": {
+            "CPU Information": {
+                "CPU(s)": 4,
+                "Model Name": "Cortex-A72",
+                "Hyperthreading": false
+            },
+            "Memory Information": {
+                "Total Physical Size": "1942364 kB"
+            },
+            "System Information": {
+                "Manufacturer": "Raspberry Pi 4",
+                "Model": "B",
+                "Name": "MY-RASPI-02",
+                "Rev":  "1.5"
+            }
+        }
+    },
+    {
+        "Name": "MY-RASPI-09",
+        "Remote": "192.168.0.134",
+        "Local": "192.168.0.14",
+        "Account": "ste",
+        "Password": "123456",
+        "Remote Directory": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
+        "Local Directory": "/home/pi/Projects/AutoRAID",
+        "Remote Hardware": {
+            "CPU Information": {
+                "CPU(s)": 12,
+                "Model Name": "AMD Ryzen 9",
+                "Hyperthreading": true
+            },
+            "Memory Information": {
+                "Total Physical Size": "31 GB"
+            },
+            "System Information": {
+                "Manufacturer": "System",
+                "Model": "System Product",
+                "Name": "MY-TESTBED-01",
+                "Operating System": "Windows"
+            },
+            "Storage Information": {
+                "Standard NVM Express Controller": {
+                    "PCIE Configuration": {
+                        "Manufacturer": "NVM",
+                        "VID": "1B4B",
+                        "DID": "22411B4B",
+                        "SDID": "22411B4B",
+                        "Rev": "20"
+                    }
+                }
+            }
+        },
+        "Local Hardware": {
+            "CPU Information": {
+                "CPU(s)": 4,
+                "Model Name": "Cortex-A72",
+                "Hyperthreading": false
+            },
+            "Memory Information": {
+                "Total Physical Size": "1942364 kB"
+            },
+            "System Information": {
+                "Manufacturer": "Raspberry Pi 4",
+                "Model": "B",
+                "Name": "MY-RASPI-02",
+                "Rev":  "1.5"
+            }
+        }
+    }
+]
