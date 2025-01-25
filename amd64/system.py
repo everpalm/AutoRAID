@@ -10,7 +10,7 @@ import re
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 class BaseOS(ABC):

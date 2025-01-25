@@ -1,6 +1,7 @@
 # Contents of arm/system.py
 '''Copyright (c) 2024 Jaron Cheng'''
 import logging
+import multiprocessing
 from abc import ABC
 from abc import abstractmethod
 from amd64.system import BaseOS
@@ -13,10 +14,22 @@ logger = get_logger(__name__, logging.INFO)
 
 
 class BaseUART(ABC):
+    _instance = None
+    _lock = multiprocessing.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            with cls._lock:  # 確保進程安全
+                if cls._instance is None:  # 再次檢查，確保單例
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, uart_path: str, baud_rate: int, file_name: str):
-        self.uart_path = uart_path
-        self.baud_rate = baud_rate
-        self.file_name = file_name
+        if not hasattr(self, "_initialized"):
+            self._initialized = True
+            self.uart_path = uart_path
+            self.baud_rate = baud_rate
+            self.file_name = file_name
 
     @abstractmethod
     def open_uart(self):
@@ -40,20 +53,6 @@ class RaspberryPi(BaseOS, BaseUART):
         logfile_path (str): The path to the logfile for 'screen'.
         api: An API interface to run command_line commands (e.g. SSH or local).
     """
-    _instance = None
-    _initialized = False
-
-    def __new__(cls, *args, **kwargs):
-        """
-        Ensures only one instance of the class is created (Singleton pattern).
-
-        Returns:
-            RaspBerryPins: The singleton instance of the RaspBerryPins class.
-        """
-        if cls._instance is None:
-            cls.instance = super(RaspberryPi, cls).__new__(cls)
-        return cls.instance
-
     def __init__(self, uart_path: str, baud_rate: int, file_name: str,
                  rpi_api: BaseInterface):
         BaseOS.__init__(self, rpi_api)
