@@ -75,9 +75,9 @@ class TestAMD64System:
                     amd64_system.model,
                     amd64_system.name)
         assert (amd64_system.vendor ==
-                amd64_settings['Desktop Information']["Manufacturer"])
+                amd64_settings['System Information']["Manufacturer"])
         assert (amd64_system.model ==
-                amd64_settings['Desktop Information']["Model"])
+                amd64_settings['System Information']["Model"])
 
     def test_get_pcie_info(self, amd64_system, amd64_settings):
         """Test for verifying PCIe configuration, including VID, DID, SDID,
