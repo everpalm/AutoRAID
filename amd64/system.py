@@ -17,7 +17,8 @@ class BaseOS(ABC):
     '''docstring'''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        self.manufacturer = interface.config_file.replace('.json', '')
+        # self.manufacturer = interface.config_file.replace('.json', '')
+        self.manufacturer = interface.manufacturer
         self.memory_size = self._get_memory_size()
 
     @abstractmethod
@@ -47,7 +48,8 @@ class AMD64Windows(BaseOS):
     '''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        self.manufacturer = interface.config_file.replace('.json', '')
+        # self.manufacturer = interface.config_file.replace('.json', '')
+        self.manufacturer = interface.manufacturer
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
         self.cpu_num, self.cpu_name = self.get_cpu_info().values()

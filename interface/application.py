@@ -18,7 +18,7 @@ import json
 import paramiko
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 @dataclass
@@ -43,7 +43,7 @@ class BaseInterface(ABC):
         self.ssh_port = ssh_port
         self.local_ip = self._get_local_ip(if_name)
         self.remote_ip, self.account, self.password, self.local_dir, \
-            self.remote_dir = self._get_remote_ip()
+            self.remote_dir, self.manufacturer = self._get_remote_ip1()
         self._os_type = None
         self.script_name = "diskpart_script.txt"
 
@@ -132,6 +132,56 @@ class BaseInterface(ABC):
             logger.debug('Local Mode Only')
         return (remote_ip, str_account, str_password, str_local_dir,
                 str_remote_dir)
+
+    def _get_remote_ip1(self) -> Tuple[str]:
+        '''This is a docstring'''
+        remote_ip = account = password = local_dir = remote_dir = \
+            manufacturer = None
+        for element in self.__import_config():
+            if element.get('Local').get('Hardware').get('Network').get('IP') \
+                    == self.local_ip:
+                logger.debug('Found target element = %s', element)
+                remote_ip = (
+                    element.get('Remote')
+                    .get('Hardware')
+                    .get('Network')
+                    .get('IP')
+                )
+                account = (
+                    element.get('Local')
+                    .get('Operating System')
+                    .get('Account')
+                )
+                password = (
+                    element.get('Local')
+                    .get('Operating System')
+                    .get('Password')
+                )
+                local_dir = os.environ.get('WORKSPACE')
+                remote_dir = (
+                    element.get('Remote')
+                    .get('Software')
+                    .get('Script')
+                    .get('Path')
+                )
+                manufacturer = (
+                    element.get('Remote')
+                    .get('Hardware')
+                    .get('Storage')
+                    .get('Standard NVM Express Controller')
+                    .get('PCIE Configuration')
+                    .get('Manufacturer')
+                )
+                logger.debug('remote_ip = %s', remote_ip)
+                break
+
+            logger.debug('Not target element = %s', element)
+            continue
+        if remote_ip is None:
+            # raise ValueError('Remote network is disconnected')
+            logger.debug('Local Mode Only')
+        return (remote_ip, account, password, local_dir, remote_dir,
+                manufacturer)
 
     def get_ip_address(self) -> str:
         '''This is a docstring'''
