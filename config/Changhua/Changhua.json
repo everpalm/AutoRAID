@@ -77,7 +77,7 @@
                 "Storage": {
                     "Standard NVM Express Controller": {
                         "PCIE Configuration": {
-                            "Manufacturer": "NVM",
+                            "Manufacturer": "VEN_1B4B",
                             "VID": "1B4B",
                             "DID": "22411B4B",
                             "SDID": "22411B4B",
@@ -163,7 +163,7 @@
                 "Storage": {
                     "Standard NVM Express Controller": {
                         "PCIE Configuration": {
-                            "Manufacturer": "NVM",
+                            "Manufacturer": "VEN_1B4B",
                             "VID": "1B4B",
                             "DID": "22411B4B",
                             "SDID": "22411B4B",
