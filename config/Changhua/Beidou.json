@@ -1,51 +1,33 @@
 [
     {
-        "Name": "MY-RASPI-01",
         "Remote": "192.168.0.128",
         "Local": "192.168.0.193",
-        "Account": "ste",
-        "Password": "123456",
-        "Remote Directory": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
-        "Local Directory": "/home/pi/Projects/AutoRAID",
-        "Remote Operating System": "Windows",
-        "Local Operating System": "Linux",
-        "Remote Hardware": {
-            "CPU Information": {
-                "CPU(s)": 12,
-                "Model Name": "AMD Ryzen 9",
-                "Hyperthreading": true
+        "Operating System": {
+            "Type": "Linux",
+            "Version": "Raspbian GNU/Linux 11 (bullseye)",
+            "Account": "ste",
+            "Password": "123456"
+        },
+        "Software": {
+            "mnv_cli": {
+                "Path": "/home/pi/Projects/AutoRAID",
+                "Version": "1.0.0.1053"
             },
-            "Memory Information": {
-                "Total Physical Size": "31 GB"
-            },
-            "System Information": {
-                "Manufacturer": "System",
-                "Model": "System Product",
-                "Name": "MY-TESTBED-01",
-                "Operating System": "Windows"
-            },
-            "Storage Information": {
-                "Standard NVM Express Controller": {
-                    "PCIE Configuration": {
-                        "Manufacturer": "NVM",
-                        "VID": "1B4B",
-                        "DID": "22411B4B",
-                        "SDID": "22411B4B",
-                        "Rev": "20"
-                    }
-                }
+            "Script": {
+                "Path": "/home/pi/Projects/AutoRAID",
+                "Version": "0.0.1"
             }
         },
-        "Local Hardware": {
-            "CPU Information": {
-                "CPU(s)": 4,
+        "Hardware": {
+            "CPU": {
+                "Core(s)": 4,
                 "Model Name": "Cortex-A72",
                 "Hyperthreading": false
             },
-            "Memory Information": {
+            "Memory": {
                 "Total Physical Size": "1942364 kB"
             },
-            "System Information": {
+            "System": {
                 "Manufacturer": "Raspberry Pi 4",
                 "Model": "B",
                 "Name": "MY-RASPI-02",
@@ -54,57 +36,34 @@
         }
     },
     {
-        "Name": "MY-RASPI-02",
         "Remote": "192.168.0.128",
         "Local": "192.168.0.117",
-        "Account": "ste",
-        "Password": "123456",
-        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID",
-        "Local Directory": "/home/pi/Projects/AutoRAID",
-        "Remote Hardware": {
-            "CPU Information": {
-                "CPU(s)": 12,
-                "Model Name": "AMD Ryzen 9",
-                "Hyperthreading": true
+        "Operating System": {
+            "Type": "Linux",
+            "Version": "Raspbian GNU/Linux 11 (bullseye)",
+            "Account": "ste",
+            "Password": "123456"
+        },
+        "Software": {
+            "mnv_cli": {
+                "Path": "/home/pi/Projects/AutoRAID",
+                "Version": "1.0.0.1053"
             },
-            "Memory Information": {
-                "Total Physical Size": "31 GB"
-            },
-            "System Information": {
-                "Manufacturer": "System",
-                "Model": "System Product",
-                "Name": "MY-TESTBED-01",
-                "Operating System": "Windows"
-            },
-            "PCIE Configuration": {
-                "Manufacturer": "NVM",
-                "VID": "1B4B",
-                "DID": "22411B4B",
-                "SDID": "22411B4B",
-                "Rev": "20"
-            },
-            "Storage Information": {
-                "Standard NVM Express Controller": {
-                    "PCIE Configuration": {
-                        "Manufacturer": "NVM",
-                        "VID": "1B4B",
-                        "DID": "22411B4B",
-                        "SDID": "22411B4B",
-                        "Rev": "20"
-                    }
-                }
+            "Script": {
+                "Path": "/home/pi/Projects/AutoRAID",
+                "Version": "0.0.1"
             }
         },
-        "Local Hardware": {
-            "CPU Information": {
-                "CPU(s)": 4,
+        "Hardware": {
+            "CPU": {
+                "Core(s)": 4,
                 "Model Name": "Cortex-A72",
                 "Hyperthreading": false
             },
-            "Memory Information": {
+            "Memory": {
                 "Total Physical Size": "1942364 kB"
             },
-            "System Information": {
+            "System": {
                 "Manufacturer": "Raspberry Pi 4",
                 "Model": "B",
                 "Name": "MY-RASPI-02",
@@ -113,54 +72,38 @@
         }
     },
     {
-        "Name": "MY-RASPI-03",
         "Remote": "192.168.0.128",
         "Local": "192.168.0.139",
-        "Account": "ste",
-        "Password": "123456",
-        "Remote Directory": "C:\\Users\\STE\\Projects\\AutoRAID",
-        "Local Directory": "/home/pi/Projects/AutoRAID",
-        "Remote Hardware": {
-            "CPU Information": {
-                "CPU(s)": 12,
-                "Model Name": "AMD Ryzen 9",
-                "Hyperthreading": true
+        "Operating System": {
+            "Type": "Linux",
+            "Vesion": "Raspbian GNU/Linux 11 (bullseye)",
+            "Account": "ste",
+            "Password": "123456"
+        },
+        "Software": {
+            "mnv_cli": {
+                "Path": "/home/pi/Projects/AutoRAID",
+                "Version": "1.0.0.1053"
             },
-            "Memory Information": {
-                "Total Physical Size": "31 GB"
-            },
-            "System Information": {
-                "Manufacturer": "System",
-                "Model": "System Product",
-                "Name": "MY-TESTBED-01",
-                "Operating System": "Windows"
-            },
-            "Storage Information": {
-                "Standard NVM Express Controller": {
-                    "PCIE Configuration": {
-                        "Manufacturer": "NVM",
-                        "VID": "1B4B",
-                        "DID": "22411B4B",
-                        "SDID": "22411B4B",
-                        "Rev": "20"
-                    }
-                }
+            "Script": {
+                "Path": "/home/pi/Projects/AutoRAID",
+                "Version": "0.0.1"
             }
         },
-        "Local Hardware": {
-            "CPU Information": {
-                "CPU(s)": 4,
+        "Hardware": {
+            "CPU": {
+                "Core(s)": 4,
                 "Model Name": "Cortex-A53",
                 "Hyperthreading": false
             },
-            "Memory Information": {
+            "Memory": {
                 "Total Physical Size": "994824 kB"
             },
-            "System Information": {
+            "System": {
                 "Manufacturer": "Raspberry Pi 3",
                 "Model": "B",
                 "Name": "MY-RASPI-03",
-                "Rev":  "1.3"
+                "Rev":  "1.2"
             }
         }
     }
