@@ -88,14 +88,16 @@ def test_get_local_ip():
         assert ip == "192.168.0.100"
 
 
-# 測試 _get_remote_ip1 方法
 def test_get_remote_ip1(mock_base_interface_config):
+    """Test the _get_remote_ip1 method."""
     mock_config_content = json.dumps(mock_base_interface_config)
 
     with patch("builtins.open", mock_open(read_data=mock_config_content)), \
          patch("interface.application.BaseInterface._get_local_ip",
-               return_value="192.168.0.100"):
+               return_value="192.168.0.100"), \
+         patch.dict("os.environ", {}, clear=True):  # 清空 os.environ
 
+        # 初始化接口
         interface = WindowsInterface(
             mode="remote",
             if_name="eth0",
@@ -103,13 +105,15 @@ def test_get_remote_ip1(mock_base_interface_config):
             config_file="test_config.json"
         )
 
+        # 調用方法
         result = interface._get_remote_ip1()
 
+        # 驗證返回值
         assert result == (
             "192.168.0.200",
             "ste",
             "123456",
-            None,
+            None,  # WORKSPACE 不存在時應返回 None
             "C:\\Users\\STE\\Projects\\AutoRAID",
             "TestManufacturer"
         )
