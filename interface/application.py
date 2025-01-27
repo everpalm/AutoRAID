@@ -260,8 +260,9 @@ class WindowsInterface(BaseInterface):
             logger.debug('password = %s', self.password)
             logger.debug('remote_dir = %s', self.remote_dir)
 
-            remote_script_path = (
-                self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
+            # remote_script_path = (
+            #     self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
+            remote_script_path = os.path.join(self.remote_dir, self.script_name).replace("\\", "/")
             logger.debug('remote_script_path = %s', remote_script_path)
             client.connect(self.remote_ip, port=22, username=self.account,
                            password=self.password)
