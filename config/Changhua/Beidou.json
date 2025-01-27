@@ -53,7 +53,7 @@
                     "Version": "1.0.0.1053"
                 },
                 "Script": {
-                    "Path": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
+                    "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
                     "Version": "0.0.1"
                 }
             },
@@ -77,7 +77,7 @@
                 "Storage": {
                     "Standard NVM Express Controller": {
                         "PCIE Configuration": {
-                            "Manufacturer": "NVM",
+                            "Manufacturer": "VEN_1B4B",
                             "VID": "1B4B",
                             "DID": "22411B4B",
                             "SDID": "22411B4B",
@@ -139,7 +139,7 @@
                     "Version": "1.0.0.1053"
                 },
                 "Script": {
-                    "Path": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
+                    "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
                     "Version": "0.0.1"
                 }
             },
