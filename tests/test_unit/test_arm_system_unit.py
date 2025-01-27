@@ -1,77 +1,79 @@
 import pytest
-from unittest.mock import MagicMock
-from arm.system import RaspberryPi
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+from arm.system import RaspberryPi, CPUInformation, SystemInformation
+from interface.application import BaseInterface
 
 
 @pytest.fixture
-def mock_rpi():
-    """Fixture to set up RaspberryPi instance with mocked API."""
-    mock_api = MagicMock()
-    uart_path = "/dev/ttyAMA0"
-    baud_rate = 115200
-    file_name = "uart_log.txt"
-    return RaspberryPi(uart_path, baud_rate, file_name, mock_api), mock_api
+def mock_api():
+    mock = MagicMock(spec=BaseInterface)
+    mock.config_file = "test_config.json"
+    return mock
 
 
-def test_get_memory_size_success(mock_rpi):
-    rpi, mock_api = mock_rpi
-    print('rpi = ', rpi)
-    print('mock_api = ', mock_api)
-    mock_api.command_line.original.return_value = \
-        ["MemTotal:       1024000 kB"]
-    value, unit = rpi._get_memory_size()
+@pytest.fixture
+def raspberry_pi(mock_api):
+    return RaspberryPi(uart_path="/dev/ttyAMA0", baud_rate=115200, file_name="logfile.log", rpi_api=mock_api)
 
-    print('value = ', value)
-    print('unit = ', unit)
-    assert value == 1024000
-    assert unit == "kB"
-    mock_api.command_line.original.assert_called_with(
-        mock_api, "cat /proc/meminfo | grep MemTotal"
+
+def test_open_uart(raspberry_pi, mock_api):
+    raspberry_pi.open_uart()
+
+    # 確認執行了 pwd 和 screen 命令
+    mock_api.command_line.assert_any_call('pwd')
+    mock_api.command_line.assert_any_call(
+        'sudo screen -dm -L -Logfile logfile.log /dev/ttyAMA0 115200'
     )
 
 
-def test_get_memory_size_failure_with_mock_logger(mock_rpi):
-    rpi, mock_api = mock_rpi
+def test_close_uart(raspberry_pi, mock_api):
+    # 模擬 screen -ls 輸出
+    mock_api.command_line.return_value = {1: '1234..some-session-info'}
 
-    # 模擬 API 拋出異常
-    mock_api.command_line.original.side_effect = Exception("Command failed")
+    result = raspberry_pi.close_uart()
 
-    # 使用 patch 模擬 logger
-    with patch("arm.system.logger.error") as mock_error_logger:
-        with pytest.raises(Exception, match="Command failed"):
-            rpi._get_memory_size()
+    # 確認解析的 UART port 是否正確
+    assert result == 1234
 
-        # 驗證 logger.error 被正確調用
-        mock_error_logger.assert_called_once_with(
-            "Failed to retrieve memory size: %s", "Command failed"
-        )
+    # 確認關閉命令是否被執行
+    mock_api.command_line.assert_any_call('sudo screen -ls')
+    mock_api.command_line.assert_any_call('sudo screen -X -S 1234 quit')
 
 
-def test_get_cpu_info_success(mock_rpi):
-    rpi, mock_api = mock_rpi
-    mock_api.command_line.original.return_value = ["Model\t: Raspberry Pi 4"]
+def test_get_memory_size(raspberry_pi, mock_api):
+    mock_api.command_line.original.return_value = ['MemTotal:       2048000 kB']
 
-    model_name = rpi.get_cpu_info()
+    memory_size = raspberry_pi._get_memory_size()
 
-    assert model_name == "Raspberry Pi 4"
-    mock_api.command_line.original.assert_called_with(
-        mock_api, "cat /proc/cpuinfo | grep 'Model'"
+    assert memory_size == (2048000, 'kB')
+
+
+def test_get_cpu_info(raspberry_pi, mock_api):
+    mock_api.command_line.original.side_effect = [
+        ["Vendor ID:ARM"],
+        ["Model name:Cortex-A72"]
+    ]
+
+    cpu_info = raspberry_pi.get_cpu_info()
+
+    assert cpu_info == CPUInformation(
+        vendor_name="ARM",
+        model_name="Cortex-A72",
+        hyperthreading=False
     )
 
 
-def test_get_cpu_info_failure_with_mock_logger(mock_rpi):
-    rpi, mock_api = mock_rpi
+def test_get_system_info(raspberry_pi, mock_api):
+    mock_api.command_line.original.side_effect = [
+        ["Model           : Raspberry Pi 4 Model B Rev 1.2"],
+        ["MY-RASPI-02"]
+    ]
 
-    # 模擬 API 拋出異常
-    mock_api.command_line.original.side_effect = Exception("Command failed")
+    system_info = raspberry_pi.get_system_info()
 
-    # 使用 patch 模擬 logger
-    with patch("arm.system.logger.error") as mock_error_logger:
-        with pytest.raises(Exception, match="Command failed"):
-            rpi.get_cpu_info()
-
-        # 驗證 logger.error 被正確調用
-        mock_error_logger.assert_called_once_with(
-            "Failed to retrieve CPU info: %s", "Command failed"
-        )
+    assert system_info == SystemInformation(
+        manufacturer="Raspberry Pi 4",
+        model="B",
+        name="MY-RASPI-02",
+        rev="1.2"
+    )
