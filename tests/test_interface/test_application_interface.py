@@ -51,3 +51,13 @@ class TestApplicationInterface:
         logger.debug("network_api.command_line = %s, type %s",
                      list_executed, type(list_executed))
         assert list_executed == windows_cmd["Return"][network_api.mode]
+
+    def test_get_remote_ip1(self, network_api1):
+        remote_ip, account, password, local_dir, remote_dir, manufacturer = \
+            network_api1._get_remote_ip1()
+        logger.debug('remote_ip = %s', remote_ip)       # Remote IP
+        logger.debug('account = %s', account)           # Account
+        logger.debug('password = %s', password)         # Password
+        logger.debug('local_dir = %s', local_dir)       # Local Dir
+        logger.debug('remote_dir = %s', remote_dir)     # Remote Dir
+        logger.debug('manufacturer = %s', manufacturer)   # Manufacturer

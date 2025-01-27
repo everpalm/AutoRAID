@@ -5,12 +5,29 @@ import multiprocessing
 from abc import ABC
 from abc import abstractmethod
 from amd64.system import BaseOS
+from dataclasses import dataclass
 from interface.application import BaseInterface
 from typing import Tuple
 from unit.log_handler import get_logger
 
+logger = get_logger(__name__, logging.DEBUG)
 
-logger = get_logger(__name__, logging.INFO)
+
+@dataclass
+class CPUInformation:
+    '''Context of CPU Information'''
+    vendor_name: str
+    model_name: str
+    hyperthreading: bool
+
+
+@dataclass
+class SystemInformation:
+    '''Context of System Information'''
+    manufacturer: str
+    model: str
+    name: str
+    rev: str
 
 
 class BaseUART(ABC):
@@ -104,13 +121,51 @@ class RaspberryPi(BaseOS, BaseUART):
             logger.error("Failed to retrieve memory size: %s", str(e))
             raise
 
-    def get_cpu_info(self) -> str:
+    def get_cpu_info(self) -> CPUInformation:
         try:
-            cpu_info = self.api.command_line.original(
-                self.api, "cat /proc/cpuinfo | grep 'Model'")
-            model_name = cpu_info[0].split(":")[1].strip()
-            logger.info("model_name = %s", model_name)
-            return model_name
+
+            cpu_manufacturer = self.api.command_line.original(
+                self.api, "lscpu | grep 'Vendor ID'")
+
+            cpu_model_name = self.api.command_line.original(
+                self.api, "lscpu | grep 'Model name'")
+
+            cpu_info = CPUInformation(
+                cpu_manufacturer[0].split(':')[1],  # vendor name
+                cpu_model_name[0].split(':')[1],    # model name
+                False                               # hyperthreading
+            )
+            logger.debug("vendor_name = %s", cpu_info.vendor_name)
+            logger.debug("model_name = %s", cpu_info.model_name)
+            logger.debug("hyperthreading = %s", cpu_info.hyperthreading)
+
+            # return vendor_name
+            return cpu_info
         except Exception as e:
             logger.error("Failed to retrieve CPU info: %s", str(e))
+            raise
+
+    def get_system_info(self) -> SystemInformation:
+        try:
+            cpu_output = self.api.command_line.original(
+                self.api, "cat /proc/cpuinfo | grep 'Model'")
+
+            host_name = self.api.command_line.original(
+                self.api, "hostname")
+
+            system_info = SystemInformation(
+                ' '.join(cpu_output[0].split()[2:5]),   # manufacturer
+                ' '.join(cpu_output[0].split()[6:7]),   # model
+                host_name[0],                           # name
+                ' '.join(cpu_output[0].split()[8:9])    # Rev
+            )
+            logger.debug("manufacturer = %s", system_info.manufacturer)
+            logger.debug("model = %s", system_info.model)
+            logger.debug("name = %s", system_info.name)
+            logger.debug("rev = %s", system_info.rev)
+
+            # return vendor_name
+            return system_info
+        except Exception as e:
+            logger.error("Failed to retrieve System info: %s", str(e))
             raise

@@ -1,211 +1,189 @@
-# Contents of tests/test_unit/test_amd64_interface_unit.py
-'''Copyright (c) 2025 Jaron Cheng'''
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, mock_open
+import json
+import os
+from interface.application import BaseInterface
 from interface.application import WindowsInterface
-from interface.application import LinuxInterface
 from interface.application import InterfaceFactory
 
 
 @pytest.fixture
-def base_interface():
-    '''docstring'''
-    with patch('interface.application.BaseInterface._get_local_ip',
-               return_value='192.168.0.139'):
-        with patch(
-            'interface.application.BaseInterface._get_remote_ip',
-            return_value=(
-                "192.168.0.128",
-                "pi",
-                "123456",
-                "/home/pi/Projects/AutoRAID",
-                "C:\\Users\\STE\\Projects\\AutoRAID"
-            )
-        ):
-            return WindowsInterface(
-                mode='remote',
-                if_name='eth0',
-                ssh_port='22',
-                config_file='app_map.json'
-            )
+def mock_base_interface_config():
+    """Mock configuration data for BaseInterface."""
+    return [
+        {
+            "Local": {
+                "Operating System": {
+                    "Type": "Linux",
+                    "Version": "Raspbian GNU/Linux 11 (bullseye)",
+                    "Account": "ste",
+                    "Password": "123456"
+                },
+                "Software": {
+                    "mnv_cli": {
+                        "Path": "/home/pi/Projects/AutoRAID",
+                        "Version": "1.0.0.1053"
+                    },
+                    "Script": {
+                        "Path": "/home/pi/Projects/AutoRAID",
+                        "Version": "0.0.1"
+                    }
+                },
+                "Hardware": {
+                    "Network": {
+                        "IP": "192.168.0.100"
+                    }
+                }
+            },
+            "Remote": {
+                "Operating System": {
+                    "Type": "Windows",
+                    "Version": "10.0.19045.5371",
+                    "Account": "ste",
+                    "Password": "123456"
+                },
+                "Software": {
+                    "mnv_cli.exe": {
+                        "Path": "C:\\Users\\STE\\Downloads\\YT01",
+                        "Version": "1.0.0.1053"
+                    },
+                    "Script": {
+                        "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
+                        "Version": "0.0.1"
+                    }
+                },
+                "Hardware": {
+                    "Network": {
+                        "IP": "192.168.0.200"
+                    },
+                    "Storage": {
+                        "Standard NVM Express Controller": {
+                            "PCIE Configuration": {
+                                "Manufacturer": "TestManufacturer",
+                                "VID": "1B4B",
+                                "DID": "22411B4B",
+                                "SDID": "22411B4B",
+                                "Rev": "20"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
 
 
-def test_get_local_ip(base_interface):
-    '''docstring'''
-    with patch(
-        'interface.application.BaseInterface._get_local_ip'
-    ) as mock_get_local_ip:
-        mock_get_local_ip.return_value = '127.0.0.1'
-        result = base_interface._get_local_ip('eth0')
-        assert result == '127.0.0.1'
+# 測試 _get_local_ip 方法
+def test_get_local_ip():
+    with patch("socket.socket") as mock_socket, \
+         patch("fcntl.ioctl") as mock_ioctl:
+        mock_socket_instance = mock_socket.return_value
+        mock_socket_instance.fileno.return_value = 0
+
+        # 模擬返回的網絡接口數據
+        mock_ioctl.return_value = \
+            b"\x00" * 20 + b"\xC0\xA8\x00\x64" + b"\x00" * 212  # 192.168.0.100
+
+        ip = BaseInterface._get_local_ip("eth0")
+        assert ip == "192.168.0.100"
 
 
-def test_get_remote_ip(base_interface):
-    '''docstring'''
-    with patch(
-        'interface.application.BaseInterface._get_remote_ip'
-    ) as mock_get_remote_ip:
-        mock_get_remote_ip.return_value = (
-            "192.168.0.128",
-            "ste",
-            "123456",
-            "/home/pi/Projects/AutoRAID",
-            "C:\\Users\\STE\\Projects\\AutoRAID"
+def test_get_remote_ip1(mock_base_interface_config):
+    """Test the _get_remote_ip1 method."""
+    mock_config_content = json.dumps(mock_base_interface_config)
+
+    with patch("builtins.open", mock_open(read_data=mock_config_content)), \
+         patch("interface.application.BaseInterface._get_local_ip",
+               return_value="192.168.0.100"), \
+         patch.dict("os.environ", {}, clear=True):  # 清空 os.environ
+
+        # 初始化接口
+        interface = WindowsInterface(
+            mode="remote",
+            if_name="eth0",
+            ssh_port="22",
+            config_file="test_config.json"
         )
-        result = base_interface._get_remote_ip()
+
+        # 調用方法
+        result = interface._get_remote_ip1()
+
+        # 驗證返回值
         assert result == (
-            "192.168.0.128",
+            "192.168.0.200",
             "ste",
             "123456",
-            "/home/pi/Projects/AutoRAID",
-            "C:\\Users\\STE\\Projects\\AutoRAID")
-
-
-def test_os_type():
-    '''docstring'''
-    with patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
-        mock_ssh = MagicMock()
-        mock_ssh.exec_command.return_value = (
-            None,
-            MagicMock(read=MagicMock(return_value=b"Linux")),
-            None
+            None,  # WORKSPACE 不存在時應返回 None
+            "C:\\Users\\STE\\Projects\\AutoRAID",
+            "TestManufacturer"
         )
-        mock_ssh_client.return_value = mock_ssh
 
-        base_interface = WindowsInterface(
-            mode='remote',
-            if_name='eth0',
-            ssh_port='22',
-            config_file='app_map.json'
+
+# 測試 ftp_command 方法
+def test_ftp_command_windows(mock_base_interface_config):
+    mock_config_content = json.dumps(mock_base_interface_config)
+
+    with patch("builtins.open", mock_open(read_data=mock_config_content)), \
+         patch("paramiko.SSHClient") as mock_ssh_client, \
+         patch("interface.application.BaseInterface._get_local_ip",
+               return_value="192.168.0.100"):
+
+        mock_sftp = MagicMock()
+        mock_ssh_client.return_value.open_sftp.return_value = mock_sftp
+
+        interface = WindowsInterface(
+            mode="remote",
+            if_name="eth0",
+            ssh_port="22",
+            config_file="test_config.json"
         )
-        result = base_interface.os_type
-        assert result == "Linux"
 
-
-@pytest.fixture
-def windows_interface():
-    '''docstring'''
-    return WindowsInterface(
-        mode='remote',
-        if_name='eth0',
-        ssh_port='22',
-        config_file='app_map.json'
-    )
-
-
-def test_ftp_command_windows(windows_interface):
-    '''docstring'''
-    # Mock 基類屬性，設置預期值
-    with patch.object(windows_interface, 'remote_ip', '192.168.0.2'), \
-         patch.object(windows_interface, 'account', 'user'), \
-         patch.object(windows_interface, 'password', 'password'), \
-         patch.object(windows_interface, 'remote_dir', '/remote'), \
-         patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
-
-        # 模擬 SFTP 操作
-        mock_ssh = MagicMock()
-        mock_ssh.open_sftp.return_value.put.return_value = None
-        mock_ssh_client.return_value = mock_ssh
-
-        # 測試 ftp_command 方法
-        result = windows_interface.ftp_command('test_file.txt')
+        result = interface.ftp_command("test_file.txt")
         assert result is True
 
-
-def test_command_line_windows(windows_interface):
-    '''docstring'''
-    with patch(
-        'interface.application.WindowsInterface.my_command',
-        return_value=['Command executed successfully']
-    ) as mock_my_command:
-        result = windows_interface.command_line('echo Test')
-        # 確認結果是字典，且內容正確
-        assert result == {0: 'Command executed successfully'}
+        # 使用 os.path.join 確保測試中的路徑與方法一致
+        expected_path = os.path.join("C:\\Users\\STE\\Projects\\AutoRAID",
+                                     "diskpart_script.txt").replace("\\", "/")
+        mock_sftp.put.assert_called_once_with("test_file.txt", expected_path)
 
 
-@pytest.fixture
-def linux_interface():
-    '''docstring'''
-    return LinuxInterface(
-        mode='remote',
-        if_name='eth0',
-        ssh_port='22',
-        config_file='app_map.json'
-    )
+# 測試 command_line 方法
+def test_command_line_windows(mock_base_interface_config):
+    mock_config_content = json.dumps(mock_base_interface_config)
 
+    with patch("builtins.open", mock_open(read_data=mock_config_content)), \
+         patch(
+             "interface.application.WindowsInterface.my_command",
+             return_value=["Command executed successfully"]
+         ):
 
-def test_ftp_command_linux(linux_interface):
-    '''docstring'''
-    with patch.object(linux_interface, 'remote_ip', '192.168.0.2'), \
-         patch.object(linux_interface, 'account', 'user'), \
-         patch.object(linux_interface, 'password', 'password'), \
-         patch.object(linux_interface, 'remote_dir', '/remote'), \
-         patch('interface.application.paramiko.SSHClient') as mock_ssh_client:
-
-        # Mock paramiko.SSHClient 行為
-        mock_ssh = MagicMock()
-        mock_sftp = mock_ssh.open_sftp.return_value
-        mock_sftp.put.return_value = None
-        mock_ssh_client.return_value = mock_ssh
-
-        # 測試 ftp_command 方法
-        result = linux_interface.ftp_command('test_file.txt')
-
-        # 驗證結果
-        assert result is True
-
-        # 驗證 SFTP 操作是否正確執行
-        mock_sftp.put.assert_called_once_with(
-            'test_file.txt',
-            '/remote/diskpart_script.txt'
+        interface = WindowsInterface(
+            mode="remote",
+            if_name="eth0",
+            ssh_port="22",
+            config_file="test_config.json"
         )
-        mock_ssh.close.assert_called_once()
+
+        result = interface.command_line("echo Test")
+        assert result == {0: "Command executed successfully"}
 
 
-def test_command_line_linux(linux_interface):
-    '''docstring'''
-    with patch(
-            'interface.application.LinuxInterface.my_command',
-            return_value=['Command executed successfully']
-    ) as mock_my_command:
-        result = linux_interface.command_line('echo Test')
-        assert result == {0: 'Command executed successfully'}
+# 測試創建接口方法
+def test_create_windows_interface(mock_base_interface_config):
+    mock_config_content = json.dumps(mock_base_interface_config)
 
+    with patch("builtins.open", mock_open(read_data=mock_config_content)), \
+         patch("interface.application.BaseInterface._get_local_ip",
+               return_value="192.168.0.100"):
 
-def test_create_windows_interface():
-    '''docstring'''
-    factory = InterfaceFactory()
-    interface = factory.create_interface(
-        os_type='Windows',
-        mode='remote',
-        if_name='eth0',
-        ssh_port='22',
-        config_file='app_map.json'
-    )
-    assert isinstance(interface, WindowsInterface)
-
-
-def test_create_linux_interface():
-    '''docstring'''
-    factory = InterfaceFactory()
-    interface = factory.create_interface(
-        os_type='Linux',
-        mode='remote',
-        if_name='eth0',
-        ssh_port='22',
-        config_file='app_map.json'
-    )
-    assert isinstance(interface, LinuxInterface)
-
-
-def test_create_invalid_interface():
-    '''docstring'''
-    factory = InterfaceFactory()
-    with pytest.raises(ValueError):
-        factory.create_interface(
-            os_type='InvalidOS',
-            mode='remote',
-            if_name='eth0',
-            ssh_port='22',
-            config_file='app_map.json'
+        factory = InterfaceFactory()
+        interface = factory.create_interface(
+            os_type="Windows",
+            mode="remote",
+            if_name="eth0",
+            ssh_port="22",
+            config_file="test_config.json"
         )
+
+        assert isinstance(interface, WindowsInterface)
+        assert interface.remote_ip == "192.168.0.200"

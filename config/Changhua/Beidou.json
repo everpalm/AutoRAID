@@ -1,0 +1,177 @@
+[
+    {
+        "Local": 
+        {
+            "Operating System": {
+                "Type": "Linux",
+                "Version": "Raspbian GNU/Linux 11 (bullseye)",
+                "Account": "ste",
+                "Password": "123456"
+            },
+            "Software": {
+                "mnv_cli": {
+                    "Path": "/home/pi/Projects/AutoRAID",
+                    "Version": "1.0.0.1053"
+                },
+                "Script": {
+                    "Path": "/home/pi/Projects/AutoRAID",
+                    "Version": "0.0.1"
+                }
+            },
+            "Hardware": {
+                "System": {
+                    "Manufacturer": "Raspberry Pi 4",
+                    "Model": "B",
+                    "Name": "MY-RASPI-02",
+                    "Rev":  "1.5"
+                },
+                "CPU": {
+                    "Core(s)": 4,
+                    "Model Name": "Cortex-A72",
+                    "Hyperthreading": false
+                },
+                "Memory": {
+                    "Total Physical Size": "1942364 kB"
+                },
+                "Network": 
+                {
+                    "IP": "192.168.0.117"
+                }
+            }
+        },
+        "Remote":
+        {
+            "Operating System": {
+                "Type": "Windows",
+                "Version": "10.0.19045.5371",
+                "Account": "ste",
+                "Password": "123456"
+             },
+            "Software": {
+                "mnv_cli.exe": {
+                    "Path": "C:\\Users\\STE\\Downloads\\YT01",
+                    "Version": "1.0.0.1053"
+                },
+                "Script": {
+                    "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
+                    "Version": "0.0.1"
+                }
+            },
+            "Hardware": {
+                "System": {
+                    "Manufacturer": "System",
+                    "Model": "System Product",
+                    "Name": "MY-TESTBED-01"
+                },
+                "CPU": {
+                    "Core(s)": 12,
+                    "Model Name": "AMD Ryzen 9",
+                    "Hyperthreading": false
+                },
+                "Memory": {
+                    "Total Physical Size": "31 GB"
+                },
+                "Network": {
+                    "IP": "192.168.0.128"
+                },
+                "Storage": {
+                    "Standard NVM Express Controller": {
+                        "PCIE Configuration": {
+                            "Manufacturer": "VEN_1B4B",
+                            "VID": "1B4B",
+                            "DID": "22411B4B",
+                            "SDID": "22411B4B",
+                            "Rev": "20"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "Local":{
+            "Operating System": {
+                "Type": "Linux",
+                "Version": "Raspbian GNU/Linux 11 (bullseye)",
+                "Account": "ste",
+                "Password": "123456"
+            },
+            "Software": {
+                "mnv_cli": {
+                    "Path": "/home/pi/Projects/AutoRAID",
+                    "Version": "1.0.0.1053"
+                },
+                "Script": {
+                    "Path": "/home/pi/Projects/AutoRAID",
+                    "Version": "0.0.1"
+                }
+            },
+            "Hardware": {
+                "System": {
+                    "Manufacturer": "Raspberry Pi 3",
+                    "Model": "B",
+                    "Name": "MY-RASPI-03",
+                    "Rev":  "1.2"
+                },
+                "CPU": {
+                    "Core(s)": 4,
+                    "Model Name": "Cortex-A43",
+                    "Hyperthreading": false
+                },
+                "Memory": {
+                    "Total Physical Size": "994824 kB"
+                },
+                "Network": {
+                    "IP": "192.168.0.139"
+                }
+            }
+        },
+        "Remote": {
+            "Operating System": {
+                "Type": "Windows",
+                "Version": "10.0.19045.5371",
+                "Account": "ste",
+                "Password": "123456"
+             },
+            "Software": {
+                "mnv_cli.exe": {
+                    "Path": "C:\\Users\\STE\\Downloads\\YT01",
+                    "Version": "1.0.0.1053"
+                },
+                "Script": {
+                    "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
+                    "Version": "0.0.1"
+                }
+            },
+            "Hardware": {
+                "System": {
+                    "Manufacturer": "System",
+                    "Model": "System Product",
+                    "Name": "MY-TESTBED-01"
+                },
+                "CPU": {
+                    "Core(s)": 12,
+                    "Model Name": "AMD Ryzen 9",
+                    "Hyperthreading": false
+                },
+                "Memory": {
+                    "Total Physical Size": "31 GB"
+                },
+                "Network": {
+                    "IP": "192.168.0.128"
+                },
+                "Storage": {
+                    "Standard NVM Express Controller": {
+                        "PCIE Configuration": {
+                            "Manufacturer": "VEN_1B4B",
+                            "VID": "1B4B",
+                            "DID": "22411B4B",
+                            "SDID": "22411B4B",
+                            "Rev": "20"
+                        }
+                    }
+                }
+            }
+        }
+    }
+]

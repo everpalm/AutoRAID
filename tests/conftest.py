@@ -46,8 +46,8 @@ def pytest_addoption(parser):
     parser.addoption(
         "--config_file",
         action="store",
-        default="VEN_1B4B.json",
-        help="Default config file: VEN_1B4B.json"
+        default="Changhua/Beidou.json",
+        help="Default config file: Changhua/Beidou.json"
     )
     parser.addoption(
         "--private_token",
@@ -115,7 +115,8 @@ def raspi_interface():
         mode='local',
         if_name='wlan0',
         ssh_port='22',
-        config_file='app_map.json'
+        # config_file='app_map.json'
+        config_file='Changhua/Beidou.json'
     )
 
 
@@ -130,6 +131,20 @@ def network_api(cmdopt):
         if_name=cmdopt.get('if_name'),
         ssh_port='22',
         config_file=cmdopt.get('config_file')
+    )
+
+
+@pytest.fixture(scope="session")
+def network_api1(cmdopt):
+    '''docstring'''
+    print('\n\033[32m================== Setup Interface =============\033[0m')
+    factory = InterfaceFactory()
+    return factory.create_interface(
+        os_type=cmdopt.get('os_type'),
+        mode=cmdopt.get('mode'),
+        if_name=cmdopt.get('if_name'),
+        ssh_port='22',
+        config_file='Changhua/Beidou.json'
     )
 
 
