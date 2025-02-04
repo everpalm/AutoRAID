@@ -4,6 +4,7 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
+from dataclasses import field
 from typing import Tuple
 from typing import List
 from typing import Dict
@@ -30,6 +31,47 @@ class CommandContext:
     password: str
     remote_dir: str
     remote_ip: str
+
+
+@dataclass
+class RootComplex:
+    id: int
+    link_width: str
+    pcie_speed: str
+
+
+@dataclass
+class EndPoint:
+    id: int
+    link_width: str
+    pcie_speed: str
+
+
+@dataclass
+class NVMeController:
+    '''This is a docstring'''
+    bus_device_func: str
+    device: str
+    slot_id: str
+    firmware_version: str
+    vid: str
+    svid: str
+    did: str
+    sdid: str
+    revision_id: str
+    port_count: int
+    max_pd_of_per_vd: int
+    max_vd: int
+    max_pd: int
+    max_ns_of_per_vd: int
+    max_ns: int
+    supported_raid_mode: List[str]
+    cache: str
+    supported_bga_features: List[str]
+    support_stripe_size: List[str]
+    supported_features: List[str]
+    root_complexes: List[RootComplex] = field(default_factory=list)
+    end_points: List[EndPoint] = field(default_factory=list)
 
 
 class BaseInterface(ABC):
@@ -135,8 +177,7 @@ class BaseInterface(ABC):
 
     def _get_remote_ip1(self) -> Tuple[str]:
         '''This is a docstring'''
-        remote_ip = account = password = local_dir = remote_dir = \
-            manufacturer = None
+        remote_ip = account = password = local_dir = remote_dir = None
         for element in self.__import_config():
             if element.get('Local').get('Hardware').get('Network').get('IP') \
                     == self.local_ip:
@@ -164,15 +205,50 @@ class BaseInterface(ABC):
                     .get('Script', {})
                     .get('Path', {})
                 )
-                manufacturer = (
+                nvme_data = (
                     element.get('Remote', {})
                     .get('Hardware', {})
                     .get('Storage', {})
                     .get('Standard NVM Express Controller', {})
-                    .get('PCIE Configuration', {})
-                    .get('Manufacturer', {})
                 )
+                root_complexes_list = [
+                    RootComplex(**rc) for rc in nvme_data.get("root_complexes",
+                                                              [])
+                ]
+                self.nvme_controller = NVMeController(
+                    bus_device_func=nvme_data["bus_device_func"],
+                    device=nvme_data["device"],
+                    slot_id=nvme_data["slot_id"],
+                    firmware_version=nvme_data["firmware_version"],
+                    vid=nvme_data["PCIE Configuration"]["VID"],
+                    svid=nvme_data["PCIE Configuration"]["Manufacturer"],
+                    did=nvme_data["PCIE Configuration"]["DID"],
+                    sdid=nvme_data["PCIE Configuration"]["SDID"],
+                    revision_id=nvme_data["revision_id"],
+                    port_count=nvme_data["port_count"],
+                    max_pd_of_per_vd=nvme_data["max_pd_of_per_vd"],
+                    max_vd=nvme_data["max_vd"],
+                    max_pd=nvme_data["max_pd"],
+                    max_ns_of_per_vd=nvme_data["max_ns_of_per_vd"],
+                    max_ns=nvme_data["max_ns"],
+                    supported_raid_mode=nvme_data["supported_raid_mode"],
+                    cache=nvme_data["cache"],
+                    supported_bga_features=nvme_data["supported_bga_features"],
+                    support_stripe_size=nvme_data["support_stripe_size"],
+                    supported_features=nvme_data["supported_features"],
+                    root_complexes=root_complexes_list
+                )
+                # manufacturer = (
+                #     element.get('Remote', {})
+                #     .get('Hardware', {})
+                #     .get('Storage', {})
+                #     .get('Standard NVM Express Controller', {})
+                #     .get('PCIE Configuration', {})
+                #     .get('Manufacturer', {})
+                # )
                 logger.debug('remote_ip = %s', remote_ip)
+                # logger.debug('manufacturer = %s', manufacturer)
+                logger.debug('svid = %s', self.nvme_controller.svid)
                 break
 
             logger.debug('Not target element = %s', element)
@@ -181,7 +257,7 @@ class BaseInterface(ABC):
             # raise ValueError('Remote network is disconnected')
             logger.debug('Local Mode Only')
         return (remote_ip, account, password, local_dir, remote_dir,
-                manufacturer)
+                self.nvme_controller.svid)
 
     def get_ip_address(self) -> str:
         '''This is a docstring'''
@@ -262,7 +338,9 @@ class WindowsInterface(BaseInterface):
 
             # remote_script_path = (
             #     self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
-            remote_script_path = os.path.join(self.remote_dir, self.script_name).replace("\\", "/")
+            remote_script_path = os.path.join(self.remote_dir,
+                                              self.script_name).replace("\\",
+                                                                        "/")
             logger.debug('remote_script_path = %s', remote_script_path)
             client.connect(self.remote_ip, port=22, username=self.account,
                            password=self.password)

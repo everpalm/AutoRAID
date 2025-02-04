@@ -82,7 +82,35 @@
                             "DID": "22411B4B",
                             "SDID": "22411B4B",
                             "Rev": "20"
-                        }
+                        },
+                        "bus_device_func": "0a:00.00",
+                        "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+                        "slot_id": "Not found",
+                        "firmware_version": "1.0.0.1053",
+                        "revision_id": "B0B",
+                        "port_count": 2,
+                        "max_pd_of_per_vd": 2,
+                        "max_vd": 2,
+                        "max_pd": 2,
+                        "max_ns_of_per_vd": 1,
+                        "max_ns": 2,
+                        "supported_raid_mode": ["RAID0", "RAID1", "JBOD"],
+                        "cache": "On",
+                        "supported_bga_features": ["Initialization", "Rebuild", "MediaPatrol"],
+                        "support_stripe_size": ["128KB", "256KB", "512KB"],
+                        "supported_features": ["Import", "RAID", "Namespace", "Dump"],
+                        "root_complexes": [
+                            {
+                                "id": 0,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            },
+                            {
+                                "id": 1,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ]
                     }
                 }
             }
@@ -168,7 +196,35 @@
                             "DID": "22411B4B",
                             "SDID": "22411B4B",
                             "Rev": "20"
-                        }
+                        },
+                        "bus_device_func": "0a:00.00",
+                        "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+                        "slot_id": "Not found",
+                        "firmware_version": "1.0.0.1053",
+                        "revision_id": "B0B",
+                        "port_count": 2,
+                        "max_pd_of_per_vd": 2,
+                        "max_vd": 2,
+                        "max_pd": 2,
+                        "max_ns_of_per_vd": 1,
+                        "max_ns": 2,
+                        "supported_raid_mode": ["RAID0", "RAID1", "JBOD"],
+                        "cache": "On",
+                        "supported_bga_features": ["Initialization", "Rebuild", "MediaPatrol"],
+                        "support_stripe_size": ["128KB", "256KB", "512KB"],
+                        "supported_features": ["Import", "RAID", "Namespace", "Dump"],
+                        "root_complexes": [
+                            {
+                                "id": 0,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            },
+                            {
+                                "id": 1,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ]
                     }
                 }
             }

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class TestChunghua:
     '''docstring'''
-    def test_get_controller_info(self, boot_device):
+    def test_get_controller_info(self, boot_device, network_api):
         '''fixture'''
         controller_info = boot_device.controller_info
         logger.info("bus_device_func = %s", controller_info.bus_device_func)
@@ -38,3 +38,4 @@ class TestChunghua:
                     controller_info.supported_features)
         logger.info("root_complexes = %s", controller_info.root_complexes)
         logger.info("end_points = %s", controller_info.end_points)
+        logger.info("nvme_controller = %s", network_api.nvme_controller)
