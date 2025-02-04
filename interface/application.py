@@ -84,6 +84,7 @@ class BaseInterface(ABC):
         self.if_name = if_name
         self.ssh_port = ssh_port
         self.local_ip = self._get_local_ip(if_name)
+        self.nvme_controller = None
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir, self.manufacturer = self._get_remote_ip1()
         self._os_type = None
@@ -177,7 +178,8 @@ class BaseInterface(ABC):
 
     def _get_remote_ip1(self) -> Tuple[str]:
         '''This is a docstring'''
-        remote_ip = account = password = local_dir = remote_dir = None
+        remote_ip = account = password = local_dir = remote_dir = \
+            manufacturer = None
         for element in self.__import_config():
             if element.get('Local').get('Hardware').get('Network').get('IP') \
                     == self.local_ip:
@@ -258,7 +260,6 @@ class BaseInterface(ABC):
             logger.debug('Not target element = %s', element)
             continue
         if remote_ip is None:
-            # raise ValueError('Remote network is disconnected')
             logger.debug('Local Mode Only')
         return (remote_ip, account, password, local_dir, remote_dir,
                 manufacturer)
@@ -340,8 +341,6 @@ class WindowsInterface(BaseInterface):
             logger.debug('password = %s', self.password)
             logger.debug('remote_dir = %s', self.remote_dir)
 
-            # remote_script_path = (
-            #     self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
             remote_script_path = os.path.join(self.remote_dir,
                                               self.script_name).replace("\\",
                                                                         "/")
