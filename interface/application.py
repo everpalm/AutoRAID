@@ -4,6 +4,7 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
+from dataclasses import field
 from typing import Tuple
 from typing import List
 from typing import Dict
@@ -32,6 +33,47 @@ class CommandContext:
     remote_ip: str
 
 
+@dataclass
+class RootComplex:
+    id: int
+    link_width: str
+    pcie_speed: str
+
+
+@dataclass
+class EndPoint:
+    id: int
+    link_width: str
+    pcie_speed: str
+
+
+@dataclass
+class NVMeController:
+    '''This is a docstring'''
+    bus_device_func: str
+    device: str
+    slot_id: str
+    firmware_version: str
+    vid: str
+    svid: str
+    did: str
+    sdid: str
+    revision_id: str
+    port_count: int
+    max_pd_of_per_vd: int
+    max_vd: int
+    max_pd: int
+    max_ns_of_per_vd: int
+    max_ns: int
+    supported_raid_mode: List[str]
+    cache: str
+    supported_bga_features: List[str]
+    support_stripe_size: List[str]
+    supported_features: List[str]
+    root_complexes: List[RootComplex] = field(default_factory=list)
+    end_points: List[EndPoint] = field(default_factory=list)
+
+
 class BaseInterface(ABC):
     '''This is a docstring'''
     def __init__(self, mode: str, if_name: str, ssh_port: str,
@@ -42,6 +84,7 @@ class BaseInterface(ABC):
         self.if_name = if_name
         self.ssh_port = ssh_port
         self.local_ip = self._get_local_ip(if_name)
+        self.nvme_controller = None
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir, self.manufacturer = self._get_remote_ip1()
         self._os_type = None
@@ -170,15 +213,53 @@ class BaseInterface(ABC):
                     .get('Storage', {})
                     .get('Standard NVM Express Controller', {})
                     .get('PCIE Configuration', {})
-                    .get('Manufacturer', {})
+                    .get('Manufacturer')
+                )
+                nvme_data = (
+                    element.get('Remote', {})
+                    .get('Hardware', {})
+                    .get('Storage', {})
+                    .get('Standard NVM Express Controller', {})
+                )
+                root_complexes_list = [
+                    RootComplex(**rc) for rc in nvme_data.get("root_complexes",
+                                                              [])
+                ]
+                end_points_list = [
+                    EndPoint(**ep) for ep in nvme_data.get("end_points", [])
+                ]
+                logger.debug('end_points_list = %s', end_points_list)
+                self.nvme_controller = NVMeController(
+                    bus_device_func=nvme_data["bus_device_func"],
+                    device=nvme_data["device"],
+                    slot_id=nvme_data["slot_id"],
+                    firmware_version=nvme_data["firmware_version"],
+                    vid=nvme_data["PCIE Configuration"]["VID"],
+                    svid=nvme_data["PCIE Configuration"]["SVID"],
+                    did=nvme_data["PCIE Configuration"]["DID"],
+                    sdid=nvme_data["PCIE Configuration"]["SDID"],
+                    revision_id=nvme_data["revision_id"],
+                    port_count=nvme_data["port_count"],
+                    max_pd_of_per_vd=nvme_data["max_pd_of_per_vd"],
+                    max_vd=nvme_data["max_vd"],
+                    max_pd=nvme_data["max_pd"],
+                    max_ns_of_per_vd=nvme_data["max_ns_of_per_vd"],
+                    max_ns=nvme_data["max_ns"],
+                    supported_raid_mode=nvme_data["supported_raid_mode"],
+                    cache=nvme_data["cache"],
+                    supported_bga_features=nvme_data["supported_bga_features"],
+                    support_stripe_size=nvme_data["support_stripe_size"],
+                    supported_features=nvme_data["supported_features"],
+                    root_complexes=root_complexes_list,
+                    end_points=end_points_list
                 )
                 logger.debug('remote_ip = %s', remote_ip)
+                logger.debug('manufacturer = %s', manufacturer)
                 break
 
             logger.debug('Not target element = %s', element)
             continue
         if remote_ip is None:
-            # raise ValueError('Remote network is disconnected')
             logger.debug('Local Mode Only')
         return (remote_ip, account, password, local_dir, remote_dir,
                 manufacturer)
@@ -260,9 +341,9 @@ class WindowsInterface(BaseInterface):
             logger.debug('password = %s', self.password)
             logger.debug('remote_dir = %s', self.remote_dir)
 
-            # remote_script_path = (
-            #     self.remote_dir.replace("\\", "/") + f"/{self.script_name}")
-            remote_script_path = os.path.join(self.remote_dir, self.script_name).replace("\\", "/")
+            remote_script_path = os.path.join(self.remote_dir,
+                                              self.script_name).replace("\\",
+                                                                        "/")
             logger.debug('remote_script_path = %s', remote_script_path)
             client.connect(self.remote_ip, port=22, username=self.account,
                            password=self.password)
