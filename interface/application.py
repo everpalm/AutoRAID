@@ -205,6 +205,14 @@ class BaseInterface(ABC):
                     .get('Script', {})
                     .get('Path', {})
                 )
+                manufacturer = (
+                    element.get('Remote', {})
+                    .get('Hardware', {})
+                    .get('Storage', {})
+                    .get('Standard NVM Express Controller', {})
+                    .get('PCIE Configuration', {})
+                    .get('Manufacturer')
+                )
                 nvme_data = (
                     element.get('Remote', {})
                     .get('Hardware', {})
@@ -215,13 +223,17 @@ class BaseInterface(ABC):
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])
                 ]
+                end_points_list = [
+                    EndPoint(**ep) for ep in nvme_data.get("end_points", [])
+                ]
+                logger.debug('end_points_list = %s', end_points_list)
                 self.nvme_controller = NVMeController(
                     bus_device_func=nvme_data["bus_device_func"],
                     device=nvme_data["device"],
                     slot_id=nvme_data["slot_id"],
                     firmware_version=nvme_data["firmware_version"],
                     vid=nvme_data["PCIE Configuration"]["VID"],
-                    svid=nvme_data["PCIE Configuration"]["Manufacturer"],
+                    svid=nvme_data["PCIE Configuration"]["SVID"],
                     did=nvme_data["PCIE Configuration"]["DID"],
                     sdid=nvme_data["PCIE Configuration"]["SDID"],
                     revision_id=nvme_data["revision_id"],
@@ -236,19 +248,11 @@ class BaseInterface(ABC):
                     supported_bga_features=nvme_data["supported_bga_features"],
                     support_stripe_size=nvme_data["support_stripe_size"],
                     supported_features=nvme_data["supported_features"],
-                    root_complexes=root_complexes_list
+                    root_complexes=root_complexes_list,
+                    end_points=end_points_list
                 )
-                # manufacturer = (
-                #     element.get('Remote', {})
-                #     .get('Hardware', {})
-                #     .get('Storage', {})
-                #     .get('Standard NVM Express Controller', {})
-                #     .get('PCIE Configuration', {})
-                #     .get('Manufacturer', {})
-                # )
                 logger.debug('remote_ip = %s', remote_ip)
-                # logger.debug('manufacturer = %s', manufacturer)
-                logger.debug('svid = %s', self.nvme_controller.svid)
+                logger.debug('manufacturer = %s', manufacturer)
                 break
 
             logger.debug('Not target element = %s', element)
@@ -257,7 +261,7 @@ class BaseInterface(ABC):
             # raise ValueError('Remote network is disconnected')
             logger.debug('Local Mode Only')
         return (remote_ip, account, password, local_dir, remote_dir,
-                self.nvme_controller.svid)
+                manufacturer)
 
     def get_ip_address(self) -> str:
         '''This is a docstring'''

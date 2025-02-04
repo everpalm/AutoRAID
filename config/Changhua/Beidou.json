@@ -78,9 +78,10 @@
                     "Standard NVM Express Controller": {
                         "PCIE Configuration": {
                             "Manufacturer": "VEN_1B4B",
-                            "VID": "1B4B",
-                            "DID": "22411B4B",
-                            "SDID": "22411B4B",
+                            "VID": "0x1b4b",
+                            "SVID": "0x1b4b",
+                            "DID": "0x2241",
+                            "SDID": "0x2241",
                             "Rev": "20"
                         },
                         "bus_device_func": "0a:00.00",
@@ -107,6 +108,13 @@
                             },
                             {
                                 "id": 1,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "end_points": [
+                            {
+                                "id": 0,
                                 "link_width": "4x",
                                 "pcie_speed": "8Gb/s"
                             }
@@ -192,9 +200,10 @@
                     "Standard NVM Express Controller": {
                         "PCIE Configuration": {
                             "Manufacturer": "VEN_1B4B",
-                            "VID": "1B4B",
-                            "DID": "22411B4B",
-                            "SDID": "22411B4B",
+                            "VID": "0x1b4b",
+                            "SVID": "0x1b4b",
+                            "DID": "0x2241",
+                            "SDID": "0x2241",
                             "Rev": "20"
                         },
                         "bus_device_func": "0a:00.00",
@@ -221,6 +230,13 @@
                             },
                             {
                                 "id": 1,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "end_points": [
+                            {
+                                "id": 0,
                                 "link_width": "4x",
                                 "pcie_speed": "8Gb/s"
                             }
