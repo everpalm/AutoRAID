@@ -2,14 +2,8 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 
-# from amd64.system import BaseOS
 from commandline.mnv_cli import CLIFactory
 from device.beidou import ChunghuaFactory
-# from interface.application import BaseInterface
-# from storage.stress import StressFactory
-# from storage.partitioning import PartitionFactory
-# from storage.partitioning import PartitionDisk
-# from unit.mongodb import MongoDB as mdb
 
 
 @pytest.fixture(scope="module")
