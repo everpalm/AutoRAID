@@ -79,6 +79,22 @@ class NVMeController:
     end_points: List[EndPoint] = field(default_factory=list)
 
 
+@dataclass
+class VirtualDrive:
+    '''docstring'''
+    vd_id: int
+    name: str
+    status: str
+    importable: str
+    raid_mode: str
+    size: str
+    pd_count: int
+    pds: List[int]
+    stripe_block_size: str
+    sector_size: str
+    total_of_vd: int
+
+
 class BaseInterface(ABC):
     '''This is a docstring'''
     def __init__(self, mode: str, if_name: str, ssh_port: str,
@@ -90,6 +106,7 @@ class BaseInterface(ABC):
         self.ssh_port = ssh_port
         self.local_ip = self._get_local_ip(if_name)
         self.nvme_controller = None
+        self.virtual_drive = None
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir, self.manufacturer = self._get_remote_ip1()
         self._os_type = None
@@ -212,26 +229,30 @@ class BaseInterface(ABC):
                     .get('Script', {})
                     .get('Path', {})
                 )
-                # manufacturer = (
-                #     element.get('Remote', {})
-                #     .get('Hardware', {})
-                #     .get('Storage', {})
-                #     .get('Standard NVM Express Controller', {})
-                #     .get('PCIE Configuration', {})
-                #     .get('Manufacturer')
-                # )
                 nvme_data = (
                     element.get('Remote', {})
                     .get('Hardware', {})
                     .get('Storage', {})
                     .get('Standard NVM Express Controller', {})
                 )
+                # virtual_data = (
+                #     element.get('Remote', {})
+                #     .get('Hardware', {})
+                #     .get('Storage', {})
+                #     .get('Standard NVM Express Controller', {})
+                #     .get('Virtual Drive', {})
+                # )
+                # logger.debug("virtual_data = %s", virtual_data)
                 root_complexes_list = [
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])
                 ]
                 end_points_list = [
                     EndPoint(**ep) for ep in nvme_data.get("end_points", [])
+                ]
+                self.virtual_drive = [
+                    VirtualDrive(**vd) for vd in nvme_data.get(
+                        "Virtual Drive", [])
                 ]
                 logger.debug('end_points_list = %s', end_points_list)
                 self.nvme_controller = NVMeController(
@@ -258,6 +279,19 @@ class BaseInterface(ABC):
                     root_complexes=root_complexes_list,
                     end_points=end_points_list
                 )
+                # self.virtual_drive = VirtualDrive(
+                #     vd_id=virtual_data["VD ID"],
+                #     name=virtual_data["Name"],
+                #     status=virtual_data["Status"],
+                #     importable=virtual_data["Importable"],
+                #     raid_mode=virtual_data["RAID Mode"],
+                #     size=virtual_data["size"],
+                #     pd_count=virtual_data["PD Count"],
+                #     pds=virtual_data["pds"],
+                #     stripe_block_size=virtual_data["Stripe Block Size"],
+                #     sector_size=virtual_data["Sector Size"],
+                #     total_of_vd=virtual_data["Total # of VD"]
+                # )
                 match = re.search(r"VEN_\w+", self.nvme_controller.device)
                 if match:
                     manufacturer = match.group()
@@ -275,10 +309,16 @@ class BaseInterface(ABC):
     def get_ip_address(self) -> str:
         '''This is a docstring'''
         if self.mode == 'remote':
-            return self._get_remote_ip()
+            ip = self._get_remote_ip1()
         elif self.mode == 'local':
-            return self._get_local_ip()
-        raise ValueError('Unknown mode')
+            ip = self._get_local_ip()
+        else:
+            raise ValueError('Unknown mode')
+
+        if not isinstance(ip, str) or not ip:
+            raise ValueError(f"Invalid IP address retrieved: {ip}")
+
+        return ip
 
     @property
     def os_type(self) -> str:
@@ -363,7 +403,7 @@ class WindowsInterface(BaseInterface):
             sftp.close()
             client.close()
         except Exception as e:
-            logger.error("Error occurred in ftp_command: %s", e)
+            logger.error("Error occurred in ftp_command: %s", e, exc_info=True)
             raise
         return True
 

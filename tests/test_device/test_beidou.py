@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 class TestChunghua:
     '''docstring'''
-    # def test_get_controller_info(self, boot_device, network_api):
     def test_controller_info(self, boot_device, network_api):
         '''fixture'''
         controller_info = boot_device.controller_info
@@ -68,3 +67,12 @@ class TestChunghua:
             mapping_table.supported_features
         assert controller_info.root_complexes == mapping_table.root_complexes
         assert controller_info.end_points == mapping_table.end_points
+
+    def test_virtual_drive_info(self, boot_device, network_api):
+        '''fixture'''
+        virtual_drive = boot_device.virtual_drive_info
+        mapping_table = network_api.virtual_drive
+        logger.debug("virtual_drive = %s", virtual_drive)
+        logger.debug("mapping_table = %s", mapping_table)
+
+        assert virtual_drive == mapping_table
