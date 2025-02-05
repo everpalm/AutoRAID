@@ -20,18 +20,11 @@ class BaseDevice(ABC):
     def __init__(self, command: BaseCLI):
         '''This is a docstring'''
         self.cmd = command
-        # self.controller_info = self.get_controller_info()
         self._controller_info = None
-
-    # @abstractmethod
-    # def get_controller_info(self) -> str:
-    #     '''docstring'''
-    #     pass
 
 
 class Changhua(BaseDevice):
     @property
-    # def get_controller_info(self) -> str:
     def controller_info(self) -> str:
         try:
             output = self.cmd.interpret('info -o hba')
