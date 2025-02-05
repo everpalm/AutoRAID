@@ -20,12 +20,12 @@ import json
 import paramiko
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 @dataclass
 class CommandContext:
-    '''Context of a command package'''
+    """Represents the context required to execute a remote command."""
     str_cli_cmd: str
     mode: str
     account: str
@@ -36,7 +36,7 @@ class CommandContext:
 
 @dataclass
 class PCIeDevice:
-    '''This is a docstring'''
+    """Represents a generic PCIe device with ID, link width, and speed."""
     id: int
     link_width: str
     pcie_speed: str
@@ -44,17 +44,42 @@ class PCIeDevice:
 
 @dataclass
 class RootComplex(PCIeDevice):
-    '''This is a docstring'''
+    """Represents a PCIe Endpoint device."""
 
 
 @dataclass
 class EndPoint(PCIeDevice):
-    '''This is a docstring'''
+    """Represents a PCIe Endpoint device."""
 
 
 @dataclass
 class NVMeController:
-    '''This is a docstring'''
+    """Stores information about an NVMe controller.
+
+    Attributes:
+        bus_device_func: The bus, device, and function of the controller.
+        device: Device identifier.
+        slot_id: Slot identifier.
+        firmware_version: Firmware version.
+        vid: Vendor ID.
+        svid: Subsystem Vendor ID.
+        did: Device ID.
+        sdid: Subsystem Device ID.
+        revision_id: Revision ID.
+        port_count: Number of ports.
+        max_pd_of_per_vd: Max physical drives per virtual disk.
+        max_vd: Maximum virtual disks supported.
+        max_pd: Maximum physical drives supported.
+        max_ns_of_per_vd: Max namespaces per virtual disk.
+        max_ns: Maximum namespaces supported.
+        supported_raid_mode: List of supported RAID modes.
+        cache: Cache configuration.
+        supported_bga_features: Background operation features supported.
+        support_stripe_size: Supported stripe sizes.
+        supported_features: List of other supported features.
+        root_complexes: List of root complexes.
+        end_points: List of endpoint devices.
+    """
     bus_device_func: str
     device: str
     slot_id: str
@@ -81,7 +106,21 @@ class NVMeController:
 
 @dataclass
 class VirtualDrive:
-    '''docstring'''
+    """Represents a virtual drive configuration.
+
+    Attributes:
+        vd_id: Virtual Drive ID.
+        name: Name of the virtual drive.
+        status: Current status of the virtual drive.
+        importable: Whether the drive is importable.
+        raid_mode: RAID mode used.
+        size: Size of the drive.
+        pd_count: Number of physical drives in the VD.
+        pds: List of physical drive IDs.
+        stripe_block_size: Stripe block size.
+        sector_size: Sector size.
+        total_of_vd: Total number of virtual drives.
+    """
     vd_id: int
     name: str
     status: str
@@ -96,10 +135,17 @@ class VirtualDrive:
 
 
 class BaseInterface(ABC):
-    '''This is a docstring'''
+    """Abstract base class defining the interface for system interaction."""
     def __init__(self, mode: str, if_name: str, ssh_port: str,
                  config_file: str):
-        '''This is a docstring'''
+        """Initializes the interface with network and configuration details.
+
+        Args:
+            mode: Operation mode (local/remote).
+            if_name: Interface name.
+            ssh_port: SSH port number.
+            config_file: Configuration file name.
+        """
         self.mode = mode
         self.config_file = config_file
         self.if_name = if_name
@@ -114,15 +160,15 @@ class BaseInterface(ABC):
 
     @abstractmethod
     def ftp_command(self, str_target_file: str) -> bool:
-        '''Placeholder'''
+        """Handles FTP commands."""
 
     @abstractmethod
     def command_line(self, str_cli_cmd: str) -> str:
-        '''placeholder'''
+        """Executes a command-line command."""
 
     @abstractmethod
     def io_command(self, str_ssh_command: str) -> bool:
-        '''Placeholder'''
+        """Executes I/O related commands over SSH."""
 
     def __import_config(self) -> Dict[str, str]:
         '''This is a docstring'''
@@ -193,7 +239,6 @@ class BaseInterface(ABC):
             logger.debug('Not target dict_element = %s', dict_element)
             continue
         if remote_ip is None:
-            # raise ValueError('Remote network is disconnected')
             logger.debug('Local Mode Only')
         return (remote_ip, str_account, str_password, str_local_dir,
                 str_remote_dir)
@@ -235,14 +280,6 @@ class BaseInterface(ABC):
                     .get('Storage', {})
                     .get('Standard NVM Express Controller', {})
                 )
-                # virtual_data = (
-                #     element.get('Remote', {})
-                #     .get('Hardware', {})
-                #     .get('Storage', {})
-                #     .get('Standard NVM Express Controller', {})
-                #     .get('Virtual Drive', {})
-                # )
-                # logger.debug("virtual_data = %s", virtual_data)
                 root_complexes_list = [
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])
@@ -279,19 +316,7 @@ class BaseInterface(ABC):
                     root_complexes=root_complexes_list,
                     end_points=end_points_list
                 )
-                # self.virtual_drive = VirtualDrive(
-                #     vd_id=virtual_data["VD ID"],
-                #     name=virtual_data["Name"],
-                #     status=virtual_data["Status"],
-                #     importable=virtual_data["Importable"],
-                #     raid_mode=virtual_data["RAID Mode"],
-                #     size=virtual_data["size"],
-                #     pd_count=virtual_data["PD Count"],
-                #     pds=virtual_data["pds"],
-                #     stripe_block_size=virtual_data["Stripe Block Size"],
-                #     sector_size=virtual_data["Sector Size"],
-                #     total_of_vd=virtual_data["Total # of VD"]
-                # )
+
                 match = re.search(r"VEN_\w+", self.nvme_controller.device)
                 if match:
                     manufacturer = match.group()
@@ -367,13 +392,13 @@ class WindowsInterface(BaseInterface):
             f'"StrictHostKeyChecking=no"'
         )
         if context.mode == 'remote':
-            logger.debug('===Remote access mode===')
+            logger.debug('================ Remote access mode ==============')
             return (
                 f'{sshpass} {context.account}@{context.remote_ip} '
                 f'"cd {context.remote_dir} && {context.str_cli_cmd}"'
             )
         elif context.mode == 'local':
-            logger.debug('===Local access mode===')
+            logger.debug('================ Local access mode ===============')
             return context.str_cli_cmd
         else:
             raise ValueError('Unknown mode setting in command_line')
@@ -592,9 +617,18 @@ class BaseInterfaceFactory(ABC):
 
 
 class InterfaceFactory(BaseInterfaceFactory):
-    '''docstring'''
+    """Factory class to create interface instances based on the OS type."""
+
     def create_interface(self, os_type: str, **kwargs) -> BaseInterface:
-        '''Factory method to create an interface based on OS type'''
+        """Returns an instance of the appropriate interface based on OS type.
+
+        Args:
+            os_type: Operating system type (Windows/Linux).
+            **kwargs: Additional arguments for initialization.
+
+        Returns:
+            An instance of WindowsInterface or LinuxInterface.
+        """
         if os_type == 'Windows':
             return WindowsInterface(**kwargs)
         elif os_type == 'Linux':
@@ -604,7 +638,7 @@ class InterfaceFactory(BaseInterfaceFactory):
 
 
 class RaspberryInterfaceFactory(BaseInterfaceFactory):
-    '''docstring'''
+    """Factory class to create interface instances based on the OS type."""
     def create_interface(self, os_type: str, **kwargs) -> BaseInterface:
         '''Factory method to create an interface based on OS type'''
         if os_type == 'Windows':
