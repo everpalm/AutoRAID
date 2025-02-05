@@ -6,57 +6,13 @@ import re
 from abc import ABC
 from abc import abstractmethod
 from commandline.mnv_cli import BaseCLI
-# from dataclasses import dataclass
-# from dataclasses import field
 from interface.application import BaseInterface
 from interface.application import NVMeController
 from interface.application import RootComplex
 from interface.application import EndPoint
-# from typing import List
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
-
-
-# @dataclass
-# class RootComplex:
-#     id: int
-#     link_width: str
-#     pcie_speed: str
-
-
-# @dataclass
-# class EndPoint:
-#     id: int
-#     link_width: str
-#     pcie_speed: str
-
-
-# @dataclass
-# class NVMeController:
-#     '''This is a docstring'''
-#     bus_device_func: str
-#     device: str
-#     slot_id: str
-#     firmware_version: str
-#     vid: str
-#     svid: str
-#     did: str
-#     sdid: str
-#     revision_id: str
-#     port_count: int
-#     max_pd_of_per_vd: int
-#     max_vd: int
-#     max_pd: int
-#     max_ns_of_per_vd: int
-#     max_ns: int
-#     supported_raid_mode: List[str]
-#     cache: str
-#     supported_bga_features: List[str]
-#     support_stripe_size: List[str]
-#     supported_features: List[str]
-#     root_complexes: List[RootComplex] = field(default_factory=list)
-#     end_points: List[EndPoint] = field(default_factory=list)
 
 
 class BaseDevice(ABC):
@@ -64,16 +20,19 @@ class BaseDevice(ABC):
     def __init__(self, command: BaseCLI):
         '''This is a docstring'''
         self.cmd = command
-        self.controller_info = self.get_controller_info()
+        # self.controller_info = self.get_controller_info()
+        self._controller_info = None
 
-    @abstractmethod
-    def get_controller_info(self) -> str:
-        '''docstring'''
-        pass
+    # @abstractmethod
+    # def get_controller_info(self) -> str:
+    #     '''docstring'''
+    #     pass
 
 
 class Changhua(BaseDevice):
-    def get_controller_info(self) -> str:
+    @property
+    # def get_controller_info(self) -> str:
+    def controller_info(self) -> str:
         try:
             output = self.cmd.interpret('info -o hba')
             logger.debug('output = %s', output)
@@ -134,7 +93,7 @@ class Changhua(BaseDevice):
             for list_field in list_fields:
                 data[list_field] = data.get(list_field, "").split()
 
-            return NVMeController(
+            self._controller_info = NVMeController(
                 bus_device_func=data.get("bus_device_fun", ""),
                 device=data.get("device", ""),
                 slot_id=data.get("slot_id", ""),
@@ -158,6 +117,7 @@ class Changhua(BaseDevice):
                 root_complexes=root_complexes,
                 end_points=end_points,
             )
+            return self._controller_info
 
         except Exception as e:
             logger.error("An unexpected error in fw_version: %s", e)
