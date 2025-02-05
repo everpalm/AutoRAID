@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 
 class TestChunghua:
     '''docstring'''
-    def test_get_controller_info(self, boot_device, network_api):
+    # def test_get_controller_info(self, boot_device, network_api):
+    def test_controller_info(self, boot_device, network_api):
         '''fixture'''
         controller_info = boot_device.controller_info
         mapping_table = network_api.nvme_controller

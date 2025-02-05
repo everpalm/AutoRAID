@@ -59,7 +59,6 @@ def mock_base_interface_config():
                     "Storage": {
                         "Standard NVM Express Controller": {
                             "PCIE Configuration": {
-                                "Manufacturer": "TestManufacturer",
                                 "VID": "1B4B",
                                 "SVID": "1B4B",
                                 "DID": "22411B4B",
@@ -151,7 +150,7 @@ def test_get_remote_ip1(mock_base_interface_config):
             "123456",
             None,  # WORKSPACE 不存在時應返回 None
             "C:\\Users\\STE\\Projects\\AutoRAID",
-            "TestManufacturer"
+            "VEN_1B4B"
         )
 
 

@@ -48,7 +48,6 @@ class AMD64Windows(BaseOS):
     '''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        # self.manufacturer = interface.config_file.replace('.json', '')
         self.manufacturer = interface.manufacturer
         self.vid, self.did, self.sdid, self.rev = \
             self._get_pcie_info().values()
