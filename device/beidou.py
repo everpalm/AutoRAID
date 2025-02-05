@@ -10,6 +10,7 @@ from interface.application import BaseInterface
 from interface.application import NVMeController
 from interface.application import RootComplex
 from interface.application import EndPoint
+from interface.application import VirtualDrive
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.INFO)
@@ -21,11 +22,12 @@ class BaseDevice(ABC):
         '''This is a docstring'''
         self.cmd = command
         self._controller_info = None
+        self._virtual_drive_info = None
 
 
 class Changhua(BaseDevice):
     @property
-    def controller_info(self) -> str:
+    def controller_info(self) -> NVMeController:
         try:
             output = self.cmd.interpret('info -o hba')
             logger.debug('output = %s', output)
@@ -113,9 +115,56 @@ class Changhua(BaseDevice):
             return self._controller_info
 
         except Exception as e:
-            logger.error("An unexpected error in fw_version: %s", e,
-                         exec_info=True)
-            self.fw_version = None
+            logger.error("An unexpected error in controller_info: %s", e)
+            self._contrller_info = None
+            raise
+
+    @property
+    def virtual_drive_info(self) -> VirtualDrive:
+        try:
+            vd_info = self.cmd.interpret('info -o vd')
+            logger.debug('vd_info = %s', vd_info)
+            data = {}
+            pd_ids = []
+
+            if isinstance(vd_info, list):
+                lines = vd_info
+            elif isinstance(vd_info, str):
+                lines = vd_info.splitlines()
+            else:
+                raise TypeError("Invalid output type, expected str or list")
+
+            for line in lines:
+                match = re.match(r"(.*?):\s+(.*)", line)
+                if match:
+                    key, value = match.groups()
+                    key = re.sub(r'[^a-zA-Z0-9_]', '_', key.lower())
+                    logger.debug("%s: %s", key, value)
+                    if key.startswith("pds"):
+                        pds = re.findall(r'\d+', value)
+                        logger.debug("pds = %s", pds)
+                        pd_ids = list(map(int, pds))
+                    else:
+                        data[key] = value
+
+            self._virtual_drive_info = VirtualDrive(
+                vd_id=data.get("vd_id", ""),
+                name=data.get("name", ""),
+                status=data.get("status", ""),
+                importable=data.get("importable", ""),
+                raid_mode=data.get("raid_mode", ""),
+                size=data.get("size", ""),
+                pd_count=data.get("pd_count", ""),
+                pds=pd_ids,
+                stripe_block_size=data.get("stripe_block_size", ""),
+                sector_size=data.get("sector_size", ""),
+                total_of_vd=data.get("total___of_vd")
+            )
+            return self._virtual_drive_info
+
+        except Exception as e:
+            logger.error("An unexpected error in virtual_drive_info: %s", e)
+            self._virtual_drive_info = None
             raise
 
 

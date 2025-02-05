@@ -79,6 +79,22 @@ class NVMeController:
     end_points: List[EndPoint] = field(default_factory=list)
 
 
+@dataclass
+class VirtualDrive:
+    '''docstring'''
+    vd_id: int
+    name: str
+    status: str
+    importable: str
+    raid_mode: str
+    size: str
+    pd_count: int
+    pds: List[int]
+    stripe_block_size: str
+    sector_size: str
+    total_of_vd: int
+
+
 class BaseInterface(ABC):
     '''This is a docstring'''
     def __init__(self, mode: str, if_name: str, ssh_port: str,
