@@ -22,7 +22,7 @@ class BaseDevice(ABC):
         '''This is a docstring'''
         self.cmd = command
         self._controller_info = None
-        self._virtual_drive_info = None
+        self._virtual_drive_info = []
 
 
 class Changhua(BaseDevice):
@@ -124,8 +124,9 @@ class Changhua(BaseDevice):
         try:
             vd_info = self.cmd.interpret('info -o vd')
             logger.debug('vd_info = %s', vd_info)
+            virtual_drives = []
             data = {}
-            pd_ids = []
+            # pd_ids = []
 
             if isinstance(vd_info, list):
                 lines = vd_info
@@ -140,27 +141,60 @@ class Changhua(BaseDevice):
                     key, value = match.groups()
                     key = re.sub(r'[^a-zA-Z0-9_]', '_', key.lower())
                     logger.debug("%s: %s", key, value)
+
+                    if key.startswith("vd_id"):
+                        logger.debug("value = %s", value)
+                        root_id = int(value)
+                        virtual_drives.append(VirtualDrive(
+                                # vd_id=data.get("vd_id", ""),
+                                vd_id=root_id,
+                                name="",
+                                status="",
+                                importable="",
+                                raid_mode="",
+                                size="",
+                                pd_count="",
+                                pds="",
+                                stripe_block_size="",
+                                sector_size="",
+                                total_of_vd=""
+                            )
+                        )
                     if key.startswith("pds"):
                         pds = re.findall(r'\d+', value)
                         logger.debug("pds = %s", pds)
                         pd_ids = list(map(int, pds))
+                        logger.debug("pd_ids = %s", pd_ids)
                     else:
                         data[key] = value
 
-            self._virtual_drive_info = VirtualDrive(
-                vd_id=data.get("vd_id", ""),
-                name=data.get("name", ""),
-                status=data.get("status", ""),
-                importable=data.get("importable", ""),
-                raid_mode=data.get("raid_mode", ""),
-                size=data.get("size", ""),
-                pd_count=data.get("pd_count", ""),
-                pds=pd_ids,
-                stripe_block_size=data.get("stripe_block_size", ""),
-                sector_size=data.get("sector_size", ""),
-                total_of_vd=data.get("total___of_vd")
-            )
-            return self._virtual_drive_info
+            logger.debug("data = %s", data)
+            # Convert specific values to correct types
+            int_fields = ["vd_id", "pd_count", "total___of_vd"]
+            for int_field in int_fields:
+                data[int_field] = int(data.get(int_field, 0))
+
+            list_fields = ["name", "status", "importable", "raid_mode",
+                           "size", "stripe_block_size", "sector_size"]
+            for list_field in list_fields:
+                data[list_field] = data.get(list_field, "")
+
+            for virtual_drive in virtual_drives:
+                self._virtual_drive_info.append(VirtualDrive(
+                        vd_id=virtual_drive.vd_id,
+                        name=data.get("name", ""),
+                        status=data.get("status", ""),
+                        importable=data.get("importable", ""),
+                        raid_mode=data.get("raid_mode", ""),
+                        size=data.get("size", ""),
+                        pd_count=data.get("pd_count", ""),
+                        pds=pd_ids,
+                        stripe_block_size=data.get("stripe_block_size", ""),
+                        sector_size=data.get("sector_size", ""),
+                        total_of_vd=data.get("total___of_vd")
+                    )
+                )
+                return self._virtual_drive_info
 
         except Exception as e:
             logger.error("An unexpected error in virtual_drive_info: %s", e)

@@ -106,6 +106,7 @@ class BaseInterface(ABC):
         self.ssh_port = ssh_port
         self.local_ip = self._get_local_ip(if_name)
         self.nvme_controller = None
+        self.virtual_drive = None
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir, self.manufacturer = self._get_remote_ip1()
         self._os_type = None
@@ -234,12 +235,24 @@ class BaseInterface(ABC):
                     .get('Storage', {})
                     .get('Standard NVM Express Controller', {})
                 )
+                # virtual_data = (
+                #     element.get('Remote', {})
+                #     .get('Hardware', {})
+                #     .get('Storage', {})
+                #     .get('Standard NVM Express Controller', {})
+                #     .get('Virtual Drive', {})
+                # )
+                # logger.debug("virtual_data = %s", virtual_data)
                 root_complexes_list = [
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])
                 ]
                 end_points_list = [
                     EndPoint(**ep) for ep in nvme_data.get("end_points", [])
+                ]
+                self.virtual_drive = [
+                    VirtualDrive(**vd) for vd in nvme_data.get(
+                        "Virtual Drive", [])
                 ]
                 logger.debug('end_points_list = %s', end_points_list)
                 self.nvme_controller = NVMeController(
@@ -266,6 +279,19 @@ class BaseInterface(ABC):
                     root_complexes=root_complexes_list,
                     end_points=end_points_list
                 )
+                # self.virtual_drive = VirtualDrive(
+                #     vd_id=virtual_data["VD ID"],
+                #     name=virtual_data["Name"],
+                #     status=virtual_data["Status"],
+                #     importable=virtual_data["Importable"],
+                #     raid_mode=virtual_data["RAID Mode"],
+                #     size=virtual_data["size"],
+                #     pd_count=virtual_data["PD Count"],
+                #     pds=virtual_data["pds"],
+                #     stripe_block_size=virtual_data["Stripe Block Size"],
+                #     sector_size=virtual_data["Sector Size"],
+                #     total_of_vd=virtual_data["Total # of VD"]
+                # )
                 match = re.search(r"VEN_\w+", self.nvme_controller.device)
                 if match:
                     manufacturer = match.group()

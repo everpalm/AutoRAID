@@ -117,6 +117,21 @@
                                 "link_width": "4x",
                                 "pcie_speed": "8Gb/s"
                             }
+                        ],
+                        "Virtual Drive": [
+                            {
+                                "vd_id": 1,
+                                "name": "VD_0",
+                                "status": "Functional",
+                                "importable": "No",
+                                "raid_mode": "RAID1",
+                                "size": "931 GB",
+                                "pd_count": 2,
+                                "pds": [1, 2],
+                                "stripe_block_size": "128K",
+                                "sector_size": "512 bytes",
+                                "total_of_vd": 1
+                            }
                         ]
                     }
                 }
@@ -237,6 +252,21 @@
                                 "id": 0,
                                 "link_width": "4x",
                                 "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "Virtual Drive": [
+                            {
+                                "vd_id": 1,
+                                "name": "VD_0",
+                                "status": "Functional",
+                                "importable": "No",
+                                "raid_mode": "RAID1",
+                                "size": "931 GB",
+                                "pd_count": 2,
+                                "pds": [1, 2],
+                                "stripe_block_size": "128K",
+                                "sector_size": "512 bytes",
+                                "total_of_vd": 1
                             }
                         ]
                     }
