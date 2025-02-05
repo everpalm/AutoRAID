@@ -212,14 +212,6 @@ class BaseInterface(ABC):
                     .get('Script', {})
                     .get('Path', {})
                 )
-                # manufacturer = (
-                #     element.get('Remote', {})
-                #     .get('Hardware', {})
-                #     .get('Storage', {})
-                #     .get('Standard NVM Express Controller', {})
-                #     .get('PCIE Configuration', {})
-                #     .get('Manufacturer')
-                # )
                 nvme_data = (
                     element.get('Remote', {})
                     .get('Hardware', {})
@@ -275,10 +267,16 @@ class BaseInterface(ABC):
     def get_ip_address(self) -> str:
         '''This is a docstring'''
         if self.mode == 'remote':
-            return self._get_remote_ip()
+            ip = self._get_remote_ip1()
         elif self.mode == 'local':
-            return self._get_local_ip()
-        raise ValueError('Unknown mode')
+            ip = self._get_local_ip()
+        else:
+            raise ValueError('Unknown mode')
+
+        if not isinstance(ip, str) or not ip:
+            raise ValueError(f"Invalid IP address retrieved: {ip}")
+
+        return ip
 
     @property
     def os_type(self) -> str:
@@ -363,7 +361,7 @@ class WindowsInterface(BaseInterface):
             sftp.close()
             client.close()
         except Exception as e:
-            logger.error("Error occurred in ftp_command: %s", e)
+            logger.error("Error occurred in ftp_command: %s", e, exc_info=True)
             raise
         return True
 
