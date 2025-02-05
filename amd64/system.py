@@ -96,10 +96,10 @@ class AMD64Windows(BaseOS):
             if int_logical_processor/self.cpu_num == 2:
                 return True
         except re.error as e:
-            logger.error("Invalid regex pattern: %s", e, exec_info=True)
+            logger.error("Invalid regex pattern: %s", e)
             raise
         except Exception as e:
-            logger.error('_get_hyperthreading: %s', e, exec_info=True)
+            logger.error('_get_hyperthreading: %s', e)
             raise
         return False
 
@@ -175,8 +175,7 @@ class AMD64Windows(BaseOS):
             logger.error("Invalid regex pattern in mac_address: %s", e)
             return False
         except Exception as e:
-            logger.error("An unexpected error in mac_address: %s", e,
-                         exec_info=True)
+            logger.error("An unexpected error in mac_address: %s", e)
             self._mac_address = None
             raise
         return self._mac_address
@@ -200,8 +199,7 @@ class AMD64Windows(BaseOS):
             logger.error("Value Error in get_cpu_info: %s", e)
             raise
         except Exception as e:
-            logger.error('error occurred in get_cpu_info: %s', e,
-                         exec_info=True)
+            logger.error('error occurred in get_cpu_info: %s', e)
             raise
         return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 
@@ -227,7 +225,7 @@ class AMD64Windows(BaseOS):
             logger.debug('name = %s', str_name)
 
         except Exception as e:
-            logger.error('Error occurred in _get_desktop_info: %s', e, exec_info=True)
+            logger.error('Error occurred in _get_desktop_info: %s', e)
             raise
 
         return {"Manufacturer": str_vendor,
@@ -261,7 +259,7 @@ class AMD64Windows(BaseOS):
             logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
 
         except Exception as e:
-            logger.error('Device not found: %s', e, exec_info=True)
+            logger.error('Device not found: %s', e)
             raise
         return {"VID": str_vid, "DID": str_sdid,
                 "SDID": str_sdid, "Rev": str_rev}
