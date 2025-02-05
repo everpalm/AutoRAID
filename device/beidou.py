@@ -113,7 +113,8 @@ class Changhua(BaseDevice):
             return self._controller_info
 
         except Exception as e:
-            logger.error("An unexpected error in fw_version: %s", e)
+            logger.error("An unexpected error in fw_version: %s", e,
+                         exec_info=True)
             self.fw_version = None
             raise
 
