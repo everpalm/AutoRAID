@@ -25,21 +25,21 @@ class BaseDevice(ABC):
         self._virtual_drive_info = []
 
 
-class Changhua(BaseDevice):
+class Beidou(BaseDevice):
     @property
     def controller_info(self) -> NVMeController:
         try:
-            output = self.cmd.interpret('info -o hba')
-            logger.debug('output = %s', output)
+            hba_info = self.cmd.interpret('info -o hba')
+            logger.debug('hba_info = %s', hba_info)
             data = {}
             root_complexes = []
             end_points = []
             current_section = None
 
-            if isinstance(output, list):
-                lines = output
-            elif isinstance(output, str):
-                lines = output.splitlines()
+            if isinstance(hba_info, list):
+                lines = hba_info
+            elif isinstance(hba_info, str):
+                lines = hba_info.splitlines()
             else:
                 raise TypeError("Invalid output type, expected str or list")
 
@@ -126,7 +126,7 @@ class Changhua(BaseDevice):
             logger.debug('vd_info = %s', vd_info)
             virtual_drives = []
             data = {}
-            # pd_ids = []
+            pd_ids = []
 
             if isinstance(vd_info, list):
                 lines = vd_info
@@ -146,7 +146,6 @@ class Changhua(BaseDevice):
                         logger.debug("value = %s", value)
                         root_id = int(value)
                         virtual_drives.append(VirtualDrive(
-                                # vd_id=data.get("vd_id", ""),
                                 vd_id=root_id,
                                 name="",
                                 status="",
@@ -160,11 +159,12 @@ class Changhua(BaseDevice):
                                 total_of_vd=""
                             )
                         )
-                    if key.startswith("pds"):
-                        pds = re.findall(r'\d+', value)
-                        logger.debug("pds = %s", pds)
-                        pd_ids = list(map(int, pds))
-                        logger.debug("pd_ids = %s", pd_ids)
+                    elif key.startswith("pds"):
+                        if not pd_ids:
+                            pds = re.findall(r'\d+', value)
+                            logger.debug("pds = %s", pds)
+                            pd_ids = list(map(int, pds))
+                            logger.debug("pd_ids = %s", pd_ids)
                     else:
                         data[key] = value
 
@@ -207,6 +207,7 @@ class BaseDeviceFactory(ABC):
         '''docstring'''
         self.api = api
         self.manufacturer = api.manufacturer
+        self.device = api.nvme_controller.did
 
     @abstractmethod
     def initiate(self, **kwargs) -> BaseDevice:
@@ -214,11 +215,14 @@ class BaseDeviceFactory(ABC):
         pass
 
 
-class ChunghuaFactory(BaseDeviceFactory):
+class ChanghuaFactory(BaseDeviceFactory):
     '''docstring'''
     def initiate(self, **kwargs) -> BaseDevice:
         '''docstring'''
         if self.manufacturer == 'VEN_1B4B':
-            return Changhua(**kwargs)
+            if self.device == '0x2241':
+                return Beidou(**kwargs)
+            else:
+                raise ValueError(f"Unsupported device type: {self.device}")
         else:
-            raise ValueError(f"Unsupported device type: {self.manufacturer}")
+            raise ValueError(f"Unsupported manufacturer: {self.manufacturer}")
