@@ -14,6 +14,7 @@ import subprocess
 import socket
 import fcntl
 import os
+import re
 import struct
 import json
 import paramiko
@@ -34,17 +35,21 @@ class CommandContext:
 
 
 @dataclass
-class RootComplex:
+class PCIeDevice:
+    '''This is a docstring'''
     id: int
     link_width: str
     pcie_speed: str
 
 
 @dataclass
-class EndPoint:
-    id: int
-    link_width: str
-    pcie_speed: str
+class RootComplex(PCIeDevice):
+    '''This is a docstring'''
+
+
+@dataclass
+class EndPoint(PCIeDevice):
+    '''This is a docstring'''
 
 
 @dataclass
@@ -207,14 +212,14 @@ class BaseInterface(ABC):
                     .get('Script', {})
                     .get('Path', {})
                 )
-                manufacturer = (
-                    element.get('Remote', {})
-                    .get('Hardware', {})
-                    .get('Storage', {})
-                    .get('Standard NVM Express Controller', {})
-                    .get('PCIE Configuration', {})
-                    .get('Manufacturer')
-                )
+                # manufacturer = (
+                #     element.get('Remote', {})
+                #     .get('Hardware', {})
+                #     .get('Storage', {})
+                #     .get('Standard NVM Express Controller', {})
+                #     .get('PCIE Configuration', {})
+                #     .get('Manufacturer')
+                # )
                 nvme_data = (
                     element.get('Remote', {})
                     .get('Hardware', {})
@@ -253,6 +258,9 @@ class BaseInterface(ABC):
                     root_complexes=root_complexes_list,
                     end_points=end_points_list
                 )
+                match = re.search(r"VEN_\w+", self.nvme_controller.device)
+                if match:
+                    manufacturer = match.group()
                 logger.debug('remote_ip = %s', remote_ip)
                 logger.debug('manufacturer = %s', manufacturer)
                 break
