@@ -17,7 +17,6 @@ class BaseOS(ABC):
     '''docstring'''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        # self.manufacturer = interface.config_file.replace('.json', '')
         self.manufacturer = interface.manufacturer
         self.memory_size = self._get_memory_size()
 

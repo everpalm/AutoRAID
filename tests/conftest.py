@@ -115,7 +115,6 @@ def raspi_interface():
         mode='local',
         if_name='wlan0',
         ssh_port='22',
-        # config_file='app_map.json'
         config_file='Changhua/Beidou.json'
     )
 
