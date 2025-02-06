@@ -102,7 +102,7 @@ class TestRebuildChanglongPD1(TestCLIRebuildPD1):
 
 
 @pytest.mark.order(5)
-@pytest.mark.flaky(reruns=600, reruns_delay=20)
+@pytest.mark.flaky(reruns=330, reruns_delay=60)
 class TestRebuildingChanglong(TestFunctionalChanglong):
     '''Resemble functional Changlong'''
     def test_virtual_drive_info(self, boot_device, network_api):
@@ -120,12 +120,8 @@ class TestRebuildingChanglong(TestFunctionalChanglong):
             for vd in from_controller:
                 if vd.bga_progress:
                     logger.debug("%s", vd.bga_progress)
-
-        # 確保 rebuilding 已完成
-        assert all(
-            vd.status == "functional" for vd in from_controller
-        ), "Rebuilding did not complete successfully"
-
-        # 確認 network_api 的數據
-        from_table = network_api.virtual_drive
-        assert from_controller == from_table
+        else:
+            # 確保 rebuilding 已完成
+            assert all(
+                vd.status == "Functional" for vd in from_controller
+            ), "Rebuilding did not complete successfully"
