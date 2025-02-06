@@ -130,6 +130,7 @@
                                 "pds": [1, 2],
                                 "stripe_block_size": "128K",
                                 "sector_size": "512 bytes",
+                                "bga_progress": "",
                                 "total_of_vd": 1
                             }
                         ]
@@ -266,6 +267,7 @@
                                 "pds": [1, 2],
                                 "stripe_block_size": "128K",
                                 "sector_size": "512 bytes",
+                                "bga_progress": "",
                                 "total_of_vd": 1
                             }
                         ]

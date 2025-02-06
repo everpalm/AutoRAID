@@ -156,6 +156,7 @@ class Changlong(BaseDevice):
                                 pds="",
                                 stripe_block_size="",
                                 sector_size="",
+                                bga_progress="",
                                 total_of_vd=""
                             )
                         )
@@ -191,6 +192,7 @@ class Changlong(BaseDevice):
                         pds=pd_ids,
                         stripe_block_size=data.get("stripe_block_size", ""),
                         sector_size=data.get("sector_size", ""),
+                        bga_progress=data.get("bga_progress"),
                         total_of_vd=data.get("total___of_vd")
                     )
                 )
