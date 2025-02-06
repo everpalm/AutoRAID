@@ -350,8 +350,6 @@ class LinuxVolume(PartitionDisk):
 
     Provides methods to execute disk partitioning operations on Linux.
     """
-
-    # def __init__(self, platform: AMD64NVMe):
     def __init__(self, platform: BaseOS):
         """
         Initialize the LinuxVolume instance.
