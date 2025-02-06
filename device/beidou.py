@@ -1,4 +1,4 @@
-# Contents of device/1b4b_2241.py
+# Contents of device/beidou.py
 '''Copyright (c) 2025 Jaron Cheng'''
 # import json
 import logging
@@ -25,7 +25,7 @@ class BaseDevice(ABC):
         self._virtual_drive_info = []
 
 
-class Beidou(BaseDevice):
+class Changlong(BaseDevice):
     @property
     def controller_info(self) -> NVMeController:
         try:
@@ -215,13 +215,13 @@ class BaseDeviceFactory(ABC):
         pass
 
 
-class ChanghuaFactory(BaseDeviceFactory):
+class BeidouFactory(BaseDeviceFactory):
     '''docstring'''
     def initiate(self, **kwargs) -> BaseDevice:
         '''docstring'''
         if self.manufacturer == 'VEN_1B4B':
             if self.device == '0x2241':
-                return Beidou(**kwargs)
+                return Changlong(**kwargs)
             else:
                 raise ValueError(f"Unsupported device type: {self.device}")
         else:
