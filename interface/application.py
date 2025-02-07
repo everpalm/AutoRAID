@@ -131,6 +131,7 @@ class VirtualDrive:
     pds: List[int]
     stripe_block_size: str
     sector_size: str
+    bga_progress: str
     total_of_vd: int
 
 

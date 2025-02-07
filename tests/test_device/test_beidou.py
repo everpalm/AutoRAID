@@ -2,13 +2,17 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 # import json
 import logging
-# import pytest
-# Set up logger
+import pytest
+from tests.test_commandline.test_mnv_cli_rebuild import TestCLIResetPD1
+from tests.test_commandline.test_mnv_cli_rebuild import TestCLIRebuildPD1
+from tests.test_storage.test_stress import TestOneShotReadWriteStress
 
+# Set up logger
 logger = logging.getLogger(__name__)
 
 
-class TestBeidou:
+@pytest.mark.order(1)
+class TestFunctionalChanglong:
     '''docstring'''
     def test_controller_info(self, boot_device, network_api):
         '''fixture'''
@@ -76,3 +80,48 @@ class TestBeidou:
         logger.debug("from_table = %s", from_table)
 
         assert from_controller == from_table
+
+
+@pytest.mark.order(2)
+class TestResetChanglongPD1(TestCLIResetPD1):
+    """
+    Test suite for verifying Windows Warm Boot functionality with network
+    """
+
+
+@pytest.mark.order(3)
+class TestStressAfterResetChanglongPD1(TestOneShotReadWriteStress):
+    '''Test One-shot stress after reset PD1 of Changlong card'''
+
+
+@pytest.mark.order(4)
+class TestRebuildChanglongPD1(TestCLIRebuildPD1):
+    """
+    Test rebuilding backend PD1 of Changlong card
+    """
+
+
+@pytest.mark.order(5)
+@pytest.mark.flaky(reruns=330, reruns_delay=60)
+class TestRebuildingChanglong(TestFunctionalChanglong):
+    '''Resemble functional Changlong'''
+    def test_virtual_drive_info(self, boot_device, network_api):
+        '''fixture'''
+        from_controller = boot_device.virtual_drive_info
+
+        # 檢查是否仍在 rebuilding
+        rebuilding = any(
+            vd.bga_progress and "Rebuilding is running" in vd.bga_progress
+            for vd in from_controller
+        )
+
+        # 顯示 rebuilding 進度
+        if rebuilding:
+            for vd in from_controller:
+                if vd.bga_progress:
+                    logger.debug("%s", vd.bga_progress)
+        else:
+            # 確保 rebuilding 已完成
+            assert all(
+                vd.status == "Functional" for vd in from_controller
+            ), "Rebuilding did not complete successfully"
