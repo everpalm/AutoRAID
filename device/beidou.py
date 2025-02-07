@@ -16,7 +16,7 @@ from unit.log_handler import get_logger
 logger = get_logger(__name__, logging.INFO)
 
 
-class BaseDevice(ABC):
+class BasePCIeSwitch(ABC):
     '''This is a docstring'''
     def __init__(self, command: BaseCLI):
         '''This is a docstring'''
@@ -25,7 +25,7 @@ class BaseDevice(ABC):
         self._virtual_drive_info = []
 
 
-class Changlong(BaseDevice):
+class Changlong(BasePCIeSwitch):
     @property
     def controller_info(self) -> NVMeController:
         try:
@@ -204,25 +204,25 @@ class Changlong(BaseDevice):
             raise
 
 
-class BaseDeviceFactory(ABC):
+class BasePCIeSwitchFactory(ABC):
     def __init__(self, api: BaseInterface):
         '''docstring'''
         self.api = api
         self.manufacturer = api.manufacturer
-        self.device = api.nvme_controller.did
+        self.did = api.nvme_controller.did
 
     @abstractmethod
-    def initiate(self, **kwargs) -> BaseDevice:
+    def initiate(self, **kwargs) -> BasePCIeSwitch:
         '''docstring'''
         pass
 
 
-class BeidouFactory(BaseDeviceFactory):
+class BeidouFactory(BasePCIeSwitchFactory):
     '''docstring'''
-    def initiate(self, **kwargs) -> BaseDevice:
+    def initiate(self, **kwargs) -> BasePCIeSwitch:
         '''docstring'''
         if self.manufacturer == 'VEN_1B4B':
-            if self.device == '0x2241':
+            if self.did == '0x2241':
                 return Changlong(**kwargs)
             else:
                 raise ValueError(f"Unsupported device type: {self.device}")
