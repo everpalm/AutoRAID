@@ -2,6 +2,8 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 
+from _pytest.nodes import Item
+from _pytest.config import Config
 from amd64.system import BaseOS
 from amd64.system import BaseInterface
 from commandline.mnv_cli import CLIFactory
@@ -83,3 +85,8 @@ def my_mdb():
         db_name="AutoRAID",
         collection_name="device",
     )
+
+
+def pytest_collection_modifyitems(items: list[Item], config: Config):
+    """ 強制按照測試函數在原始文件內的順序執行 """
+    items.sort(key=lambda item: item.fspath.strpath + str(item.location[1]))
