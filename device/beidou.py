@@ -192,7 +192,7 @@ class Changlong(BasePCIeSwitch):
                         pds=pd_ids,
                         stripe_block_size=data.get("stripe_block_size", ""),
                         sector_size=data.get("sector_size", ""),
-                        bga_progress=data.get("bga_progress"),
+                        bga_progress=data.get("bga_progress", ""),
                         total_of_vd=data.get("total___of_vd")
                     )
                 )
@@ -208,7 +208,8 @@ class BasePCIeSwitchFactory(ABC):
     def __init__(self, api: BaseInterface):
         '''docstring'''
         self.api = api
-        self.manufacturer = api.manufacturer
+        # self.manufacturer = api.manufacturer
+        self.vid = api.nvme_controller.vid
         self.did = api.nvme_controller.did
 
     @abstractmethod
@@ -221,10 +222,11 @@ class BeidouFactory(BasePCIeSwitchFactory):
     '''docstring'''
     def initiate(self, **kwargs) -> BasePCIeSwitch:
         '''docstring'''
-        if self.manufacturer == 'VEN_1B4B':
+        # if self.vid == 'VEN_1B4B':
+        if self.vid == '0x1b4b':
             if self.did == '0x2241':
                 return Changlong(**kwargs)
             else:
-                raise ValueError(f"Unsupported device type: {self.device}")
+                raise ValueError(f"Unsupported device type: {self.did}")
         else:
-            raise ValueError(f"Unsupported manufacturer: {self.manufacturer}")
+            raise ValueError(f"Unsupported vendor ID: {self.vid}")
