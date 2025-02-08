@@ -22,6 +22,7 @@ def mnv_cli(network_api, amd64_system):
 
 @pytest.fixture(scope="function")
 def boot_device(network_api, mnv_cli):
+    '''docstring'''
     target = BeidouFactory(network_api)
     print('\n\033[32m================== Setup Device Test ===========\033[0m')
     return target.initiate(command=mnv_cli)
@@ -80,5 +81,5 @@ def my_mdb():
         host="192.168.0.128",
         port=27017,
         db_name="AutoRAID",
-        collection_name="storage",
+        collection_name="device",
     )
