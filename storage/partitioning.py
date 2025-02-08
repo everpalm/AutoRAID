@@ -37,7 +37,8 @@ class PartitionDisk(ABC):
         self.account = platform.api.account
         self.password = platform.api.password
         self.script_name = platform.api.script_name
-        self.manufacturer = platform.manufacturer
+        # self.manufacturer = platform.manufacturer
+        self.disk_vid = platform.api.nvme_controller.vid
         self.memory_size = platform.memory_size
         self.disk_format = disk_format
         self.file_system = file_system
@@ -228,14 +229,15 @@ class WindowsVolume(PartitionDisk):
         """
         cmd_return = disk_num = None
 
-        if self.manufacturer == 'VEN_1B4B':
-            my_manufacturer = 'Marvell'
+        # if self.disk_vid == 'VEN_1B4B':
+        if self.disk_vid == '0x1b4b':
+            disk_manufacturer = 'Marvell'
         else:
-            my_manufacturer = 'CT500P5SSD8'
+            disk_manufacturer = 'CT500P5SSD8'
 
         try:
             cmd_return = self._api.command_line(
-                    f'powershell Get-PhysicalDisk|findstr {my_manufacturer}')
+                f'powershell Get-PhysicalDisk|findstr {disk_manufacturer}')
             logger.debug('str_return = %s', cmd_return)
 
             # Check if str_return is None
