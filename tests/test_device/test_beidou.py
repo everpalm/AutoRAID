@@ -105,7 +105,7 @@ class TestRebuildChanglongPD1(TestCLIRebuildPD1):
 @pytest.mark.flaky(reruns=330, reruns_delay=60)
 class TestRebuildingChanglong(TestFunctionalChanglong):
     '''Resemble functional Changlong'''
-    def test_virtual_drive_info(self, boot_device, network_api):
+    def test_virtual_drive_info(self, boot_device):
         '''fixture'''
         from_controller = boot_device.virtual_drive_info
 
