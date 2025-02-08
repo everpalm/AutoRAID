@@ -188,20 +188,20 @@ class BaseInterface(ABC):
     @staticmethod
     def my_command(str_ssh_command: str) -> List[str]:
         '''Placeholder'''
-        __list_msg = []
+        list_msg = []
         messages = subprocess.Popen(
             str_ssh_command, shell=True, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        str_msg_stdout = messages.stdout.readlines()
+        msg_stdout = messages.stdout.readlines()
 
-        for message in str_msg_stdout:
+        for message in msg_stdout:
             if str(message, 'utf8') != '\n':
                 log_msg = str(message, 'utf8').replace(
                     '\n', '').replace('\x08', '')
                 logger.debug('%s', log_msg)
                 response_msg = ' '.join(str(message, 'utf8').split())
-                __list_msg.append(response_msg.replace('\x08', ''))
-        return __list_msg
+                list_msg.append(response_msg.replace('\x08', ''))
+        return list_msg
 
     @staticmethod
     def _get_local_ip(str_if_name: str) -> str:
