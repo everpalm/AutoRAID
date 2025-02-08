@@ -12,6 +12,7 @@ pipeline {
         TEST_AMD64 = "${WORKSPACE}/tests/test_amd64"
         TEST_BOOT = "${WORKSPACE}/tests/test_boot"
         TEST_COMMANDLINE = "${WORKSPACE}/tests/test_commandline"
+        TEST_DEVICE = "${WORKSPACE}/tests/test_device"
         TEST_INTERFACE = "${WORKSPACE}/tests/test_interface"
         TEST_NETWORK = "${WORKSPACE}/tests/test_network"
         TEST_STORAGE = "${WORKSPACE}/tests/test_storage"
@@ -40,6 +41,7 @@ pipeline {
                     gv.test_pep8(env.TEST_AMD64)
                     gv.test_pep8(env.TEST_BOOT)
                     gv.test_pep8(env.TEST_COMMANDLINE)
+                    gv.test_pep8(env.TEST_DEVICE)
                     gv.test_pep8(env.TEST_INTERFACE)
                     gv.test_pep8(env.TEST_NETWORK)
                     gv.test_pep8(env.TEST_STORAGE)
@@ -53,6 +55,7 @@ pipeline {
                 script {
                     gv.test_sanity(env.TEST_AMD64)
                     gv.test_sanity(env.TEST_BOOT)
+                    gv.test_sanity(env.TEST_DEVICE)
                     gv.test_sanity(env.TEST_INTERFACE)
                     gv.test_sanity(env.TEST_NETWORK)
                     gv.test_sanity(env.TEST_STORAGE)
