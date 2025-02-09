@@ -47,7 +47,7 @@ SORTED_DATA = {
 }
 
 
-@pytest.mark.order(14)
+@pytest.mark.order(1)
 class TestCLIBGAOff:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_off"])
@@ -58,7 +58,7 @@ class TestCLIBGAOff:
         assert bga_off_result == test_case["Expected"]
 
 
-@pytest.mark.order(15)
+@pytest.mark.order(2)
 class TestCLIBGAOn:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_on"])
@@ -69,7 +69,7 @@ class TestCLIBGAOn:
         assert bga_on_result == test_case["Expected"]
 
 
-@pytest.mark.order(16)
+@pytest.mark.order(3)
 class TestCLIBGAHigh:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_high"])
@@ -80,7 +80,7 @@ class TestCLIBGAHigh:
         assert bga_high_result == test_case["Expected"]
 
 
-@pytest.mark.order(17)
+@pytest.mark.order(4)
 class TestCLIBGALow:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_low"])
@@ -91,7 +91,7 @@ class TestCLIBGALow:
         assert bga_low_result == test_case["Expected"]
 
 
-@pytest.mark.order(18)
+@pytest.mark.order(5)
 class TestCLIBGAMedium:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_medium"])
@@ -102,7 +102,7 @@ class TestCLIBGAMedium:
         assert bga_medium_result == test_case["Expected"]
 
 
-@pytest.mark.order(19)
+@pytest.mark.order(6)
 class TestCLIBGAInvalid:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["bga_invalid"])
@@ -113,13 +113,13 @@ class TestCLIBGAInvalid:
         assert bga_invalid_result == test_case["Expected"]
 
 
-@pytest.mark.order(20)
+@pytest.mark.order(7)
 class TestCLIPartitioningBeforehand(TestDiskVolume):
     '''docstring'''
 
 
 @pytest.mark.flaky(reruns=4, reruns_delay=5)
-@pytest.mark.order(21)
+@pytest.mark.order(8)
 class TestCLIResetPD1:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd1"])
@@ -130,12 +130,12 @@ class TestCLIResetPD1:
         assert reset_pd1_result == test_case["Expected"]
 
 
-@pytest.mark.order(22)
+@pytest.mark.order(9)
 class TestCLIStressAfterResetPD1(TestOneShotReadWriteStress):
     '''docstring'''
 
 
-@pytest.mark.order(23)
+@pytest.mark.order(10)
 class TestCLIRebuildPD1:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
@@ -147,7 +147,7 @@ class TestCLIRebuildPD1:
 
 
 @pytest.mark.xfail
-@pytest.mark.order(24)
+@pytest.mark.order(11)
 class TestCLIRebuildPD1Stop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop0"])
@@ -159,7 +159,7 @@ class TestCLIRebuildPD1Stop:
 
 
 @pytest.mark.xfail
-@pytest.mark.order(25)
+@pytest.mark.order(12)
 class TestCLIRebuildPD1StopAgain:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1_stop"])
@@ -171,7 +171,7 @@ class TestCLIRebuildPD1StopAgain:
 
 
 @pytest.mark.flaky(reruns=2, reruns_delay=5)
-@pytest.mark.order(26)
+@pytest.mark.order(13)
 class TestCLIVDDelete:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["vd_delete"])
@@ -182,7 +182,7 @@ class TestCLIVDDelete:
         assert vd_delete_result == test_case["Expected"]
 
 
-@pytest.mark.order(27)
+@pytest.mark.order(14)
 class TestCLIVDCreateR1:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["vd_create_r1"])
@@ -193,12 +193,12 @@ class TestCLIVDCreateR1:
         assert vd_create_result == test_case["Expected"]
 
 
-@pytest.mark.order(28)
+@pytest.mark.order(15)
 class TestCLIPartitioning(TestDiskVolume):
     '''docstring'''
 
 
-@pytest.mark.order(29)
+@pytest.mark.order(16)
 class TestCLIMPStart:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["mp_start"])
@@ -209,7 +209,7 @@ class TestCLIMPStart:
         assert mp_start_result == test_case["Expected"]
 
 
-@pytest.mark.order(30)
+@pytest.mark.order(17)
 class TestCLIMPStop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["mp_stop"])
@@ -221,7 +221,7 @@ class TestCLIMPStop:
 
 
 @pytest.mark.flaky(reruns=4, reruns_delay=5)
-@pytest.mark.order(31)
+@pytest.mark.order(18)
 class TestCLIResetPD2:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd2"])
@@ -232,12 +232,12 @@ class TestCLIResetPD2:
         assert reset_pd2_result == test_case["Expected"]
 
 
-@pytest.mark.order(32)
+@pytest.mark.order(19)
 class TestCLIStressAfterResetPD2(TestOneShotReadWriteStress):
     '''docstring'''
 
 
-@pytest.mark.order(33)
+@pytest.mark.order(20)
 class TestCLIRebuildPD2:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2"])
@@ -249,7 +249,7 @@ class TestCLIRebuildPD2:
 
 
 @pytest.mark.xfail
-@pytest.mark.order(34)
+@pytest.mark.order(21)
 class TestCLIRebuildPD2Stop:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop0"])
@@ -261,7 +261,7 @@ class TestCLIRebuildPD2Stop:
 
 
 @pytest.mark.xfail
-@pytest.mark.order(35)
+@pytest.mark.order(22)
 class TestCLIRebuildPD2StopAgain:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd2_stop"])
@@ -273,7 +273,7 @@ class TestCLIRebuildPD2StopAgain:
 
 
 @pytest.mark.flaky(reruns=2, reruns_delay=5)
-@pytest.mark.order(36)
+@pytest.mark.order(23)
 class TestCLIVDDeleteAgain:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["vd_delete"])
@@ -284,7 +284,7 @@ class TestCLIVDDeleteAgain:
         assert vd_delete_result == test_case["Expected"]
 
 
-@pytest.mark.order(37)
+@pytest.mark.order(24)
 class TestCLIVDCreateR1Again:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["vd_create_r1"])
@@ -295,6 +295,6 @@ class TestCLIVDCreateR1Again:
         assert vd_create_result == test_case["Expected"]
 
 
-@pytest.mark.order(38)
+@pytest.mark.order(25)
 class TestCLIPartitioningLast(TestDiskVolume):
     '''docstring'''

@@ -30,7 +30,7 @@ SORTED_DATA = {
 }
 
 
-@pytest.mark.order(11)
+@pytest.mark.order(1)
 class TestCLIResetDevice:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_device"])
@@ -42,7 +42,7 @@ class TestCLIResetDevice:
 
 
 @pytest.mark.skip(reason="Deprecated")
-@pytest.mark.order(12)
+@pytest.mark.order(2)
 class TestCLIResetPCIe:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pcie"])
@@ -53,7 +53,7 @@ class TestCLIResetPCIe:
         assert reset_pcie_result == test_case["Expected"]
 
 
-@pytest.mark.order(13)
+@pytest.mark.order(3)
 class TestCLIResetPower:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["reset_power"])

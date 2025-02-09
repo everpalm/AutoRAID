@@ -187,7 +187,7 @@ class TestCLIPassthru:
         assert passthru_result == test_case["Expected"]
 
 
-@pytest.mark.order(41)
+@pytest.mark.order(11)
 class TestCLIImport:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["import"])
@@ -200,7 +200,7 @@ class TestCLIImport:
 
 @pytest.mark.STRESS
 @pytest.mark.xdist_group("group2")
-@pytest.mark.order(42)
+@pytest.mark.order(12)
 class TestCLIRow:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["row"])
