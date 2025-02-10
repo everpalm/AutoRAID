@@ -7,8 +7,8 @@ from tests.test_storage.test_stress import (
     TestOneShotReadWriteStress as Stress)
 from tests.test_commandline.test_mnv_cli_rebuild import (
     TestCLIResetPD1 as ResetPD1)
-from tests.test_commandline.test_mnv_cli_rebuild import (
-    TestCLIRebuildPD1 as RebuildPD1)
+# from tests.test_commandline.test_mnv_cli_rebuild import (
+#     TestCLIRebuildPD1 as RebuildPD1)
 from unit.json_handler import load_and_sort_json
 
 # Set up logger
@@ -107,12 +107,6 @@ class TestResetChanglongPD1(ResetPD1):
     """
     Test suite for verifying Windows Warm Boot functionality with network
     """
-    # @pytest.mark.parametrize('test_case', SORTED_DATA["reset_pd1"])
-    # def test_commandline(self, mnv_cli, test_case):
-    #     '''docstring'''
-    #     reset_pd1_result = mnv_cli.interpret(test_case["Command"])
-    #     logger.debug('reset_pd1_result = %s', reset_pd1_result)
-    #     assert reset_pd1_result == test_case["Expected"]
 
 
 @pytest.mark.order(3)
@@ -121,16 +115,16 @@ class TestStressAfterResetChanglongPD1(Stress):
 
 
 @pytest.mark.order(4)
-class TestRebuildChanglongPD1(RebuildPD1):
+class TestRebuildChanglongPD1:
     """
     Test rebuilding backend PD1 of Changlong card
     """
-    # @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
-    # def test_commandline(self, mnv_cli, test_case):
-    #     '''docstring'''
-    #     rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
-    #     logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
-    #     assert rebuild_pd1_result == test_case["Expected"]
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
+        assert rebuild_pd1_result == test_case["Expected"]
 
 
 @pytest.mark.order(5)
