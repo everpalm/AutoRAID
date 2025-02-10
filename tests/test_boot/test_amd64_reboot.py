@@ -3,8 +3,8 @@
 import logging
 import time
 import pytest
-from tests.test_network.test_amd64_ping import TestAMD64Ping
-from tests.test_storage.test_stress import TestOneShotStress
+from tests.test_network.test_amd64_ping import TestAMD64Ping as Ping
+from tests.test_storage.test_stress import TestOneShotStress as Stress
 from boot.amd64_reboot import RebootFactory
 
 logger = logging.getLogger(__name__)
@@ -42,7 +42,6 @@ def win_boot(amd64_system, network_api):
     return reboot.initiate(platform=amd64_system)
 
 
-@pytest.mark.order(1)
 class TestWindowsWarmBoot:
     """
     Test suite for verifying Windows Warm Boot functionality.
@@ -65,15 +64,13 @@ class TestWindowsWarmBoot:
         time.sleep(RESET_DURATION)
 
 
-@pytest.mark.order(2)
-class TestWindowsWarmBootPing(TestAMD64Ping):
+class TestWindowsWarmBootPing(Ping):
     """
     Test suite for verifying Windows Warm Boot functionality with network
     """
 
 
-@pytest.mark.order(3)
-class TestWindowsWarmBootStress(TestOneShotStress):
+class TestWindowsWarmBootStress(Stress):
     """
     Stress tests for Windows Warm Boot functionality. (Inherits from Toss)
     """

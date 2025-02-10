@@ -1,14 +1,32 @@
 # Contents of tests/test_device/test_beidou.py
 '''Copyright (c) 2025 Jaron Cheng'''
-# import json
+import json
 import logging
 import pytest
-from tests.test_commandline.test_mnv_cli_rebuild import TestCLIResetPD1
-from tests.test_commandline.test_mnv_cli_rebuild import TestCLIRebuildPD1
-from tests.test_storage.test_stress import TestOneShotReadWriteStress
+from tests.test_storage.test_stress import (
+    TestOneShotReadWriteStress as Stress)
+from tests.test_commandline.test_mnv_cli_rebuild import (
+    TestCLIResetPD1 as ResetPD1)
+from unit.json_handler import load_and_sort_json
 
 # Set up logger
 logger = logging.getLogger(__name__)
+
+# 定義配置檔案與對應鍵
+CONFIG_FILES = {
+    "reset_pd1": ("config/test_mnv_cli_reset_pd1.json", "ID"),
+    "rebuild_pd1": ("config/test_mnv_cli_rebuild_pd1_changlong.json", "ID")
+}
+
+# Load and process file
+SORTED_DATA = {
+    name: load_and_sort_json(path, key) if key else json.load(open(
+        path,
+        'r',
+        encoding='utf-8'
+    ))
+    for name, (path, key) in CONFIG_FILES.items()
+}
 
 
 @pytest.mark.order(1)
@@ -83,29 +101,35 @@ class TestFunctionalChanglong:
 
 
 @pytest.mark.order(2)
-class TestResetChanglongPD1(TestCLIResetPD1):
+class TestResetChanglongPD1(ResetPD1):
     """
     Test suite for verifying Windows Warm Boot functionality with network
     """
 
 
 @pytest.mark.order(3)
-class TestStressAfterResetChanglongPD1(TestOneShotReadWriteStress):
+class TestStressAfterResetChanglongPD1(Stress):
     '''Test One-shot stress after reset PD1 of Changlong card'''
 
 
 @pytest.mark.order(4)
-class TestRebuildChanglongPD1(TestCLIRebuildPD1):
+class TestRebuildChanglongPD1:
     """
     Test rebuilding backend PD1 of Changlong card
     """
+    @pytest.mark.parametrize('test_case', SORTED_DATA["rebuild_pd1"])
+    def test_commandline(self, mnv_cli, test_case):
+        '''docstring'''
+        rebuild_pd1_result = mnv_cli.interpret(test_case["Command"])
+        logger.debug('rebuild_pd1_result = %s', rebuild_pd1_result)
+        assert rebuild_pd1_result == test_case["Expected"]
 
 
 @pytest.mark.order(5)
 @pytest.mark.flaky(reruns=330, reruns_delay=60)
-class TestRebuildingChanglong(TestFunctionalChanglong):
+class TestRebuildChanglongPD1Complete:
     '''Resemble functional Changlong'''
-    def test_virtual_drive_info(self, boot_device, network_api):
+    def test_virtual_drive_info(self, boot_device):
         '''fixture'''
         from_controller = boot_device.virtual_drive_info
 
@@ -120,8 +144,8 @@ class TestRebuildingChanglong(TestFunctionalChanglong):
             for vd in from_controller:
                 if vd.bga_progress:
                     logger.debug("%s", vd.bga_progress)
-        else:
+
             # 確保 rebuilding 已完成
-            assert all(
-                vd.status == "Functional" for vd in from_controller
-            ), "Rebuilding did not complete successfully"
+        assert all(
+            vd.status == "Functional" for vd in from_controller
+        ), "Rebuilding did not complete successfully"

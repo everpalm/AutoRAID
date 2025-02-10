@@ -5,10 +5,13 @@ import logging
 import os
 import pytest
 import paramiko
+from _pytest.nodes import Item
+from _pytest.config import Config
 from network.amd64_ping import PingFactory
 from amd64.system import PlatformFactory
 from interface.application import InterfaceFactory
 from interface.application import RaspberryInterfaceFactory
+from typing import List
 from unit.gitlab import GitLabAPI
 from unit.gpio import RaspBerryPins
 from unit.mongodb import MongoDB
@@ -237,3 +240,8 @@ def pytest_sessionfinish(session, exitstatus):
 #         log_path = attr["Log Path"]
 #         report_path = attr["Report Path"]
 #         mongo.write_log_and_report(log_path, report_path)
+
+
+# def pytest_collection_modifyitems(items: List[Item], config: Config):
+#     """ 強制按照測試函數在原始文件內的順序執行 """
+#     items.sort(key=lambda item: item.fspath.strpath + str(item.location[1]))

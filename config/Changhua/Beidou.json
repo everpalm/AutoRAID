@@ -220,7 +220,7 @@
                             "SDID": "0x2241",
                             "Rev": "20"
                         },
-                        "bus_device_func": "0a:00.00",
+                        "bus_device_func": "0b:00.00",
                         "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
                         "slot_id": "Not found",
                         "firmware_version": "1.0.0.1053",
