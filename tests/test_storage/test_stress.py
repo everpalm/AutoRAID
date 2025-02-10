@@ -250,7 +250,7 @@ class TestOLAP:
 
 
 @pytest.mark.xdist_group("group1")
-@pytest.mark.STRESS
+# @pytest.mark.STRESS
 class TestOneShotReadWriteStress:
     ''' Oneshot I/O Stress Test'''
     def test_read_write(self, target_stress, my_mdb):
