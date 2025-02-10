@@ -12,7 +12,7 @@ from unit.json_handler import load_and_sort_json
 # Set up logger
 logger = logging.getLogger(__name__)
 
-# 定義配置檔案與對應鍵
+# Deinfe configuration and key
 CONFIG_FILES = {
     "reset_pd1": ("config/test_mnv_cli_reset_pd1.json", "ID"),
     "rebuild_pd1": ("config/test_mnv_cli_rebuild_pd1_changlong.json", "ID")
@@ -133,19 +133,19 @@ class TestRebuildChanglongPD1Complete:
         '''fixture'''
         from_controller = boot_device.virtual_drive_info
 
-        # 檢查是否仍在 rebuilding
+        # Check if VD is under rebuilding
         rebuilding = any(
             vd.bga_progress and "Rebuilding is running" in vd.bga_progress
             for vd in from_controller
         )
 
-        # 顯示 rebuilding 進度
+        # Show progress of rebuilding
         if rebuilding:
             for vd in from_controller:
                 if vd.bga_progress:
                     logger.debug("%s", vd.bga_progress)
 
-            # 確保 rebuilding 已完成
+        # Assert completion of rebuilding
         assert all(
             vd.status == "Functional" for vd in from_controller
         ), "Rebuilding did not complete successfully"

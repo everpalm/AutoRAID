@@ -208,7 +208,6 @@ class BasePCIeSwitchFactory(ABC):
     def __init__(self, api: BaseInterface):
         '''docstring'''
         self.api = api
-        # self.manufacturer = api.manufacturer
         self.vid = api.nvme_controller.vid
         self.did = api.nvme_controller.did
 
@@ -222,7 +221,6 @@ class BeidouFactory(BasePCIeSwitchFactory):
     '''docstring'''
     def initiate(self, **kwargs) -> BasePCIeSwitch:
         '''docstring'''
-        # if self.vid == 'VEN_1B4B':
         if self.vid == '0x1b4b':
             if self.did == '0x2241':
                 return Changlong(**kwargs)
