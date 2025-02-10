@@ -242,6 +242,6 @@ def pytest_sessionfinish(session, exitstatus):
 #         mongo.write_log_and_report(log_path, report_path)
 
 
-def pytest_collection_modifyitems(items: List[Item], config: Config):
-    """ 強制按照測試函數在原始文件內的順序執行 """
-    items.sort(key=lambda item: item.fspath.strpath + str(item.location[1]))
+# def pytest_collection_modifyitems(items: List[Item], config: Config):
+#     """ 強制按照測試函數在原始文件內的順序執行 """
+#     items.sort(key=lambda item: item.fspath.strpath + str(item.location[1]))
