@@ -444,7 +444,7 @@
         "Description": "Display controller(hba)",
         "Expected": [
             "NVMe Controller",
-            "Bus Device Fun: 0a:00.00",
+            "Bus Device Fun: 0b:00.00",
             "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
             "Slot ID: Not found",
             "Firmware Version: 1.0.0.1053",
@@ -732,7 +732,7 @@
         "Description": "Display controller(hba)",
         "Expected": [
             "NVMe Controller",
-            "Bus Device Fun: 0a:00.00",
+            "Bus Device Fun: 0b:00.00",
             "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
             "Slot ID: Not found",
             "Firmware Version: 1.0.0.1053",
@@ -1020,7 +1020,7 @@
         "Description": "Display controller(hba)",
         "Expected": [
             "NVMe Controller",
-            "Bus Device Fun: 0a:00.00",
+            "Bus Device Fun: 0b:00.00",
             "Device: VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
             "Slot ID: Not found",
             "Firmware Version: 1.0.0.1053",
