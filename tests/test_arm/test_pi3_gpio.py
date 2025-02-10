@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 
 @pytest.mark.skip(reason="Compatibility issue")
-@pytest.mark.order(1)
 class TestPowerOffSUT:
     """
     Test suite for verifying SUT behavior during power-on sequence.
@@ -86,7 +85,6 @@ class TestPowerOffSUT:
 
 
 @pytest.mark.skip(reason="Compatibility issue")
-@pytest.mark.order(2)
 class TestPowerOnSUT:
     """
     Test suite for verifying SUT behavior during power-off sequence.

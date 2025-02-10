@@ -3,9 +3,9 @@
 import logging
 import pytest
 import RPi.GPIO as gpio
-from tests.test_arm.test_pi3_gpio import TestPowerOnSUT
-from tests.test_arm.test_pi3_gpio import TestPowerOffSUT
-from tests.test_storage.test_stress import TestOneShotStress
+from tests.test_arm.test_pi3_gpio import TestPowerOnSUT as PowerOn
+from tests.test_arm.test_pi3_gpio import TestPowerOffSUT as PowerOff
+from tests.test_storage.test_stress import TestOneShotStress as Stress
 from unit.gpio import OperateGPIO
 
 logger = logging.getLogger(__name__)
@@ -32,17 +32,17 @@ def rpi_gpio(my_pins):
 
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(1)
-class TestRelayOff(TestPowerOffSUT):
+class TestRelayOff(PowerOff):
     '''This is a docstring'''
 
 
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(2)
-class TestRelayOn(TestPowerOnSUT):
+class TestRelayOn(PowerOn):
     '''This is a docstring'''
 
 
 @pytest.mark.skip(reason="Compatibility issue")
 @pytest.mark.order(3)
-class TestWindowsColdBootStress(TestOneShotStress):
+class TestWindowsColdBootStress(Stress):
     '''This is a docstring'''
