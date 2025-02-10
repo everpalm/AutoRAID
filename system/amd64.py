@@ -17,7 +17,6 @@ class BaseOS(ABC):
     '''docstring'''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        # self.manufacturer = interface.manufacturer
         self.memory_size = self._get_memory_size()
 
     @abstractmethod
@@ -47,9 +46,6 @@ class AMD64Windows(BaseOS):
     '''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        # self.manufacturer = interface.manufacturer
-        # self.vid, self.did, self.sdid, self.rev = \
-        #     self._get_pcie_info().values()
         self.cpu_num, self.cpu_name = self.get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_desktop_info().values()
         self.nic_name = interface.if_name
@@ -230,38 +226,6 @@ class AMD64Windows(BaseOS):
         return {"Manufacturer": str_vendor,
                 "Model": str_model,
                 "Name": str_name}
-
-    # def _get_pcie_info(self) -> dict[str, str]:
-    #     ''' Get PCIe information
-    #         Grep manufactuer HW IDs from system call ''
-    #         Args: None
-    #         Returns: A dictionary consists of BDF and SDID
-    #         Raises: None
-    #     '''
-    #     dict_return = str_vid = str_did = str_sdid = str_rev = None
-    #     try:
-    #         dict_return = self.api.command_line(
-    #             f"wmic path win32_pnpentity get deviceid,"
-    #             f" name|findstr {self.manufacturer}")
-    #         logger.debug('dict_return type(%s) = %s', type(dict_return),
-    #                      dict_return)
-
-    #         # Check if str_return is None
-    #         if dict_return is None:
-    #             raise ValueError("Received None from command_line")
-
-    #         pattern = r"VEN_(\w+)&DEV_(\w+)&SUBSYS_(\w+)&REV_(\w+)"
-    #         match = re.search(pattern, dict_return.get(0))
-    #         if match:
-    #             str_vid, str_did, str_sdid, str_rev = match.groups()
-    #         logger.debug("vid = %s, did = %s", str_vid, str_did)
-    #         logger.debug('sdid = %s, rev = %s', str_sdid, str_rev)
-
-    #     except Exception as e:
-    #         logger.error('Device not found: %s', e)
-    #         raise
-    #     return {"VID": str_vid, "DID": str_sdid,
-    #             "SDID": str_sdid, "Rev": str_rev}
 
 
 class AMD64Linux(BaseOS):

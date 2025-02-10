@@ -10,8 +10,7 @@
 from unittest.mock import MagicMock
 from collections import defaultdict
 import pytest
-# from amd64.nvme import AMD64NVMe
-from amd64.system import AMD64Windows
+from system.amd64 import AMD64Windows
 from event.logging import WindowsEvent
 
 

@@ -6,7 +6,7 @@ import paramiko
 import pytest
 
 # from amd64.nvme import AMD64NVMe as amd64
-from amd64.system import BaseOS
+from system.amd64 import BaseOS
 from event.logging import EventFactory
 from interface.application import BaseInterface
 # from interface.application_interface import ApplicationInterface as api
@@ -15,7 +15,7 @@ from storage.partitioning import PartitionFactory
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
 from unit.mongodb import MongoDB as mdb
-from arm.system import RaspberryPi
+from system.arm import RaspberryPi
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 

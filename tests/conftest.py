@@ -5,13 +5,13 @@ import logging
 import os
 import pytest
 import paramiko
-from _pytest.nodes import Item
-from _pytest.config import Config
+# from _pytest.nodes import Item
+# from _pytest.config import Config
 from network.amd64_ping import PingFactory
-from amd64.system import PlatformFactory
+from system.amd64 import PlatformFactory
 from interface.application import InterfaceFactory
 from interface.application import RaspberryInterfaceFactory
-from typing import List
+# from typing import List
 from unit.gitlab import GitLabAPI
 from unit.gpio import RaspBerryPins
 from unit.mongodb import MongoDB

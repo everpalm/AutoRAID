@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from arm.system import RaspberryPi, CPUInformation, SystemInformation
+from system.arm import RaspberryPi, CPUInformation, SystemInformation
 from interface.application import BaseInterface
 
 
