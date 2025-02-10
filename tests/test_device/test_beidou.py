@@ -6,8 +6,10 @@ import pytest
 from tests.test_storage.test_stress import (
     TestOneShotReadWriteStress as Stress
 )
-from tests.test_commandline.test_mnv_cli_rebuild import TestCLIResetPD1 as ResetPD1
-from tests.test_commandline.test_mnv_cli_rebuild import TestCLIRebuildPD1 as RebuildPD1
+from tests.test_commandline.test_mnv_cli_rebuild import (
+    TestCLIResetPD1 as ResetPD1)
+from tests.test_commandline.test_mnv_cli_rebuild import (
+    TestCLIRebuildPD1 as RebuildPD1)
 from unit.json_handler import load_and_sort_json
 
 # Set up logger
