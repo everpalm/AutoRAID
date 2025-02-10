@@ -2,8 +2,8 @@
 '''Copyright (c) 2025 Jaron Cheng'''
 import pytest
 
-# from _pytest.nodes import Item
-# from _pytest.config import Config
+from _pytest.nodes import Item
+from _pytest.config import Config
 from amd64.system import BaseOS
 from amd64.system import BaseInterface
 from commandline.mnv_cli import CLIFactory
@@ -11,7 +11,7 @@ from device.beidou import BeidouFactory
 from storage.partitioning import PartitionFactory
 from storage.partitioning import PartitionDisk
 from storage.stress import StressFactory
-# from typing import List
+from typing import List
 from unit.mongodb import MongoDB
 
 
@@ -88,6 +88,6 @@ def my_mdb():
     )
 
 
-# def pytest_collection_modifyitems(items: List[Item], config: Config):
-#     """ 強制按照測試函數在原始文件內的順序執行 """
-#     items.sort(key=lambda item: item.fspath.strpath + str(item.location[1]))
+def pytest_collection_modifyitems(items: List[Item], config: Config):
+    """ 強制按照測試函數在原始文件內的順序執行 """
+    items.sort(key=lambda item: item.fspath.strpath + str(item.location[1]))
