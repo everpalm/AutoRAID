@@ -4,8 +4,7 @@ import json
 import logging
 import pytest
 from tests.test_storage.test_stress import (
-    TestOneShotReadWriteStress as Stress
-)
+    TestOneShotReadWriteStress as Stress)
 from tests.test_commandline.test_mnv_cli_rebuild import (
     TestCLIResetPD1 as ResetPD1)
 from tests.test_commandline.test_mnv_cli_rebuild import (
