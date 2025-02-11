@@ -20,7 +20,7 @@ import json
 import paramiko
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.INFO)
+logger = get_logger(__name__, logging.DEBUG)
 
 
 @dataclass
@@ -135,6 +135,14 @@ class VirtualDrive:
     total_of_vd: int
 
 
+@dataclass
+class CPU:
+    """docstring"""
+    cores: int
+    model_name: str
+    hyperthreading: bool
+
+
 class BaseInterface(ABC):
     """Abstract base class defining the interface for system interaction."""
     def __init__(self, mode: str, if_name: str, ssh_port: str,
@@ -153,6 +161,7 @@ class BaseInterface(ABC):
         self.ssh_port = ssh_port
         self.local_ip = self._get_local_ip(if_name)
         self.nvme_controller = None
+        self.cpu = None
         self.virtual_drive = None
         self.remote_ip, self.account, self.password, self.local_dir, \
             self.remote_dir, self.manufacturer = self._get_remote_ip1()
@@ -281,6 +290,11 @@ class BaseInterface(ABC):
                     .get('Storage', {})
                     .get('Standard NVM Express Controller', {})
                 )
+                cpu_data = (
+                    element.get('Remote', {})
+                    .get('Hardware', {})
+                    .get('CPU', {})
+                )
                 root_complexes_list = [
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])
@@ -293,6 +307,7 @@ class BaseInterface(ABC):
                         "Virtual Drive", [])
                 ]
                 logger.debug('end_points_list = %s', end_points_list)
+                # Get NVMe controller information
                 self.nvme_controller = NVMeController(
                     bus_device_func=nvme_data["bus_device_func"],
                     device=nvme_data["device"],
@@ -317,6 +332,13 @@ class BaseInterface(ABC):
                     root_complexes=root_complexes_list,
                     end_points=end_points_list
                 )
+                # Get CPU information
+                self.cpu = CPU(
+                    cores=cpu_data["Core(s)"],
+                    model_name=cpu_data["Model Name"],
+                    hyperthreading=cpu_data["Hyperthreading"]
+                )
+                logger.debug('cpu = %s', self.cpu)
 
                 match = re.search(r"VEN_\w+", self.nvme_controller.device)
                 if match:
