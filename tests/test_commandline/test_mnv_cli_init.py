@@ -12,7 +12,7 @@ from unit.json_handler import load_and_sort_json
 # Set up logger
 logger = logging.getLogger(__name__)
 
-# 定義配置檔案與對應鍵
+# Define configuration and key
 CONFIG_FILES = {
     "init": ("config/test_mnv_cli_init.json", "ID"),
     "init_start": ("config/test_mnv_cli_init_start.json", "ID"),
