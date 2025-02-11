@@ -62,7 +62,7 @@ class TestAMD64System:
         assert (amd64_system.cpu_name ==
                 amd64_settings['CPU Information']["Model Name"])
 
-    def test_get_desktop_info(self, amd64_system, amd64_settings):
+    def test_get_system_info(self, amd64_system, amd64_settings):
         """Test for verifying system manufacturer, model, and operating system.
 
         Args:
