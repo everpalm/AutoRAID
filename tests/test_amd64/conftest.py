@@ -7,8 +7,8 @@ import pytest
 from event.logging import EventFactory
 from storage.performance import PerfFactory
 from storage.stress import StressFactory
-from unit.mongodb import MongoDB as mdb
 from system.arm import RaspberryPi
+from unit.mongodb import MongoDB as mdb
 
 paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
