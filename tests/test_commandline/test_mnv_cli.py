@@ -75,7 +75,6 @@ class TestCLIAdapter:
         assert adapter_result == test_case["Expected"]
 
 
-# @pytest.mark.order(1)
 class TestCLIOEMData:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["oem_data"])
@@ -86,7 +85,6 @@ class TestCLIOEMData:
         assert oem_data_result == test_case["Expected"]
 
 
-# @pytest.mark.order(2)
 class TestCLIVersion:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["version"])
@@ -97,7 +95,6 @@ class TestCLIVersion:
         assert version_result == test_case["Expected"]
 
 
-# @pytest.mark.order(3)
 @pytest.mark.dependency(name="dump data")
 class TestCLIDumpHBA:
     '''docstring'''
@@ -109,7 +106,6 @@ class TestCLIDumpHBA:
         assert dump_hba_result == test_case["Expected"]
 
 
-# @pytest.mark.order(4)
 @pytest.mark.dependency(depends=["dump data"])
 class TestCLIExport:
     '''docstring'''
@@ -121,7 +117,6 @@ class TestCLIExport:
         assert result, 'The two files are not the same!'
 
 
-# @pytest.mark.order(5)
 class TestCLILog:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["log"])
@@ -132,7 +127,6 @@ class TestCLILog:
         assert log_result == test_case["Expected"]
 
 
-# @pytest.mark.order(6)
 class TestCLIEvent:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["event"])
@@ -143,7 +137,6 @@ class TestCLIEvent:
         assert event_result == test_case["Expected"]
 
 
-# @pytest.mark.order(7)
 class TestCLIDebugError:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_error"])
@@ -154,7 +147,6 @@ class TestCLIDebugError:
         assert debug_error_result == test_case["Expected"]
 
 
-# @pytest.mark.order(8)
 class TestCLIDebugNormal:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["debug_normal"])
@@ -165,7 +157,6 @@ class TestCLIDebugNormal:
         assert debug_normal_result == test_case["Expected"]
 
 
-# @pytest.mark.order(9)
 class TestCLILED:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["led"])
@@ -176,7 +167,6 @@ class TestCLILED:
         assert led_result == test_case["Expected"]
 
 
-# @pytest.mark.order(10)
 class TestCLIPassthru:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["passthru"])
@@ -187,7 +177,6 @@ class TestCLIPassthru:
         assert passthru_result == test_case["Expected"]
 
 
-# @pytest.mark.order(11)
 class TestCLIImport:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["import"])
@@ -200,7 +189,6 @@ class TestCLIImport:
 
 @pytest.mark.STRESS
 @pytest.mark.xdist_group("group2")
-# @pytest.mark.order(12)
 class TestCLIRow:
     '''docstring'''
     @pytest.mark.parametrize('test_case', SORTED_DATA["row"])
