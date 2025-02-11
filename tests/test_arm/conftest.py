@@ -3,7 +3,7 @@
 # import logging
 import pytest
 import RPi.GPIO as gpio
-from arm.system import RaspberryPi
+from system.arm import RaspberryPi
 from unit.gpio import OperateGPIO
 
 

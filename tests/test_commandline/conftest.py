@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from amd64.system import BaseOS
+from system.amd64 import BaseOS
 from commandline.mnv_cli import CLIFactory
 from interface.application import BaseInterface
 from storage.stress import StressFactory

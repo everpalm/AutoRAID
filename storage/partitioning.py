@@ -7,7 +7,7 @@ import traceback
 from abc import ABC
 from abc import abstractmethod
 # from amd64.nvme import AMD64NVMe
-from amd64.system import BaseOS
+from system.amd64 import BaseOS
 from typing import List
 from interface.application import BaseInterface
 from unit.log_handler import get_logger

@@ -62,7 +62,6 @@ class TestAMD64System:
         assert (amd64_system.cpu_name ==
                 amd64_settings['CPU Information']["Model Name"])
 
-    # @pytest.mark.parametrize('amd64_settings', AMD64_SETTINGS)
     def test_get_desktop_info(self, amd64_system, amd64_settings):
         """Test for verifying system manufacturer, model, and operating system.
 
@@ -78,25 +77,3 @@ class TestAMD64System:
                 amd64_settings['System Information']["Manufacturer"])
         assert (amd64_system.model ==
                 amd64_settings['System Information']["Model"])
-
-    # def test_get_pcie_info(self, amd64_system, amd64_settings):
-    #     """Test for verifying PCIe configuration, including VID, DID, SDID,
-    #     and Rev.
-
-    #     Args:
-    #         amd64_system: The system instance being tested.
-    #         AMD64_SETTINGS (dict): Expected configuration data for validation.
-    #     """
-    #     logger.info('VID = %s', amd64_system.vid)
-    #     logger.info('DID = %s', amd64_system.did)
-    #     logger.info('SDID = %s', amd64_system.sdid)
-    #     logger.info('Rev = %s', amd64_system.rev)
-
-    #     assert (amd64_system.vid ==
-    #             amd64_settings['PCIE Configuration']["VID"])
-    #     assert (amd64_system.did ==
-    #             amd64_settings['PCIE Configuration']["DID"])
-    #     assert (amd64_system.sdid ==
-    #             amd64_settings['PCIE Configuration']["SDID"])
-    #     assert (amd64_system.rev ==
-    #             amd64_settings['PCIE Configuration']["Rev"])

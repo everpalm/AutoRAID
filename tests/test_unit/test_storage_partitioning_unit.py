@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 from storage.partitioning import WindowsVolume
 # from amd64.nvme import AMD64NVMe
-from amd64.system import AMD64Windows
+from system.amd64 import AMD64Windows
 
 
 @pytest.fixture

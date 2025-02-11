@@ -4,7 +4,7 @@ import logging
 import multiprocessing
 from abc import ABC
 from abc import abstractmethod
-from amd64.system import BaseOS
+from system.amd64 import BaseOS
 from dataclasses import dataclass
 from interface.application import BaseInterface
 from typing import Tuple
