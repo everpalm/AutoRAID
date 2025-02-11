@@ -53,6 +53,11 @@ def mock_base_interface_config():
                     }
                 },
                 "Hardware": {
+                    "CPU": {
+                        "Core(s)": 12,
+                        "Model Name": "AMD Ryzen 9",
+                        "Hyperthreading": True
+                    },
                     "Network": {
                         "IP": "192.168.0.200"
                     },
