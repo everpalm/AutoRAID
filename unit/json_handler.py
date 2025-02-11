@@ -3,9 +3,10 @@
 import json
 import logging
 import re
+from unit.log_handler import get_logger
 
 # Set up logger
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__, logging.INFO)
 
 
 def load_and_sort_json(file_path, key):
