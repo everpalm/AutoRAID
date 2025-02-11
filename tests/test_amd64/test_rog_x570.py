@@ -3,7 +3,7 @@
 import json
 import logging
 import pytest
-from tests.test_amd64.test_amd64_system import TestAMD64System
+from tests.test_amd64.test_amd64_system import TestAMD64System as AMD64System
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -16,5 +16,5 @@ def amd64_settings():
         return json.load(f)
 
 
-class TestRogX570(TestAMD64System):
+class TestRogX570(AMD64System):
     '''Duplicate of TestAMD64NVMe to simulate a new test system'''
