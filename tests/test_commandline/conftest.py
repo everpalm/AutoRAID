@@ -1,15 +1,14 @@
 # Content of tests/test_commandline/conftest.py
 '''Copyright (c) 2025 Jaron Cheng'''
 import json
-
 import pytest
 
-from system.amd64 import BaseOS
 from commandline.mnv_cli import CLIFactory
 from interface.application import BaseInterface
 from storage.stress import StressFactory
 from storage.partitioning import PartitionFactory
 from storage.partitioning import PartitionDisk
+from system.amd64 import BaseOS
 from unit.mongodb import MongoDB as mdb
 
 

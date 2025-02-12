@@ -1,11 +1,10 @@
-# Contents of amd64/system.py
+# Contents of system/amd64.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from collections import defaultdict
 import logging
-# import math
 import re
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
@@ -47,7 +46,7 @@ class AMD64Windows(BaseOS):
     def __init__(self, interface: BaseInterface):
         self.api = interface
         self.cpu_num, self.cpu_name = self.get_cpu_info().values()
-        self.vendor, self.model, self.name = self._get_desktop_info().values()
+        self.vendor, self.model, self.name = self._get_system_info().values()
         self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
@@ -198,7 +197,7 @@ class AMD64Windows(BaseOS):
             raise
         return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
 
-    def _get_desktop_info(self) -> dict[str]:
+    def _get_system_info(self) -> dict[str]:
         ''' Get Desktop Computer information
             Grep HW information from system call 'lshw'
             Args: None
@@ -236,7 +235,7 @@ class AMD64Linux(BaseOS):
     def get_cpu_info(self) -> dict[str, str]:
         pass
 
-    def _get_desktop_info(self) -> dict[str]:
+    def _get_system_info(self) -> dict[str]:
         pass
 
 

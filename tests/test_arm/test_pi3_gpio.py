@@ -49,7 +49,7 @@ class TestPowerOffSUT:
         logger.info('target_ping.maximum = %s', target_ping.maximum)
         logger.info('target_ping.average = %s', target_ping.average)
         logger.info('ping_instance.deviation = %s', target_ping.deviation)
-        # 检查返回值是否为True，表示ping成功
+        # Check if it returns True, meaning ping succeeds
         assert result is True
 
     @pytest.mark.dependency(name="power_off", depends=["ping_ok"])
@@ -80,7 +80,7 @@ class TestPowerOffSUT:
         """
         result = target_ping.ping()
 
-        # 检查返回值是否为False，表示ping失败
+        # Check if it returns False, meaning ping fails
         assert result is False
 
 
@@ -113,9 +113,9 @@ class TestPowerOnSUT:
         logger.info('target_ping.average = %s', target_ping.average)
         logger.info('ping_instance.deviation = %s', target_ping.deviation)
 
-        # 检查返回值是否为False，表示ping失败
+        # Check if it returns False, meaning ping fails
         assert result is False
-        # 验证解析结果
+        # Validate result
 
     @pytest.mark.dependency(name="power_on", depends=["ping_loss"])
     def test_press_power_button(self, rpi_gpio):
@@ -145,5 +145,5 @@ class TestPowerOnSUT:
         """
         result = target_ping.ping()
 
-        # 检查返回值是否为True，表示ping成功
+        # Check if it returns True, meaning ping succeeds
         assert result is True

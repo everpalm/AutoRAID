@@ -15,6 +15,7 @@ def amd64_settings():
         return json.load(f)
 
 
+@pytest.mark.skip(reason="Depricated")
 class TestAMD64System:
     '''Duplicate of TestAMD64NVMe'''
     def test_get_hyperthreading(self, amd64_system, amd64_settings):
@@ -62,7 +63,7 @@ class TestAMD64System:
         assert (amd64_system.cpu_name ==
                 amd64_settings['CPU Information']["Model Name"])
 
-    def test_get_desktop_info(self, amd64_system, amd64_settings):
+    def test_get_system_info(self, amd64_system, amd64_settings):
         """Test for verifying system manufacturer, model, and operating system.
 
         Args:

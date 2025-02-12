@@ -5,7 +5,7 @@ import pytest
 from system.amd64 import BaseOS
 from system.amd64 import BaseInterface
 from commandline.mnv_cli import CLIFactory
-from device.beidou import BeidouFactory
+from device.changlong import BeidouFactory
 from storage.partitioning import PartitionFactory
 from storage.partitioning import PartitionDisk
 from storage.stress import StressFactory

@@ -37,7 +37,6 @@ class PartitionDisk(ABC):
         self.account = platform.api.account
         self.password = platform.api.password
         self.script_name = platform.api.script_name
-        # self.manufacturer = platform.manufacturer
         self.disk_vid = platform.api.nvme_controller.vid
         self.memory_size = platform.memory_size
         self.disk_format = disk_format

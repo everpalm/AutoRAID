@@ -12,7 +12,7 @@ from unit.json_handler import load_and_sort_json
 # Set up logger
 logger = logging.getLogger(__name__)
 
-# 定義配置檔案與對應鍵
+# Define configuration and key
 CONFIG_FILES = {
     "smart_invalid": ("config/test_mnv_cli_smart_invalid.json", "ID")
 }
@@ -83,7 +83,7 @@ class TestCLISMART:
 
         smart_info_fields = smart_info.__dict__
 
-        # 逐項檢查是否符合 limits 規範
+        # Iterate through the fields to assert limits
         for field, value in smart_info_fields.items():
             assert limits[field](value), (f"{field.replace('_', ' ').title()} "
                                           f"{value} is out of range!")

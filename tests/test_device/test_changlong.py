@@ -4,9 +4,14 @@ import json
 import logging
 import pytest
 from tests.test_storage.test_stress import (
-    TestOneShotReadWriteStress as Stress)
+    TestOneShotReadWriteStress as Stress
+)
 from tests.test_commandline.test_mnv_cli_rebuild import (
-    TestCLIResetPD1 as ResetPD1)
+    TestCLIMPStart as MPStart
+)
+from tests.test_commandline.test_mnv_cli_rebuild import (
+    TestCLIResetPD1 as ResetPD1
+)
 from unit.json_handler import load_and_sort_json
 
 # Set up logger
@@ -133,13 +138,13 @@ class TestRebuildChanglongPD1Complete:
         '''fixture'''
         from_controller = boot_device.virtual_drive_info
 
-        # Check if VD is under rebuilding
+        # Check if PD is under rebuilding
         rebuilding = any(
             vd.bga_progress and "Rebuilding is running" in vd.bga_progress
             for vd in from_controller
         )
 
-        # Show progress of rebuilding
+        # Show progress of BGA
         if rebuilding:
             for vd in from_controller:
                 if vd.bga_progress:
@@ -148,4 +153,35 @@ class TestRebuildChanglongPD1Complete:
         # Assert completion of rebuilding
         assert all(
             vd.status == "Functional" for vd in from_controller
+        ), "Rebuilding did not complete successfully"
+
+
+@pytest.mark.order(6)
+class TestRebuildChanglongPD1CompleteMPStart(MPStart):
+    '''Resemble media patrol'''
+
+
+@pytest.mark.order(7)
+@pytest.mark.flaky(reruns=330, reruns_delay=60)
+class TestMPChanglongVD1Complete:
+    '''Resemble functional Changlong'''
+    def test_virtual_drive_info(self, boot_device):
+        '''fixture'''
+        from_controller = boot_device.virtual_drive_info
+
+        # Check if VD is under media patrol
+        media_patrol = any(
+            vd.bga_progress and "Media Patrol is running" in vd.bga_progress
+            for vd in from_controller
+        )
+
+        # Show progress of BGA
+        if media_patrol:
+            for vd in from_controller:
+                if vd.bga_progress:
+                    logger.debug("%s", vd.bga_progress)
+
+        # Assert completion of media patrol
+        assert all(
+            vd.bga_progress == "" for vd in from_controller
         ), "Rebuilding did not complete successfully"

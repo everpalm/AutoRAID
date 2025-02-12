@@ -53,6 +53,16 @@ def mock_base_interface_config():
                     }
                 },
                 "Hardware": {
+                    "System": {
+                        "Manufacturer": "System",
+                        "Model": "System Product",
+                        "Name": "MY-TESTBED-01"
+                    },
+                    "CPU": {
+                        "Core(s)": 12,
+                        "Model Name": "AMD Ryzen 9",
+                        "Hyperthreading": True
+                    },
                     "Network": {
                         "IP": "192.168.0.200"
                     },
@@ -66,7 +76,8 @@ def mock_base_interface_config():
                                 "Rev": "20"
                             },
                             "bus_device_func": "0a:00.00",
-                            "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#4&3B5FFa9&0&001a#",
+                            "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&"
+                            "REV_20#4&3B5FFa9&0&001a#",
                             "slot_id": "Not found",
                             "firmware_version": "1.0.0.1053",
                             "revision_id": "B0B",
@@ -78,9 +89,12 @@ def mock_base_interface_config():
                             "max_ns": 2,
                             "supported_raid_mode": ["RAID0", "RAID1", "JBOD"],
                             "cache": "On",
-                            "supported_bga_features": ["Initialization", "Rebuild", "MediaPatrol"],
+                            "supported_bga_features": ["Initialization",
+                                                       "Rebuild",
+                                                       "MediaPatrol"],
                             "support_stripe_size": ["128KB", "256KB", "512KB"],
-                            "supported_features": ["Import", "RAID", "Namespace", "Dump"],
+                            "supported_features": ["Import", "RAID",
+                                                   "Namespace", "Dump"],
                             "root_complexes": [
                                 {
                                     "id": 0,

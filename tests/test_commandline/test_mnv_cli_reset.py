@@ -12,7 +12,7 @@ from unit.json_handler import load_and_sort_json
 # Set up logger
 logger = logging.getLogger(__name__)
 
-# 定義配置檔案與對應鍵
+# Define configuration and key
 CONFIG_FILES = {
     "reset_device": ("config/test_mnv_cli_reset_device.json", "ID"),
     "reset_pcie": ("config/test_mnv_cli_reset_pcie.json", "ID"),
