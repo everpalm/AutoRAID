@@ -53,6 +53,11 @@ def mock_base_interface_config():
                     }
                 },
                 "Hardware": {
+                    "System": {
+                        "Manufacturer": "System",
+                        "Model": "System Product",
+                        "Name": "MY-TESTBED-01"
+                    },
                     "CPU": {
                         "Core(s)": 12,
                         "Model Name": "AMD Ryzen 9",
