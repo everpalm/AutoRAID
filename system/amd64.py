@@ -1,11 +1,10 @@
-# Contents of amd64/system.py
+# Contents of system/amd64.py
 '''Copyright (c) 2024 Jaron Cheng'''
 from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from collections import defaultdict
 import logging
-# import math
 import re
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
