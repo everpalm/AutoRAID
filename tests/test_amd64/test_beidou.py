@@ -67,5 +67,3 @@ class TestBeidou:
         """
         mac_address = beidou.mac_address
         logger.info("MAC Address = %s", mac_address)
-
-    
