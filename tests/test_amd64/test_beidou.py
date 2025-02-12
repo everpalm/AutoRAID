@@ -29,15 +29,24 @@ class TestBeidou:
         logger.info("CPU(s) = %s", beidou.cpu_num)
         logger.info("CPU model = %s", beidou.cpu_name)
         logger.info("hyperthreading = %s", beidou.hyperthreading)
-        logger.debug("CPU(s) to be configured = %d", beidou.api.cpu.cores)
-        logger.debug("CPU model to be configured = %s",
-                     beidou.api.cpu.model_name)
-        logger.debug("hyperthreading to be configured = %s",
-                     beidou.api.cpu.hyperthreading)
         assert (beidou.hyperthreading ==
                 beidou.api.cpu.hyperthreading)
         assert beidou.cpu_num == beidou.api.cpu.cores
         assert beidou.cpu_name == beidou.api.cpu.model_name
+
+    def test_get_system_info(self, beidou):
+        """Test for verifying system manufacturer, model, and operating system.
+
+        Args:
+            beidou: The system instance being tested.
+            beidou (dict): Expected configuration data for validation.
+        """
+        logger.info('Manufacturer = %s', beidou.vendor)
+        logger.info('Model = %s', beidou.model)
+        logger.info('Name = %s', beidou.name)
+        assert beidou.vendor == beidou.api.system.manufacturer
+        assert beidou.model == beidou.api.system.model
+        assert beidou.name == beidou.api.system.name
 
     def test_memory_size(self, beidou):
         """Test for verifying memory size of the system.
@@ -59,18 +68,4 @@ class TestBeidou:
         mac_address = beidou.mac_address
         logger.info("MAC Address = %s", mac_address)
 
-    def test_get_system_info(self, beidou):
-        """Test for verifying system manufacturer, model, and operating system.
-
-        Args:
-            beidou: The system instance being tested.
-            beidou (dict): Expected configuration data for validation.
-        """
-        logger.info('Manufacturer = %s, Model = %s, Name = %s',
-                    beidou.vendor,
-                    beidou.model,
-                    beidou.name)
-        # assert (beidou.vendor ==
-        #         beidou['System Information']["Manufacturer"])
-        # assert (beidou.model ==
-        #         beidou['System Information']["Model"])
+    
