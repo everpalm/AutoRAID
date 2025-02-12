@@ -15,6 +15,7 @@ def amd64_settings():
         return json.load(f)
 
 
+@pytest.mark.skip(reason="Depricated")
 class TestAMD64System:
     '''Duplicate of TestAMD64NVMe'''
     def test_get_hyperthreading(self, amd64_system, amd64_settings):

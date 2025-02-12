@@ -16,5 +16,6 @@ def amd64_settings():
         return json.load(f)
 
 
+@pytest.mark.skip(reason="Depricated")
 class TestRogX570(AMD64System):
     '''Duplicate of TestAMD64NVMe to simulate a new test system'''
