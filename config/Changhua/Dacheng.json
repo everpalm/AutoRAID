@@ -139,7 +139,7 @@
                                 "status": "Functional",
                                 "importable": "No",
                                 "raid_mode": "RAID1",
-                                "size": "931 GB",
+                                "size": "465 GB",
                                 "pd_count": 2,
                                 "pds": [
                                     1,
@@ -296,7 +296,7 @@
                                 "status": "Functional",
                                 "importable": "No",
                                 "raid_mode": "RAID1",
-                                "size": "931 GB",
+                                "size": "465 GB",
                                 "pd_count": 2,
                                 "pds": [
                                     1,
