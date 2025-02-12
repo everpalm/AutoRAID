@@ -44,19 +44,21 @@ class TestBeidou:
         logger.info('Manufacturer = %s', beidou.vendor)
         logger.info('Model = %s', beidou.model)
         logger.info('Name = %s', beidou.name)
+        logger.info('Total Memory Size = %s GB', beidou.memory_size)
         assert beidou.vendor == beidou.api.system.manufacturer
         assert beidou.model == beidou.api.system.model
         assert beidou.name == beidou.api.system.name
+        assert str(beidou.memory_size) + ' GB' == beidou.api.system.memory
 
-    def test_memory_size(self, beidou):
-        """Test for verifying memory size of the system.
+    # def test_memory_size(self, beidou):
+    #     """Test for verifying memory size of the system.
 
-        Args:
-            beidou: The system instance being tested.
-            beidou (dict): Expected configuration data for validation.
-        """
-        memory_size = beidou.memory_size
-        logger.info("Memory Size = %s GB", memory_size)
+    #     Args:
+    #         beidou: The system instance being tested.
+    #         beidou (dict): Expected configuration data for validation.
+    #     """
+    #     memory_size = beidou.memory_size
+    #     logger.info("Memory Size = %s GB", memory_size)
 
     def test_mac_address(self, beidou):
         """Test for verifying MAC address of the system.

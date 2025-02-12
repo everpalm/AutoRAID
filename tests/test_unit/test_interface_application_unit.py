@@ -56,7 +56,8 @@ def mock_base_interface_config():
                     "System": {
                         "Manufacturer": "System",
                         "Model": "System Product",
-                        "Name": "MY-TESTBED-01"
+                        "Name": "MY-TESTBED-01",
+                        "Total Memory Size": "31 GB"
                     },
                     "CPU": {
                         "Core(s)": 12,
@@ -64,7 +65,8 @@ def mock_base_interface_config():
                         "Hyperthreading": True
                     },
                     "Network": {
-                        "IP": "192.168.0.200"
+                        "IP": "192.168.0.200",
+                        "MAC Address": "3C-7C-3F-20-C1-78"
                     },
                     "Storage": {
                         "Standard NVM Express Controller": {

@@ -20,7 +20,7 @@ import json
 import paramiko
 from unit.log_handler import get_logger
 
-logger = get_logger(__name__, logging.DEBUG)
+logger = get_logger(__name__, logging.INFO)
 
 
 @dataclass
@@ -148,6 +148,13 @@ class System:
     manufacturer: str
     model: str
     name: str
+    memory: str
+
+
+@dataclass
+class Network:
+    ip: str
+    mac_address: str
 
 
 class BaseInterface(ABC):
@@ -170,9 +177,9 @@ class BaseInterface(ABC):
         self.nvme_controller = None
         self.cpu = None
         self.system = None
+        self.network = None
         self.virtual_drive = None
         (self.remote_ip, self.account, self.password, self.local_dir,
-            # self.remote_dir, self.manufacturer) = self._get_system_info()
             self.remote_dir) = self._get_system_info()
         self._os_type = None
         self.script_name = "diskpart_script.txt"
@@ -260,6 +267,7 @@ class BaseInterface(ABC):
                 )
                 cpu_data = hardware['CPU']
                 system_data = hardware['System']
+                network_data = hardware['Network']
                 root_complexes_list = [
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])
@@ -305,14 +313,17 @@ class BaseInterface(ABC):
                 self.system = System(
                     manufacturer=system_data["Manufacturer"],
                     model=system_data["Model"],
-                    name=system_data["Name"]
+                    name=system_data["Name"],
+                    memory=system_data["Total Memory Size"]
+                )
+                # Get network information
+                self.network = Network(
+                    ip=network_data["IP"],
+                    mac_address=network_data["MAC Address"]
                 )
                 logger.debug('cpu = %s', self.cpu)
-                match = re.search(r"VEN_\w+", self.nvme_controller.device)
-                if match:
-                    manufacturer = match.group()
-                logger.debug('remote_ip = %s', remote_ip)
-                logger.debug('manufacturer = %s', manufacturer)
+                logger.debug('system = %s', self.system)
+                logger.debug('network = %s', self.network)
                 break
 
         if remote_ip is None:
@@ -435,7 +446,8 @@ class BaseInterface(ABC):
                 self.system = System(
                     manufacturer=system_data["Manufacturer"],
                     model=system_data["Model"],
-                    name=system_data["Name"]
+                    name=system_data["Name"],
+                    memory=system_data["Total Memory Size"]
                 )
                 logger.debug('cpu = %s', self.cpu)
 

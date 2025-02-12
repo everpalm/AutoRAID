@@ -22,15 +22,13 @@
                     "Manufacturer": "Raspberry Pi 4",
                     "Model": "B",
                     "Name": "MY-RASPI-02",
-                    "Rev": "1.5"
+                    "Rev": "1.5",
+                    "Total Memory Size": "1942364 kB"
                 },
                 "CPU": {
                     "Core(s)": 4,
                     "Model Name": "Cortex-A72",
                     "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "1942364 kB"
                 },
                 "Network": {
                     "IP": "192.168.0.117"
@@ -58,18 +56,17 @@
                 "System": {
                     "Manufacturer": "System",
                     "Model": "System Product",
-                    "Name": "MY-TESTBED-01"
+                    "Name": "MY-TESTBED-01",
+                    "Total Memory Size": "31 GB"
                 },
                 "CPU": {
                     "Core(s)": 12,
                     "Model Name": "AMD Ryzen 9",
                     "Hyperthreading": true
                 },
-                "Memory": {
-                    "Total Physical Size": "31 GB"
-                },
                 "Network": {
-                    "IP": "192.168.0.128"
+                    "IP": "192.168.0.128",
+                    "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
                     "Standard NVM Express Controller": {
@@ -179,15 +176,13 @@
                     "Manufacturer": "Raspberry Pi 3",
                     "Model": "B",
                     "Name": "MY-RASPI-03",
-                    "Rev": "1.2"
+                    "Rev": "1.2",
+                    "Total Memory Size": "994824 kB"
                 },
                 "CPU": {
                     "Core(s)": 4,
                     "Model Name": "Cortex-A43",
                     "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "994824 kB"
                 },
                 "Network": {
                     "IP": "192.168.0.139"
@@ -215,18 +210,17 @@
                 "System": {
                     "Manufacturer": "System",
                     "Model": "System Product",
-                    "Name": "MY-TESTBED-01"
+                    "Name": "MY-TESTBED-01",
+                    "Total Memory Size": "31 GB"
                 },
                 "CPU": {
                     "Core(s)": 12,
                     "Model Name": "AMD Ryzen 9",
                     "Hyperthreading": true
                 },
-                "Memory": {
-                    "Total Physical Size": "31 GB"
-                },
                 "Network": {
-                    "IP": "192.168.0.128"
+                    "IP": "192.168.0.128",
+                    "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
                     "Standard NVM Express Controller": {
