@@ -7,7 +7,6 @@ from abc import abstractmethod
 from system.amd64 import BaseOS
 from system.amd64 import CPUInformation
 from system.amd64 import SystemInformation
-# from dataclasses import dataclass
 from interface.application import BaseInterface
 from typing import Tuple
 from unit.log_handler import get_logger

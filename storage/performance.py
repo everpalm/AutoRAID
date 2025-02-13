@@ -28,9 +28,7 @@ class BasePerf(ABC):
         self._io_file = io_file
         self._platform = platform
         self._api = platform.api
-        # self._cpu_num = self._platform.cpu_num
         self._cpu_num = self._platform.cpu.cores
-        # self._thread = self._cpu_num * 2
         self._thread = self._platform._logic_processors
         self._file_size = self._platform.memory_size * 2
 
