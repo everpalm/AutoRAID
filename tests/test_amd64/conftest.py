@@ -82,53 +82,53 @@ def test_open_uart(drone):
 
 
 @pytest.fixture(scope="function")
-def target_perf(amd64_system, cmdopt, network_api):
+def target_perf(amd64, cmdopt, network_api):
     """
     Fixture to set up performance testing on the target system.
 
     Creates an `amd64perf` object for performance testing, initialized with
-    the `amd64_system` and a specified I/O file. This fixture has a function
+    the `amd64` and a specified I/O file. This fixture has a function
     scope, meaning it will be executed before each test function.
 
     Args:
-        amd64_system: The target system fixture.
+        amd64: The target system fixture.
 
     Returns:
         amd64perf: The performance testing object.
     """
     print("\n\033[32m================== Setup Performance Test ======\033[0m")
     perf = PerfFactory(api=network_api)
-    return perf.initiate(platform=amd64_system, io_file=cmdopt.get('io_file'))
+    return perf.initiate(platform=amd64, io_file=cmdopt.get('io_file'))
 
 
 @pytest.fixture(scope="function")
-def target_stress(amd64_system, network_api):
+def target_stress(amd64, network_api):
     """Fixture to set up an AMD64MultiPathStress instance for I/O stress tests
 
     Args:
-        amd64_system: The system instance to run stress tests on.
+        amd64: The system instance to run stress tests on.
 
     Returns:
         AMD64MultiPathStress: Instance for executing stress test operations.
     """
     print('\n\033[32m================== Setup Stress Test ===========\033[0m')
     stress = StressFactory(network_api)
-    return stress.initiate(platform=amd64_system)
+    return stress.initiate(platform=amd64)
 
 
 @pytest.fixture(scope="package")
-def os_event(amd64_system, network_api):
+def os_event(amd64, network_api):
     """Fixture for setting up Windows Event monitoring for system errors.
 
     Args:
-        amd64_system: The system instance to monitor for Windows Event logs.
+        amd64: The system instance to monitor for Windows Event logs.
 
     Returns:
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
     print('\n\033[32m================== Setup Event Logging =========\033[0m')
     event = EventFactory(network_api)
-    return event.initiate(platform=amd64_system)
+    return event.initiate(platform=amd64)
 
 
 @pytest.fixture(scope="function", autouse=True)

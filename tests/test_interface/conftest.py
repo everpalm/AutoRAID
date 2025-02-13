@@ -10,18 +10,18 @@ paramiko.util.log_to_file("paramiko.log", level=logging.CRITICAL)
 
 
 @pytest.fixture(scope="package")
-def os_event(amd64_system, network_api):
+def os_event(amd64, network_api):
     """Fixture for setting up Windows Event monitoring for system errors.
 
     Args:
-        amd64_system: The system instance to monitor for Windows Event logs.
+        amd64: The system instance to monitor for Windows Event logs.
 
     Returns:
         WindowsEvent: An instance of WindowsEvent for error logging.
     """
     print('\n\033[32m================== Setup Event Logging =========\033[0m')
     event = EventFactory(network_api)
-    return event.initiate(platform=amd64_system)
+    return event.initiate(platform=amd64)
 
 
 @pytest.fixture(scope="function", autouse=True)

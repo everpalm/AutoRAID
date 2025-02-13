@@ -19,7 +19,7 @@ RESET_DURATION = 30
 
 
 @pytest.fixture(scope="module", autouse=True)
-def win_boot(amd64_system, network_api):
+def win_boot(amd64, network_api):
     """
     Fixture to automatically execute a Windows Warm Boot for the test module.
 
@@ -39,7 +39,7 @@ def win_boot(amd64_system, network_api):
     """
     reboot = RebootFactory(network_api)
     print("\n\033[32m================== Setup Reboot Test ===========\033[0m")
-    return reboot.initiate(platform=amd64_system)
+    return reboot.initiate(platform=amd64)
 
 
 class TestWindowsWarmBoot:
