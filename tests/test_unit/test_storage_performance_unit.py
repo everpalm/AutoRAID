@@ -13,7 +13,10 @@ class MockPlatform:
         api (MockAPI): Mock API object for simulating command execution.
     """
     def __init__(self, cpu_num=24, memory_size=16):
+        self.cpu = MockAPI()
         self.cpu_num = cpu_num
+        self._logic_processors = cpu_num
+        self.cpu.cores = cpu_num
         self.memory_size = memory_size
         self.api = MockAPI()
 
