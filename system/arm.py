@@ -162,4 +162,3 @@ class RaspberryPi(BaseOS, BaseUART):
         except Exception as e:
             logger.error("Failed to retrieve System info: %s", str(e))
             raise
-

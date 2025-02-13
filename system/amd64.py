@@ -42,10 +42,6 @@ class BaseOS(ABC):
     def _get_memory_size(self) -> int:
         pass
 
-    # @abstractmethod
-    # def get_cpu_info(self) -> dict[str, str]:
-    #     pass
-
 
 class AMD64Windows(BaseOS):
     ''' AMD 64 NVMe System
@@ -108,7 +104,6 @@ class AMD64Windows(BaseOS):
                              self._logic_processors)
             else:
                 raise ValueError("No matching logical processor found.")
-            # if int_logical_processor/12 == 2:
             return self._logic_processors
 
         except re.error as e:
