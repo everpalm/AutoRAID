@@ -10,54 +10,60 @@ logger = logging.getLogger(__name__)
 
 class TestBeidou:
     '''Duplicate of Beidou configuration'''
-    def test_get_cpu_info(self, amd64_system):
-        """Test for verifying hyperthreading setting.
-
-        Args:
-            beidou: The system instance being tested.
-        """
-        logger.info("CPU(s) = %s", amd64_system.cpu_num)
-        logger.info("CPU model = %s", amd64_system.cpu_name)
-        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
-        assert (amd64_system.cpu.hyperthreading ==
-                amd64_system.api.cpu.hyperthreading)
-        assert amd64_system.cpu_num == amd64_system.api.cpu.cores
-        assert amd64_system.cpu_name == amd64_system.api.cpu.model_name
-
-    def test_get_system_info(self, amd64_system):
+    def test_get_system_info(self, amd64):
         """Test for verifying system manufacturer, model, and operating system.
 
         Args:
-            amd64_system: The system instance being tested.
-            amd64_system (dict): Expected configuration data for validation.
+            amd64: The system instance being tested.
+            amd64 (dict): Expected configuration data for validation.
         """
-        logger.info('Manufacturer = %s', amd64_system.vendor)
-        logger.info('Model = %s', amd64_system.model)
-        logger.info('Name = %s', amd64_system.name)
-        logger.info('Total Memory Size = %s GB', amd64_system.memory_size)
-        assert amd64_system.vendor == amd64_system.api.system.manufacturer
-        assert amd64_system.model == amd64_system.api.system.model
-        assert amd64_system.name == amd64_system.api.system.name
-        assert (str(amd64_system.memory_size) + ' GB' ==
-                amd64_system.api.system.memory)
+        logger.info('Manufacturer = %s', amd64.vendor)
+        logger.info('Model = %s', amd64.model)
+        logger.info('Name = %s', amd64.name)
+        logger.info('Total Memory Size = %s GB', amd64.memory_size)
+        assert amd64.vendor == amd64.api.system.manufacturer
+        assert amd64.model == amd64.api.system.model
+        assert amd64.name == amd64.api.system.name
+        assert (str(amd64.memory_size) + ' GB' ==
+                amd64.api.system.memory)
 
-    def test_mac_address(self, amd64_system):
+    def test_mac_address(self, amd64):
         """Test for verifying MAC address of the system.
 
         Args:
-            amd64_system: The system instance being tested.
-            amd64_system (dict): Expected configuration data for validation.
+            amd64: The system instance being tested.
+            amd64 (dict): Expected configuration data for validation.
         """
-        logger.info("MAC Address = %s", amd64_system.mac_address)
-        assert amd64_system.mac_address == amd64_system.api.network.mac_address
+        logger.info("MAC Address = %s", amd64.mac_address)
+        assert amd64.mac_address == amd64.api.network.mac_address
 
-    def test_cpu(self, amd64_system):
+    def test_cpu(self, amd64):
         '''docstring'''
-        logger.info("Manufacturer = %s", amd64_system.cpu.vendor)
-        logger.info("CPU(s) = %s", amd64_system.cpu.cores)
-        logger.info("CPU model = %s", amd64_system.cpu.model)
-        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
-        assert (amd64_system.cpu.hyperthreading ==
-                amd64_system.api.cpu.hyperthreading)
-        assert amd64_system.cpu.cores == amd64_system.api.cpu.cores
-        assert amd64_system.cpu.model == amd64_system.api.cpu.model_name
+        logger.info("Manufacturer = %s", amd64.cpu.vendor)
+        logger.info("CPU(s) = %s", amd64.cpu.cores)
+        logger.info("CPU model = %s", amd64.cpu.model)
+        logger.info("hyperthreading = %s", amd64.cpu.hyperthreading)
+        assert (amd64.cpu.hyperthreading ==
+                amd64.api.cpu.hyperthreading)
+        assert amd64.cpu.cores == amd64.api.cpu.cores
+        assert amd64.cpu.model == amd64.api.cpu.model_name
+
+    def test_system(self, amd64):
+        """Test for verifying system manufacturer, model, and operating system.
+
+        Args:
+            amd64: The system instance being tested.
+            amd64 (dict): Expected configuration data for validation.
+        """
+        logger.info('Manufacturer = %s', amd64.system.manufacturer)
+        logger.info('Model = %s', amd64.system.model)
+        logger.info('Name = %s', amd64.system.name)
+        logger.info('Rev = %s', amd64.system.rev)
+        logger.info('Total Memory Size = %s ', amd64.system.memory)
+        assert amd64.system.manufacturer == (
+            amd64.api.system.manufacturer
+        )
+        assert amd64.system.model == amd64.api.system.model
+        assert amd64.system.name == amd64.api.system.name
+        assert (str(amd64.system.memory) ==
+                amd64.api.system.memory)
