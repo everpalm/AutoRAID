@@ -148,7 +148,7 @@ class TestRebuildChanglongPD1Complete:
         if rebuilding:
             for vd in from_controller:
                 if vd.bga_progress:
-                    logger.debug("%s", vd.bga_progress)
+                    logger.info("%s", vd.bga_progress)
 
         # Assert completion of rebuilding
         assert all(
@@ -179,7 +179,7 @@ class TestMPChanglongVD1Complete:
         if media_patrol:
             for vd in from_controller:
                 if vd.bga_progress:
-                    logger.debug("%s", vd.bga_progress)
+                    logger.info("%s", vd.bga_progress)
 
         # Assert completion of media patrol
         assert all(
