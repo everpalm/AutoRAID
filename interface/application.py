@@ -145,6 +145,7 @@ class CPU:
 
 @dataclass
 class System:
+    """docstring"""
     manufacturer: str
     model: str
     name: str
@@ -153,6 +154,7 @@ class System:
 
 @dataclass
 class Network:
+    """docstring"""
     ip: str
     mac_address: str
 
@@ -330,27 +332,27 @@ class BaseInterface(ABC):
             logger.debug('Local Mode Only')
         return remote_ip, account, password, local_dir, remote_dir
 
-    def _get_remote_ip(self) -> Tuple[str]:
-        '''This is a docstring'''
-        remote_ip = str_account = str_password = str_local_dir = \
-            str_remote_dir = None
-        for dict_element in self.__import_config():
-            if dict_element.get('Local') == self.local_ip:
-                logger.debug('Found target dict_element = %s', dict_element)
-                remote_ip = dict_element.get('Remote')
-                str_account = dict_element.get('Account')
-                str_password = dict_element.get('Password')
-                str_local_dir = os.environ.get('WORKSPACE')
-                str_remote_dir = dict_element.get('Remote Directory')
-                logger.debug('remote_ip = %s', remote_ip)
-                break
+    # def _get_remote_ip(self) -> Tuple[str]:
+    #     '''This is a docstring'''
+    #     remote_ip = str_account = str_password = str_local_dir = \
+    #         str_remote_dir = None
+    #     for dict_element in self.__import_config():
+    #         if dict_element.get('Local') == self.local_ip:
+    #             logger.debug('Found target dict_element = %s', dict_element)
+    #             remote_ip = dict_element.get('Remote')
+    #             str_account = dict_element.get('Account')
+    #             str_password = dict_element.get('Password')
+    #             str_local_dir = os.environ.get('WORKSPACE')
+    #             str_remote_dir = dict_element.get('Remote Directory')
+    #             logger.debug('remote_ip = %s', remote_ip)
+    #             break
 
-            logger.debug('Not target dict_element = %s', dict_element)
-            continue
-        if remote_ip is None:
-            logger.debug('Local Mode Only')
-        return (remote_ip, str_account, str_password, str_local_dir,
-                str_remote_dir)
+    #         logger.debug('Not target dict_element = %s', dict_element)
+    #         continue
+    #     if remote_ip is None:
+    #         logger.debug('Local Mode Only')
+    #     return (remote_ip, str_account, str_password, str_local_dir,
+    #             str_remote_dir)
 
     def _get_remote_ip1(self) -> Tuple[str]:
         '''This is a docstring'''
@@ -465,19 +467,19 @@ class BaseInterface(ABC):
         return (remote_ip, account, password, local_dir, remote_dir,
                 manufacturer)
 
-    def get_ip_address(self) -> str:
-        '''This is a docstring'''
-        if self.mode == 'remote':
-            ip = self._get_remote_ip1()
-        elif self.mode == 'local':
-            ip = self._get_local_ip()
-        else:
-            raise ValueError('Unknown mode')
+    # def get_ip_address(self) -> str:
+    #     '''This is a docstring'''
+    #     if self.mode == 'remote':
+    #         ip = self._get_remote_ip1()
+    #     elif self.mode == 'local':
+    #         ip = self._get_local_ip()
+    #     else:
+    #         raise ValueError('Unknown mode')
 
-        if not isinstance(ip, str) or not ip:
-            raise ValueError(f"Invalid IP address retrieved: {ip}")
+    #     if not isinstance(ip, str) or not ip:
+    #         raise ValueError(f"Invalid IP address retrieved: {ip}")
 
-        return ip
+    #     return ip
 
     @property
     def os_type(self) -> str:
