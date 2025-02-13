@@ -21,16 +21,14 @@
                 "System": {
                     "Manufacturer": "Raspberry Pi 4",
                     "Model": "B",
-                    "Name": "MY-RASPI-02",
-                    "Rev": "1.5"
+                    "Name": "MY-RASPI-09",
+                    "Rev": "1.5",
+                    "Total Memory Size": "1942364 kB"
                 },
                 "CPU": {
                     "Core(s)": 4,
                     "Model Name": "Cortex-A72",
                     "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "1942364 kB"
                 },
                 "Network": {
                     "IP": "192.168.0.117"
@@ -58,15 +56,13 @@
                 "System": {
                     "Manufacturer": "System",
                     "Model": "System Product",
-                    "Name": "MY-TESTBED-01"
+                    "Name": "MY-TESTBED-09",
+                    "Total Memory Size": "31 GB"
                 },
                 "CPU": {
                     "Core(s)": 12,
                     "Model Name": "AMD Ryzen 9",
                     "Hyperthreading": true
-                },
-                "Memory": {
-                    "Total Physical Size": "31 GB"
                 },
                 "Network": {
                     "IP": "192.168.0.128"
@@ -139,7 +135,7 @@
                                 "status": "Functional",
                                 "importable": "No",
                                 "raid_mode": "RAID1",
-                                "size": "465 GB",
+                                "size": "931 GB",
                                 "pd_count": 2,
                                 "pds": [
                                     1,
@@ -178,16 +174,14 @@
                 "System": {
                     "Manufacturer": "Raspberry Pi 3",
                     "Model": "B",
-                    "Name": "MY-RASPI-03",
-                    "Rev": "1.2"
+                    "Name": "MY-RASPI-10",
+                    "Rev": "1.2",
+                    "Total Memory Size": "994824 kB"
                 },
                 "CPU": {
                     "Core(s)": 4,
                     "Model Name": "Cortex-A43",
                     "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "994824 kB"
                 },
                 "Network": {
                     "IP": "192.168.0.139"
@@ -215,15 +209,13 @@
                 "System": {
                     "Manufacturer": "System",
                     "Model": "System Product",
-                    "Name": "MY-TESTBED-01"
+                    "Name": "MY-TESTBED-10",
+                    "Total Memory Size": "31 GB"
                 },
                 "CPU": {
                     "Core(s)": 12,
                     "Model Name": "AMD Ryzen 9",
                     "Hyperthreading": true
-                },
-                "Memory": {
-                    "Total Physical Size": "31 GB"
                 },
                 "Network": {
                     "IP": "192.168.0.128"
@@ -296,7 +288,7 @@
                                 "status": "Functional",
                                 "importable": "No",
                                 "raid_mode": "RAID1",
-                                "size": "465 GB",
+                                "size": "931 GB",
                                 "pd_count": 2,
                                 "pds": [
                                     1,

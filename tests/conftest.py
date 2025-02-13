@@ -110,7 +110,7 @@ def store_gitlab_api_in_config(cmdopt, request):
 
 
 @pytest.fixture(scope='session')
-def raspi_interface():
+def raspi_interface(cmdopt):
     print('\n\033[32m================== Setup RPi Interface =========\033[0m')
     factory = RaspberryInterfaceFactory()
     return factory.create_interface(
@@ -118,7 +118,7 @@ def raspi_interface():
         mode='local',
         if_name='wlan0',
         ssh_port='22',
-        config_file='Changhua/Beidou.json'
+        config_file=cmdopt.get('config_file')
     )
 
 
@@ -136,18 +136,18 @@ def network_api(cmdopt):
     )
 
 
-@pytest.fixture(scope="session")
-def network_api1(cmdopt):
-    '''docstring'''
-    print('\n\033[32m================== Setup Interface =============\033[0m')
-    factory = InterfaceFactory()
-    return factory.create_interface(
-        os_type=cmdopt.get('os_type'),
-        mode=cmdopt.get('mode'),
-        if_name=cmdopt.get('if_name'),
-        ssh_port='22',
-        config_file='Changhua/Beidou.json'
-    )
+# @pytest.fixture(scope="session")
+# def network_api1(cmdopt):
+#     '''docstring'''
+#    print('\n\033[32m================== Setup Interface =============\033[0m')
+#     factory = InterfaceFactory()
+#     return factory.create_interface(
+#         os_type=cmdopt.get('os_type'),
+#         mode=cmdopt.get('mode'),
+#         if_name=cmdopt.get('if_name'),
+#         ssh_port='22',
+#         config_file='Changhua/Beidou.json'
+#     )
 
 
 @pytest.fixture(scope="session")

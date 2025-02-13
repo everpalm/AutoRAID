@@ -1,7 +1,6 @@
 [
     {
-        "Local": 
-        {
+        "Local": {
             "Operating System": {
                 "Type": "Linux",
                 "Version": "Raspbian GNU/Linux 11 (bullseye)",
@@ -22,106 +21,17 @@
                 "System": {
                     "Manufacturer": "Raspberry Pi 4",
                     "Model": "B",
-                    "Name": "MY-RASPI-08",
-                    "Rev":  "1.5"
+                    "Name": "MY-RASPI-07",
+                    "Rev": "1.5",
+                    "Total Memory Size": "1942364 kB"
                 },
                 "CPU": {
                     "Core(s)": 4,
                     "Model Name": "Cortex-A72",
                     "Hyperthreading": false
                 },
-                "Memory": {
-                    "Total Physical Size": "1942364 kB"
-                },
-                "Network": 
-                {
-                    "IP": "192.168.0.118"
-                }
-            }
-        },
-        "Remote":
-        {
-            "Operating System": {
-                "Type": "Windows",
-                "Version": "10.0.19045.5371",
-                "Account": "ste",
-                "Password": "123456"
-             },
-            "Software": {
-                "mnv_cli.exe": {
-                    "Path": "C:\\Users\\STE\\Downloads\\YT01",
-                    "Version": "1.0.0.1053"
-                },
-                "Script": {
-                    "Path": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
-                    "Version": "0.0.1"
-                }
-            },
-            "Hardware": {
-                "System": {
-                    "Manufacturer": "System",
-                    "Model": "System Product",
-                    "Name": "MY-TESTBED-08"
-                },
-                "CPU": {
-                    "Core(s)": 12,
-                    "Model Name": "AMD Ryzen 9",
-                    "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "31 GB"
-                },
                 "Network": {
-                    "IP": "192.168.0.18"
-                },
-                "Storage": {
-                    "Standard NVM Express Controller": {
-                        "PCIE Configuration": {
-                            "VID": "1B4B",
-                            "DID": "22411B4B",
-                            "SDID": "22411B4B",
-                            "Rev": "20"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    {
-        "Local":{
-            "Operating System": {
-                "Type": "Linux",
-                "Version": "Raspbian GNU/Linux 11 (bullseye)",
-                "Account": "ste",
-                "Password": "123456"
-            },
-            "Software": {
-                "mnv_cli": {
-                    "Path": "/home/pi/Projects/AutoRAID",
-                    "Version": "1.0.0.1053"
-                },
-                "Script": {
-                    "Path": "/home/pi/Projects/AutoRAID",
-                    "Version": "0.0.1"
-                }
-            },
-            "Hardware": {
-                "System": {
-                    "Manufacturer": "Raspberry Pi 4",
-                    "Model": "B",
-                    "Name": "MY-RASPI-09",
-                    "Rev":  "1.5"
-                },
-                "CPU": {
-                    "Core(s)": 4,
-                    "Model Name": "Cortex-A72",
-                    "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "1942364 kB"
-                },
-                "Network": {
-                    "IP": "192.168.0.119"
+                    "IP": "192.168.0.117"
                 }
             }
         },
@@ -131,14 +41,14 @@
                 "Version": "10.0.19045.5371",
                 "Account": "ste",
                 "Password": "123456"
-             },
+            },
             "Software": {
                 "mnv_cli.exe": {
                     "Path": "C:\\Users\\STE\\Downloads\\YT01",
                     "Version": "1.0.0.1053"
                 },
                 "Script": {
-                    "Path": "C:\\Users\\Administrator\\Documents\\Projects\\AutoRAID",
+                    "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
                     "Version": "0.0.1"
                 }
             },
@@ -146,27 +56,250 @@
                 "System": {
                     "Manufacturer": "System",
                     "Model": "System Product",
-                    "Name": "MY-TESTBED-09"
+                    "Name": "MY-TESTBED-07",
+                    "Total Memory Size": "31 GB"
                 },
                 "CPU": {
                     "Core(s)": 12,
                     "Model Name": "AMD Ryzen 9",
-                    "Hyperthreading": false
-                },
-                "Memory": {
-                    "Total Physical Size": "31 GB"
+                    "Hyperthreading": true
                 },
                 "Network": {
-                    "IP": "192.168.0.19"
+                    "IP": "192.168.0.128"
                 },
                 "Storage": {
                     "Standard NVM Express Controller": {
                         "PCIE Configuration": {
-                            "VID": "1B4B",
-                            "DID": "22411B4B",
-                            "SDID": "22411B4B",
+                            "VID": "0x1b4b",
+                            "SVID": "0x1b4b",
+                            "DID": "0x2241",
+                            "SDID": "0x2241",
                             "Rev": "20"
-                        }
+                        },
+                        "bus_device_func": "04:00.00",
+                        "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#6&17DF8332&0&0010000a#",
+                        "slot_id": "Not found",
+                        "firmware_version": "1.0.0.1053",
+                        "revision_id": "B0B",
+                        "port_count": 2,
+                        "max_pd_of_per_vd": 2,
+                        "max_vd": 2,
+                        "max_pd": 2,
+                        "max_ns_of_per_vd": 1,
+                        "max_ns": 2,
+                        "supported_raid_mode": [
+                            "RAID0",
+                            "RAID1",
+                            "JBOD"
+                        ],
+                        "cache": "On",
+                        "supported_bga_features": [
+                            "Initialization",
+                            "Rebuild",
+                            "MediaPatrol"
+                        ],
+                        "support_stripe_size": [
+                            "128KB",
+                            "256KB",
+                            "512KB"
+                        ],
+                        "supported_features": [
+                            "Import",
+                            "RAID",
+                            "Namespace",
+                            "Dump"
+                        ],
+                        "root_complexes": [
+                            {
+                                "id": 0,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            },
+                            {
+                                "id": 1,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "end_points": [
+                            {
+                                "id": 0,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "Virtual Drive": [
+                            {
+                                "vd_id": 1,
+                                "name": "VD_0",
+                                "status": "Functional",
+                                "importable": "No",
+                                "raid_mode": "RAID1",
+                                "size": "931 GB",
+                                "pd_count": 2,
+                                "pds": [
+                                    1,
+                                    2
+                                ],
+                                "stripe_block_size": "128K",
+                                "sector_size": "512 bytes",
+                                "bga_progress": "",
+                                "total_of_vd": 1
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "Local": {
+            "Operating System": {
+                "Type": "Linux",
+                "Version": "Raspbian GNU/Linux 11 (bullseye)",
+                "Account": "ste",
+                "Password": "123456"
+            },
+            "Software": {
+                "mnv_cli": {
+                    "Path": "/home/pi/Projects/AutoRAID",
+                    "Version": "1.0.0.1053"
+                },
+                "Script": {
+                    "Path": "/home/pi/Projects/AutoRAID",
+                    "Version": "0.0.1"
+                }
+            },
+            "Hardware": {
+                "System": {
+                    "Manufacturer": "Raspberry Pi 3",
+                    "Model": "B",
+                    "Name": "MY-RASPI-08",
+                    "Rev": "1.2",
+                    "Total Memory Size": "994824 kB"
+                },
+                "CPU": {
+                    "Core(s)": 4,
+                    "Model Name": "Cortex-A43",
+                    "Hyperthreading": false
+                },
+                "Network": {
+                    "IP": "192.168.0.139"
+                }
+            }
+        },
+        "Remote": {
+            "Operating System": {
+                "Type": "Windows",
+                "Version": "10.0.19045.5371",
+                "Account": "ste",
+                "Password": "123456"
+            },
+            "Software": {
+                "mnv_cli.exe": {
+                    "Path": "C:\\Users\\STE\\Downloads\\YT01",
+                    "Version": "1.0.0.1053"
+                },
+                "Script": {
+                    "Path": "C:\\Users\\STE\\Projects\\AutoRAID",
+                    "Version": "0.0.1"
+                }
+            },
+            "Hardware": {
+                "System": {
+                    "Manufacturer": "System",
+                    "Model": "System Product",
+                    "Name": "MY-TESTBED-08",
+                    "Total Memory Size": "31 GB"
+                },
+                "CPU": {
+                    "Core(s)": 12,
+                    "Model Name": "AMD Ryzen 9",
+                    "Hyperthreading": true
+                },
+                "Network": {
+                    "IP": "192.168.0.128"
+                },
+                "Storage": {
+                    "Standard NVM Express Controller": {
+                        "PCIE Configuration": {
+                            "VID": "0x1b4b",
+                            "SVID": "0x1b4b",
+                            "DID": "0x2241",
+                            "SDID": "0x2241",
+                            "Rev": "20"
+                        },
+                        "bus_device_func": "04:00.00",
+                        "device": "VEN_1B4B&DEV_2241&SUBSYS_22411B4B&REV_20#6&17DF8332&0&0010000a#",
+                        "slot_id": "Not found",
+                        "firmware_version": "1.0.0.1053",
+                        "revision_id": "B0B",
+                        "port_count": 2,
+                        "max_pd_of_per_vd": 2,
+                        "max_vd": 2,
+                        "max_pd": 2,
+                        "max_ns_of_per_vd": 1,
+                        "max_ns": 2,
+                        "supported_raid_mode": [
+                            "RAID0",
+                            "RAID1",
+                            "JBOD"
+                        ],
+                        "cache": "On",
+                        "supported_bga_features": [
+                            "Initialization",
+                            "Rebuild",
+                            "MediaPatrol"
+                        ],
+                        "support_stripe_size": [
+                            "128KB",
+                            "256KB",
+                            "512KB"
+                        ],
+                        "supported_features": [
+                            "Import",
+                            "RAID",
+                            "Namespace",
+                            "Dump"
+                        ],
+                        "root_complexes": [
+                            {
+                                "id": 0,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            },
+                            {
+                                "id": 1,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "end_points": [
+                            {
+                                "id": 0,
+                                "link_width": "4x",
+                                "pcie_speed": "8Gb/s"
+                            }
+                        ],
+                        "Virtual Drive": [
+                            {
+                                "vd_id": 1,
+                                "name": "VD_0",
+                                "status": "Functional",
+                                "importable": "No",
+                                "raid_mode": "RAID1",
+                                "size": "931 GB",
+                                "pd_count": 2,
+                                "pds": [
+                                    1,
+                                    2
+                                ],
+                                "stripe_block_size": "128K",
+                                "sector_size": "512 bytes",
+                                "bga_progress": "",
+                                "total_of_vd": 1
+                            }
+                        ]
                     }
                 }
             }
