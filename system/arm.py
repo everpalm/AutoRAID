@@ -5,29 +5,14 @@ import multiprocessing
 from abc import ABC
 from abc import abstractmethod
 from system.amd64 import BaseOS
-from dataclasses import dataclass
+from system.amd64 import CPUInformation
+from system.amd64 import SystemInformation
+# from dataclasses import dataclass
 from interface.application import BaseInterface
 from typing import Tuple
 from unit.log_handler import get_logger
 
 logger = get_logger(__name__, logging.DEBUG)
-
-
-@dataclass
-class CPUInformation:
-    '''Context of CPU Information'''
-    vendor_name: str
-    model_name: str
-    hyperthreading: bool
-
-
-@dataclass
-class SystemInformation:
-    '''Context of System Information'''
-    manufacturer: str
-    model: str
-    name: str
-    rev: str
 
 
 class BaseUART(ABC):
@@ -130,16 +115,20 @@ class RaspberryPi(BaseOS, BaseUART):
             cpu_model_name = self.api.command_line.original(
                 self.api, "lscpu | grep 'Model name'")
 
+            cpu_cores = self.api.command_line.original(
+                self.api, "lscpu | grep 'CPU(s)'")
+
             cpu_info = CPUInformation(
                 cpu_manufacturer[0].split(':')[1],  # vendor name
                 cpu_model_name[0].split(':')[1],    # model name
-                False                               # hyperthreading
+                False,                              # hyperthreading
+                int(cpu_cores[0].split(':')[1].strip())
             )
-            logger.debug("vendor_name = %s", cpu_info.vendor_name)
-            logger.debug("model_name = %s", cpu_info.model_name)
+            logger.debug("vendor = %s", cpu_info.vendor)
+            logger.debug("model = %s", cpu_info.model)
             logger.debug("hyperthreading = %s", cpu_info.hyperthreading)
+            logger.debug("cores = %s", cpu_info.cores)
 
-            # return vendor_name
             return cpu_info
         except Exception as e:
             logger.error("Failed to retrieve CPU info: %s", str(e))
@@ -164,7 +153,6 @@ class RaspberryPi(BaseOS, BaseUART):
             logger.debug("name = %s", system_info.name)
             logger.debug("rev = %s", system_info.rev)
 
-            # return vendor_name
             return system_info
         except Exception as e:
             logger.error("Failed to retrieve System info: %s", str(e))

@@ -4,12 +4,31 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from collections import defaultdict
+from dataclasses import dataclass
 import logging
 import re
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
 
 logger = get_logger(__name__, logging.INFO)
+
+
+@dataclass
+class CPUInformation:
+    '''Context of CPU Information'''
+    vendor: str
+    model: str
+    hyperthreading: bool
+    cores: int
+
+
+@dataclass
+class SystemInformation:
+    '''Context of System Information'''
+    manufacturer: str
+    model: str
+    name: str
+    rev: str
 
 
 class BaseOS(ABC):
@@ -52,6 +71,7 @@ class AMD64Windows(BaseOS):
         self.memory_size = self._get_memory_size()
         self.hyperthreading = self._get_hyperthreading()
         self.error_features = defaultdict(set)
+        self._cpu = None
 
     def _get_hyperthreading(self) -> bool:
         """
@@ -225,6 +245,39 @@ class AMD64Windows(BaseOS):
         return {"Manufacturer": str_vendor,
                 "Model": str_model,
                 "Name": str_name}
+
+    @property
+    def cpu(self) -> CPUInformation:
+        ''' Get CPU information
+            Grep CPU information from system call 'lscpu'
+            Args: None
+            Returns: A dictionary consists of CPU(s) and Model Name
+            Raises: Logger error
+        '''
+        try:
+            wmic_manufacturer: str = self.api.command_line(
+                "wmic cpu get Manufacturer")
+            cpu_manufacturer: str = wmic_manufacturer.get(1).split(" ")[0]
+            wmic_cores: str = self.api.command_line(
+                "wmic cpu get NumberOfCores")
+            cpu_cores: int = int(wmic_cores.get(1).split(" ")[0])
+            wmic_name: str = self.api.command_line("wmic cpu get name")
+            cpu_name: str = " ".join(wmic_name.get(1).split(" ")[0:3])
+            logger.debug("cpu_num = %d, cpu_name = %s", cpu_cores,
+                         cpu_name)
+            self._cpu = CPUInformation(
+                vendor=cpu_manufacturer,
+                model=cpu_name,
+                hyperthreading=self._get_hyperthreading(),
+                cores=cpu_cores
+            )
+        except ValueError as e:
+            logger.error("Value Error in get_cpu_info: %s", e)
+            raise
+        except Exception as e:
+            logger.error('error occurred in get_cpu_info: %s', e)
+            raise
+        return self._cpu
 
 
 class AMD64Linux(BaseOS):
