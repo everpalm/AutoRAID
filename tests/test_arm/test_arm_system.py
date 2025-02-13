@@ -22,3 +22,4 @@ class TestRaspberryPi:
         logger.info("model = %s", system_info.model)
         logger.info("name = %s", system_info.name)
         logger.info("rev = %s", system_info.rev)
+        logger.info("memory = %s", system_info.memory)

@@ -119,10 +119,10 @@ class RaspberryPi(BaseOS, BaseUART):
                 self.api, "lscpu | grep 'CPU(s)'")
 
             cpu_info = CPUInformation(
-                cpu_manufacturer[0].split(':')[1],  # vendor name
-                cpu_model_name[0].split(':')[1],    # model name
-                False,                              # hyperthreading
-                int(cpu_cores[0].split(':')[1].strip())
+                cpu_manufacturer[0].split(':')[1].strip(),       # vendor name
+                cpu_model_name[0].split(':')[1].strip(),         # model name
+                False,                                   # hyperthreading
+                int(cpu_cores[0].split(':')[1].strip())  # CPU(s)
             )
             logger.debug("vendor = %s", cpu_info.vendor)
             logger.debug("model = %s", cpu_info.model)
@@ -142,18 +142,24 @@ class RaspberryPi(BaseOS, BaseUART):
             host_name = self.api.command_line.original(
                 self.api, "hostname")
 
+            memory_info = self.api.command_line.original(
+                self.api, "cat /proc/meminfo | grep MemTotal")
+
             system_info = SystemInformation(
                 ' '.join(cpu_output[0].split()[2:5]),   # manufacturer
                 ' '.join(cpu_output[0].split()[6:7]),   # model
                 host_name[0],                           # name
-                ' '.join(cpu_output[0].split()[8:9])    # Rev
+                ' '.join(cpu_output[0].split()[8:9]),   # Rev
+                ' '.join(memory_info[0].split()[1:3])   # total memory size
             )
             logger.debug("manufacturer = %s", system_info.manufacturer)
             logger.debug("model = %s", system_info.model)
             logger.debug("name = %s", system_info.name)
             logger.debug("rev = %s", system_info.rev)
+            logger.debug("memory = %s", system_info.memory)
 
             return system_info
         except Exception as e:
             logger.error("Failed to retrieve System info: %s", str(e))
             raise
+

@@ -17,15 +17,15 @@ def amd64_settings():
 
 class TestAMD64System1:
     '''Duplicate of TestAMD64NVMe'''
-    def test_get_hyperthreading(self, amd64_system, amd64_settings):
+    def test_get_logic_processors(self, amd64_system, amd64_settings):
         """Test for verifying hyperthreading setting.
 
         Args:
             amd64_system: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
-        logger.info("hyperthreading = %s", amd64_system.hyperthreading)
-        assert (amd64_system.hyperthreading ==
+        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
+        assert (amd64_system.cpu.hyperthreading ==
                 amd64_settings['CPU Information']['Hyperthreading'])
 
     def test_memory_size(self, amd64_system):
@@ -88,8 +88,8 @@ class TestAMD64System:
         """
         logger.info("CPU(s) = %s", amd64_system.cpu_num)
         logger.info("CPU model = %s", amd64_system.cpu_name)
-        logger.info("hyperthreading = %s", amd64_system.hyperthreading)
-        assert (amd64_system.hyperthreading ==
+        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
+        assert (amd64_system.cpu.hyperthreading ==
                 amd64_system.api.cpu.hyperthreading)
         assert amd64_system.cpu_num == amd64_system.api.cpu.cores
         assert amd64_system.cpu_name == amd64_system.api.cpu.model_name

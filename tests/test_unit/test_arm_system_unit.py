@@ -1,7 +1,9 @@
 import pytest
-from unittest.mock import MagicMock
-from system.arm import RaspberryPi, CPUInformation, SystemInformation
 from interface.application import BaseInterface
+from unittest.mock import MagicMock
+from system.arm import CPUInformation
+from system.arm import RaspberryPi
+from system.arm import SystemInformation
 
 
 @pytest.fixture
@@ -9,15 +11,6 @@ def mock_api():
     """Mock BaseInterface with required attributes and methods."""
     mock = MagicMock(spec=BaseInterface)
     mock.config_file = "test_config.json"
-    mock.command_line.return_value = "MockCommand"
-    mock.command_line.original.side_effect = [
-        ["MemTotal:       2048000 kB"],
-        ["Vendor ID:ARM"],
-        ["Model name:Cortex-A72"],
-        ["CPU(s): 4"],
-        ["Model           : Raspberry Pi 4 Model B Rev 1.2"],
-        ["MY-RASPI-02"]
-    ]
     return mock
 
 
@@ -85,28 +78,35 @@ def test_get_memory_size(raspberry_pi, mock_api):
 
 def test_get_cpu_info(raspberry_pi, mock_api):
     """Test the get_cpu_info method."""
+    mock_api.command_line.original.side_effect = [
+        ["Vendor ID: ARM"],
+        ["Model name: Cortex-A72"],
+        ["CPU(s): 4"]
+    ]
     cpu_info = raspberry_pi.get_cpu_info()
 
     assert cpu_info == CPUInformation(
         vendor="ARM",
         model="Cortex-A72",
-        hyperthreading=False,
-        cores=4
+        cores=4,
+        hyperthreading=False
     )
 
 
 def test_get_system_info(raspberry_pi, mock_api):
     """Test the get_system_info method."""
     mock_api.command_line.original.side_effect = [
-        ["Model           : Raspberry Pi 4 Model B Rev 1.2"],  # 修正 CPU 信息
-        ["MY-RASPI-02"]  # 修正 hostname
+        ["Model           : Raspberry Pi 4 Model B Rev 1.2"],
+        ["MY-RASPI-02"],
+        ["MemTotal:       2048000 kB"],
+        ["Rev: 1.2"]
     ]
-
     system_info = raspberry_pi.get_system_info()
 
     assert system_info == SystemInformation(
         manufacturer="Raspberry Pi 4",
         model="B",
         name="MY-RASPI-02",
-        rev="1.2"
+        rev="1.2",
+        memory="2048000 kB"
     )

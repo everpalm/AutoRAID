@@ -29,6 +29,7 @@ class SystemInformation:
     model: str
     name: str
     rev: str
+    memory: str
 
 
 class BaseOS(ABC):
@@ -41,9 +42,9 @@ class BaseOS(ABC):
     def _get_memory_size(self) -> int:
         pass
 
-    @abstractmethod
-    def get_cpu_info(self) -> dict[str, str]:
-        pass
+    # @abstractmethod
+    # def get_cpu_info(self) -> dict[str, str]:
+    #     pass
 
 
 class AMD64Windows(BaseOS):
@@ -69,11 +70,12 @@ class AMD64Windows(BaseOS):
         self.nic_name = interface.if_name
         self._mac_address = None
         self.memory_size = self._get_memory_size()
-        self.hyperthreading = self._get_hyperthreading()
+        self._logic_processors = None
         self.error_features = defaultdict(set)
         self._cpu = None
 
-    def _get_hyperthreading(self) -> bool:
+    @property
+    def logic_processors(self) -> int:
         """
         Checks if hyperthreading is enabled on the system.
 
@@ -89,33 +91,32 @@ class AMD64Windows(BaseOS):
             ValueError: If the wmic command output can't be processed
         """
         try:
-            output = self.api.command_line.original(
+            cpus = self.api.command_line.original(
                 self.api,
                 'wmic cpu Get NumberOfCores,NumberOfLogicalProcessors '
                 '/Format:List'
             )
-            logger.debug('output = %s', output)
-            output_string = "".join(output)
+            logger.debug('cpus = %s', cpus)
+            output_string = "".join(cpus)
             logger.debug('output_string = %s', output_string)
             match = re.search(r'NumberOfLogicalProcessors=(\d+)',
                               output_string)
 
             if match:
-                int_logical_processor = int(match.group(1))
-                logger.debug("int_logical_processor = %d",
-                             int_logical_processor)
+                self._logic_processors = int(match.group(1))
+                logger.debug("logic_processor = %d",
+                             self._logic_processors)
             else:
                 raise ValueError("No matching logical processor found.")
+            # if int_logical_processor/12 == 2:
+            return self._logic_processors
 
-            if int_logical_processor/self.cpu_num == 2:
-                return True
         except re.error as e:
             logger.error("Invalid regex pattern: %s", e)
             raise
         except Exception as e:
             logger.error('_get_hyperthreading: %s', e)
             raise
-        return False
 
     def _get_memory_size(self) -> int:
         """
@@ -263,12 +264,12 @@ class AMD64Windows(BaseOS):
             cpu_cores: int = int(wmic_cores.get(1).split(" ")[0])
             wmic_name: str = self.api.command_line("wmic cpu get name")
             cpu_name: str = " ".join(wmic_name.get(1).split(" ")[0:3])
-            logger.debug("cpu_num = %d, cpu_name = %s", cpu_cores,
+            logger.debug("cpu_cores = %d, cpu_name = %s", cpu_cores,
                          cpu_name)
             self._cpu = CPUInformation(
                 vendor=cpu_manufacturer,
                 model=cpu_name,
-                hyperthreading=self._get_hyperthreading(),
+                hyperthreading=(self.logic_processors/cpu_cores == 2),
                 cores=cpu_cores
             )
         except ValueError as e:

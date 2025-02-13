@@ -18,8 +18,8 @@ class TestBeidou:
         """
         logger.info("CPU(s) = %s", amd64_system.cpu_num)
         logger.info("CPU model = %s", amd64_system.cpu_name)
-        logger.info("hyperthreading = %s", amd64_system.hyperthreading)
-        assert (amd64_system.hyperthreading ==
+        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
+        assert (amd64_system.cpu.hyperthreading ==
                 amd64_system.api.cpu.hyperthreading)
         assert amd64_system.cpu_num == amd64_system.api.cpu.cores
         assert amd64_system.cpu_name == amd64_system.api.cpu.model_name
