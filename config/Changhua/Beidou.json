@@ -58,7 +58,7 @@
                     "Manufacturer": "System",
                     "Model": "System Product",
                     "Name": "MY-TESTBED-01",
-                    "Rev": "X1.X",
+                    "Rev": "X.0x",
                     "Total Memory Size": "31 GB"
                 },
                 "CPU": {
@@ -215,7 +215,7 @@
                     "Manufacturer": "System",
                     "Model": "System Product",
                     "Name": "MY-TESTBED-01",
-                    "Rev": "X1.X",
+                    "Rev": "X.0x",
                     "Total Memory Size": "31 GB"
                 },
                 "CPU": {
