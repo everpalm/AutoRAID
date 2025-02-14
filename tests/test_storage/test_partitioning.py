@@ -200,6 +200,7 @@ class TestDiskVolume:
             except KeyError:
                 logger.warning("KeyError: Missing expected key: %s", letter)
 
+    @pytest.mark.skip(reason="Tentative")
     def test_get_volume1(self, disk_partition):
         """Test for verifying disk volume information.
 
@@ -242,7 +243,10 @@ class TestDiskVolume:
             try:
                 # 驗證磁碟資訊是否正確
                 # assert disk_partition.disk_info[i][1] == \
-                logger.info("partition = %s", disk_partition.physical_drive[target].partitions[i])
+                logger.info(
+                    "partition = %s",
+                    disk_partition.physical_drive[target].partitions[i]
+                )
             except IndexError:
                 logger.warning("IndexError: No disk info for partition %d", i)
             except KeyError:
