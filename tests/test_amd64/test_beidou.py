@@ -42,7 +42,7 @@ class TestBeidou:
         logger.info("Manufacturer = %s", amd64.cpu.vendor)
         logger.info("CPU(s) = %s", amd64.cpu.cores)
         logger.info("CPU model = %s", amd64.cpu.model)
-        logger.info("hyperthreading = %s", amd64.cpu.hyperthreading)
+        logger.info("Hyperthreading = %s", amd64.cpu.hyperthreading)
         assert (amd64.cpu.hyperthreading ==
                 amd64.api.cpu.hyperthreading)
         assert amd64.cpu.cores == amd64.api.cpu.cores
@@ -65,5 +65,6 @@ class TestBeidou:
         )
         assert amd64.system.model == amd64.api.system.model
         assert amd64.system.name == amd64.api.system.name
+        assert amd64.system.rev == amd64.api.system.rev
         assert (str(amd64.system.memory) ==
                 amd64.api.system.memory)
