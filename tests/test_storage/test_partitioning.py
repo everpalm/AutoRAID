@@ -103,19 +103,6 @@ class TestDiskVolume:
         logger.debug('del_result = %s', del_result)
         assert del_result is True
 
-    # def test_get_disk_num(self, disk_partition, amd64_settings):
-    #     """Test for verifying the number of disks and the serial number.
-
-    #     Args:
-    #         amd64: The system instance being tested.
-    #         AMD64_SETTINGS (dict): Expected configuration data for validation.
-    #     """
-    #     logger.info("Number(%s) = %s", type(disk_partition.disk_num),
-    #                 disk_partition.disk_num)
-    #     logger.info("SerialNumber = %s", disk_partition.serial_num)
-    #     assert (disk_partition.disk_num ==
-    #             amd64_settings['Disk Information']["Number"])
-
     def test_disk_serial_number(self, disk_partition):
         """Test for verifying the number of disks and the serial number.
 
@@ -139,11 +126,13 @@ class TestDiskVolume:
         target: int = disk_partition.disk_num
         partition_size: int = disk_partition.partition_size
         logger.info("Partition Size = %d GB", partition_size)
+
         partitions = disk_partition.physical_drive[target].partitions
         logger.debug("paritions = %s", partitions)
 
         primary_partitions = [p for p in partitions if p["Type"] == "Primary"]
         logger.debug("primary_paritions = %s", primary_partitions)
+
         assert all(p["Size"] == "64 GB" for p in primary_partitions), (
             f"Primary partitions size less than '64 GB': {primary_partitions}"
         )
@@ -158,6 +147,7 @@ class TestDiskVolume:
         target: int = disk_partition.disk_num
         drive_size: int = disk_partition.physical_drive[target].size
         logger.debug("drive_size = %s", drive_size)
+
         disk_capacity: float = f"{disk_partition.disk_capacity} GB"
         logger.info("disk_capacity = %s", disk_capacity)
         assert disk_capacity == drive_size
@@ -173,7 +163,7 @@ class TestDiskVolume:
         logger.debug("partition_num = %s", partition_num)
 
         # 動態生成磁碟字母，跳過某些字母（例如無效或保留的磁碟字母）
-        start_letter = ord('D')  # 磁碟字母起始為 'D'
+        start_letter = ord('E')  # 磁碟字母起始為 'E'
         disk_letters = []
         for i in range(partition_num):
             letter = chr(start_letter + i)
