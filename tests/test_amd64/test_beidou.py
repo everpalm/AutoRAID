@@ -46,7 +46,7 @@ class TestBeidou:
         assert (amd64.cpu.hyperthreading ==
                 amd64.api.cpu.hyperthreading)
         assert amd64.cpu.cores == amd64.api.cpu.cores
-        assert amd64.cpu.model == amd64.api.cpu.model_name
+        assert amd64.cpu.model == amd64.api.cpu.model
 
     def test_system(self, amd64):
         """Test for verifying system manufacturer, model, and operating system.

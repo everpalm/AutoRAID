@@ -26,6 +26,7 @@
                     "Total Memory Size": "1942364 kB"
                 },
                 "CPU": {
+                    "Vendor": "ARM",
                     "Core(s)": 4,
                     "Model Name": "Cortex-A72",
                     "Hyperthreading": false
@@ -57,9 +58,11 @@
                     "Manufacturer": "System",
                     "Model": "System Product",
                     "Name": "MY-TESTBED-01",
+                    "Rev": "X1.X",
                     "Total Memory Size": "31 GB"
                 },
                 "CPU": {
+                    "Vendor": "AuthenticAMD",
                     "Core(s)": 12,
                     "Model Name": "AMD Ryzen 9",
                     "Hyperthreading": true
@@ -69,7 +72,7 @@
                     "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
-                    "Standard NVM Express Controller": {
+                    "NVMe Controller": {
                         "PCIE Configuration": {
                             "VID": "0x1b4b",
                             "SVID": "0x1b4b",
@@ -180,6 +183,7 @@
                     "Total Memory Size": "994824 kB"
                 },
                 "CPU": {
+                    "Vendor": "ARM",
                     "Core(s)": 4,
                     "Model Name": "Cortex-A43",
                     "Hyperthreading": false
@@ -211,19 +215,21 @@
                     "Manufacturer": "System",
                     "Model": "System Product",
                     "Name": "MY-TESTBED-01",
+                    "Rev": "X1.X",
                     "Total Memory Size": "31 GB"
                 },
                 "CPU": {
-                    "Core(s)": 12,
+                    "Vendor": "AuthenticAMD",
                     "Model Name": "AMD Ryzen 9",
-                    "Hyperthreading": true
+                    "Hyperthreading": true,
+                    "Core(s)": 12
                 },
                 "Network": {
                     "IP": "192.168.0.128",
                     "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
-                    "Standard NVM Express Controller": {
+                    "NVMe Controller": {
                         "PCIE Configuration": {
                             "VID": "0x1b4b",
                             "SVID": "0x1b4b",

@@ -69,7 +69,7 @@ def mock_base_interface_config():
                         "MAC Address": "3C-7C-3F-20-C1-78"
                     },
                     "Storage": {
-                        "Standard NVM Express Controller": {
+                        "NVMe Controller": {
                             "PCIE Configuration": {
                                 "VID": "1B4B",
                                 "SVID": "1B4B",

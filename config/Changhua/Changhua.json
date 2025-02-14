@@ -69,7 +69,7 @@
                     "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
-                    "Standard NVM Express Controller": {
+                    "NVMe Controller": {
                         "PCIE Configuration": {
                             "VID": "0x1b4b",
                             "SVID": "0x1b4b",
@@ -223,7 +223,7 @@
                     "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
-                    "Standard NVM Express Controller": {
+                    "NVMe Controller": {
                         "PCIE Configuration": {
                             "VID": "0x1b4b",
                             "SVID": "0x1b4b",

@@ -4,32 +4,34 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from collections import defaultdict
-from dataclasses import dataclass
+# from dataclasses import dataclass
 import logging
 import re
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
+from interface.application import CPU
+from interface.application import System
 
 logger = get_logger(__name__, logging.INFO)
 
 
-@dataclass
-class CPUInformation:
-    '''Context of CPU Information'''
-    vendor: str
-    model: str
-    hyperthreading: bool
-    cores: int
+# @dataclass
+# class CPUInformation:
+#     '''Context of CPU Information'''
+#     vendor: str
+#     model: str
+#     hyperthreading: bool
+#     cores: int
 
 
-@dataclass
-class SystemInformation:
-    '''Context of System Information'''
-    manufacturer: str
-    model: str
-    name: str
-    rev: str
-    memory: str
+# @dataclass
+# class SystemInformation:
+#     '''Context of System Information'''
+#     manufacturer: str
+#     model: str
+#     name: str
+#     rev: str
+#     memory: str
 
 
 class BaseOS(ABC):
@@ -218,7 +220,7 @@ class AMD64Windows(BaseOS):
                 "Name": str_name}
 
     @property
-    def cpu(self) -> CPUInformation:
+    def cpu(self) -> CPU:
         ''' Get CPU information
             Grep CPU information from system call 'lscpu'
             Args: None
@@ -236,7 +238,7 @@ class AMD64Windows(BaseOS):
             cpu_name: str = " ".join(wmic_name.get(1).split(" ")[0:3])
             logger.debug("cpu_cores = %d, cpu_name = %s", cpu_cores,
                          cpu_name)
-            self._cpu = CPUInformation(
+            self._cpu = CPU(
                 vendor=cpu_manufacturer,
                 model=cpu_name,
                 hyperthreading=(self.logic_processors/cpu_cores == 2),
@@ -251,7 +253,7 @@ class AMD64Windows(BaseOS):
         return self._cpu
 
     @property
-    def system(self) -> SystemInformation:
+    def system(self) -> System:
         ''' Get Desktop Computer information
             Grep HW information from system call 'lshw'
             Args: None
@@ -270,7 +272,7 @@ class AMD64Windows(BaseOS):
 
             if (computer_info and len(computer_info) > 1 and memory_info
                     and len(memory_info) > 1):
-                self._system = SystemInformation(
+                self._system = System(
                     manufacturer=(
                         ' '.join(computer_info.get(1).split(' ')[0:1])
                     ),
