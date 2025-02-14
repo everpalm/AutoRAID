@@ -72,6 +72,56 @@
                     "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
+                    "Physical Drive": [
+                        {
+                            "name": "0",
+                            "model": "SanDisk SD8TB8U256G1122",
+                            "type": "SSD",
+                            "size": "238.474937438964844 GB",
+                            "serial_number": "171458424255",
+                            "partitions": [
+                                {"Name": "Partition 1", "Type": "System", "Size": "100 MB"},
+                                {"Name": "Partition 2", "Type": "Reserved", "Size": "16 MB"},
+                                {"Name": "Partition 3", "Type": "Primary", "Size": "222 MB"},
+                                {"Name": "Partition 4", "Type": "Recovery", "Size": "517 MB"}
+                            ]
+                        },
+                        {
+                            "name": "1",
+                            "model": "INTEL SSDPEKNW010T8",
+                            "type": "SSD",
+                            "size": "953.869468689 GB",
+                            "serial_number": "0000_0000_0100_0000_E4D2_5CB7_E882_5101.",
+                            "partitions": [
+                                {"Name": "Partition 1", "Type": "Reserved", "Size": "15 MB"},
+                                {"Name": "Partition 2", "Type": "Primary", "Size": "953 GB"}
+                            ]
+                        },
+                        {
+                            "name": "2",
+                            "model": "Marvell_NVMe_Controller",
+                            "type": "SSD",
+                            "size": "931.4496731758118 GB",
+                            "serial_number": "0050_43B5_0200_0001.",
+                            "partitions": [
+                                {"Name": "Partition 1", "Type": "Reserved", "Size": "15 MB"},
+                                {"Name": "Partition 2", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 3", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 4", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 5", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 6", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 7", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 8", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 9", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 10", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 11", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 12", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 13", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 14", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 15", "Type": "Primary", "Size": "64 GB"}
+                            ]
+                        }
+                    ],
                     "NVMe Controller": {
                         "PCIE Configuration": {
                             "VID": "0x1b4b",
@@ -229,6 +279,56 @@
                     "MAC Address": "3C-7C-3F-20-C1-78"
                 },
                 "Storage": {
+                    "Physical Drive": [
+                        {
+                            "name": "0",
+                            "model": "SanDisk SD8TB8U256G1122",
+                            "type": "SSD",
+                            "size": "238.474937438964844 GB",
+                            "serial_number": "171458424255",
+                            "partitions": [
+                                {"Name": "Partition 1", "Type": "System", "Size": "100 MB"},
+                                {"Name": "Partition 2", "Type": "Reserved", "Size": "16 MB"},
+                                {"Name": "Partition 3", "Type": "Primary", "Size": "222 MB"},
+                                {"Name": "Partition 4", "Type": "Recovery", "Size": "517 MB"}
+                            ]
+                        },
+                        {
+                            "name": "1",
+                            "model": "INTEL SSDPEKNW010T8",
+                            "type": "SSD",
+                            "size": "953.869468689 GB",
+                            "serial_number": "0000_0000_0100_0000_E4D2_5CB7_E882_5101.",
+                            "partitions": [
+                                {"Name": "Partition 1", "Type": "Reserved", "Size": "15 MB"},
+                                {"Name": "Partition 2", "Type": "Primary", "Size": "953 GB"}
+                            ]
+                        },
+                        {
+                            "name": "2",
+                            "model": "Marvell_NVMe_Controller",
+                            "type": "SSD",
+                            "size": "931.4496731758118 GB",
+                            "serial_number": "0050_43B5_0200_0001.",
+                            "partitions": [
+                                {"Name": "Partition 1", "Type": "Reserved", "Size": "15 MB"},
+                                {"Name": "Partition 2", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 3", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 4", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 5", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 6", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 7", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 8", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 9", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 10", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 11", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 12", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 13", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 14", "Type": "Primary", "Size": "64 GB"},
+                                {"Name": "Partition 15", "Type": "Primary", "Size": "64 GB"}
+                            ]
+                        }
+                    ],
                     "NVMe Controller": {
                         "PCIE Configuration": {
                             "VID": "0x1b4b",
