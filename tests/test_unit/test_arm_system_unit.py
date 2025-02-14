@@ -85,7 +85,6 @@ def test_get_cpu_info(raspberry_pi, mock_api):
         ["Model name: Cortex-A72"],
         ["CPU(s): 4"]
     ]
-    # cpu_info = raspberry_pi.get_cpu_info()
     cpu_info = raspberry_pi.cpu
 
     assert cpu_info == CPU(
