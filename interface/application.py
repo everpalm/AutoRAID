@@ -14,7 +14,6 @@ import subprocess
 import socket
 import fcntl
 import os
-import re
 import struct
 import json
 import paramiko
@@ -341,123 +340,6 @@ class BaseInterface(ABC):
         if remote_ip is None:
             logger.debug('Local Mode Only')
         return remote_ip, account, password, local_dir, remote_dir
-
-    def _get_remote_ip1(self) -> Tuple[str]:
-        '''This is a docstring'''
-        remote_ip = account = password = local_dir = remote_dir = \
-            manufacturer = None
-        for element in self.__import_config():
-            if element.get('Local').get('Hardware').get('Network').get('IP') \
-                    == self.local_ip:
-                logger.debug('Found target element = %s', element)
-                remote_ip = (
-                    element.get('Remote', {})
-                    .get('Hardware', {})
-                    .get('Network', {})
-                    .get('IP', {})
-                )
-                account = (
-                    element.get('Local', {})
-                    .get('Operating System', {})
-                    .get('Account', {})
-                )
-                password = (
-                    element.get('Local', {})
-                    .get('Operating System', {})
-                    .get('Password', {})
-                )
-                local_dir = os.environ.get('WORKSPACE')
-                remote_dir = (
-                    element.get('Remote', {})
-                    .get('Software', {})
-                    .get('Script', {})
-                    .get('Path', {})
-                )
-                nvme_data = (
-                    element.get('Remote', {})
-                    .get('Hardware', {})
-                    .get('Storage', {})
-                    .get('NVMe Controller', {})
-                )
-                cpu_data = (
-                    element.get('Remote', {})
-                    .get('Hardware', {})
-                    .get('CPU', {})
-                )
-                system_data = (
-                    element.get('Remote', {})
-                    .get('Hardware', {})
-                    .get('System', {})
-                )
-                root_complexes_list = [
-                    RootComplex(**rc) for rc in nvme_data.get("root_complexes",
-                                                              [])
-                ]
-                end_points_list = [
-                    EndPoint(**ep) for ep in nvme_data.get("end_points", [])
-                ]
-                self.virtual_drive = [
-                    VirtualDrive(**vd) for vd in nvme_data.get(
-                        "Virtual Drive", [])
-                ]
-                logger.debug('end_points_list = %s', end_points_list)
-                # Get NVMe controller information
-                self.nvme_controller = NVMeController(
-                    vid=nvme_data["PCIE Configuration"]["VID"],
-                    svid=nvme_data["PCIE Configuration"]["SVID"],
-                    did=nvme_data["PCIE Configuration"]["DID"],
-                    sdid=nvme_data["PCIE Configuration"]["SDID"],
-                    bus_device_func=nvme_data["bus_device_func"],
-                    device=nvme_data["device"],
-                    slot_id=nvme_data["slot_id"],
-                    firmware_version=nvme_data["firmware_version"],
-                    revision_id=nvme_data["revision_id"],
-                    port_count=nvme_data["port_count"],
-                    max_pd_of_per_vd=nvme_data["max_pd_of_per_vd"],
-                    max_vd=nvme_data["max_vd"],
-                    max_pd=nvme_data["max_pd"],
-                    max_ns_of_per_vd=nvme_data["max_ns_of_per_vd"],
-                    max_ns=nvme_data["max_ns"],
-                    supported_raid_mode=nvme_data["supported_raid_mode"],
-                    cache=nvme_data["cache"],
-                    supported_bga_features=nvme_data["supported_bga_features"],
-                    support_stripe_size=nvme_data["support_stripe_size"],
-                    supported_features=nvme_data["supported_features"],
-                    root_complexes=root_complexes_list,
-                    end_points=end_points_list
-                )
-                # Get CPU information
-                self.cpu = CPU(
-                    vendor=cpu_data["Vendor"],
-                    model=cpu_data["Model Name"],
-                    hyperthreading=cpu_data["Hyperthreading"],
-                    cores=cpu_data["Core(s)"],
-                )
-                # Get system information
-                self.system = System(
-                    manufacturer=system_data["Manufacturer"],
-                    model=system_data["Model"],
-                    name=system_data["Name"],
-                    rev=system_data["Rev"],
-                    memory=system_data["Total Memory Size"]
-                )
-                logger.debug('cpu = %s', self.cpu)
-                logger.debug('system = %s', self.system)
-                logger.debug('network = %s', self.network)
-
-                match = re.search(r"VEN_\w+", self.nvme_controller.device)
-                if match:
-                    manufacturer = match.group()
-                logger.debug('remote_ip = %s', remote_ip)
-                logger.debug('manufacturer = %s', manufacturer)
-                break
-
-            logger.debug('Not target element = %s', element)
-            continue
-        if remote_ip is None:
-            logger.debug('Local Mode Only')
-        return (remote_ip, account, password, local_dir, remote_dir,
-                manufacturer)
 
     @property
     def os_type(self) -> str:
