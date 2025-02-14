@@ -102,7 +102,7 @@
                             "model": "Marvell_NVMe_Controller",
                             "type": "SSD",
                             "size": "931.4496731758118 GB",
-                            "serial_number": "0050_43B5_0200_0001.",
+                            "serial_number": "0050_4329_0800_0001.",
                             "partitions": [
                                 {"Name": "Partition 1", "Type": "Reserved", "Size": "15 MB"},
                                 {"Name": "Partition 2", "Type": "Primary", "Size": "64 GB"},
@@ -309,7 +309,7 @@
                             "model": "Marvell_NVMe_Controller",
                             "type": "SSD",
                             "size": "931.4496731758118 GB",
-                            "serial_number": "0050_43B5_0200_0001.",
+                            "serial_number": "0050_4329_0800_0001.",
                             "partitions": [
                                 {"Name": "Partition 1", "Type": "Reserved", "Size": "15 MB"},
                                 {"Name": "Partition 2", "Type": "Primary", "Size": "64 GB"},
