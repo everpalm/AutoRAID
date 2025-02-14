@@ -46,7 +46,7 @@ class AMD64Windows(BaseOS):
     '''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        self.vendor, self.model, self.name = self._get_system_info().values()
+        # self.vendor, self.model, self.name = self._get_system_info().values()
         self.nic_name = interface.if_name
         self.memory_size = self._get_memory_size()
         self.error_features = defaultdict(set)
@@ -279,12 +279,6 @@ class AMD64Windows(BaseOS):
 class AMD64Linux(BaseOS):
     '''docstring'''
     def _get_memory_size(self):
-        pass
-
-    def get_cpu_info(self) -> dict[str, str]:
-        pass
-
-    def _get_system_info(self) -> dict[str]:
         pass
 
 

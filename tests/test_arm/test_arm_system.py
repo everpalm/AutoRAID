@@ -16,10 +16,10 @@ class TestRaspberryPi:
         logger.info("hyperthreading = %s", cpu_info.hyperthreading)
         logger.info("cores = %s", cpu_info.cores)
 
-    def test_get_system_info(self, drone):
-        system_info = drone.get_system_info()
-        logger.info("manufacturer = %s", system_info.manufacturer)
-        logger.info("model = %s", system_info.model)
-        logger.info("name = %s", system_info.name)
-        logger.info("rev = %s", system_info.rev)
-        logger.info("memory = %s", system_info.memory)
+    def test_system(self, drone):
+        logger.info("manufacturer = %s", drone.system.manufacturer)
+        logger.info("model = %s", drone.system.model)
+        logger.info("name = %s", drone.system.name)
+        logger.info("rev = %s", drone.system.rev)
+        logger.info("memory = %s", drone.system.memory)
+
