@@ -15,25 +15,6 @@ from interface.application import System
 logger = get_logger(__name__, logging.INFO)
 
 
-# @dataclass
-# class CPUInformation:
-#     '''Context of CPU Information'''
-#     vendor: str
-#     model: str
-#     hyperthreading: bool
-#     cores: int
-
-
-# @dataclass
-# class SystemInformation:
-#     '''Context of System Information'''
-#     manufacturer: str
-#     model: str
-#     name: str
-#     rev: str
-#     memory: str
-
-
 class BaseOS(ABC):
     '''docstring'''
     def __init__(self, interface: BaseInterface):
