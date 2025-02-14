@@ -57,9 +57,11 @@ def mock_base_interface_config():
                         "Manufacturer": "System",
                         "Model": "System Product",
                         "Name": "MY-TESTBED-01",
+                        "Rev": "X1.X",
                         "Total Memory Size": "31 GB"
                     },
                     "CPU": {
+                        "Vendor": "AuthenticAMD",
                         "Core(s)": 12,
                         "Model Name": "AMD Ryzen 9",
                         "Hyperthreading": True
@@ -69,7 +71,7 @@ def mock_base_interface_config():
                         "MAC Address": "3C-7C-3F-20-C1-78"
                     },
                     "Storage": {
-                        "Standard NVM Express Controller": {
+                        "NVMe Controller": {
                             "PCIE Configuration": {
                                 "VID": "1B4B",
                                 "SVID": "1B4B",
@@ -137,37 +139,6 @@ def test_get_local_ip():
 
         ip = BaseInterface._get_local_ip("eth0")
         assert ip == "192.168.0.100"
-
-
-def test_get_remote_ip1(mock_base_interface_config):
-    """Test the _get_remote_ip1 method."""
-    mock_config_content = json.dumps(mock_base_interface_config)
-
-    with patch("builtins.open", mock_open(read_data=mock_config_content)), \
-         patch("interface.application.BaseInterface._get_local_ip",
-               return_value="192.168.0.100"), \
-         patch.dict("os.environ", {}, clear=True):  # 清空 os.environ
-
-        # 初始化接口
-        interface = WindowsInterface(
-            mode="remote",
-            if_name="eth0",
-            ssh_port="22",
-            config_file="test_config.json"
-        )
-
-        # 調用方法
-        result = interface._get_remote_ip1()
-
-        # 驗證返回值
-        assert result == (
-            "192.168.0.200",
-            "ste",
-            "123456",
-            None,  # WORKSPACE 不存在時應返回 None
-            "C:\\Users\\STE\\Projects\\AutoRAID",
-            "VEN_1B4B"
-        )
 
 
 # 測試 ftp_command 方法

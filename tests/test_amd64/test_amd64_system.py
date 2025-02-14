@@ -17,105 +17,78 @@ def amd64_settings():
 
 class TestAMD64System1:
     '''Duplicate of TestAMD64NVMe'''
-    def test_get_logic_processors(self, amd64_system, amd64_settings):
+    def test_get_logic_processors(self, amd64, amd64_settings):
         """Test for verifying hyperthreading setting.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
-        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
-        assert (amd64_system.cpu.hyperthreading ==
+        logger.info("hyperthreading = %s", amd64.cpu.hyperthreading)
+        assert (amd64.cpu.hyperthreading ==
                 amd64_settings['CPU Information']['Hyperthreading'])
 
-    def test_memory_size(self, amd64_system):
+    def test_memory_size(self, amd64):
         """Test for verifying memory size of the system.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
-        memory_size = amd64_system.memory_size
+        memory_size = amd64.memory_size
         logger.info("Memory Size = %s GB", memory_size)
 
-    def test_mac_address(self, amd64_system):
+    def test_mac_address(self, amd64):
         """Test for verifying MAC address of the system.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
-        mac_address = amd64_system.mac_address
+        mac_address = amd64.mac_address
         logger.info("MAC Address = %s", mac_address)
 
-    def test_get_cpu_info(self, amd64_system, amd64_settings):
-        """Test for verifying CPU model and core count.
-
-        Args:
-            amd64_system: The system instance being tested.
-            AMD64_SETTINGS (dict): Expected configuration data for validation.
-        """
-        logger.info('CPU(s) = %s, CPU model = %s', amd64_system.cpu_num,
-                    amd64_system.cpu_name)
-        assert (amd64_system.cpu_num ==
-                amd64_settings['CPU Information']["CPU(s)"])
-        assert (amd64_system.cpu_name ==
-                amd64_settings['CPU Information']["Model Name"])
-
-    def test_get_system_info(self, amd64_system, amd64_settings):
+    def test_get_system_info(self, amd64, amd64_settings):
         """Test for verifying system manufacturer, model, and operating system.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
         logger.info('Manufacturer = %s, Model = %s, Name = %s',
-                    amd64_system.vendor,
-                    amd64_system.model,
-                    amd64_system.name)
-        assert (amd64_system.vendor ==
+                    amd64.vendor,
+                    amd64.model,
+                    amd64.name)
+        assert (amd64.vendor ==
                 amd64_settings['System Information']["Manufacturer"])
-        assert (amd64_system.model ==
+        assert (amd64.model ==
                 amd64_settings['System Information']["Model"])
 
 
 class TestAMD64System:
-    def test_get_cpu_info(self, amd64_system):
-        """Test for verifying hyperthreading setting.
-
-        Args:
-            amd64_system: The system instance being tested.
-        """
-        logger.info("CPU(s) = %s", amd64_system.cpu_num)
-        logger.info("CPU model = %s", amd64_system.cpu_name)
-        logger.info("hyperthreading = %s", amd64_system.cpu.hyperthreading)
-        assert (amd64_system.cpu.hyperthreading ==
-                amd64_system.api.cpu.hyperthreading)
-        assert amd64_system.cpu_num == amd64_system.api.cpu.cores
-        assert amd64_system.cpu_name == amd64_system.api.cpu.model_name
-
-    def test_get_system_info(self, amd64_system):
+    '''docstring'''
+    def test_get_system_info(self, amd64):
         """Test for verifying system manufacturer, model, and operating system.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
         """
-        logger.info('Manufacturer = %s', amd64_system.vendor)
-        logger.info('Model = %s', amd64_system.model)
-        logger.info('Name = %s', amd64_system.name)
-        logger.info('Total Memory Size = %s GB', amd64_system.memory_size)
-        assert amd64_system.vendor == amd64_system.api.system.manufacturer
-        assert amd64_system.model == amd64_system.api.system.model
-        assert amd64_system.name == amd64_system.api.system.name
-        assert (str(amd64_system.memory_size) + ' GB' ==
-                amd64_system.api.system.memory)
+        logger.info('Manufacturer = %s', amd64.vendor)
+        logger.info('Model = %s', amd64.model)
+        logger.info('Name = %s', amd64.name)
+        logger.info('Total Memory Size = %s GB', amd64.memory_size)
+        assert amd64.vendor == amd64.api.system.manufacturer
+        assert amd64.model == amd64.api.system.model
+        assert amd64.name == amd64.api.system.name
+        assert (str(amd64.memory_size) + ' GB' ==
+                amd64.api.system.memory)
 
-    def test_mac_address(self, amd64_system):
+    def test_mac_address(self, amd64):
         """Test for verifying MAC address of the system.
 
         Args:
-            amd64_system: The system instance being tested.
-            amd64_system (dict): Expected configuration data for validation.
+            amd64: The system instance being tested.
+            amd64 (dict): Expected configuration data for validation.
         """
-        logger.info("MAC Address = %s", amd64_system.mac_address)
-        assert amd64_system.mac_address == amd64_system.api.network.mac_address
+        logger.info("MAC Address = %s", amd64.mac_address)
+        assert amd64.mac_address == amd64.api.network.mac_address

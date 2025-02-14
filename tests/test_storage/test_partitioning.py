@@ -112,7 +112,7 @@ class TestDiskVolume:
         """Test for verifying the number of disks and the serial number.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
         logger.info("Number = %s", disk_partition.disk_num)
@@ -124,7 +124,7 @@ class TestDiskVolume:
         """Test for verifying parition size of the disk.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
         partition_size = disk_partition.partition_size
@@ -134,7 +134,7 @@ class TestDiskVolume:
         """Test for verifying parition size of the disk.
 
         Args:
-            amd64_system: The system instance being tested.
+            amd64: The system instance being tested.
             AMD64_SETTINGS (dict): Expected configuration data for validation.
         """
         disk_capacity = disk_partition.disk_capacity

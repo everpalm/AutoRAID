@@ -151,7 +151,7 @@ def network_api(cmdopt):
 
 
 @pytest.fixture(scope="session")
-def amd64_system(network_api):
+def amd64(network_api):
     """
     docstring
     """

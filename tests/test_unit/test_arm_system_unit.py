@@ -1,9 +1,11 @@
 import pytest
 from interface.application import BaseInterface
+from interface.application import CPU
+from interface.application import System
 from unittest.mock import MagicMock
-from system.arm import CPUInformation
+# from system.arm import CPUInformation
 from system.arm import RaspberryPi
-from system.arm import SystemInformation
+# from system.arm import SystemInformation
 
 
 @pytest.fixture
@@ -85,7 +87,7 @@ def test_get_cpu_info(raspberry_pi, mock_api):
     ]
     cpu_info = raspberry_pi.get_cpu_info()
 
-    assert cpu_info == CPUInformation(
+    assert cpu_info == CPU(
         vendor="ARM",
         model="Cortex-A72",
         cores=4,
@@ -103,7 +105,7 @@ def test_get_system_info(raspberry_pi, mock_api):
     ]
     system_info = raspberry_pi.get_system_info()
 
-    assert system_info == SystemInformation(
+    assert system_info == System(
         manufacturer="Raspberry Pi 4",
         model="B",
         name="MY-RASPI-02",

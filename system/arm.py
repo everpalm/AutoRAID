@@ -4,11 +4,10 @@ import logging
 import multiprocessing
 from abc import ABC
 from abc import abstractmethod
-from system.amd64 import BaseOS
-from system.amd64 import CPUInformation
-from system.amd64 import SystemInformation
-# from dataclasses import dataclass
 from interface.application import BaseInterface
+from interface.application import CPU
+from interface.application import System
+from system.amd64 import BaseOS
 from typing import Tuple
 from unit.log_handler import get_logger
 
@@ -106,7 +105,7 @@ class RaspberryPi(BaseOS, BaseUART):
             logger.error("Failed to retrieve memory size: %s", str(e))
             raise
 
-    def get_cpu_info(self) -> CPUInformation:
+    def get_cpu_info(self) -> CPU:
         try:
 
             cpu_manufacturer = self.api.command_line.original(
@@ -118,7 +117,7 @@ class RaspberryPi(BaseOS, BaseUART):
             cpu_cores = self.api.command_line.original(
                 self.api, "lscpu | grep 'CPU(s)'")
 
-            cpu_info = CPUInformation(
+            cpu_info = CPU(
                 cpu_manufacturer[0].split(':')[1].strip(),       # vendor name
                 cpu_model_name[0].split(':')[1].strip(),         # model name
                 False,                                   # hyperthreading
@@ -134,7 +133,7 @@ class RaspberryPi(BaseOS, BaseUART):
             logger.error("Failed to retrieve CPU info: %s", str(e))
             raise
 
-    def get_system_info(self) -> SystemInformation:
+    def get_system_info(self) -> System:
         try:
             cpu_output = self.api.command_line.original(
                 self.api, "cat /proc/cpuinfo | grep 'Model'")
@@ -145,7 +144,7 @@ class RaspberryPi(BaseOS, BaseUART):
             memory_info = self.api.command_line.original(
                 self.api, "cat /proc/meminfo | grep MemTotal")
 
-            system_info = SystemInformation(
+            system_info = System(
                 ' '.join(cpu_output[0].split()[2:5]),   # manufacturer
                 ' '.join(cpu_output[0].split()[6:7]),   # model
                 host_name[0],                           # name

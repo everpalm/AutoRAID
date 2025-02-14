@@ -4,39 +4,45 @@ from __future__ import annotations  # Header, Python 3.7 or later version
 from abc import ABC
 from abc import abstractmethod
 from collections import defaultdict
-from dataclasses import dataclass
+# from dataclasses import dataclass
 import logging
 import re
 from unit.log_handler import get_logger
 from interface.application import BaseInterface
+from interface.application import CPU
+from interface.application import System
 
 logger = get_logger(__name__, logging.INFO)
 
 
-@dataclass
-class CPUInformation:
-    '''Context of CPU Information'''
-    vendor: str
-    model: str
-    hyperthreading: bool
-    cores: int
+# @dataclass
+# class CPUInformation:
+#     '''Context of CPU Information'''
+#     vendor: str
+#     model: str
+#     hyperthreading: bool
+#     cores: int
 
 
-@dataclass
-class SystemInformation:
-    '''Context of System Information'''
-    manufacturer: str
-    model: str
-    name: str
-    rev: str
-    memory: str
+# @dataclass
+# class SystemInformation:
+#     '''Context of System Information'''
+#     manufacturer: str
+#     model: str
+#     name: str
+#     rev: str
+#     memory: str
 
 
 class BaseOS(ABC):
     '''docstring'''
     def __init__(self, interface: BaseInterface):
         self.api = interface
+        self._cpu = None
+        self._logic_processors = None
+        self._mac_address = None
         self.memory_size = self._get_memory_size()
+        self._system = None
 
     @abstractmethod
     def _get_memory_size(self) -> int:
@@ -54,21 +60,15 @@ class AMD64Windows(BaseOS):
             sdid: The Sub-device ID
             SMART information: critical_warning, temperature, power_cycle,
                 unsafe_shutdown
-            cpu_num: CPU number
-            cpu_name: CPU name
             version: System manufacturer
             serial: Used for indentifying system
     '''
     def __init__(self, interface: BaseInterface):
         self.api = interface
-        self.cpu_num, self.cpu_name = self.get_cpu_info().values()
         self.vendor, self.model, self.name = self._get_system_info().values()
         self.nic_name = interface.if_name
-        self._mac_address = None
         self.memory_size = self._get_memory_size()
-        self._logic_processors = None
         self.error_features = defaultdict(set)
-        self._cpu = None
 
     @property
     def logic_processors(self) -> int:
@@ -190,29 +190,6 @@ class AMD64Windows(BaseOS):
             raise
         return self._mac_address
 
-    def get_cpu_info(self) -> dict[str, str]:
-        ''' Get CPU information
-            Grep CPU information from system call 'lscpu'
-            Args: None
-            Returns: A dictionary consists of CPU(s) and Model Name
-            Raises: Logger error
-        '''
-        str_return = int_cpu_num = str_cpu_name = None
-        try:
-            str_return = self.api.command_line("wmic cpu get NumberOfCores")
-            int_cpu_num = int(str_return.get(1).split(" ")[0])
-            str_return = self.api.command_line("wmic cpu get name")
-            str_cpu_name = " ".join(str_return.get(1).split(" ")[0:3])
-            logger.debug("cpu_num = %d, cpu_name = %s", int_cpu_num,
-                         str_cpu_name)
-        except ValueError as e:
-            logger.error("Value Error in get_cpu_info: %s", e)
-            raise
-        except Exception as e:
-            logger.error('error occurred in get_cpu_info: %s', e)
-            raise
-        return {"CPU(s)": int_cpu_num, "Model Name": str_cpu_name}
-
     def _get_system_info(self) -> dict[str]:
         ''' Get Desktop Computer information
             Grep HW information from system call 'lshw'
@@ -243,7 +220,7 @@ class AMD64Windows(BaseOS):
                 "Name": str_name}
 
     @property
-    def cpu(self) -> CPUInformation:
+    def cpu(self) -> CPU:
         ''' Get CPU information
             Grep CPU information from system call 'lscpu'
             Args: None
@@ -261,7 +238,7 @@ class AMD64Windows(BaseOS):
             cpu_name: str = " ".join(wmic_name.get(1).split(" ")[0:3])
             logger.debug("cpu_cores = %d, cpu_name = %s", cpu_cores,
                          cpu_name)
-            self._cpu = CPUInformation(
+            self._cpu = CPU(
                 vendor=cpu_manufacturer,
                 model=cpu_name,
                 hyperthreading=(self.logic_processors/cpu_cores == 2),
@@ -274,6 +251,48 @@ class AMD64Windows(BaseOS):
             logger.error('error occurred in get_cpu_info: %s', e)
             raise
         return self._cpu
+
+    @property
+    def system(self) -> System:
+        ''' Get Desktop Computer information
+            Grep HW information from system call 'lshw'
+            Args: None
+            Returns: A dictionary consists of Version and Serial
+            Raises: Logger error
+        '''
+        try:
+            computer_info: str = self.api.command_line(
+                'wmic computersystem get Name, Manufacturer, Model')
+
+            baseboard_info: str = self.api.command_line(
+                'wmic baseboard get Version')
+
+            memory_info = self.api.command_line(
+                'wmic ComputerSystem get TotalPhysicalMemory')
+
+            if (computer_info and len(computer_info) > 1 and memory_info
+                    and len(memory_info) > 1):
+                self._system = System(
+                    manufacturer=(
+                        ' '.join(computer_info.get(1).split(' ')[0:1])
+                    ),
+                    model=' '.join(computer_info.get(1).split(' ')[2:4]),
+                    name=computer_info.get(1).split(' ')[5].lstrip(),
+                    rev=baseboard_info.get(1).split(' ')[1],
+                    memory=f"{int(memory_info.get(1))//(1024 ** 3)} GB"
+                )
+            else:
+                raise ValueError("Failed to get system info.")
+            logger.debug('manufacturer = %s', self._system.manufacturer)
+            logger.debug('model = %s', self._system.model)
+            logger.debug('name = %s', self._system.name)
+            logger.debug('rev = %s', self._system.rev)
+            logger.debug('memory = %s', self._system.memory)
+
+        except Exception as e:
+            logger.error('Error occurred in _get_desktop_info: %s', e)
+            raise
+        return self._system
 
 
 class AMD64Linux(BaseOS):
