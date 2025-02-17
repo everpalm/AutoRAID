@@ -3,7 +3,7 @@
 import json
 import logging
 import pytest
-from tests.test_amd64.test_amd64_system import TestAMD64System as AMD64System
+from tests.test_amd64.test_beidou import TestBeidou as AMD64System
 
 # Set up logger
 logger = logging.getLogger(__name__)

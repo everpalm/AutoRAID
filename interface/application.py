@@ -91,6 +91,25 @@ class VirtualDrive:
 
 
 @dataclass
+class Partition:
+    """Docstring"""
+    name: str
+    type: str
+    size: str
+
+
+@dataclass
+class PhysicalDrive:
+    """Docstring"""
+    name: str
+    model: str
+    type: str
+    size: str
+    serial_number: str
+    partitions: List[Partition] = field(default_factory=list)
+
+
+@dataclass
 class NVMeController(ConfigurationSpace):
     """Stores information about an NVMe controller.
 
@@ -186,6 +205,7 @@ class BaseInterface(ABC):
         self.system = None
         self.network = None
         self.virtual_drive = None
+        self.physical_drive = None
         (self.remote_ip, self.account, self.password, self.local_dir,
             self.remote_dir) = self._get_system_info()
         self._os_type = None
@@ -254,7 +274,7 @@ class BaseInterface(ABC):
             my_socket.close()
         return local_ip
 
-    def _get_system_info(self) -> Tuple[str]:
+    def _get_system_info(self) -> Tuple[str, str, str, str, str]:
         remote_ip = account = password = local_dir = remote_dir = None
         for element in self.__import_config():
             if element.get('Local').get('Hardware').get('Network').get('IP') \
@@ -269,12 +289,18 @@ class BaseInterface(ABC):
                 password = local_os['Password']
                 local_dir = os.environ.get('WORKSPACE')
                 remote_dir = remote_sw['Script']['Path']
-                nvme_data = (
-                    hardware['Storage']['NVMe Controller']
-                )
+                storage_data = hardware['Storage']
+                nvme_data = storage_data['NVMe Controller']
                 cpu_data = hardware['CPU']
                 system_data = hardware['System']
                 network_data = hardware['Network']
+
+                self.physical_drive = [
+                    PhysicalDrive(**pd) for pd in storage_data.get(
+                        "Physical Drive", [])
+                ]
+                logger.debug("physical_drive = %s", self.physical_drive)
+
                 root_complexes_list = [
                     RootComplex(**rc) for rc in nvme_data.get("root_complexes",
                                                               [])

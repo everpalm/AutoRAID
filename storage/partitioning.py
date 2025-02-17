@@ -32,6 +32,7 @@ class PartitionDisk(ABC):
                 representing the platform's API for interaction.
         """
         self._api = platform.api
+        self.physical_drive = platform.api.physical_drive
         self.remote_dir = platform.api.remote_dir
         self.remote_ip = platform.api.remote_ip
         self.account = platform.api.account
@@ -228,7 +229,6 @@ class WindowsVolume(PartitionDisk):
         """
         cmd_return = disk_num = None
 
-        # if self.disk_vid == 'VEN_1B4B':
         if self.disk_vid == '0x1b4b':
             disk_manufacturer = 'Marvell'
         else:

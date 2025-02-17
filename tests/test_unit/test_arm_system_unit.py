@@ -85,7 +85,7 @@ def test_get_cpu_info(raspberry_pi, mock_api):
         ["Model name: Cortex-A72"],
         ["CPU(s): 4"]
     ]
-    cpu_info = raspberry_pi.get_cpu_info()
+    cpu_info = raspberry_pi.cpu
 
     assert cpu_info == CPU(
         vendor="ARM",
@@ -95,7 +95,7 @@ def test_get_cpu_info(raspberry_pi, mock_api):
     )
 
 
-def test_get_system_info(raspberry_pi, mock_api):
+def test_system(raspberry_pi, mock_api):
     """Test the get_system_info method."""
     mock_api.command_line.original.side_effect = [
         ["Model           : Raspberry Pi 4 Model B Rev 1.2"],
@@ -103,7 +103,7 @@ def test_get_system_info(raspberry_pi, mock_api):
         ["MemTotal:       2048000 kB"],
         ["Rev: 1.2"]
     ]
-    system_info = raspberry_pi.get_system_info()
+    system_info = raspberry_pi.system
 
     assert system_info == System(
         manufacturer="Raspberry Pi 4",

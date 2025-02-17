@@ -105,7 +105,9 @@ class RaspberryPi(BaseOS, BaseUART):
             logger.error("Failed to retrieve memory size: %s", str(e))
             raise
 
-    def get_cpu_info(self) -> CPU:
+    # def get_cpu_info(self) -> CPU:
+    @property
+    def cpu(self) -> CPU:
         try:
 
             cpu_manufacturer = self.api.command_line.original(
@@ -133,7 +135,8 @@ class RaspberryPi(BaseOS, BaseUART):
             logger.error("Failed to retrieve CPU info: %s", str(e))
             raise
 
-    def get_system_info(self) -> System:
+    @property
+    def system(self) -> System:
         try:
             cpu_output = self.api.command_line.original(
                 self.api, "cat /proc/cpuinfo | grep 'Model'")

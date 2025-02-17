@@ -34,7 +34,7 @@
     "Disk Information": {
         "Number": 2,
         "SerialNumber": "0050_43C5_0E00_0001.",
-        "D": "64 GB",
+        "E": "64 GB",
         "F": "64 GB",
         "G": "64 GB",
         "H": "64 GB",
@@ -45,6 +45,8 @@
         "M": "64 GB",
         "N": "64 GB",
         "O": "64 GB",
-        "P": "64 GB"
+        "P": "64 GB",
+        "Q": "64 GB",
+        "R": "64 GB"
     }
 }
