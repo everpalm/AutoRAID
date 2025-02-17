@@ -42,8 +42,8 @@ class TestBeidou:
         logger.info('Name = %s', amd64.system.name)
         logger.info('Rev = %s', amd64.system.rev)
         logger.info('Total Memory Size = %s ', amd64.system.memory)
-        assert amd64.system.manufacturer == (
-            amd64.api.system.manufacturer
-        )
+        # assert amd64.system.manufacturer == (
+        #     amd64.api.system.manufacturer
+        # )
 
         assert asdict(amd64.system) == asdict(amd64.api.system)
