@@ -1,77 +1,142 @@
-```markdown
 # AutoRAID
 
-AutoRAID is a project designed to automate the management of RAID (Redundant Array of Independent Disks) configurations. It simplifies the process of creating, managing, and monitoring RAID arrays, making it easier for system administrators and users to ensure data redundancy and performance.
+AutoRAID is an enterprise-grade automated validation framework for RAID controllers and storage systems.
 
-## Features
-
-- **Automatic RAID Configuration:** Automatically detects and configures RAID arrays based on available disks.
-- **Real-time Monitoring:** Provides real-time monitoring of RAID arrays, ensuring that any issues are quickly identified.
-- **User-Friendly Interface:** Simple and intuitive interface for managing RAID configurations.
-- **Support for RAID Levels:** Supports RAID 0 and 1
-
-## Installation
-
-To install and run AutoRAID, follow these steps:
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/everpalm/AutoRAID.git
-   cd AutoRAID
-   ```
-
-2. **Install dependencies:**
-
-   Ensure that you have the required dependencies installed:
-
-   ```bash
-   # Example for Python dependencies
-   pip install -r requirements.txt
-   ```
-
-3. **Run the application:**
-
-   ```bash
-   pytest
-   ```
-
-   Or follow the instructions for your specific environment and setup.
-
-## Usage
-
-After installation, you can start using AutoRAID by following these basic steps:
-
-1. **Start the AutoRAID application.**
-2. **Select the disks you want to include in the RAID array.**
-3. **Choose the desired RAID level.**
-4. **Click "Create" to configure and start the RAID array.**
-5. **Monitor the RAID status from the dashboard.**
-
-## Contributing
-
-Contributions are welcome! If you would like to contribute to AutoRAID, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a new Pull Request.
-
-Please ensure your code follows the project's coding standards and includes appropriate tests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-If you have any questions, feel free to open an issue or contact the project maintainer:
-
-- **GitHub:** [everpalm](https://github.com/everpalm)
-- **Linked-in:** [everpalm](https://www.linkedin.com/in/jaroncheng/)
+The project was designed to reduce manual validation effort for firmware regression, stress testing, and RAID configuration verification across multiple servers.
 
 ---
 
-Thank you for using AutoRAID! We hope it makes managing RAID configurations easier and more efficient for you.
+# Problem Statement
+
+Storage validation in enterprise environments typically requires:
+
+- repetitive RAID configuration testing
+- long-duration stress validation
+- remote machine orchestration
+- firmware regression verification
+- power-cycle recovery testing
+- cross-platform compatibility checks
+
+Manual execution is slow, error-prone, and difficult to scale.
+
+AutoRAID addresses these problems by providing a scalable automation framework built around Pytest, SSH orchestration, and CI integration.
+
+---
+
+# Architecture
+
+```text
+Developer / QA Engineer
+        ↓
+     Jenkins CI
+        ↓
+Pytest Automation Framework
+        ↓
+ SSH Remote Execution Layer
+        ↓
+ RAID / NVMe Test Targets
+        ↓
+ Result Collection & Reporting
 ```
+
+---
+
+# Key Features
+
+## RAID Validation
+
+- RAID creation and deletion
+- RAID level verification
+- disk failure and rebuild testing
+- consistency verification
+
+## Automation Framework
+
+- Pytest-based test execution
+- reusable test architecture
+- parameterized validation flows
+- automated regression execution
+
+## Infrastructure Integration
+
+- Jenkins CI/CD integration
+- remote execution through SSH
+- multi-node validation support
+- automated log collection
+
+## Reliability Testing
+
+- long-duration stress testing
+- reboot and recovery validation
+- repeated execution stability testing
+
+---
+
+# Design Decisions
+
+| Design | Reason |
+|---|---|
+| Pytest framework | scalable and modular test structure |
+| SSH orchestration | centralized remote control |
+| CLI-driven validation | suitable for headless server environments |
+| Jenkins integration | continuous regression execution |
+| modular test layers | easier maintenance and extension |
+
+---
+
+# Technology Stack
+
+- Python
+- Pytest
+- Jenkins
+- SSH
+- RAID Controller CLI
+- Linux / Windows validation
+
+---
+
+# Installation
+
+```bash
+git clone https://github.com/everpalm/AutoRAID.git
+cd AutoRAID
+pip install -r requirements.txt
+```
+
+---
+
+# Running Tests
+
+```bash
+pytest
+```
+
+---
+
+# Future Improvements
+
+- Kubernetes-based distributed execution
+- dynamic hardware resource scheduling
+- web dashboard for test visualization
+- automated firmware deployment pipeline
+- centralized result analytics
+
+---
+
+# Project Value
+
+This project demonstrates:
+
+- enterprise storage validation
+- infrastructure automation
+- CI/CD integration
+- distributed test orchestration
+- reliability engineering
+- scalable QA architecture
+
+---
+
+# Contact
+
+- GitHub: https://github.com/everpalm
+- LinkedIn: https://www.linkedin.com/in/jaroncheng/
